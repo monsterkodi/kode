@@ -1,7 +1,7 @@
 {
   "name": "kode",
   "version": "0.4.0",
-  "description": "",
+  "description": "programming language",
   "main": "js/kode.js",
   "scripts": {
     "test": "mocha -c --require koffee/js/register ./test/test.coffee",
