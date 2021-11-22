@@ -71,8 +71,6 @@ class Parser extends Parse
                     exp:  exp
                     then: thn
 
-        @pop 'if' # shouldn't this be popped after the else block?
-
         if tokens[0]?.text == 'else'
 
             print.tokens 'else' tokens if @debug
@@ -80,6 +78,8 @@ class Parser extends Parse
             tokens.shift()
 
             e.if.else = @exps 'else' tokens, 'nl'
+            
+        @pop 'if'
 
         print.tokens 'if leftover' tokens if tokens.length and @debug
 
@@ -116,9 +116,9 @@ class Parser extends Parse
         else 
             error 'parser.for: then or block expected!'
 
-        @pop 'for' # shouldn't this be popped after the then block?
-        
         thn = @exps 'for then' tokens, 'nl'
+        
+        @pop 'for' 
 
         for:
             vals:   vals
@@ -569,6 +569,7 @@ class Parser extends Parse
     prop: (obj, tokens) ->
 
         dot = tokens.shift()
+        
         @push '.'
 
         prop = @exp tokens
