@@ -1,25 +1,25 @@
 ![banner](./bin/banner.png)
 
-**kode** is highly inspired by [CoffeeScript](http://coffeescript.org). 
+**kode** is highly inspired by [CoffeeScript](http://coffeescript.org).
 It tries to be mostly compatible with it while adding a few enhancements.
 
 Right now (end of 2021) it is a work in progress and not yet functional.
 
-For anyone familiar with CoffeeScript, here comes a list of features i plan 
+For anyone familiar with CoffeeScript, here comes a list of features i plan
 to take over from my first CoffeeScript clone [koffee](http://github.com/monsterkodi/koffee):
 
 ## Constructor shortcut
 
 ```coffeescript
 class C
-    @: ->           
+    @: ->
 ```
 
 ... is an *optional* shortcut for ...
 
 ```coffeescript
-class C          
-    constructor: -> 
+class C
+    constructor: ->
 ```
 
 ## Negative indexing
@@ -36,7 +36,7 @@ a = -2
 s[a]         # -> undefined
 ```
 
-`v[-n]` is a shortcut for `v[-n..-n][0]` for number literals `n`. 
+`v[-n]` is a shortcut for `v[-n..-n][0]` for number literals `n`.
 Passing variables with negative values still returns *undefined*.
 
 ## for ... in
@@ -44,11 +44,11 @@ Passing variables with negative values still returns *undefined*.
 ```coffeescript
 
 for i in 0..5
-    (a for a in 1+2...8) 
+    (a for a in 1...8)
 
 ```
 
-Square brackets around ranges in for ... in loops are optional.
+Square brackets around ranges in for loops are optional.
 
 ## Console shortcuts
 
@@ -63,7 +63,7 @@ Simple shortcuts for `log`, `warn` and `error` methods of `console`.
 ## BigInt
 
 ```coffeescript
-a = 12345678901234567890n 
+a = 12345678901234567890n
 log a*a  # -> 152415787532388367501905199875019052100n
 ```
 
@@ -79,24 +79,25 @@ a = [
 ]
 ```
 
-If you decide to join these into a single line, you have a problem: for each of the lines a comma must be inserted.
-The same goes for objects that span over multiple lines. 
+If you decide to join these into a single line, you have a problem: 
+for each of the lines a comma must be inserted.
+The same goes for objects that span over multiple lines.
 
-In **kode**, you don't need to insert commata after number or string primitives and POD structures.
+In **kode**, you don't need to insert commata after number or string literals and POD structures.
 Those are all valid expressions:
 
 ```
-a = [ 1 2 3 ]           
-a = { b:1 c:2 d:3 }   
+a = [ 1 2 3 ]
+a = { b:1 c:2 d:3 }
 a =   b:1 c:2 d:3
-a =   b:[ c:2 'd' 3 ]  
+a =   b:[ c:2 'd' 3 ]
 a = [ [1 2] [d:3] ]
 
-log 'a:' a , 'd:' 3      # some commas make sense :-)
+log 'a:' a , 'd:' 3             # some commas make still sense :-)
 
 describe 'something' ->
     it 'should' ->
-    
+
 on 'event' ->
 on 'event' @myCallback
 ```
@@ -104,30 +105,28 @@ on 'event' @myCallback
 ### Macros
 
 ```coffeescript
-                                # log file position and object
-▸dbg 'my object' a:1 b:2        # -> file:1 my object { a: 1, b: 2 }
+                               # log file position and object
+dbg 'my object' a:1 b:2        # -> file:1 my object { a: 1, b: 2 }
 
-▸assert 'message' condition     # log file position and message and exits if condition isn't truish
-▸assert condition               # similar, but with 'assertion failure!' as the message
-                                
-                                # log execution times  
-▸profile 'sum'                  # -> 8_4 1ms          line_column prefix
-    ▸profile s1()               # -> 9_4 2ms          if not named
-    ▸profile s2()               # -> sum 3ms
+assert 'message' condition     # log file position and message and exits if condition isn't truish
+assert condition               # similar, but without specifying a message
 
-▸start 'a'                      # like ▸profile, but lets you control
-f = -> ▸end 'a'                 # when to start and stop timing
-f()                             # -> a 824μs
+                               # log execution times
+profile 'sum'                  # -> 8_4 1ms          line_column prefix
+    profile s1()               # -> 9_4 2ms          if not named
+    profile s2()               # -> sum 3ms
+
+profile_start 'a'              # like profile, but lets you control
+f = -> profile_end 'a'         # when to start and stop timing
+f()                            # -> a 824μs
 ```
-
-The unicode symbol `▸` can be substituted by `~>`.
 
 ## Compatibility
 
-While I tried to keep 'koffee' backwards compatible with CoffeeScript v1, 
+While I tried to keep 'koffee' backwards compatible with CoffeeScript v1,
 I don't intend to do the same with 'kode' (but converting coffee to kode shouldn't be too painful).
 
-Since I will probably be the only person using it, it's probably wise to ditch the stuff I don't need:
+Since I will most likely be the only person using it, it's probably wise to ditch the stuff I don't need:
 
 - literal coffeescript / doc macro
 - *cake* / *kake*
