@@ -1,0 +1,185 @@
+###
+000   000   0000000   0000000    00000000
+000  000   000   000  000   000  000
+0000000    000   000  000   000  0000000
+000  000   000   000  000   000  000
+000   000   0000000   0000000    00000000
+###
+
+slash    = require 'kslash'
+kstr     = require 'kstr'
+klor     = require 'klor'
+karg     = require 'karg'
+childp   = require 'child_process'
+print    = require './print'
+pkg      = require "#{__dirname}/../package"
+empty    = (a) -> a in ['' null undefined] or (typeof(a) == 'object' and Object.keys(a).length == 0)
+
+klor.kolor.globalize()
+
+class Kode
+
+    @: (@args) ->
+
+        @args ?= {}
+        
+        if @args.verbose then @args.debug = @args.block = @args.tokens = @args.parse = true
+        
+        Lexer     = require './lexer'
+        Parser    = require './parser'
+        Renderer  = require './renderer'
+        
+        @lexer    = new Lexer
+        @parser   = new Parser   @args
+        @renderer = new Renderer @
+
+    #  0000000  000      000
+    # 000       000      000
+    # 000       000      000
+    # 000       000      000
+    #  0000000  0000000  000
+
+    cli: ->
+
+        # if @args.debug then print.noon 'args' @args
+        
+        if @args.compile
+            log @compile @args.compile
+            return
+        if @args.eval
+            log @eval @args.eval
+            return
+
+        return if not @args.files.length
+
+        for file in @args.files
+
+            file = slash.resolve file
+            log gray file if @args.verbose
+
+            text = slash.readText file
+
+            if empty text then error Y4 r2 "can't read #{R3 y5 file}"; continue
+
+            code = @compile text
+
+            if @args.output
+                out = slash.join @args.output, slash.file file
+                out = slash.swapExt out, 'js'
+                log 'out' out if @args.verbose
+                slash.writeText out, code
+            else
+                log code
+
+    #  0000000   0000000   00     00  00000000   000  000      00000000
+    # 000       000   000  000   000  000   000  000  000      000
+    # 000       000   000  000000000  00000000   000  000      0000000
+    # 000       000   000  000 0 000  000        000  000      000
+    #  0000000   0000000   000   000  000        000  0000000  00000000
+
+    @compile: (text) -> (new Kode {}).compile text
+    compile: (text) ->
+
+        return '' if empty kstr.strip text
+        
+        ast = @ast text
+
+        if @args.parse then print.ast 'ast' ast
+
+        js = @renderer.render ast
+
+        print.code 'js' js if @args.js or @args.verbose or @args.debug
+
+        js
+        
+    ast: (text) ->
+        
+        text += '\n' if not text[-1] == '\n'
+
+        print.code 'coffee' text, 'coffee' if @args.verbose or @args.debug
+
+        tokens = @lexer.tokenize text
+
+        if @args.raw    then print.noon 'raw tokens' tokens
+        if @args.tokens then print.tokens 'tokens' tokens
+
+        block = @lexer.blockify tokens
+
+        if @args.raw   then print.noon 'raw block' block
+        if @args.block then print.block 'block' block
+
+        @parser.parse block
+        
+    # 00000000  000   000   0000000   000      
+    # 000       000   000  000   000  000      
+    # 0000000    000 000   000000000  000      
+    # 000          000     000   000  000      
+    # 00000000      0      000   000  0000000  
+    
+    eval: (text) ->
+        
+        return if empty text
+        
+        vm = require 'vm'
+        
+        sandbox = vm.createContext()
+        sandbox.global = sandbox.root = sandbox.GLOBAL = sandbox
+
+        sandbox.__filename = 'eval'
+        sandbox.__dirname  = slash.dir sandbox.__filename
+        
+        # define module/require only if they chose not to specify their own
+        unless sandbox != global or sandbox.module or sandbox.require
+            Module = require 'module'
+            sandbox.module  = _module  = new Module 'eval'
+            sandbox.require = _require = (path) ->  Module._load path, _module, true
+            _module.filename = sandbox.__filename
+            for r in Object.getOwnPropertyNames require 
+                if r not in ['paths' 'arguments' 'caller']
+                    _require[r] = require[r]
+            # use the same hack node currently uses for their own REPL
+            _require.paths = _module.paths = Module._nodeModulePaths process.cwd()
+            _require.resolve = (request) -> Module._resolveFilename request, _module
+                
+        js = @compile text
+        
+        try
+            sandbox.console = console
+            vm.runInContext js, sandbox
+        catch err
+            error err, text
+            throw err
+
+# 00     00   0000000   000  000   000
+# 000   000  000   000  000  0000  000
+# 000000000  000000000  000  000 0 000
+# 000 0 000  000   000  000  000  0000
+# 000   000  000   000  000  000   000
+
+if not module.parent or module.parent.path.endsWith '/kode/bin'
+
+    args = karg """
+        kode option
+            files       . **
+            eval        . ? evaluate a string and print the result
+            compile     . ? compile a string and print the result
+            outdir      . ? output directory for transpiled files
+            map         . ? generate inline source maps             . = true
+            js          . ? print js code                           . = false
+            bare        . ? no top-level function wrapper           . = false
+            tokens      . ? print tokens                            . = false  . - T
+            block       . ? print block tree                        . = false  . - B
+            parse       . ? print parse tree                        . = false  . - P
+            fragments   . ? print fragments                         . = false  . - F
+            debug       . ? log debug                               . = false  . - D
+            raw         . ? log raw                                 . = false  . - R
+            verbose     . ? log more                                . = false
+
+        version  #{pkg.version}
+        """
+
+    kode = new Kode args
+    kode.cli()
+    
+module.exports = Kode
+

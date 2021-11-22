@@ -1,0 +1,5 @@
+// koffee 1.20.0
+a('1', 2, 3.4, true, [null, void 0]);
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGVzdC5qcyIsInNvdXJjZVJvb3QiOiIuIiwic291cmNlcyI6WyJ0ZXN0LmNvZmZlZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUEsQ0FBQSxDQUNJLEdBREosRUFFSSxDQUZKLEVBR0ksR0FISixFQUlJLElBSkosRUFLSSxDQUNJLElBREosRUFFSSxNQUZKLENBTEoiLCJzb3VyY2VzQ29udGVudCI6WyJhKFxuICAgICcxJ1xuICAgIDJcbiAgICAzLjRcbiAgICB0cnVlXG4gICAgW1xuICAgICAgICBudWxsXG4gICAgICAgIHVuZGVmaW5lZFxuICAgIF1cbikiXX0=
+//# sourceURL=test.coffee
