@@ -1,12 +1,13 @@
 ![banner](./bin/banner.png)
 
-**kode** is highly inspired by [CoffeeScript](http://coffeescript.org).
-It tries to be mostly compatible with it while adding a few enhancements.
+**kode** is a programming language that compiles to JavaScript.
+
+It is highly inspired by [CoffeeScript](http://coffeescript.org) and
+*tries* to be compatible with it while adding a few enhancements.
 
 Right now (end of 2021) it is a work in progress and not yet functional.
 
-For anyone familiar with CoffeeScript, here comes a list of features i plan
-to take over from my first CoffeeScript clone [koffee](http://github.com/monsterkodi/koffee):
+Here is a list of features I plan to take over from my first CoffeeScript clone [koffee](http://github.com/monsterkodi/koffee):
 
 ## Constructor shortcut
 
@@ -93,7 +94,7 @@ a =   b:1 c:2 d:3
 a =   b:[ c:2 'd' 3 ]
 a = [ [1 2] [d:3] ]
 
-log 'a:' a , 'd:' 3             # some commas make still sense :-)
+log 'a:' a , 'd:' 3             # some commas still make sense :-)
 
 describe 'something' ->
     it 'should' ->
@@ -102,7 +103,7 @@ on 'event' ->
 on 'event' @myCallback
 ```
 
-### Macros
+### Debug and profiling support
 
 ```coffeescript
                                # log file position and object
@@ -126,12 +127,14 @@ f()                            # -> a 824μs
 While I tried to keep 'koffee' backwards compatible with CoffeeScript v1,
 I don't intend to do the same with 'kode' (but converting coffee to kode shouldn't be too painful).
 
-Since I will most likely be the only person using it, it's probably wise to ditch the stuff I don't need:
+## Future plans
+
+Since I will most likely be the only person using *kode*, it's probably wise to ditch the stuff I don't need:
 
 - literal coffeescript / doc macro
 - *cake* / *kake*
 - REPL
-▸ unless, until, is, or= ...
+- unless, until, is, or= ...
 - wrapper code for browser packaging?
 - macros in general?
 
@@ -141,7 +144,7 @@ Just in case I manage to get it to work, this is what I would like to add instea
 - 'native' dbg, assert, profile, start/end (instead of macros)
 - option to use both: new (class) and old school (function) style classes
 - empty, valid keywords
-▸ keyword to merge source files
-▸ await?
+- keyword to merge source files
+- await?
 
 

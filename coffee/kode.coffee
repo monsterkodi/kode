@@ -22,13 +22,13 @@ class Kode
     @: (@args) ->
 
         @args ?= {}
-        
+
         if @args.verbose then @args.debug = @args.block = @args.tokens = @args.parse = true
-        
+
         Lexer     = require './lexer'
         Parser    = require './parser'
         Renderer  = require './renderer'
-        
+
         @lexer    = new Lexer
         @parser   = new Parser   @args
         @renderer = new Renderer @
@@ -42,7 +42,7 @@ class Kode
     cli: ->
 
         # if @args.debug then print.noon 'args' @args
-        
+
         if @args.compile
             log @compile @args.compile
             return
@@ -81,7 +81,7 @@ class Kode
     compile: (text) ->
 
         return '' if empty kstr.strip text
-        
+
         ast = @ast text
 
         if @args.parse then print.ast 'ast' ast
@@ -91,9 +91,9 @@ class Kode
         print.code 'js' js if @args.js or @args.verbose or @args.debug
 
         js
-        
+
     ast: (text) ->
-        
+
         text += '\n' if not text[-1] == '\n'
 
         print.code 'coffee' text, 'coffee' if @args.verbose or @args.debug
@@ -109,40 +109,40 @@ class Kode
         if @args.block then print.block 'block' block
 
         @parser.parse block
-        
-    # 00000000  000   000   0000000   000      
-    # 000       000   000  000   000  000      
-    # 0000000    000 000   000000000  000      
-    # 000          000     000   000  000      
-    # 00000000      0      000   000  0000000  
-    
+
+    # 00000000  000   000   0000000   000
+    # 000       000   000  000   000  000
+    # 0000000    000 000   000000000  000
+    # 000          000     000   000  000
+    # 00000000      0      000   000  0000000
+
     eval: (text) ->
-        
+
         return if empty text
-        
+
         vm = require 'vm'
-        
+
         sandbox = vm.createContext()
         sandbox.global = sandbox.root = sandbox.GLOBAL = sandbox
 
         sandbox.__filename = 'eval'
         sandbox.__dirname  = slash.dir sandbox.__filename
-        
+
         # define module/require only if they chose not to specify their own
         unless sandbox != global or sandbox.module or sandbox.require
             Module = require 'module'
             sandbox.module  = _module  = new Module 'eval'
             sandbox.require = _require = (path) ->  Module._load path, _module, true
             _module.filename = sandbox.__filename
-            for r in Object.getOwnPropertyNames require 
+            for r in Object.getOwnPropertyNames require
                 if r not in ['paths' 'arguments' 'caller']
                     _require[r] = require[r]
             # use the same hack node currently uses for their own REPL
             _require.paths = _module.paths = Module._nodeModulePaths process.cwd()
             _require.resolve = (request) -> Module._resolveFilename request, _module
-                
+
         js = @compile text
-        
+
         try
             sandbox.console = console
             vm.runInContext js, sandbox
@@ -180,6 +180,6 @@ if not module.parent or module.parent.path.endsWith '/kode/bin'
 
     kode = new Kode args
     kode.cli()
-    
+
 module.exports = Kode
 
