@@ -46,9 +46,8 @@ Square brackets around ranges in for loops are optional.
 ## Console shortcuts
 
 ```coffeescript
-log 'hello'  # -> hello
-warn 'world' # -> world
-error '!'    # -> !
+log 'hello'       # -> hello
+error 'world!'    # -> world!
 ```
 
 Simple shortcuts for `log`, `warn` and `error` methods of `console`.
@@ -66,10 +65,10 @@ Coffeescript has a very nice way of initializing arrays:
 
 ```coffeescript
 a = [
-   1
-   2
-   3
-]
+        1
+        2
+        3
+    ]
 ```
 
 If you decide to join these into a single line, you have a problem: 
@@ -79,20 +78,19 @@ The same goes for objects that span over multiple lines.
 In **kode**, you don't need to insert commata after number or string literals and POD structures.
 Those are all valid expressions:
 
-```
+```coffeescript
 a = [ 1 2 3 ]
 a = { b:1 c:2 d:3 }
 a =   b:1 c:2 d:3
 a =   b:[ c:2 'd' 3 ]
 a = [ [1 2] [d:3] ]
 
-log 'a:' a , 'd:' 3             # some commas still make sense :-)
-
 describe 'something' ->
     it 'should' ->
 
-on 'event' ->
 on 'event' @myCallback
+
+log 'a:' a , 'd:' 3            # some commas still make sense :-)
 ```
 
 ### Debug and profiling support
@@ -121,27 +119,27 @@ I don't intend to do the same with **kode** (but converting coffee to kode shoul
 
 ## Future plans
 
-Since I will most likely be the only person using *kode*, it's probably wise to ditch the stuff I don't need:
+Since I will most likely be the only person using **kode**, it's probably wise to ditch the stuff I don't need:
 
-- literal coffeescript / ▸doc macro
-- *cake* / *kake*
 - REPL
-- `unless`, `until`, `is`, `or=` ...
-- `when` in loops
+- *cake* / *kake*
+- literal coffeescript / ▸doc macro
+- `unless`  `until`  `is`  `or=` ...
+- `when` outside of `switch`
+- **koffee** macros in general?
 - wrapper code for browser packaging?
-- koffee macros in general?
-- implicitly returning loop lists if last expression is a loop?
+- implicitly returning arrays if last expression is a loop?
 
 Just in case I manage to get it to work, this is what I would like to add instead:
 
 - native tests
 - keywords `empty` and `valid`
-- keyword to merge source files `include`?
-- native `dbg`, `assert`, `profile` instead of macros
+- `include` keyword to merge source files
+- native `dbg`  `assert`  `profile` instead of macros
 - `profile` in same scope
 - option to use both: new `class` and old school `function` style classes
 - optional square brackets in `(a for a in ...)`
 - `await`?
-- rendering to other language(s)???
+- rendering to another language?
 
 
