@@ -127,18 +127,21 @@ Since I will most likely be the only person using *kode*, it's probably wise to 
 - *cake* / *kake*
 - REPL
 - `unless`, `until`, `is`, `or=` ...
+- `when` in loops
 - wrapper code for browser packaging?
 - koffee macros in general?
 - implicitly returning loop lists if last expression is a loop?
 
 Just in case I manage to get it to work, this is what I would like to add instead:
 
-- native tests (similar to rust?)
-- native `dbg`, `assert`, `profile` instead of macros
-- option to use both: new `class` and old school `function` style classes
-- optional square brackets in `(a for a in ...)`
+- native tests
 - keywords `empty` and `valid`
 - keyword to merge source files `include`?
+- native `dbg`, `assert`, `profile` instead of macros
+- `profile` in same scope
+- option to use both: new `class` and old school `function` style classes
+- optional square brackets in `(a for a in ...)`
 - `await`?
+- rendering to other language(s)???
 
 

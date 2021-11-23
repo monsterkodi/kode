@@ -1,9 +1,10 @@
 
-# doesn't work yet, but could be an idea for a nice minimalistic test interface
+# doesn't work yet, but could be an idea for a nice super minimalistic test interface
 
 c = kode.compile
 
-▸        
+▸ 'object'  
+    
     c 'a:1'         ▸ "{a:1}"   
     c 'a:1 b:2'     ▸ "{a:1,b:2}"   
     c '{a:1 b:2}'   ▸ "{a:1,b:2}"   
