@@ -38,7 +38,7 @@ class Print
             if tok.text == '' then '\n'+indent 
             else if tok.text then tok.text 
             else if tok.tokens
-                '\n'+(indent=tok.indent)+(tok.tokens.map (t) -> toktext(t)).join ' '
+                '\n'+((kstr.lpad '' 20)+tok.indent)+(tok.tokens.map (t) -> toktext(t)).join ' '
             else
                 '???'
         log b6(kstr.lpad tok.line, 4), blue(kstr.lpad tok.col, 3), gray(kstr.pad tok.type, 10), bold yellow(indent + toktext tok)

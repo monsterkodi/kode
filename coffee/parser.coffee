@@ -328,9 +328,12 @@ class Parser extends Parse
     operation: (lhs, op, tokens) ->
 
         if tokens?[0]?.type == 'block'
-            tokens = tokens.shift().tokens
+            block = tokens.shift()
+            tokens = block.tokens
         
         rhs = @exp tokens if tokens
+        
+        print.tokens 'dangling operation block tokens!' block.tokens if block and not empty block.tokens
             
         if lhs?.token then lhs = lhs.token
         if rhs?.token then rhs = rhs.token

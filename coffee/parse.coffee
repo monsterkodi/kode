@@ -27,11 +27,12 @@ class Parse # the base class of Parser
 
         @stack = []
 
-        ast = @exps 'tl block' block.tokens
+        ast = []
+
+        while block.tokens.length
+            ast = ast.concat @exps 'tl block' block.tokens
 
         if @raw then print.noon 'raw ast' ast
-
-        print.tokens "#{block.tokens.length} remaining tokens:" block.tokens if block.tokens.length
 
         ast
 
@@ -47,23 +48,28 @@ class Parse # the base class of Parser
         
         return if empty tokens
 
+        es = []
+        
         if tokens[0].type == 'block'
 
             block = tokens.shift()
-            if tokens[0]?.type == 'nl' 
-                print.tokens 'swallow nl' tokens if @debug
-                tokens.shift()
+            
+            if tokens[0]?.type == 'nl' then tokens.shift()
 
-            return @exps 'exps block' block.tokens
-
-        es = []
+            while block.tokens.length
+                es = es.concat @exps 'exps block' block.tokens
+            
+            return es
 
         while tokens.length
             
             if @stack[-1] == rule and tokens[0].text == stop
+                
                 @verb "stack.end #{@stack[-1]} #{tokens[0].text}"
                 break
+                
             else if (@stack[-1] in ['if''switch']) and (tokens[0].text == 'else')
+                
                 @verb 'exps else break'
                 break
                 
@@ -85,11 +91,10 @@ class Parse # the base class of Parser
                 @verb 'exps continue...' 
                 continue
                 
-            if tokens[0].text == ';'
-                if @stack[-1] in ['call''{']
-                    @verb 'exps call break on ;'
-                    tokens.shift()
-                    break
+            if tokens[0].text == ';' and @stack[-1] in ['call''{']
+                @verb 'exps call break on ;'
+                tokens.shift()
+                break
                 
             if tokens[0].type == 'block' 
                 @verb 'exps break on block'
@@ -120,17 +125,22 @@ class Parse # the base class of Parser
 
         log Y5 w1 tok?.text if @debug
 
-        if      tok.type == 'block'     then return error "INTERNAL ERROR: unexpected block token in exp!"
-        else if tok.text == 'if'        then return @if     tok, tokens
-        else if tok.text == 'for'       then return @for    tok, tokens
-        else if tok.text == 'while'     then return @while  tok, tokens
-        else if tok.text == 'switch'    then return @switch tok, tokens
-        else if tok.text == 'when'      then return @when   tok, tokens
-        else if tok.text == 'class'     then return @class  tok, tokens
-        else if tok.text == 'return'    then return @return tok, tokens
-        else if tok.text in ['->' '=>'] then return @func   null, tok, tokens
-        else if tok.text in [',' ';']   then return @exp tokens # skip , or ;
-        else if tok.type == 'nl'        then return @exp tokens # skip nl
+        switch tok.type
+            when 'block'     then return error "INTERNAL ERROR: unexpected block token in exp!"
+            when 'nl'        then return @exp tokens # skip nl
+            when 'keyword'
+                switch tok.text 
+                    when 'if'        then return @if     tok, tokens
+                    when 'for'       then return @for    tok, tokens
+                    when 'while'     then return @while  tok, tokens
+                    when 'switch'    then return @switch tok, tokens
+                    when 'when'      then return @when   tok, tokens
+                    when 'class'     then return @class  tok, tokens
+                    when 'return'    then return @return tok, tokens
+            else
+                switch tok.text 
+                    when '->' '=>'   then return @func null, tok, tokens
+                    when ',' ';'     then return @exp tokens # skip , or ;
 
         @recexp token:tok, tokens
         
@@ -140,11 +150,7 @@ class Parse # the base class of Parser
 
             if not e then return error 'no e?' nxt
             
-            if e.col?
-                last = e.col+e.text?.length
-            else if e.close?.col?
-                last = e.close.col+e.close.text?.length
-            else if Object.values(e)[0]?.col?
+            if Object.values(e)[0]?.col?
                 last = Object.values(e)[0].col+Object.values(e)[0].text?.length
             else if Object.values(e)[0]?.close?.col?
                 last = Object.values(e)[0].close.col+Object.values(e)[0].close.text?.length
@@ -265,6 +271,11 @@ class Parse # the base class of Parser
 
         thn = @exps id, tokens, nl
         
+        if block and block.tokens.length
+            print.tokens 'dangling then tokens' tokens
+            
+        thn
+        
     #  0000000  000000000   0000000    0000000  000   000  
     # 000          000     000   000  000       000  000   
     # 0000000      000     000000000  000       0000000    
@@ -287,7 +298,5 @@ class Parse # the base class of Parser
 
         if @verbose
             console.log.apply console.log, arguments
-
-        
         
 module.exports = Parse

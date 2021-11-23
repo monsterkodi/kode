@@ -242,6 +242,13 @@ describe 'compile' ->
         .should.eql "d && e || f && g || h"
 
         kode.compile """
+            a = d and
+                e or f and
+                g or h
+            """
+        .should.eql "a = d && e || f && g || h"
+        
+        kode.compile """
             b = 1 <= a < c
             """
         .should.eql """
