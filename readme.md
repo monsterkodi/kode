@@ -27,7 +27,6 @@ class C
 
 ```coffeescript
 "abcde"[-2]  # -> 'd'
-('cde')[-3]  # -> 'c'
 [1,2,3][-2]  # -> 2
 ```
 
@@ -129,14 +128,16 @@ Since I will most likely be the only person using *kode*, it's probably wise to 
 - REPL
 - unless, until, is, or= ...
 - wrapper code for browser packaging?
-- macros in general?
+- koffee macros in general?
+- implicitly returning loop lists if last expression is a loop?
 
 Just in case I manage to get it to work, this is what I would like to add instead:
 
-- tests (similar to rust?)
+- 'native' tests (similar to rust?)
 - 'native' dbg, assert, profile, start/end (instead of macros)
 - option to use both: new (class) and old school (function) style classes
-- empty, valid keywords
+- optional square brackets in (a for a in ...)
+- keywords empty and valid
 - keyword to merge source files
 - await?
 
