@@ -1,4 +1,3 @@
 ignore
     coffee/.*\.noon
-    grammar\.noon
     test\/

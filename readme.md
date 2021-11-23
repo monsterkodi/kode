@@ -2,12 +2,11 @@
 
 **kode** is a programming language that transpiles to JavaScript.
 
-It is highly inspired by [CoffeeScript](http://coffeescript.org) and
-*tries* to be compatible with it while adding a few enhancements.
+It is highly inspired by and *tries* to be compatible with [CoffeeScript](http://coffeescript.org), while adding a few enhancements.
 
 Right now (end of 2021) it is a work in progress and not yet functional.
 
-Here is a list of features I plan to take over from my first CoffeeScript clone [koffee](http://github.com/monsterkodi/koffee):
+A list of features I plan to take over from my first CoffeeScript clone [koffee](http://github.com/monsterkodi/koffee):
 
 ## Constructor shortcut
 
@@ -115,7 +114,7 @@ f()                            # -> a 824μs
 ## Compatibility
 
 While **koffee** tried to be backwards compatible with CoffeeScript v1,
-I don't intend to do the same with **kode** (but converting coffee to kode shouldn't be too painful).
+I don't intend to do the same with **kode**, but converting coffee to kode shouldn't be too painful.
 
 ## Future plans
 
