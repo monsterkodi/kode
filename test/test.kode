@@ -1,37 +1,11 @@
-kode = require '.'
 
-▸ 'literals'
-    
-    kode.compile('a')           ▸== 'a'
-    kode.compile('1')           ▸== '1'
-    kode.compile('2.2')         ▸== '2.2'
-    kode.compile('""')          ▸== '""'
-    kode.compile("''")          ▸== "''"
-    kode.compile('[]')          ▸== '[]'
-    kode.compile('{}')          ▸== '{}'
-    kode.compile('true')        ▸== 'true'
-    kode.compile('false')       ▸== 'false'        
-    kode.compile('yes')         ▸== 'true'
-    kode.compile('no')          ▸== 'false'        
-    kode.compile('Infinity')    ▸== 'Infinity'
-    kode.compile('NaN')         ▸== 'NaN'
-    kode.compile('null')        ▸== 'null'
-    kode.compile('undefined')   ▸== 'undefined'
-    
-▸ 'object'
-        
-    kode.compile('a:1')         ▸== "{a:1}"   
-    kode.compile('{a:1}')       ▸== "{a:1}"   
-    kode.compile('a:1 b:2')     ▸== "{a:1,b:2}"   
-    kode.compile('{a:1 b:2}')   ▸== "{a:1,b:2}"   
-    kode.compile('a:b:c')       ▸== "{a:{b:c}}"   
+# doesn't work yet, but could be an idea for a nice minimalistic test interface
+
+c = kode.compile
+
+▸        
+    c 'a:1'         ▸ "{a:1}"   
+    c 'a:1 b:2'     ▸ "{a:1,b:2}"   
+    c '{a:1 b:2}'   ▸ "{a:1,b:2}"   
+    c 'a:b:c'       ▸ "{a:{b:c}}"   
                     
-▸ 'index'
-        
-    kode.compile('a[1]')        ▸== 'a[1]'
-    kode.compile('a[1][2]')     ▸== 'a[1][2]'
-    kode.compile('a[1][2]')     ▸== 'a[1][2]'
-    kode.compile('[1,2][1]')    ▸== '[1,2][1]'
-    kode.compile("{a:1}['a']")  ▸== "{a:1}['a']"
-        
-        
