@@ -32,7 +32,7 @@ class C
 
 `v[-n]` is a shortcut for `v[-n..-n][0]` for number literals `n`
 
-## for x in ...
+## for ...
 
 ```coffeescript
 
@@ -116,8 +116,8 @@ f()                            # -> a 824μs
 
 ## Compatibility
 
-While I tried to keep 'koffee' backwards compatible with CoffeeScript v1,
-I don't intend to do the same with 'kode' (but converting coffee to kode shouldn't be too painful).
+While **koffee** tried to be backwards compatible with CoffeeScript v1,
+I don't intend to do the same with **kode** (but converting coffee to kode shouldn't be too painful).
 
 ## Future plans
 
@@ -126,7 +126,7 @@ Since I will most likely be the only person using *kode*, it's probably wise to 
 - literal coffeescript / ▸doc macro
 - *cake* / *kake*
 - REPL
-- unless, until, is, or= ...
+- `unless`, `until`, `is`, `or=` ...
 - wrapper code for browser packaging?
 - koffee macros in general?
 - implicitly returning loop lists if last expression is a loop?
@@ -134,11 +134,11 @@ Since I will most likely be the only person using *kode*, it's probably wise to 
 Just in case I manage to get it to work, this is what I would like to add instead:
 
 - native tests (similar to rust?)
-- native `dbg`, `assert`, `profile`, `start`/`end` (instead of macros)
-- option to use both: new (`class`) and old school (`function`) style classes
+- native `dbg`, `assert`, `profile` instead of macros
+- option to use both: new `class` and old school `function` style classes
 - optional square brackets in `(a for a in ...)`
 - keywords `empty` and `valid`
-- keyword to merge source files (`include`?)
+- keyword to merge source files `include`?
 - `await`?
 
 
