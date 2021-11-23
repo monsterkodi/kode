@@ -382,6 +382,23 @@ describe 'compile' ->
         kode.compile('log(++b)')        .should.eql 'console.log(++b)'
         kode.compile('log(++{b:1}.b)')  .should.eql 'console.log(++{b:1}.b)'
 
+    # 000   000  000   000  000      000       0000000  000   000  00000000   0000000  000   000  
+    # 0000  000  000   000  000      000      000       000   000  000       000       000  000   
+    # 000 0 000  000   000  000      000      000       000000000  0000000   000       0000000    
+    # 000  0000  000   000  000      000      000       000   000  000       000       000  000   
+    # 000   000   0000000   0000000  0000000   0000000  000   000  00000000   0000000  000   000  
+    
+    it 'nullcheck' ->
+        
+        # kode.compile('a.b?.c.d?.e == 2') .should.eql """
+            # (a.b != null ? (a.b.c.d != null ? a.b.c.d.e : null) : null) === 2
+            # """
+            
+        # if (function(r){return r != null ? function(r){return r != null ? (r.e) : null}(r.c().d) : null}(a().b) === 2) {
+            # console.log('YES');
+        # }
+        # console.log(r)
+        
     # 00000000    0000000   00000000   00000000  000   000   0000000
     # 000   000  000   000  000   000  000       0000  000  000
     # 00000000   000000000  0000000    0000000   000 0 000  0000000
@@ -717,6 +734,9 @@ describe 'compile' ->
 
         kode.compile('a[0..1]')       .should.eql 'a.slice(0, 1+1)'
         kode.compile('a[0...1]')      .should.eql 'a.slice(0, 1)'
+        kode.compile('a[-1]')         .should.eql 'a.slice(-1)[0]'
+        kode.compile('a[-2]')         .should.eql 'a.slice(-2,-1)[0]'
+        kode.compile('a[-100]')       .should.eql 'a.slice(-100,-99)[0]'
 
     # 00000000    0000000   000   000   0000000   00000000
     # 000   000  000   000  0000  000  000        000
@@ -732,6 +752,10 @@ describe 'compile' ->
 
         kode.compile('[1..100]').should.eql """
             (function() { var r = []; for (var i = 1; i <= 100; i++){ r.push(i); } return r; }).apply(this)
+            """
+
+        kode.compile('[1...100]').should.eql """
+            (function() { var r = []; for (var i = 1; i < 100; i++){ r.push(i); } return r; }).apply(this)
             """
 
     #  0000000   0000000   000      000       0000000
@@ -829,6 +853,12 @@ describe 'compile' ->
             kstr = require('kstr')
         """
 
+    it 'in condition' ->
+        
+        kode.compile("a in l")        .should.eql "l.indexOf(a) >= 0"
+        kode.compile("a in 'xyz'")    .should.eql "'xyz'.indexOf(a) >= 0"
+        kode.compile("a in [1,2,3]")  .should.eql "[1,2,3].indexOf(a) >= 0"
+        
     # 000  00000000      000000000  000   000  00000000  000   000
     # 000  000              000     000   000  000       0000  000
     # 000  000000           000     000000000  0000000   000 0 000
@@ -922,6 +952,50 @@ describe 'compile' ->
             """
 
         kode.compile """
+            if 1
+                log 'YES'
+            else if no
+                false
+            else
+                log 'NO'
+            log 'end'
+            """
+        .should.eql """
+            if (1)
+            {
+                console.log('YES')
+            }
+            else if (false)
+            {
+                false
+            }
+            else
+            {
+                console.log('NO')
+            }
+            console.log('end')
+            """
+            
+        kode.compile """
+            if a in l
+                log 'YES'
+            else
+                log 'NO'
+            log 'END'
+            """
+        .should.eql """
+            if (l.indexOf(a) >= 0)
+            {
+                console.log('YES')
+            }
+            else
+            {
+                console.log('NO')
+            }
+            console.log('END')
+            """
+            
+        kode.compile """
             a = if 0 then if 1 then if 2 then 3 else if 4 then 5 else 6 else if 7 then 8 else 9 else if 10 then 11 else 12
             """
         .should.eql """
@@ -1005,6 +1079,23 @@ describe 'compile' ->
             console.log(a)
             """
 
+        kode.compile """
+            for a in [1,2,3] 
+                log '1' a
+                log '2' a
+            log '3' a
+            """
+        .should.eql """
+            var list = [1,2,3]
+            for (var i = 0; i < list.length; i++)
+            {
+                a = list[i]
+                console.log('1',a)
+                console.log('2',a)
+            }
+            console.log('3',a)
+            """
+            
     # 000   000  000   000  000  000      00000000
     # 000 0 000  000   000  000  000      000
     # 000000000  000000000  000  000      0000000

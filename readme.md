@@ -113,7 +113,7 @@ f()                            # -> a 824μs
 
 ## Compatibility
 
-While **koffee** tried to be backwards compatible with CoffeeScript v1,
+While **koffee** is backwards compatible with CoffeeScript v1,
 I don't intend to do the same with **kode**, but converting coffee to kode shouldn't be too painful.
 
 ## Future plans

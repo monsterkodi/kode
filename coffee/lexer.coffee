@@ -34,10 +34,10 @@ class Lexer
     ###
         converts text into a list of token objects
         token object:
-            type: string # any of the keys in lexer.noon
-            text: string # text of match
-            line: number # line number
-            col:  number # start index in line
+            type: string        # any of the keys in lexer.noon
+            text: string        # text of match
+            line: number        # line number
+            col:  number        # start index in line
     ###
 
     tokenize: (text) ->
@@ -113,10 +113,10 @@ class Lexer
         converts list of tokens into tree of blocks
         block:
             type:  'block'
-            tokens: array  # tokens of the block
-            indent: string # indentation string
-            line:   number # first line number
-            last:   number # last line number
+            tokens: array           # tokens of the block
+            indent: string          # indentation string
+            line:   number          # first line number
+            last:   number          # last line number
             col:    number
 
         ws tokens and empty lines are pruned from the tree

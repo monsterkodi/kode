@@ -31,14 +31,7 @@ class Parser extends Parse
 
         print.tokens 'then' tokens if @debug
 
-        if tokens[0]?.text == 'then'
-            tokens.shift()
-        else if tokens[0]?.type == 'block'
-            tokens = tokens.shift().tokens
-        else 
-            error 'parser.if: then or block expected!'
-
-        thn = @exps 'if then' tokens
+        thn = @then 'if then' tokens
 
         e = if:
                 exp:    exp
@@ -57,14 +50,7 @@ class Parser extends Parse
 
             print.tokens 'else if then' tokens if @debug
 
-            if tokens[0]?.text == 'then'
-                tokens.shift()
-            else if tokens[0]?.type == 'block'
-                tokens = tokens.shift().tokens
-            else 
-                error 'parser.if: then or block expected!'
-
-            thn = @exps 'elif then' tokens
+            thn = @then 'elif then' tokens
 
             e.if.elifs.push
                 elif:
@@ -109,14 +95,7 @@ class Parser extends Parse
         
         list = @exp tokens
 
-        if tokens[0]?.text == 'then'
-            tokens.shift()
-        else if tokens[0]?.type == 'block'
-            tokens = tokens.shift().tokens
-        else 
-            error 'parser.for: then or block expected!'
-
-        thn = @exps 'for then' tokens, 'nl'
+        thn = @then 'for then' tokens
         
         @pop 'for' 
 
@@ -142,19 +121,7 @@ class Parser extends Parse
 
         print.tokens 'while then|block' tokens if @verbose
         
-        if tokens[0]?.text == 'then'
-            nl = 'nl'
-            tokens.shift()
-        else if tokens[0]?.type == 'block'
-            nl = null
-            tokens = tokens.shift().tokens
-        else 
-            error 'parser.while: then or block expected!'
-        
-
-        print.tokens 'while thens' tokens if @verbose
-        
-        thn = @exps 'while then' tokens, nl
+        thn = @then 'while then' tokens
         
         @pop 'while'
         
@@ -234,15 +201,7 @@ class Parser extends Parse
         
         @verb 'when.then tokens[0]' tokens[0]
         
-        if tokens[0]?.text == 'then'
-            tokens.shift()
-        else if tokens[0]?.type == 'block'
-            tokens = tokens.shift().tokens
-        else
-            @pop 'when'
-            return error 'parser.when: then or block expected!'
-
-        thn = @exps 'when then' tokens
+        thn = @then 'when then' tokens
         
         @pop 'when'
         
@@ -326,7 +285,7 @@ class Parser extends Parse
     # 000       000   000  000      000
     #  0000000  000   000  0000000  0000000
 
-    call: (tok, tokens) ->
+    call: (tok, tokens, qmrk) ->
 
         @push 'call'
 
@@ -353,12 +312,13 @@ class Parser extends Parse
 
         @pop 'call'
         
-        call:
-            callee: tok
-            open:   open
-            args:   args
-            close:  close
-
+        e = call: callee: tok
+        e.call.open  = open
+        e.call.qmrk  = qmrk if qmrk
+        e.call.args  = args
+        e.call.close = close
+        e
+            
     #  0000000   00000000   00000000  00000000    0000000   000000000  000   0000000   000   000
     # 000   000  000   000  000       000   000  000   000     000     000  000   000  0000  000
     # 000   000  00000000   0000000   0000000    000000000     000     000  000   000  000 0 000
@@ -379,6 +339,51 @@ class Parser extends Parse
             lhs:        lhs
             operator:   op
             rhs:        rhs
+            
+    # 000  000   000   0000000   0000000   000   000  0000000    
+    # 000  0000  000  000       000   000  0000  000  000   000  
+    # 000  000 0 000  000       000   000  000 0 000  000   000  
+    # 000  000  0000  000       000   000  000  0000  000   000  
+    # 000  000   000   0000000   0000000   000   000  0000000    
+    
+    incond: (lhs, tokens) ->
+        
+        intok = tokens.shift()
+        
+        incond:
+            lhs: lhs
+            in:  intok
+            rhs: @exp tokens
+            
+    #  0000000   00000000   00000000    0000000   000   000
+    # 000   000  000   000  000   000  000   000   000 000
+    # 000000000  0000000    0000000    000000000    00000
+    # 000   000  000   000  000   000  000   000     000
+    # 000   000  000   000  000   000  000   000     000
+
+    array: (open, tokens) ->
+
+        if tokens[0]?.text == ']'
+            return array:
+                open:  open
+                items: []
+                close: tokens.shift()
+
+        @push '['
+
+        exps = @exps '[' tokens, ']' 
+
+        if tokens[0]?.text == ']'
+            close = tokens.shift()
+        else
+            error 'next token not a ]'
+
+        @pop '['
+
+        array:
+            open:  open
+            items: exps
+            close: close
 
     #  0000000  000      000   0000000  00000000  
     # 000       000      000  000       000       
@@ -401,36 +406,6 @@ class Parser extends Parse
             from: from
             dots: dots
             upto: upto
-
-    #  0000000   00000000   00000000    0000000   000   000
-    # 000   000  000   000  000   000  000   000   000 000
-    # 000000000  0000000    0000000    000000000    00000
-    # 000   000  000   000  000   000  000   000     000
-    # 000   000  000   000  000   000  000   000     000
-
-    array: (open, tokens) ->
-
-        if tokens[0]?.text == ']'
-            return array:
-                open:  open
-                exps:  []
-                close: tokens.shift()
-
-        @push '['
-
-        exps = @exps '[' tokens, ']' 
-
-        if tokens[0]?.text == ']'
-            close = tokens.shift()
-        else
-            error 'next token not a ]'
-
-        @pop '['
-
-        array:
-            open:  open
-            exps:  exps
-            close: close
 
     # 000  000   000  0000000    00000000  000   000
     # 000  0000  000  000   000  000        000 000
@@ -566,7 +541,7 @@ class Parser extends Parse
     # 000        000   000  000   000  000
     # 000        000   000   0000000   000
 
-    prop: (obj, tokens) ->
+    prop: (obj, tokens, qmrk) ->
 
         dot = tokens.shift()
         
@@ -576,32 +551,10 @@ class Parser extends Parse
 
         @pop '.'
 
-        prop:
-            obj:  obj
-            dot:  dot
-            prop: prop
-
-    # 00000000   000   000   0000000  000   000
-    # 000   000  000   000  000       000   000
-    # 00000000   000   000  0000000   000000000
-    # 000        000   000       000  000   000
-    # 000         0000000   0000000   000   000
-
-    push: (node) ->
-
-        print.stack @stack, node if @verbose
-        @stack.push node
-
-    pop: (n) ->
-        p = @stack.pop()
-        if p != n
-            error "unexpected pop!" p, n
-        if @verbose
-            print.stack @stack, p, (s) -> W1 w1 s
-
-    verb: ->
-
-        if @verbose
-            console.log.apply console.log, arguments
-
+        e = prop: obj: obj
+        e.prop.qmrk = qmrk if qmrk
+        e.prop.dot  = dot
+        e.prop.prop = prop
+        e
+            
 module.exports = Parser

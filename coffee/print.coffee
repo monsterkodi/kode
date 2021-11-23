@@ -25,17 +25,24 @@ class Print
 
     @tokens: (header, tokens) ->
             log R3 y5 "\n #{header}"
-            # log b6('line'), blue('col'), gray('type'), bold yellow('text')
             log b6(kstr.pad '' 80 ' ')
             for tok in tokens
-                indent = kstr.lpad '' tok.col
-                log red '◂' if tok.type == 'nl'
-                continue if tok.type in ['ws''nl']
-                toktext = (tok) -> if tok.text == '' then '\n'+indent else if tok.text then tok.text else '\n'+(indent=tok.indent)+(tok.tokens.map (t) -> toktext(t)).join ' '
-                text = toktext tok
-                log b6(kstr.lpad tok.line, 4), blue(kstr.lpad tok.col, 3), gray(kstr.pad tok.type, 10), bold yellow(indent + text)
-            # log b4(kstr.pad '' 80 ' ')
+                @token tok
 
+    @token: (tok) ->
+        
+        indent = kstr.lpad '' tok.col
+        log red '◂' if tok.type == 'nl'
+        return if tok.type in ['ws''nl']
+        toktext = (tok) -> 
+            if tok.text == '' then '\n'+indent 
+            else if tok.text then tok.text 
+            else if tok.tokens
+                '\n'+(indent=tok.indent)+(tok.tokens.map (t) -> toktext(t)).join ' '
+            else
+                '???'
+        log b6(kstr.lpad tok.line, 4), blue(kstr.lpad tok.col, 3), gray(kstr.pad tok.type, 10), bold yellow(indent + toktext tok)
+            
     #  0000000  000000000   0000000    0000000  000   000
     # 000          000     000   000  000       000  000
     # 0000000      000     000000000  000       0000000

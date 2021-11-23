@@ -120,10 +120,7 @@ class Parse # the base class of Parser
 
         log Y5 w1 tok?.text if @debug
 
-        if tok.type == 'block' 
-            log "DAGFUK! CLEAN UP YOUR MESSS!"
-            if tokens[0]?.type == 'nl' then tokens.shift()
-            return @exps 'exp block' tok.tokens
+        if      tok.type == 'block'     then return error "INTERNAL ERROR: unexpected block token in exp!"
         else if tok.text == 'if'        then return @if     tok, tokens
         else if tok.text == 'for'       then return @for    tok, tokens
         else if tok.text == 'while'     then return @while  tok, tokens
@@ -135,7 +132,10 @@ class Parse # the base class of Parser
         else if tok.text in [',' ';']   then return @exp tokens # skip , or ;
         else if tok.type == 'nl'        then return @exp tokens # skip nl
 
-        e = token:tok
+        @recexp token:tok, tokens
+        
+    recexp: (e, tokens) ->
+        
         while nxt = tokens[0]
 
             if not e then return error 'no e?' nxt
@@ -170,6 +170,9 @@ class Parse # the base class of Parser
             else if nxt.text == '[' and nxt.col == last and tokens[1]?.text != ']' and e.token?.text != '['
                 @verb 'exp is lhs of index' e
                 e = @index e, tokens
+            else if nxt.text == '?' and last == nxt.col and tokens[1]?.text == '.'
+                qmark = tokens.shift()
+                e = @prop e, tokens, qmark
             else if nxt.text == '.'
                 e = @prop e, tokens
                 break
@@ -180,6 +183,8 @@ class Parse # the base class of Parser
                 else
                     @verb 'exp is key of (implicit) object' e
                     e = @keyval e, tokens
+            else if nxt.type == 'keyword' and nxt.text == 'in' and @stack[-1] != 'for'
+                e = @incond e, tokens
             else if e.token
                 if e.token.text == '('
                     e = @parens e.token, tokens
@@ -219,7 +224,7 @@ class Parse # the base class of Parser
                 else
                     @verb 'no nxt match?' nxt, @stack
                     break
-            else
+            else # if e is not a token anymore
                 if nxt.text in ['++''--'] and last == nxt.col
                     e = @operation e, tokens.shift()                
                 else if nxt.type == 'dots' and @stack[-1] not in '.'
@@ -229,10 +234,60 @@ class Parse # the base class of Parser
                     @verb 'no nxt match?? e:' e
                     @verb 'no nxt match?? nxt:' nxt
                 break
+        
+        if empty @stack
+            # fix null checks
+            yes
                 
-        if @verbose
-            print.ast 'exp' e
-            log blue('exp'), e
+        print.ast "exp #{if empty(@stack) then 'DONE' else ''}" e if @verbose
+            
         e
+        
+    # 000000000  000   000  00000000  000   000 
+    #    000     000   000  000       0000  000 
+    #    000     000000000  0000000   000 0 000 
+    #    000     000   000  000       000  0000 
+    #    000     000   000  00000000  000   000 
+    
+    then: (id, tokens) ->
+        
+        if tokens[0]?.text == 'then'
+            tokens.shift()
+            nl = 'nl'
+        else if tokens[0]?.type == 'block'
+            block = tokens.shift()
+            if tokens[0]?.type == 'nl'
+                tokens.shift()
+            tokens = block.tokens
+            nl = null
+        else 
+            error "#{id}: then or block expected!"
+
+        thn = @exps id, tokens, nl
+        
+    #  0000000  000000000   0000000    0000000  000   000  
+    # 000          000     000   000  000       000  000   
+    # 0000000      000     000000000  000       0000000    
+    #      000     000     000   000  000       000  000   
+    # 0000000      000     000   000   0000000  000   000  
+
+    push: (node) ->
+
+        print.stack @stack, node if @verbose
+        @stack.push node
+
+    pop: (n) ->
+        p = @stack.pop()
+        if p != n
+            error "unexpected pop!" p, n
+        if @verbose
+            print.stack @stack, p, (s) -> W1 w1 s
+
+    verb: ->
+
+        if @verbose
+            console.log.apply console.log, arguments
+
+        
         
 module.exports = Parse

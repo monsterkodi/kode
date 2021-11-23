@@ -61,6 +61,7 @@ class Renderer
                 when 'class'     then @class v
                 when 'switch'    then @switch v
                 when 'when'      then @when v
+                when 'incond'    then @incond v
                 when 'token'     then @token v
                 when 'operation' then @operation v
                 when 'parens'    then @parens v
@@ -165,8 +166,6 @@ class Renderer
     
     mthd: (n) ->
 
-        # print.noon 'mthd' n if @verbose
-        
         if n.token?.type == 'comment'
             return @comment n.token
         
@@ -287,8 +286,11 @@ class Renderer
         gi = @indent ? ''
         @indent = gi+id
 
-        val = n.vals.token?.text ? n.vals[0].token?.text
+        val = n.vals.token?.text ? n.vals[0]?.token?.text
         list = @node n.list
+        if not list or list == 'undefined'
+            print.noon 'no list for' n.list
+            print.ast 'no list for' n.list
         listVar = 'list'    
         s = ''
         s += "var #{listVar} = #{list}\n"
@@ -391,7 +393,6 @@ class Renderer
         else if tok.type == 'keyword' and tok.text == 'no'
             'false'
         else
-            # log 'token' tok
             tok.text
 
     #  0000000   0000000   00     00  00     00  00000000  000   000  000000000
@@ -429,11 +430,47 @@ class Renderer
 
         @node(op.lhs) + sep + o + sep + kstr.lstrip @node(op.rhs)
 
+    # 000  000   000   0000000   0000000   000   000  0000000    
+    # 000  0000  000  000       000   000  0000  000  000   000  
+    # 000  000 0 000  000       000   000  000 0 000  000   000  
+    # 000  000  0000  000       000   000  000  0000  000   000  
+    # 000  000   000   0000000   0000000   000   000  0000000    
+    
+    incond: (p) ->
+        
+        "#{@node p.rhs}.indexOf(#{@node p.lhs}) >= 0"
+        
+    # 00000000    0000000   00000000   00000000  000   000   0000000  
+    # 000   000  000   000  000   000  000       0000  000  000       
+    # 00000000   000000000  0000000    0000000   000 0 000  0000000   
+    # 000        000   000  000   000  000       000  0000       000  
+    # 000        000   000  000   000  00000000  000   000  0000000   
+    
     parens: (p) -> "(#{@nodes p.exps})"
+    
+    #  0000000   0000000          000  00000000   0000000  000000000  
+    # 000   000  000   000        000  000       000          000     
+    # 000   000  0000000          000  0000000   000          000     
+    # 000   000  000   000  000   000  000       000          000     
+    #  0000000   0000000     0000000   00000000   0000000     000     
+    
     object: (p) -> "{#{@nodes p.keyvals, ','}}"
+    
+    # 000   000  00000000  000   000  000   000   0000000   000      
+    # 000  000   000        000 000   000   000  000   000  000      
+    # 0000000    0000000     00000     000 000   000000000  000      
+    # 000  000   000          000        000     000   000  000      
+    # 000   000  00000000     000         0      000   000  0000000  
+    
     keyval: (p) -> "#{@node(p.key)}:#{@node(p.val)}"
+    
+    # 00000000   00000000    0000000   00000000   
+    # 000   000  000   000  000   000  000   000  
+    # 00000000   0000000    000   000  00000000   
+    # 000        000   000  000   000  000        
+    # 000        000   000   0000000   000        
+    
     prop:   (p) -> "#{@node(p.obj)}.#{@node p.prop}"
-    slice:  (p) -> "TODO? #{@node(p.from)}#{p.dots}#{@node p.upto}"
         
     # 000  000   000  0000000    00000000  000   000  
     # 000  0000  000  000   000  000        000 000   
@@ -442,12 +479,22 @@ class Renderer
     # 000  000   000  0000000    00000000  000   000  
     
     index:  (p) -> 
+        
         if p.slidx.slice
             add = ''
             if p.slidx.slice.dots.text == '..'
                 add = '+1'
             "#{@node(p.idxee)}.slice(#{@node p.slidx.slice.from}, #{@node p.slidx.slice.upto}#{add})"
         else
+            if p.slidx.operation 
+                o = p.slidx.operation
+                if o.operator.text == '-' and not o.lhs and o.rhs?.type == 'num'
+                    ni = parseInt o.rhs.text
+                    if ni == 1
+                        return "#{@node(p.idxee)}.slice(-#{ni})[0]"
+                    else
+                        return "#{@node(p.idxee)}.slice(-#{ni},-#{ni-1})[0]"
+            
             "#{@node(p.idxee)}[#{@node p.slidx}]"
         
     #  0000000   00000000   00000000    0000000   000   000  
@@ -457,17 +504,31 @@ class Renderer
     # 000   000  000   000  000   000  000   000     000     
     
     array: (p) ->
-        
-        if p.exps[0]?.slice
-            if p.exps[0].slice.from.type == 'num' == p.exps[0].slice.upto.type
-                from = parseInt p.exps[0].slice.from.text
-                upto = parseInt p.exps[0].slice.upto.text
-                if p.exps[0].slice.dots.text == '...' then upto--
-                if upto-from <= 10
-                    return '['+((x for x in [from..upto]).join ',')+']'
-                else
-                    return "(function() { var r = []; for (var i = #{from}; i <= #{upto}; i++){ r.push(i); } return r; }).apply(this)"
-        else
-            "[#{@nodes p.exps, ','}]"
 
+        if p.items[0]?.slice
+            @slice p.items[0].slice
+        else
+            "[#{@nodes p.items, ','}]"
+
+    #  0000000  000      000   0000000  00000000  
+    # 000       000      000  000       000       
+    # 0000000   000      000  000       0000000   
+    #      000  000      000  000       000       
+    # 0000000   0000000  000   0000000  00000000  
+    
+    slice:  (p) -> 
+        
+        if p.from.type == 'num' == p.upto.type
+            from = parseInt p.from.text
+            upto = parseInt p.upto.text
+            if upto-from <= 10
+                if p.dots.text == '...' then upto--
+                '['+((x for x in [from..upto]).join ',')+']'
+            else
+                o = if p.dots.text == '...' then '<' else '<='
+                "(function() { var r = []; for (var i = #{from}; i #{o} #{upto}; i++){ r.push(i); } return r; }).apply(this)"
+        else 
+            o = if p.dots.text == '...' then '<' else '<='
+            "(function() { var r = []; for (var i = #{@node p.from}; i #{o} #{@node p.upto}; i++){ r.push(i); } return r; }).apply(this)"
+            
 module.exports = Renderer

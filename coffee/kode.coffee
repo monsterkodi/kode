@@ -166,11 +166,9 @@ if not module.parent or module.parent.path.endsWith '/kode/bin'
             outdir      . ? output directory for transpiled files
             map         . ? generate inline source maps             . = true
             js          . ? print js code                           . = false
-            bare        . ? no top-level function wrapper           . = false
             tokens      . ? print tokens                            . = false  . - T
             block       . ? print block tree                        . = false  . - B
             parse       . ? print parse tree                        . = false  . - P
-            fragments   . ? print fragments                         . = false  . - F
             debug       . ? log debug                               . = false  . - D
             raw         . ? log raw                                 . = false  . - R
             verbose     . ? log more                                . = false
