@@ -123,7 +123,7 @@ I don't intend to do the same with 'kode' (but converting coffee to kode shouldn
 
 Since I will most likely be the only person using *kode*, it's probably wise to ditch the stuff I don't need:
 
-- literal coffeescript / doc macro
+- literal coffeescript / ▸doc macro
 - *cake* / *kake*
 - REPL
 - unless, until, is, or= ...
@@ -133,12 +133,12 @@ Since I will most likely be the only person using *kode*, it's probably wise to 
 
 Just in case I manage to get it to work, this is what I would like to add instead:
 
-- 'native' tests (similar to rust?)
-- 'native' dbg, assert, profile, start/end (instead of macros)
-- option to use both: new (class) and old school (function) style classes
-- optional square brackets in (a for a in ...)
-- keywords empty and valid
-- keyword to merge source files
-- await?
+- native tests (similar to rust?)
+- native `dbg`, `assert`, `profile`, `start`/`end` (instead of macros)
+- option to use both: new (`class`) and old school (`function`) style classes
+- optional square brackets in `(a for a in ...)`
+- keywords `empty` and `valid`
+- keyword to merge source files (`include`?)
+- `await`?
 
 
