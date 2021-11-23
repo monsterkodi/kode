@@ -1,6 +1,6 @@
 ![banner](./bin/banner.png)
 
-**kode** is a programming language that compiles to JavaScript.
+**kode** is a programming language that transpiles to JavaScript.
 
 It is highly inspired by [CoffeeScript](http://coffeescript.org) and
 *tries* to be compatible with it while adding a few enhancements.
@@ -26,21 +26,14 @@ class C
 ## Negative indexing
 
 ```coffeescript
-s = "abcde"
-
-s[-1]        # -> 'e'
 "abcde"[-2]  # -> 'd'
 ('cde')[-3]  # -> 'c'
 [1,2,3][-2]  # -> 2
-
-a = -2
-s[a]         # -> undefined
 ```
 
-`v[-n]` is a shortcut for `v[-n..-n][0]` for number literals `n`.
-Passing variables with negative values still returns *undefined*.
+`v[-n]` is a shortcut for `v[-n..-n][0]` for number literals `n`
 
-## for ... in
+## for x in ...
 
 ```coffeescript
 
