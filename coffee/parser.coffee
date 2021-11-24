@@ -304,9 +304,9 @@ class Parser extends Parse
             else
                 args = @exps 'call' tokens, ')'
         else
-            print.tokens 'call block' tokens if @debug
+            print.tokens 'call args' tokens if @debug
             args = @block 'call' tokens
-            print.ast 'call block' args if @debug
+            print.ast 'call args' args if @debug
 
         if open and tokens[0]?.text == ')'
             close = tokens.shift()
@@ -388,6 +388,12 @@ class Parser extends Parse
         if tokens[0]?.text == ']' then close = tokens.shift() else close = text:']' type:'paren' line:-1 col:-1 
 
         @pop '['
+        
+        if tokens[0]?.type == 'block' and @stack[-1] != 'for'
+            error 'INDENTATION ERROR! block after array'
+            print.tokens 'tokens before splice' tokens
+            tokens.splice.apply tokens, [0 1].concat tokens[0].tokens
+            print.tokens 'tokens after splice' tokens
 
         array:
             open:  open

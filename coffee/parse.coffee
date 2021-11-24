@@ -26,6 +26,7 @@ class Parse # the base class of Parser
     parse: (block) -> # convert block tree to abstract syntax tree
 
         @stack = []
+        @sheap = []
 
         ast = []
 
@@ -47,41 +48,50 @@ class Parse # the base class of Parser
     exps: (rule, tokens, stop) ->
         
         return if empty tokens
+        
+        @sheapPush 'exps' rule
 
         es = []
                         
         while tokens.length
             
+            numTokens = tokens.length
+            
             b = switch @stack[-1]
             
                 when 'onearg'       then es.length
                 when 'if' 'switch'  then tokens[0].text == 'else'
-                when '['            then tokens[0].text == ']'  and tokens.shift()
+                when '['            then tokens[0].text == ']'  # and tokens.shift()
                 when 'call'         then tokens[0].text in '];' and tokens.shift()
-                when '{'            then tokens[0].text in '};' and tokens.shift()
-                when rule           then tokens[0].text == stop
+                when '{'            then tokens[0].text in '};' and tokens.shift() # i know, it's a pain, but we shouldn't shift } here!
+                                                                                   # why break on ; instead of bailing out with an error?
+                when rule           then tokens[0].text == stop                    
                 else false
 
-            break if b
+            if b
+                @verb 'exps break for stack top' @stack
+                break 
                     
             if tokens[0].type == 'block'
     
                 block = tokens.shift()
     
-                @verb "exps block:" block
+                @verb "exps block start" block
                     
-                while block.tokens.length
-                    es = es.concat @exps 'exps block' block.tokens
+                # while block.tokens.length
+                    # es = es.concat @exps 'exps block' block.tokens
+                    
+                es = es.concat @exps 'exps block' block.tokens                    
 
                 if tokens[0]?.type == 'nl' 
-                    @verb "exps shift nl" 
+                    @verb "exps block end shift nl" 
                     tokens.shift()
                     
                 if tokens[0]?.text == ','
-                    @verb "exps shift ,"
+                    @verb "exps block end shift ,"
                     tokens.shift()
                     
-                @verb 'exps block! continue...'
+                @verb 'exps block end ...continue...'
                 continue
                                             
             if tokens[0].type == 'block' 
@@ -101,35 +111,45 @@ class Parse # the base class of Parser
                 @verb 'exps nl stop:' stop, tokens[0], @stack
 
                 if @stack[-1] == 'if' and tokens[1]?.text != 'else'
-                    @verb 'exps ifbreak (shift nl ; and break)' 
+                    @verb 'exps nl in if (shift and break)' 
                     tokens.shift()
                     break
                     
                 if @stack[-1] == '[' and tokens[1]?.text == ']'
-                    @verb 'exps nl + array ends in current block'
+                    @verb 'exps nl in array (shift and break)'
                     tokens.shift()
                     break
                     
                 if stop
+                    @verb 'exps nl with stop' 
                     if @stack[-1] == 'call'
-                        @verb 'exps call.end (dont shift nl)'
+                        @verb "exps nl with stop in call (break, but don't shift nl)"
                     else
+                        @verb 'exps nl with stop (shift and break)' 
                         tokens.shift() 
-                    @verb 'exps break on nl ;' 
                     break 
-                    
-                tokens.shift()
+
+                @verb 'exps nl shift and ...'     
+                nl = tokens.shift()
                 
                 if tokens[0]?.text == '.' and tokens[1]?.type == 'var'
-                    log 'next line starts with .var!'
+                    log 'exps nl next line starts with .var!'
                     es.push @prop es.pop(), tokens
+                    
+                # log 'tokens[0].col' tokens[0].col
                 
-                @verb 'exps continue...' 
+                @verb 'exps nl continue...' 
                 continue
                 
             ex = @exp tokens
             es.push ex
+            
+            if numTokens == tokens.length
+                error 'exps no token consumed?'
+                break
 
+        @sheapPop 'exps' rule
+        
         es
 
     # 00000000  000   000  00000000
@@ -147,28 +167,42 @@ class Parse # the base class of Parser
         tok = tokens.shift()
 
         log Y5 w1 tok?.text if @debug
+        
+        # this assumes that the handling of lists of expressions is done in exps and
+        # silently skips over leading separating tokens like commatas, semicolons and nl.
 
         switch tok.type
-            when 'block'     then return error "INTERNAL ERROR: unexpected block token in exp!"
-            when 'nl'        then return @exp tokens # skip nl
+            when 'block'            then return error "INTERNAL ERROR: unexpected block token in exp!"
+            when 'nl'               then return @exp tokens # skip nl
             when 'keyword'
                 switch tok.text 
-                    when 'if'        then return @if     tok, tokens
-                    when 'for'       then return @for    tok, tokens
-                    when 'while'     then return @while  tok, tokens
-                    when 'switch'    then return @switch tok, tokens
-                    when 'when'      then return @when   tok, tokens
-                    when 'class'     then return @class  tok, tokens
-                    when 'return'    then return @return tok, tokens
+                    when 'if'       then return @if     tok, tokens
+                    when 'for'      then return @for    tok, tokens
+                    when 'while'    then return @while  tok, tokens
+                    when 'switch'   then return @switch tok, tokens
+                    when 'when'     then return @when   tok, tokens
+                    when 'class'    then return @class  tok, tokens
+                    when 'return'   then return @return tok, tokens
             else
                 switch tok.text 
-                    when '->' '=>'   then return @func null, tok, tokens
-                    when ';'         then return @exp tokens # skip ;
-                    when ','         then return @exp tokens # skip ,
-                                        
+                    when '->' '=>'  then return @func null, tok, tokens
+                    when ';'        then return @exp tokens # skip ;
+                    when ','        then return @exp tokens # skip ,
+
+        ###
+        here comes the hairy part :-)
+        
+        combine information about the rule stack, current and future tokens
+        to figure out when the expression ends
+        ###
+
+        @sheapPush 'exp' tok.text ? tok.type
+        
         e = token:tok
         
         while nxt = tokens[0]
+            
+            numTokens = tokens.length
 
             if not e then return error 'no e?' nxt
             
@@ -178,8 +212,7 @@ class Parse # the base class of Parser
                 last = Object.values(e)[0].close.col+Object.values(e)[0].close.text?.length
             else
                 last = -1
-                @verb 'parser no last? e:' e
-                
+                # @verb 'exp no last? e:' e
             # @verb 'exp last next' last, nxt.col
 
             if @stack[-1] == 'onearg' and nxt.type in ['op']
@@ -278,7 +311,7 @@ class Parse # the base class of Parser
                     e = @operation e, tokens.shift(), tokens
                     
                 else
-                    @verb 'no nxt match?' nxt, @stack
+                    print.tokens "exp no nxt match? break! stack:#{@stack} nxt:" [nxt] if @verbose
                     break                    
                     
             else # if e is not a token anymore
@@ -289,14 +322,21 @@ class Parse # the base class of Parser
                 else if @stack[-1] == 'call' and nxt.text == ']'
                     @verb 'exp call array end'
                     break
+                else if @stack[-1] == '[' and nxt.text == ']'
+                    @verb 'exp [ array end' nxt
+                    break
                 else
-                    print.ast "no nxt match?? #{@stack}" e if @verbose
-                    @verb 'no nxt match?? e:' e
-                    @verb 'no nxt match?? nxt:' nxt
+                    if @verbose
+                        print.ast "exp no nxt match?? stack:#{@stack} e:" e
+                        print.tokens "exp no nxt match?? nxt:" nxt
+                    break
+                    
+            if numTokens == tokens.length
+                error 'exp no token consumed?'
                 break
         
         if empty @stack
-            @verb 'exp empty stack'
+            # @verb 'exp empty stack'
             if nxt = tokens[0]
                 
                 @verb 'exp empty stack nxt' nxt
@@ -305,10 +345,12 @@ class Parse # the base class of Parser
                     @verb 'exp is last minute lhs of index' e
                     e = @index e, tokens
             
-            # fix null checks
+            # implement null checks here!
                 
         print.ast "exp #{if empty(@stack) then 'DONE' else ''}" e if @verbose
-            
+        
+        @sheapPop 'exp' tok.text ? tok.type
+
         e
         
     # 000000000  000   000  00000000  000   000 
@@ -361,6 +403,23 @@ class Parse # the base class of Parser
             print.tokens 'dangling block tokens' tokens
             
         exps
+        
+    #  0000000  000   000  00000000   0000000   00000000     
+    # 000       000   000  000       000   000  000   000    
+    # 0000000   000000000  0000000   000000000  00000000     
+    #      000  000   000  000       000   000  000          
+    # 0000000   000   000  00000000  000   000  000          
+    
+    sheapPush: (type, text) ->
+        
+        @sheap.push type:type, text:text
+        print.sheap @sheap if @verbose
+        
+    sheapPop: (m, t) ->
+        
+        popped = @sheap.pop()
+        if popped.text != t then error 'wrong pop?' popped.text, t
+        print.sheap @sheap, popped if @verbose
         
     #  0000000  000000000   0000000    0000000  000   000  
     # 000          000     000   000  000       000  000   

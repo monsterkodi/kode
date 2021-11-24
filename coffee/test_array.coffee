@@ -77,6 +77,9 @@ describe 'array' ->
         cmp '[[[] []]]'         '[[[],[]]]'
         cmp '[[[],[]]]'         '[[[],[]]]'
         cmp '[[[][]]]'          '[[[],[]]]'
+        
+        cmp '[[[1]], 1]'        '[[[1]],1]'
+        
         cmp "[['1'] , [2]]"     "[['1'],[2]]"
         cmp "['1' , a, true, false, null, undefined]" "['1',a,true,false,null,undefined]"
         cmp """['1' "2" 3 4.5 [] {} true false null undefined NaN Infinity yes no]""",
@@ -269,6 +272,7 @@ describe 'array' ->
             l = [[[[1,2]]]]
             """
 
+        log 1
         cmp """
             l = [[1
                   2]]
@@ -276,6 +280,7 @@ describe 'array' ->
             l = [[1,2]]
             """
 
+        log 2
         cmp """
             l = [[1
              2]]
@@ -283,6 +288,7 @@ describe 'array' ->
             l = [[1,2]]
             """
 
+        log 3
         cmp """
             l = [[1
                 2]

@@ -52,6 +52,19 @@ class Print
     @stack: (stack, node, color=W4) ->
 
         log W2(stack.join(' ') + ' ') + color node ? ''
+        
+    @sheap: (sheap, popped) ->
+        
+        s = B4 '   '
+        for r in sheap
+            if r.type == 'exps' 
+                s += B5 r.text + B4 ' '
+            else
+                s += Y4 black r.text + ' '
+        if popped
+            c = if popped.type == 'exps' then B1 else W1
+            s += black c(popped.text) + ' '
+        log s
 
     # 0000000    000       0000000    0000000  000   000
     # 000   000  000      000   000  000       000  000
