@@ -126,6 +126,25 @@ class Lexer
 
         newTokens
 
+    commatise: (tokens) ->
+        
+        newTokens = []
+
+        idx = 0
+        while idx < tokens.length
+            tok = tokens[idx]
+            if tok.type in ['num''single''double''triple'] or tok.text == '}'
+                if tokens[idx+1]?.type == 'ws' and tokens[idx+2]?.type in ['num''single''double''triple']
+                    newTokens.push tok
+                    newTokens.push type:'punct' text:',' col:tok.col, line:tok.line
+                    idx += 2
+                    continue
+
+            newTokens.push tok
+            idx += 1
+
+        newTokens
+        
     # 0000000    000       0000000    0000000  000   000  000  00000000  000   000
     # 000   000  000      000   000  000       000  000   000  000        000 000
     # 0000000    000      000   000  000       0000000    000  000000      00000
@@ -150,6 +169,7 @@ class Lexer
 
         tokens = @unslash   tokens
         tokens = @uncomment tokens
+        tokens = @commatise tokens
 
         blocks = []
 
@@ -184,7 +204,7 @@ class Lexer
 
                     else if nxt.text.length < block.indent.length
                         outdentTo nxt.text.length, nxt.line
-
+                        
                 else if nxt
                     if block.indent.length
                         outdentTo 0, nxt.line
@@ -196,5 +216,5 @@ class Lexer
             block.last = tok.line
 
         blocks[0]
-
+        
 module.exports = Lexer

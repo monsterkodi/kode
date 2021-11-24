@@ -63,7 +63,7 @@ class Parser extends Parse
 
             tokens.shift()
 
-            e.if.else = @exps 'else' tokens, 'nl'
+            e.if.else = @block 'else' tokens
             
         @pop 'if'
 
@@ -85,7 +85,8 @@ class Parser extends Parse
 
         print.tokens 'for' tokens if @debug
 
-        vals = @exp tokens
+        # vals = @exp tokens
+        vals = @exps 'for vals' tokens
 
         print.tokens 'inof' tokens if @debug
         
@@ -290,6 +291,11 @@ class Parser extends Parse
         @push 'call'
 
         print.tokens 'call.open' tokens if @debug
+
+        tok = tok.token if tok.token
+                
+        if tok.type == 'keyword' and tok.text == 'typeof'
+            @push 'typeof'
         
         if tokens[0].text == '('
             open = tokens.shift()
@@ -308,10 +314,11 @@ class Parser extends Parse
         if open and not close
             error 'expected )'
 
-        tok = tok.token if tok.token
-
         print.tokens 'call.close' tokens if @debug
 
+        if tok.type == 'keyword' and tok.text == 'typeof'
+            @pop 'typeof'
+        
         @pop 'call'
         
         e = call: callee: tok

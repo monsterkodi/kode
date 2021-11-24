@@ -52,6 +52,36 @@ class Parse # the base class of Parser
                         
         while tokens.length
             
+            b = switch @stack[-1]
+            
+                when 'typeof'       then es.length
+                when 'if' 'switch'  then tokens[0].text == 'else'
+                # when '['            then tokens[0].text == ']' and tokens.shift()
+                # when '{'            then tokens[0].text in '};' and tokens.shift()
+                when 'call'         then tokens[0].text == ';' and tokens.shift()
+                when rule           then tokens[0].text == stop
+                else false
+                    # @verb 'exps break for typeof'
+                    # break
+
+            break if b
+                    
+            if @stack[-1] == '[' and tokens[0].text == ']'
+                tokens.shift()
+                break
+
+            if @stack[-1] == '{' and tokens[0].text == '}'
+                tokens.shift()
+                break
+                
+            if @stack[-1] == '{' and tokens[0].text == ';'
+                tokens.shift()
+                break
+
+            # if @stack[-1] == 'call' and tokens[0].text == ';'
+                # tokens.shift()
+                # break
+                
             if tokens[0].type == 'block'
     
                 block = tokens.shift()
@@ -63,10 +93,7 @@ class Parse # the base class of Parser
 
                 if tokens[0]?.type == 'nl' 
                     @verb "exps shift nl" 
-                    tokens.shift()# WARNING! we have +------- an indentation constant here! that should be done differently
-                    if tokens[0]?.col < block.col - 4 or tokens[0]?.col == 0 or tokens[0]?.type == 'comment'
-                        @verb 'dedent!' block.col, tokens[0]?.col
-                        break
+                    tokens.shift()
                     
                 if tokens[0]?.text == ','
                     @verb "exps shift ,"
@@ -74,28 +101,21 @@ class Parse # the base class of Parser
                     
                 @verb 'exps block! continue...'
                 continue
-            
-            if @stack[-1] == rule and tokens[0].text == stop
-                
-                @verb "stack.end #{@stack[-1]} #{tokens[0].text}"
+                                            
+            if tokens[0].type == 'block' 
+                @verb 'exps break on block'
                 break
                 
-            if (@stack[-1] in ['if''switch']) and (tokens[0].text == 'else')
-                
-                @verb 'exps else break'
+            if tokens[0].text == ')'
+                @verb 'exps break on )'
                 break
                 
-            if @stack[-1] == '[' and tokens[0].text == ']'
-                @verb 'exps array ends in current block'
-                tokens.shift()
-                break
-
-            if @stack[-1] == '{' and tokens[0].text == '}'
-                @verb 'exps curly ends in current block'
-                tokens.shift()
+            if rule == 'for vals' and tokens[0].text in ['in''of']
+                @verb 'exps break on in|of'
                 break
                 
             if tokens[0].type == 'nl' 
+                
                 @verb 'exps nl stop:' stop, tokens[0], @stack
 
                 if @stack[-1] == 'if' and tokens[1]?.text != 'else'
@@ -115,23 +135,16 @@ class Parse # the base class of Parser
                         tokens.shift() 
                     @verb 'exps break on nl ;' 
                     break 
+                    
                 tokens.shift()
+                
+                if tokens[0]?.text == '.' and tokens[1]?.type == 'var'
+                    log 'next line starts with .var!'
+                    es.push @prop es.pop(), tokens
+                
                 @verb 'exps continue...' 
                 continue
                 
-            if tokens[0].text == ';' and @stack[-1] in ['call''{']
-                @verb 'exps call break on ;'
-                tokens.shift()
-                break
-                
-            if tokens[0].type == 'block' 
-                @verb 'exps break on block'
-                break
-                
-            if tokens[0].text == ')'
-                @verb 'exps break on )'
-                break
-
             ex = @exp tokens
             es.push ex
 
@@ -185,15 +198,26 @@ class Parse # the base class of Parser
                 last = -1
                 @verb 'parser no last? e:' e
                 
-            @verb 'exp last next' last, nxt.col
+            # @verb 'exp last next' last, nxt.col
 
-            if nxt.type == 'op' and nxt.text not in ['++' '--']
-                @verb 'exp is lhs of op' e
+            if @stack[-1] == 'typeof' and nxt.type in ['op']
+                @verb 'exp break for typeof'
+                break
+            
+            if nxt.type == 'op' and nxt.text not in ['++' '--' '+' '-'] and e.token?.text not in ['[' '(']
+                @verb 'exp is lhs of op' e, nxt
                 e = @operation e, tokens.shift(), tokens
-            else if nxt.type == 'func' and \
-                    e.token?.type not in ['num''single''double''triple'] and \
-                    e.token?.text not in '}]'
+                
+            else if nxt.type == 'op' and nxt.text in ['+' '-'] and e.token?.text not in ['[' '('] and \
+                    last < nxt.col and tokens[1]?.col > nxt.col+nxt.text.length
+                @verb 'exp is lhs of +-\s' e, nxt
+                e = @operation e, tokens.shift(), tokens
+            
+            else if nxt.type == 'func' and (e.parens or e.token and 
+                    e.token.type not in ['num''single''double''triple'] and 
+                    e.token.text not in '}]')
                 f = tokens.shift()
+                @verb 'exp func for e' e
                 e = @func e, f, tokens
             else if nxt.text == '('
                 if nxt.col == last
@@ -232,6 +256,7 @@ class Parse # the base class of Parser
                         tokens.shift()
                         error 'wrong lhs increment' e, nxt
                         return
+                    @verb 'lhs null operation'
                     e = @operation null, e.token, tokens
                     if e.operation.rhs?.operation?.operator?.text in ['++''--']
                         error 'left and right side increment'
@@ -244,27 +269,35 @@ class Parse # the base class of Parser
                     e = @operation e, tokens.shift() 
                 else if nxt.type == 'dots' and e.token.type in ['var' 'num']
                     e = @slice e, tokens
-                else if last < nxt.col and \
-                        nxt.text not in ')]},;:.' and \
-                        nxt.text not in ['then' 'else' 'break' 'continue' 'in' 'of'] and \
-                        nxt.type not in ['nl'] and \
-                        (nxt.type != 'op' or last < nxt.col) and \
-                        (e.token.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and \
-                        (e.token.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no']) and \
-                        (e.token.type != 'keyword' or (e.token.text in ['new' 'require'])) and \
-                        ((@stack[-1] not in ['if' 'for']) or nxt.line == e.token.line)
-                    @verb 'exp is lhs of implicit call! e' e, @stack[-1]
-                    @verb 'exp is lhs of implicit call! nxt' nxt
-                    e = @call e, tokens
                 else if @stack[-1] == '[' and nxt.text == ']'
                     @verb 'exp array end'
                     break
                 else if @stack[-1] == '{' and nxt.text == '}'
                     @verb 'exp curly end'
                     break
+                else if last < nxt.col and \
+                        nxt.text not in ')]},;:.' and \
+                        nxt.text not in ['then' 'else' 'break' 'continue' 'in' 'of'] and \
+                        nxt.type not in ['nl'] and \
+                        (e.token.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and \
+                        (e.token.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no']) and \
+                        (e.token.type != 'keyword' or (e.token.text in ['new' 'require' 'typeof'])) and \
+                        ((@stack[-1] not in ['if' 'for']) or nxt.line == e.token.line)
+                    @verb 'exp is lhs of implicit call! e' e, @stack[-1]
+                    @verb 'exp is lhs of implicit call! nxt' nxt
+                    e = @call e, tokens
+
+                else if nxt.type == 'op' and nxt.text in ['+' '-'] and e.token?.text not in ['[' '(']
+                    if last < nxt.col and tokens[1]?.col == nxt.col+nxt.text.length
+                        @verb 'exp op is unbalanced +- break...' e, nxt, @stack
+                        break
+                    @verb 'exp is lhs of op' e, nxt
+                    e = @operation e, tokens.shift(), tokens
+                    
                 else
                     @verb 'no nxt match?' nxt, @stack
-                    break
+                    break                    
+                    
             else # if e is not a token anymore
                 if nxt.text in ['++''--'] and last == nxt.col
                     e = @operation e, tokens.shift()                

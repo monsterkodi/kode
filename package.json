@@ -4,8 +4,8 @@
   "description": "programming language",
   "main": "js/kode.js",
   "scripts": {
-    "test": "mocha -c --require koffee/js/register ./coffee/test.coffee",
-    "watch": "mocha -w -c --require koffee/js/register ./coffee/test.coffee"
+    "test": "mocha -c --require koffee/js/register ./coffee/test*.coffee",
+    "watch": "mocha -w -c --require koffee/js/register ./coffee/test*.coffee"
   },
   "author": "monsterkodi",
   "license": "Unlicense",
