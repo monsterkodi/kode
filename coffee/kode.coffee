@@ -106,7 +106,7 @@ class Kode
         block = @lexer.blockify tokens
 
         if @args.raw   then print.noon 'raw block' block
-        if @args.block then print.block 'block' block
+        if @args.block then print.block 'tl block' block
 
         @parser.parse block
 

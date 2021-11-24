@@ -447,7 +447,7 @@ describe 'compile' ->
         kode.compile("""['1' "2" 3 4.5 [] {} true false null undefined NaN Infinity yes no]""").should.eql """['1',"2",3,4.5,[],{},true,false,null,undefined,NaN,Infinity,true,false]"""
 
     it 'array nl' ->
-        return
+
         kode.compile """
             [
                 1,2
@@ -506,6 +506,18 @@ describe 'compile' ->
         .should.eql """a = [[0,1],2]"""
 
         kode.compile """
+            [
+                b
+                    [
+                        0
+                        1
+                    ]
+                2
+            ]
+            """
+        .should.eql """[b([0,1]),2]"""
+        
+        kode.compile """
             a
                 [
                     b
@@ -531,7 +543,72 @@ describe 'compile' ->
                 return [1,2]
             }
             """
+            
+        kode.compile """
+            l = [
+                 1 2 3 'a'
+                 c: 
+                  d:3
+                  e:4
+                 f:
+                  'b'
+                 'c'
+                 l = 
+                    1
+                ]   
+            """
+        .should.eql """
+            l = [1,2,3,'a',{c:{d:3,e:4},f:'b','c',l = 1}]
+            """
 
+        kode.compile """
+            l = [ [ 
+             [
+               [
+                 1
+                 2
+                ]
+                  ]
+               ]
+                 ]
+            """
+        .should.eql """
+            l = [[[[1,2]]]]
+            """
+
+        kode.compile """
+            l = [[1
+                  2]]
+            """
+        .should.eql """
+            l = [[1,2]]
+            """
+
+        kode.compile """
+            l = [[1
+             2]]
+            """
+        .should.eql """
+            l = [[1,2]]
+            """
+
+        kode.compile """
+            l = [[1
+                2]
+                 ]
+            """
+        .should.eql """
+            l = [[1,2]]
+            """
+
+        kode.compile """
+            l = [[1 2]
+                ]
+            """
+        .should.eql """
+            l = [[1,2]]
+            """
+            
     # 00000000  000   000  000   000   0000000
     # 000       000   000  0000  000  000
     # 000000    000   000  000 0 000  000
@@ -655,7 +732,7 @@ describe 'compile' ->
         kode.compile('a:1')          .should.eql "{a:1}"
         kode.compile('{a:1}')        .should.eql "{a:1}"
         kode.compile('a:1 b:2')      .should.eql "{a:1,b:2}"
-        kode.compile('{a:1 b:2}')    .should.eql "{a:1,b:2}"
+        kode.compile('{a:3 b:4}')    .should.eql "{a:3,b:4}"
         kode.compile('a:b:c')        .should.eql "{a:{b:c}}"
         kode.compile('a:b:c,d:e:f')  .should.eql "{a:{b:c,d:{e:f}}}"
         kode.compile('a:b c')        .should.eql "{a:b(c)}"
@@ -722,7 +799,35 @@ describe 'compile' ->
             z = {a:1}
             console.log(i)
             """
+            
+        kode.compile """
+            a = [{
+                    a:1
+                    b:2
+                    c:3    
+                }{
+                    x:1
+                    y:2
+                    z:3
+                }]
+            """
+        .should.eql """
+            a = [{a:1,b:2,c:3},{x:1,y:2,z:3}]
+            """
 
+        kode.compile """
+            a = [ 
+                    a:4
+                    b:5
+                ,
+                    x:6
+                    y:7
+                ]
+            """
+        .should.eql """
+            a = [{a:4,b:5},{x:6,y:7}]
+            """
+            
     # 000  000   000  0000000    00000000  000   000
     # 000  0000  000  000   000  000        000 000
     # 000  000 0 000  000   000  0000000     00000
@@ -819,14 +924,14 @@ describe 'compile' ->
         kode.compile """
             a
                 b
-                    1
+                    3
             c
                 d
-                    2
+                    4
             """
         .should.eql """
-            a(b(1))
-            c(d(2))
+            a(b(3))
+            c(d(4))
             """
 
         kode.compile """

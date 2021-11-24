@@ -298,7 +298,8 @@ class Parser extends Parse
             else
                 args = @exps 'call' tokens, ')'
         else
-            args = @exps 'call' tokens, 'nl'
+            # args = @exps 'call' tokens, 'nl'
+            args = @block 'call' tokens
 
         if open and tokens[0]?.text == ')'
             close = tokens.shift()
@@ -374,18 +375,15 @@ class Parser extends Parse
 
         @push '['
 
-        exps = @exps '[' tokens, ']' 
+        items = @exps '[' tokens, ']'
 
-        if tokens[0]?.text == ']'
-            close = tokens.shift()
-        else
-            error 'next token not a ]'
+        if tokens[0]?.text == ']' then close = tokens.shift() else close = text:']'
 
         @pop '['
 
         array:
             open:  open
-            items: exps
+            items: items
             close: close
 
     #  0000000  000      000   0000000  00000000  
@@ -503,15 +501,20 @@ class Parser extends Parse
 
         @push '{'
 
-        keyCol = key.token.col
+        print.tokens 'object val' tokens if @debug
         
         exps = [@keyval key, tokens]
         
-        if tokens[0]? and (tokens[0].col == keyCol or tokens[0].type != 'nl')
+        print.tokens 'object continue...?' tokens if @debug
+
+        tokens.shift() if tokens[0]?.type == 'nl'
         
+        if tokens[0]? and (tokens[0].col == key.token.col or tokens[0].line == key.token.line)
+            @verb 'continue object...' if @debug
             if tokens[0].line == key.token.line then stop='nl' else stop=null
             exps = exps.concat @exps 'object' tokens, stop
 
+        print.tokens 'object pop' tokens if @debug
         @pop '{'
 
         object:
@@ -529,7 +532,12 @@ class Parser extends Parse
 
         @push ':'
 
-        value = @exp tokens
+        if tokens[0]?.type == 'block'
+            block = tokens.shift()
+            tokens.shift() if tokens[0]?.type == 'nl'
+            value = @exps 'keyval value' block.tokens
+        else 
+            value = @exp tokens
 
         @pop ':'
 
