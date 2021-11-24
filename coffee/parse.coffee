@@ -54,34 +54,16 @@ class Parse # the base class of Parser
             
             b = switch @stack[-1]
             
-                when 'typeof'       then es.length
+                when 'onearg'       then es.length
                 when 'if' 'switch'  then tokens[0].text == 'else'
-                # when '['            then tokens[0].text == ']' and tokens.shift()
-                # when '{'            then tokens[0].text in '};' and tokens.shift()
-                when 'call'         then tokens[0].text == ';' and tokens.shift()
+                when '['            then tokens[0].text == ']'  and tokens.shift()
+                when 'call'         then tokens[0].text in '];' and tokens.shift()
+                when '{'            then tokens[0].text in '};' and tokens.shift()
                 when rule           then tokens[0].text == stop
                 else false
-                    # @verb 'exps break for typeof'
-                    # break
 
             break if b
                     
-            if @stack[-1] == '[' and tokens[0].text == ']'
-                tokens.shift()
-                break
-
-            if @stack[-1] == '{' and tokens[0].text == '}'
-                tokens.shift()
-                break
-                
-            if @stack[-1] == '{' and tokens[0].text == ';'
-                tokens.shift()
-                break
-
-            # if @stack[-1] == 'call' and tokens[0].text == ';'
-                # tokens.shift()
-                # break
-                
             if tokens[0].type == 'block'
     
                 block = tokens.shift()
@@ -183,7 +165,7 @@ class Parse # the base class of Parser
                     when '->' '=>'   then return @func null, tok, tokens
                     when ';'         then return @exp tokens # skip ;
                     when ','         then return @exp tokens # skip ,
-
+                                        
         e = token:tok
         
         while nxt = tokens[0]
@@ -200,11 +182,11 @@ class Parse # the base class of Parser
                 
             # @verb 'exp last next' last, nxt.col
 
-            if @stack[-1] == 'typeof' and nxt.type in ['op']
-                @verb 'exp break for typeof'
+            if @stack[-1] == 'onearg' and nxt.type in ['op']
+                @verb 'exp break for onearg'
                 break
             
-            if nxt.type == 'op' and nxt.text not in ['++' '--' '+' '-'] and e.token?.text not in ['[' '(']
+            if nxt.type == 'op' and nxt.text not in ['++' '--' '+' '-'] and e.token?.text not in ['[' '('] and 'onearg' not in @stack
                 @verb 'exp is lhs of op' e, nxt
                 e = @operation e, tokens.shift(), tokens
                 
@@ -281,10 +263,11 @@ class Parse # the base class of Parser
                         nxt.type not in ['nl'] and \
                         (e.token.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and \
                         (e.token.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no']) and \
-                        (e.token.type != 'keyword' or (e.token.text in ['new' 'require' 'typeof'])) and \
-                        ((@stack[-1] not in ['if' 'for']) or nxt.line == e.token.line)
+                        (e.token.type != 'keyword' or (e.token.text in ['new' 'require' 'typeof' 'delete'])) and \
+                        ((@stack[-1] not in ['if' 'for']) or nxt.line == e.token.line) and \
+                        'onearg' not in @stack
                     @verb 'exp is lhs of implicit call! e' e, @stack[-1]
-                    @verb 'exp is lhs of implicit call! nxt' nxt
+                    @verb '    is lhs of implicit call! nxt' nxt
                     e = @call e, tokens
 
                 else if nxt.type == 'op' and nxt.text in ['+' '-'] and e.token?.text not in ['[' '(']
@@ -303,6 +286,9 @@ class Parse # the base class of Parser
                     e = @operation e, tokens.shift()                
                 else if nxt.type == 'dots' and @stack[-1] not in '.'
                     e = @slice e, tokens
+                else if @stack[-1] == 'call' and nxt.text == ']'
+                    @verb 'exp call array end'
+                    break
                 else
                     print.ast "no nxt match?? #{@stack}" e if @verbose
                     @verb 'no nxt match?? e:' e
@@ -310,8 +296,16 @@ class Parse # the base class of Parser
                 break
         
         if empty @stack
+            @verb 'exp empty stack'
+            if nxt = tokens[0]
+                
+                @verb 'exp empty stack nxt' nxt
+            
+                if nxt.text == '[' and tokens[1]?.text != ']'
+                    @verb 'exp is last minute lhs of index' e
+                    e = @index e, tokens
+            
             # fix null checks
-            yes
                 
         print.ast "exp #{if empty(@stack) then 'DONE' else ''}" e if @verbose
             

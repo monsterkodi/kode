@@ -294,8 +294,8 @@ class Parser extends Parse
 
         tok = tok.token if tok.token
                 
-        if tok.type == 'keyword' and tok.text == 'typeof'
-            @push 'typeof'
+        if tok.type == 'keyword' and tok.text in ['typeof' 'delete']
+            @push 'onearg'
         
         if tokens[0].text == '('
             open = tokens.shift()
@@ -316,8 +316,8 @@ class Parser extends Parse
 
         print.tokens 'call.close' tokens if @debug
 
-        if tok.type == 'keyword' and tok.text == 'typeof'
-            @pop 'typeof'
+        if tok.type == 'keyword' and tok.text in ['typeof' 'delete']
+            @pop 'onearg'
         
         @pop 'call'
         
@@ -385,7 +385,7 @@ class Parser extends Parse
 
         items = @exps '[' tokens, ']'
 
-        if tokens[0]?.text == ']' then close = tokens.shift() else close = text:']' type:'paren'
+        if tokens[0]?.text == ']' then close = tokens.shift() else close = text:']' type:'paren' line:-1 col:-1 
 
         @pop '['
 
@@ -426,6 +426,8 @@ class Parser extends Parse
 
         @push 'idx'
 
+        print.tokens 'index.open' tokens if @debug
+                
         open = tokens.shift()
 
         slice = @exp tokens
@@ -487,7 +489,7 @@ class Parser extends Parse
 
         exps = @exps '{' tokens, '}'
 
-        if tokens[0]?.text == '}' then close = tokens.shift() else close = text:'}' type:'paren'
+        if tokens[0]?.text == '}' then close = tokens.shift() else close = text:'}' type:'paren' line:-1 col:-1 
 
         @pop '{'
 
@@ -515,9 +517,10 @@ class Parser extends Parse
         tokens.shift() if tokens[0]?.type == 'nl'
         
         if tokens[0]? and (tokens[0].col == key.token.col or tokens[0].line == key.token.line)
-            @verb 'continue object...' if @debug
-            if tokens[0].line == key.token.line then stop='nl' else stop=null
-            exps = exps.concat @exps 'object' tokens, stop
+            if tokens[0].text not in '])'
+                @verb 'continue object...' if @debug
+                if tokens[0].line == key.token.line then stop='nl' else stop=null
+                exps = exps.concat @exps 'object' tokens, stop
 
         print.tokens 'object pop' tokens if @debug
         @pop '{'
