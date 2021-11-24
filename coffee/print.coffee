@@ -90,24 +90,35 @@ class Print
     @ast: (header, ast) ->
 
         log R3 y5 "\n #{header}"
+        
+        lpad = kstr.lpad '' 19
 
-        printNode = (node, indent='') ->
+        printNode = (node, indent='', visited=[]) ->
 
             s = ''
 
             return s if not node
-
+            
             if node.type
                 s += b6(kstr.lpad node.line, 4) + ' ' + blue(kstr.lpad node.col, 3) + ' ' + gray(kstr.pad node.type, 10) + ' ' + bold yellow(indent + node.text) + '\n'
             else if node instanceof Array
-                s += (kstr.lpad '', 19) + ' ' + bold w3(indent + '{')
+                
+                return s if node in visited
+                visited.push node
+                
+                s += lpad + ' ' + bold w3(indent + '{')
                 for value in node
-                    s += '\n' + printNode value, indent
-                s += (kstr.lpad '', 19) + ' ' + bold w3(indent + '}\n')
+                    s += '\n' 
+                    s += printNode value, indent, visited
+                s += lpad + ' ' + bold w3(indent + '}\n')
             else
+                return s if node in visited
+                visited.push node
+                
                 for name,value of node
-                    s += (kstr.lpad '', 19) + ' ' + bold b8(indent + name)
-                    s += '\n' + printNode value, indent+'  '
+                    s += lpad + ' ' + bold b8(indent + name)
+                    s += '\n'  
+                    s += printNode value, indent+'  ', visited
             s
 
         if ast instanceof Array

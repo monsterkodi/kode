@@ -89,6 +89,11 @@ class Parse # the base class of Parser
                 @verb 'exps array ends in current block'
                 tokens.shift()
                 break
+
+            if @stack[-1] == '{' and tokens[0].text == '}'
+                @verb 'exps curly ends in current block'
+                tokens.shift()
+                break
                 
             if tokens[0].type == 'nl' #or tokens[0].text == ';'
                 @verb 'exps nl stop:' stop, tokens[0], @stack
@@ -251,6 +256,9 @@ class Parse # the base class of Parser
                     e = @call e, tokens
                 else if @stack[-1] == '[' and nxt.text == ']'
                     @verb 'exp array end'
+                    break
+                else if @stack[-1] == '{' and nxt.text == '}'
+                    @verb 'exp curly end'
                     break
                 else
                     @verb 'no nxt match?' nxt, @stack

@@ -1,5 +1,5 @@
 
-# doesn't work yet, but could be an idea for a nice super minimalistic test interface
+# doesn't work yet, just an idea for a nice minimalistic test interface
 
 c = kode.compile
 

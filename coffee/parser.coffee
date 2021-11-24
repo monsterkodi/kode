@@ -377,7 +377,7 @@ class Parser extends Parse
 
         items = @exps '[' tokens, ']'
 
-        if tokens[0]?.text == ']' then close = tokens.shift() else close = text:']'
+        if tokens[0]?.text == ']' then close = tokens.shift() else close = text:']' type:'paren'
 
         @pop '['
 
@@ -479,10 +479,7 @@ class Parser extends Parse
 
         exps = @exps '{' tokens, '}'
 
-        if tokens[0]?.text == '}'
-            close = tokens.shift()
-        else
-            error 'next token not a }'
+        if tokens[0]?.text == '}' then close = tokens.shift() else close = text:'}' type:'paren'
 
         @pop '{'
 
