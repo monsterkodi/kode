@@ -102,6 +102,29 @@ class Lexer
                 idx += 1
 
         newTokens
+        
+    # 000   000  000   000   0000000   0000000   00     00  00     00  00000000  000   000  000000000  
+    # 000   000  0000  000  000       000   000  000   000  000   000  000       0000  000     000     
+    # 000   000  000 0 000  000       000   000  000000000  000000000  0000000   000 0 000     000     
+    # 000   000  000  0000  000       000   000  000 0 000  000 0 000  000       000  0000     000     
+    #  0000000   000   000   0000000   0000000   000   000  000   000  00000000  000   000     000     
+    
+    uncomment: (tokens) ->
+        
+        newTokens = []
+
+        idx = 0
+        while idx < tokens.length
+            tok = tokens[idx]
+            if tok.type == 'comment'
+                # if not (tokens[idx-1]?.type == 'nl' or tokens[idx-2]?.type == 'nl' and tokens[idx-1]?.type == 'ws')
+                idx += 1
+                continue
+
+            newTokens.push tok
+            idx += 1
+
+        newTokens
 
     # 0000000    000       0000000    0000000  000   000  000  00000000  000   000
     # 000   000  000      000   000  000       000  000   000  000        000 000
@@ -125,7 +148,8 @@ class Lexer
 
     blockify: (tokens) ->
 
-        tokens = @unslash tokens
+        tokens = @unslash   tokens
+        tokens = @uncomment tokens
 
         blocks = []
 

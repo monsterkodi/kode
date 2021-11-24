@@ -192,7 +192,7 @@ class Renderer
         s += ')\n'
         s += gi + '{'
         
-        print.noon 'func' n if @verbose
+        # print.noon 'func' n if @verbose
         
         if not empty n.body
             
@@ -406,7 +406,7 @@ class Renderer
         if tok.text.startsWith '###'
             '/*' + tok.text[3..-4] + '*/' + '\n'
         else if tok.text.startsWith '#'
-            '\n' + kstr.pad('', tok.col) + '//' + tok.text[1..-1]
+            kstr.pad('', tok.col) + '//' + tok.text[1..-1]
         else
             error "# comment token expected"
             ''

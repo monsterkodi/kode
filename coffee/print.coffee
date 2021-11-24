@@ -89,7 +89,7 @@ class Print
 
     @ast: (header, ast) ->
 
-        log R3 y5 "\n #{header}"
+        log G1 g6 "\n #{header}"
         
         lpad = kstr.lpad '' 19
 

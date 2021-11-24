@@ -64,7 +64,7 @@ class Parse # the base class of Parser
                 if tokens[0]?.type == 'nl' 
                     @verb "exps shift nl" 
                     tokens.shift()# WARNING! we have +------- an indentation constant here! that should be done differently
-                    if tokens[0]?.col < block.col - 4 or tokens[0]?.col == 0
+                    if tokens[0]?.col < block.col - 4 or tokens[0]?.col == 0 or tokens[0]?.type == 'comment'
                         @verb 'dedent!' block.col, tokens[0]?.col
                         break
                     
@@ -72,7 +72,7 @@ class Parse # the base class of Parser
                     @verb "exps shift ,"
                     tokens.shift()
                     
-                @verb 'exps block!'
+                @verb 'exps block! continue...'
                 continue
             
             if @stack[-1] == rule and tokens[0].text == stop
@@ -95,7 +95,7 @@ class Parse # the base class of Parser
                 tokens.shift()
                 break
                 
-            if tokens[0].type == 'nl' #or tokens[0].text == ';'
+            if tokens[0].type == 'nl' 
                 @verb 'exps nl stop:' stop, tokens[0], @stack
 
                 if @stack[-1] == 'if' and tokens[1]?.text != 'else'
@@ -169,7 +169,7 @@ class Parse # the base class of Parser
                 switch tok.text 
                     when '->' '=>'   then return @func null, tok, tokens
                     when ';'         then return @exp tokens # skip ;
-                    when ','         then return @exp tokens # skip ;
+                    when ','         then return @exp tokens # skip ,
 
         e = token:tok
         
@@ -190,7 +190,9 @@ class Parse # the base class of Parser
             if nxt.type == 'op' and nxt.text not in ['++' '--']
                 @verb 'exp is lhs of op' e
                 e = @operation e, tokens.shift(), tokens
-            else if nxt.type == 'func'
+            else if nxt.type == 'func' and \
+                    e.token?.type not in ['num''single''double''triple'] and \
+                    e.token?.text not in '}]'
                 f = tokens.shift()
                 e = @func e, f, tokens
             else if nxt.text == '('
@@ -309,6 +311,12 @@ class Parse # the base class of Parser
             
         thn
         
+    # 0000000    000       0000000    0000000  000   000  
+    # 000   000  000      000   000  000       000  000   
+    # 0000000    000      000   000  000       0000000    
+    # 000   000  000      000   000  000       000  000   
+    # 0000000    0000000   0000000    0000000  000   000  
+    
     block: (id, tokens) ->
         
         if tokens[0]?.type == 'block'

@@ -298,8 +298,9 @@ class Parser extends Parse
             else
                 args = @exps 'call' tokens, ')'
         else
-            # args = @exps 'call' tokens, 'nl'
+            print.tokens 'call block' tokens if @debug
             args = @block 'call' tokens
+            print.ast 'call block' args if @debug
 
         if open and tokens[0]?.text == ')'
             close = tokens.shift()
