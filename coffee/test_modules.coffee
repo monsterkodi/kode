@@ -118,7 +118,8 @@ describe 'modules' ->
             
         parser.parse lexer.blockify lexer.tokenize """
             a.b.c
-            """ """
+            """ 
+        .should.eql [
             prop:
                 obj:
                     prop:
@@ -129,7 +130,7 @@ describe 'modules' ->
                             col:     0
                         dot:
                             type:    'punct'
-                            text:    .
+                            text:    '.'
                             line:    1
                             col:     1
                         prop:
@@ -147,7 +148,7 @@ describe 'modules' ->
                     text:    'c'
                     line:    1
                     col:     4
-            """
+            ]
             
         parser.parse lexer.blockify lexer.tokenize """
             a.b.c

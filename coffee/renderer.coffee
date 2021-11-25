@@ -62,7 +62,6 @@ class Renderer
                 when 'switch'    then @switch v
                 when 'when'      then @when v
                 when 'incond'    then @incond v
-                # when 'token'     then @token v
                 when 'operation' then @operation v
                 when 'parens'    then @parens v
                 when 'array'     then @array v

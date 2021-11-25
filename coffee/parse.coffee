@@ -6,16 +6,20 @@
 000        000   000  000   000  0000000   00000000
 ###
 
+kstr  = require 'kstr'
 print = require './print'
 empty = (a) -> a in ['' null undefined] or (typeof(a) == 'object' and Object.keys(a).length == 0)
+
+Renderer = require './renderer'
 
 class Parse # the base class of Parser
 
     @: (args) ->
 
-        @debug   = args?.debug
-        @verbose = args?.verbose
-        @raw     = args?.raw
+        @renderer = new Renderer args
+        @debug    = args?.debug
+        @verbose  = args?.verbose
+        @raw      = args?.raw
 
     # 00000000    0000000   00000000    0000000  00000000
     # 000   000  000   000  000   000  000       000
@@ -180,8 +184,7 @@ class Parse # the base class of Parser
             else
                 switch tok.text 
                     when '->' '=>'  then return @func null, tok, tokens
-                    when ';'        then return @exp tokens # skip ;
-                    when ','        then return @exp tokens # skip ,
+                    when ';'        then if tokens[0]?.text != ':' then return @exp tokens # skip ;
 
         ###
         here comes the hairy part :-)
@@ -196,15 +199,20 @@ class Parse # the base class of Parser
         while tokens.length
             numTokens = tokens.length
 
-            e = @rhs e, tokens
-            print.ast "rhs" e if @verbose
+            e = @rhs e, tokens               # first, try to eat as much tokens as possible to the right
+            print.ast "rhs" e if @verbose    
 
-            e = @lhs e, tokens
-            print.ast "lhs" e if @verbose
+            e = @lhs e, tokens               # see, if we can the result as the left hand side of something
+            print.ast "lhs" e if @verbose   
             
             if numTokens == tokens.length
-                @verb 'exp no token consumed: break!'
-                break
+                if tokens[0]?.text in ','
+                    @verb 'exp shift comma'
+                    tokens.shift()
+                    break
+                else
+                    @verb 'exp no token consumed: break!'
+                    break                    # bail out if no token was consumed
             
         print.ast "exp #{if empty(@stack) then 'DONE' else ''}" e if @verbose
         
@@ -237,12 +245,7 @@ class Parse # the base class of Parser
             if spaced and nxt.text == '('
                 @verb 'rhs is open paren'
                 e = @parens tok, tokens
-            else if nxt.text == '[' and unspaced and tokens[1]?.text != ']' and e.text != '['
-                @verb 'rhs is lhs of index' e
-                e = @index e, tokens
-            else if nxt.text == '?' and unspaced and tokens[1]?.text == '.'
-                qmark = tokens.shift()
-                e = @prop e, tokens, qmark
+
             else if nxt.text == ':'
                 if @stack[-1] != '{'
                     @verb 'rhs is first key of implicit object' e
@@ -351,6 +354,10 @@ class Parse # the base class of Parser
                 @verb 'lhs prop'
                 e = @prop e, tokens
 
+            else if nxt.text == '?' and unspaced and tokens[1]?.text == '.'
+                qmark = tokens.shift()
+                e = @prop e, tokens, qmark # this should be done differently!
+                
             else if nxt.type == 'op' and nxt.text not in ['++' '--' '+' '-'] and e.text not in ['[' '('] and 'onearg' not in @stack
                 @verb 'lhs is lhs of op' e, nxt
                 e = @operation e, tokens.shift(), tokens
@@ -368,10 +375,13 @@ class Parse # the base class of Parser
                 @verb 'rhs func for e' e
                 e = @func e, f, tokens
                 
-            else if nxt.text == '('
-                if unspaced
-                    @verb 'lhs is lhs of call'
-                    e = @call e, tokens
+            else if nxt.text == '(' and unspaced
+                @verb 'lhs is lhs of call'
+                e = @call e, tokens
+                    
+            else if nxt.text == '[' and unspaced and tokens[1]?.text != ']' # and e.text != '['
+                @verb 'rhs is lhs of index' e
+                e = @index e, tokens
                     
             else if (
                     spaced and (nxt.line == last.line or nxt.col > first.col) and
@@ -381,11 +391,12 @@ class Parse # the base class of Parser
                     (e.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and 
                     (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no']) and 
                     (e.type != 'keyword' or (e.text in ['new' 'require' 'typeof' 'delete'])) and 
-                    ((@stack[-1] not in ['if' 'for']) or nxt.line == e.line) and 
+                    # ((@stack[-1] not in ['if' 'for']) or nxt.line == e.line) and 
                     not e.array and
                     not e.object and
                     not e.keyval and
                     not e.operation and
+                    e.call?.callee?.text not in ['delete''new''typeof'] and
                     'onearg' not in @stack
                     )
                 @verb 'lhs is lhs of implicit call! e' e, @stack[-1]
@@ -532,7 +543,7 @@ class Parse # the base class of Parser
     sheapPop: (m, t) ->
         
         popped = @sheap.pop()
-        if popped.text != t then error 'wrong pop?' popped.text, t
+        if popped.text != t and popped.text != kstr.strip(t, "'") then error 'wrong pop?' popped.text, t
         print.sheap @sheap, popped if @verbose
         
     #  0000000  000000000   0000000    0000000  000   000  

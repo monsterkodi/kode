@@ -555,6 +555,21 @@ class Parser extends Parse
 
         @pop ':'
 
+        if key.type in ['keyword' 'op' 'punct']
+            key.type = 'single'
+            key.text = "'#{key.text}'"
+        else if key.type == 'var'
+            key.type = 'key'
+        else if key.prop
+            {line, col} = @firstLineCol key
+            key = 
+                type: 'single'
+                text: "'#{@renderer.node key}'"
+                line: line
+                col:  col
+        else
+            log key
+
         keyval:
             key:   key
             colon: colon

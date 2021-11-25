@@ -31,7 +31,15 @@ describe 'array' ->
         cmp 'a[-1]'           'a.slice(-1)[0]'
         cmp 'a[-2]'           'a.slice(-2,-1)[0]'
         cmp 'a[-100]'         'a.slice(-100,-99)[0]'
-
+        
+        cmp """
+            blocks[-1].tokens.push block
+            blocks.push block
+            """ """
+            blocks.slice(-1)[0].tokens.push(block)
+            blocks.push(block)
+            """
+            
     # 00000000    0000000   000   000   0000000   00000000
     # 000   000  000   000  0000  000  000        000
     # 0000000    000000000  000 0 000  000  0000  0000000
