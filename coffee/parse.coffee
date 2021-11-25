@@ -196,6 +196,7 @@ class Parse # the base class of Parser
         @sheapPush 'exp' tok.text ? tok.type
         
         e = token:tok
+        # e = tok
         
         while nxt = tokens[0]
             
@@ -229,12 +230,11 @@ class Parse # the base class of Parser
                 @verb 'exp is lhs of +-\s' e, nxt
                 e = @operation e, tokens.shift(), tokens
             
-            else if nxt.type == 'func' and (e.parens or e.token and 
-                    e.token.type not in ['num''single''double''triple'] and 
-                    e.token.text not in '}]')
+            else if nxt.type == 'func' and e.parens
                 f = tokens.shift()
                 @verb 'exp func for e' e
                 e = @func e, f, tokens
+                
             else if nxt.text == '('
                 if nxt.col == last
                     @verb 'exp is lhs of call'
@@ -250,7 +250,6 @@ class Parse # the base class of Parser
                 e = @prop e, tokens, qmark
             else if nxt.text == '.'
                 e = @prop e, tokens
-                break
             else if nxt.text == ':'
                 if @stack[-1] != '{'
                     @verb 'exp is first key of implicit object' e
@@ -338,18 +337,28 @@ class Parse # the base class of Parser
                 error 'exp no token consumed?'
                 break
         
-        if empty @stack
-            # @verb 'exp empty stack'
-            if nxt = tokens[0]
+        if nxt = tokens[0]
+            
+            # if nxt.type == 'func' and (e.parens or e.token and 
+                    # e.token.type not in ['num''single''double''triple'] and 
+                    # e.token.text not in '}]')
+                # f = tokens.shift()
+                # @verb 'exp func for e?' e
+                # e = @func e, f, tokens
+            
+            # else 
+            if empty @stack
                 
                 @verb 'exp empty stack nxt' nxt
             
                 if nxt.text == '[' and tokens[1]?.text != ']'
                     @verb 'exp is last minute lhs of index' e
                     e = @index e, tokens
+                    
+                # implement null checks here!
+        else 
+            @verb 'exp end no nxt!'
             
-            # implement null checks here!
-                
         print.ast "exp #{if empty(@stack) then 'DONE' else ''}" e if @verbose
         
         @sheapPop 'exp' tok.text ? tok.type

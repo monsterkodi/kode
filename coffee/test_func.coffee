@@ -194,4 +194,12 @@ describe 'func' ->
             """
             
         cmp 'l = pat.map ->' 'l = pat.map(function ()\n{})'
+        
+        # cmp 'l = pat.l.map ((i) -> i), y',
+            # """
+            # l = pat.map(function (i)
+            # {
+                # return i
+            # }, y)'
+            # """
             
