@@ -220,8 +220,12 @@ class Parse # the base class of Parser
                 @verb 'exp is lhs of op' e, nxt
                 e = @operation e, tokens.shift(), tokens
                 
-            else if nxt.type == 'op' and nxt.text in ['+' '-'] and e.token?.text not in ['[' '('] and \
+            else if (
+                    nxt.type == 'op' and 
+                    nxt.text in ['+' '-'] and 
+                    e.token?.text not in ['[' '('] and
                     last < nxt.col and tokens[1]?.col > nxt.col+nxt.text.length
+                    )
                 @verb 'exp is lhs of +-\s' e, nxt
                 e = @operation e, tokens.shift(), tokens
             
@@ -287,15 +291,17 @@ class Parse # the base class of Parser
                 else if @stack[-1] == '{' and nxt.text == '}'
                     @verb 'exp curly end'
                     break
-                else if last < nxt.col and \
-                        nxt.text not in ')]},;:.' and \
-                        nxt.text not in ['then' 'else' 'break' 'continue' 'in' 'of'] and \
-                        nxt.type not in ['nl'] and \
-                        (e.token.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and \
-                        (e.token.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no']) and \
-                        (e.token.type != 'keyword' or (e.token.text in ['new' 'require' 'typeof' 'delete'])) and \
-                        ((@stack[-1] not in ['if' 'for']) or nxt.line == e.token.line) and \
+                else if (
+                        last < nxt.col and
+                        nxt.text not in ')]},;:.' and 
+                        nxt.text not in ['then' 'else' 'break' 'continue' 'in' 'of'] and 
+                        nxt.type not in ['nl'] and 
+                        (e.token.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and 
+                        (e.token.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no']) and 
+                        (e.token.type != 'keyword' or (e.token.text in ['new' 'require' 'typeof' 'delete'])) and 
+                        ((@stack[-1] not in ['if' 'for']) or nxt.line == e.token.line) and 
                         'onearg' not in @stack
+                        )
                     @verb 'exp is lhs of implicit call! e' e, @stack[-1]
                     @verb '    is lhs of implicit call! nxt' nxt
                     e = @call e, tokens
