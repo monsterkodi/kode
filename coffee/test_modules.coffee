@@ -116,39 +116,73 @@ describe 'modules' ->
                     ]
             ]
             
-        # parser.parse lexer.blockify lexer.tokenize """
-            # a.b.c
-            # """
-        # .should.eql [
-            # prop:
-                # obj:
-                    # obj:
-                        # type:    'var'
-                        # text:    'a'
-                        # line:    1
-                        # col:     0
-                    # dot:
-                        # type:    'punct'
-                        # text:    '.'
-                        # line:    1
-                        # col:     1
-#                  
-                    # prop:
-                        # type:    'var'
-                        # text:    'b'
-                        # line:    1
-                        # col:     2
-                # dot:
-                    # type:    'punct'
-                    # text:    '.'
-                    # line:    1
-                    # col:     3
-                # prop:
-                    # type:    'var'
-                    # text:    'c'
-                    # line:    1
-                    # col:     4
-            # ]
+        parser.parse lexer.blockify lexer.tokenize """
+            a.b.c
+            """ """
+            prop:
+                obj:
+                    prop:
+                        obj:
+                            type:    'var'
+                            text:    'a'
+                            line:    1
+                            col:     0
+                        dot:
+                            type:    'punct'
+                            text:    .
+                            line:    1
+                            col:     1
+                        prop:
+                            type:    'var'
+                            text:    'b'
+                            line:    1
+                            col:     2
+                dot:
+                    type:    'punct'
+                    text:    '.'
+                    line:    1
+                    col:     3
+                prop:
+                    type:    'var'
+                    text:    'c'
+                    line:    1
+                    col:     4
+            """
+            
+        parser.parse lexer.blockify lexer.tokenize """
+            a.b.c
+            """
+        .should.eql [
+            prop:
+                obj:
+                    prop:
+                        obj:
+                            type:    'var'
+                            text:    'a'
+                            line:    1
+                            col:     0
+                        dot:
+                            type:    'punct'
+                            text:    '.'
+                            line:    1
+                            col:     1
+                      
+                        prop:
+                            type:    'var'
+                            text:    'b'
+                            line:    1
+                            col:     2
+                dot:
+                    type:    'punct'
+                    text:    '.'
+                    line:    1
+                    col:     3
+                prop:
+                    type:    'var'
+                    text:    'c'
+                    line:    1
+                    col:     4
+            ]
 
     # 00000000   00000000  000   000  0000000    00000000  00000000
     # 000   000  000       0000  000  000   000  000       000   000

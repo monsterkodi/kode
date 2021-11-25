@@ -568,18 +568,10 @@ class Parser extends Parse
 
     prop: (obj, tokens, qmrk) ->
 
-        dot = tokens.shift()
-        
-        @push '.'
+        prop:
+            obj:  obj
+            dot:  tokens.shift()
+            prop: tokens.shift()
+            # qmrk: qmrk
 
-        prop = @exp tokens
-
-        @pop '.'
-
-        e = prop: obj: obj
-        e.prop.qmrk = qmrk if qmrk
-        e.prop.dot  = dot
-        e.prop.prop = prop
-        e
-            
 module.exports = Parser
