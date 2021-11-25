@@ -195,8 +195,8 @@ class Parse # the base class of Parser
 
         @sheapPush 'exp' tok.text ? tok.type
         
-        e = token:tok
-        # e = tok
+        # e = token:tok
+        e = tok
         
         while nxt = tokens[0]
             
@@ -204,8 +204,8 @@ class Parse # the base class of Parser
 
             if not e then return error 'no e?' nxt
             
-            if Object.values(e)[0]?.col?
-                last = Object.values(e)[0].col+Object.values(e)[0].text?.length
+            if e.col?
+                last = e.col+e.text?.length
             else if Object.values(e)[0]?.close?.col?
                 last = Object.values(e)[0].close.col+Object.values(e)[0].close.text?.length
             else
@@ -217,14 +217,14 @@ class Parse # the base class of Parser
                 @verb 'exp break for onearg'
                 break
             
-            if nxt.type == 'op' and nxt.text not in ['++' '--' '+' '-'] and e.token?.text not in ['[' '('] and 'onearg' not in @stack
+            if nxt.type == 'op' and nxt.text not in ['++' '--' '+' '-'] and e.text not in ['[' '('] and 'onearg' not in @stack
                 @verb 'exp is lhs of op' e, nxt
                 e = @operation e, tokens.shift(), tokens
                 
             else if (
                     nxt.type == 'op' and 
                     nxt.text in ['+' '-'] and 
-                    e.token?.text not in ['[' '('] and
+                    e.text not in ['[' '('] and
                     last < nxt.col and tokens[1]?.col > nxt.col+nxt.text.length
                     )
                 @verb 'exp is lhs of +-\s' e, nxt
@@ -242,7 +242,7 @@ class Parse # the base class of Parser
                 else
                     @verb 'exp is open paren'
                     e = @parens tok, tokens
-            else if nxt.text == '[' and nxt.col == last and tokens[1]?.text != ']' and e.token?.text != '['
+            else if nxt.text == '[' and nxt.col == last and tokens[1]?.text != ']' and e.text != '['
                 @verb 'exp is lhs of index' e
                 e = @index e, tokens
             else if nxt.text == '?' and last == nxt.col and tokens[1]?.text == '.'
@@ -259,30 +259,30 @@ class Parse # the base class of Parser
                     e = @keyval e, tokens
             else if nxt.type == 'keyword' and nxt.text == 'in' and @stack[-1] != 'for'
                 e = @incond e, tokens
-            else if e.token
-                if e.token.text == '('
-                    e = @parens e.token, tokens
-                else if e.token.text == '['
-                    e = @array e.token, tokens
-                else if e.token.text == '{'
-                    e = @curly e.token, tokens
-                else if e.token.text in ['+''-''++''--'] and last == nxt.col
-                    if nxt.type not in ['var''paren'] and e.token.text in ['++''--']
+            else if e.text?
+                if e.text == '('
+                    e = @parens e, tokens
+                else if e.text == '['
+                    e = @array e, tokens
+                else if e.text == '{'
+                    e = @curly e, tokens
+                else if e.text in ['+''-''++''--'] and last == nxt.col
+                    if nxt.type not in ['var''paren'] and e.text in ['++''--']
                         tokens.shift()
                         error 'wrong lhs increment' e, nxt
                         return
                     @verb 'lhs null operation'
-                    e = @operation null, e.token, tokens
+                    e = @operation null, e, tokens
                     if e.operation.rhs?.operation?.operator?.text in ['++''--']
                         error 'left and right side increment'
                         return
                 else if nxt.text in ['++''--'] and last == nxt.col
-                    if e.token.type not in ['var']
+                    if e.type not in ['var']
                         tokens.shift()
                         error 'wrong rhs increment'
                         return
                     e = @operation e, tokens.shift() 
-                else if nxt.type == 'dots' and e.token.type in ['var' 'num']
+                else if nxt.type == 'dots' and e.type in ['var' 'num']
                     e = @slice e, tokens
                 else if @stack[-1] == '[' and nxt.text == ']'
                     @verb 'exp array end'
@@ -295,17 +295,17 @@ class Parse # the base class of Parser
                         nxt.text not in ')]},;:.' and 
                         nxt.text not in ['then' 'else' 'break' 'continue' 'in' 'of'] and 
                         nxt.type not in ['nl'] and 
-                        (e.token.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and 
-                        (e.token.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no']) and 
-                        (e.token.type != 'keyword' or (e.token.text in ['new' 'require' 'typeof' 'delete'])) and 
-                        ((@stack[-1] not in ['if' 'for']) or nxt.line == e.token.line) and 
+                        (e.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and 
+                        (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no']) and 
+                        (e.type != 'keyword' or (e.text in ['new' 'require' 'typeof' 'delete'])) and 
+                        ((@stack[-1] not in ['if' 'for']) or nxt.line == e.line) and 
                         'onearg' not in @stack
                         )
                     @verb 'exp is lhs of implicit call! e' e, @stack[-1]
                     @verb '    is lhs of implicit call! nxt' nxt
                     e = @call e, tokens
 
-                else if nxt.type == 'op' and nxt.text in ['+' '-'] and e.token?.text not in ['[' '(']
+                else if nxt.type == 'op' and nxt.text in ['+' '-'] and e.text not in ['[' '(']
                     if last < nxt.col and tokens[1]?.col == nxt.col+nxt.text.length
                         @verb 'exp op is unbalanced +- break...' e, nxt, @stack
                         break
@@ -339,14 +339,6 @@ class Parse # the base class of Parser
         
         if nxt = tokens[0]
             
-            # if nxt.type == 'func' and (e.parens or e.token and 
-                    # e.token.type not in ['num''single''double''triple'] and 
-                    # e.token.text not in '}]')
-                # f = tokens.shift()
-                # @verb 'exp func for e?' e
-                # e = @func e, f, tokens
-            
-            # else 
             if empty @stack
                 
                 @verb 'exp empty stack nxt' nxt

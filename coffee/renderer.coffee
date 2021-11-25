@@ -47,7 +47,7 @@ class Renderer
         
         return '' if not exp
 
-        if exp.type? then return exp.text
+        if exp.type? and exp.text? then return @token exp
 
         if exp instanceof Array then return (@node(a) for a in exp).join ';\n'
 
@@ -62,7 +62,7 @@ class Renderer
                 when 'switch'    then @switch v
                 when 'when'      then @when v
                 when 'incond'    then @incond v
-                when 'token'     then @token v
+                # when 'token'     then @token v
                 when 'operation' then @operation v
                 when 'parens'    then @parens v
                 when 'array'     then @array v
@@ -120,17 +120,17 @@ class Renderer
         bind = []
         for m in mthds
             if not m.keyval 
-                if not m.token?.type == 'comment'
+                if not m.type == 'comment'
                     log 'wtf?' m 
                     print.ast 'not an method?' m
                 continue
-            name = m.keyval.key.token.text
+            name = m.keyval.key.text
             if name in ['@' 'constructor']
                 if constructor then error 'more than one constructor?'
-                m.keyval.key.token.text= 'constructor'
+                m.keyval.key.text= 'constructor'
                 constructor = m
             else if name.startsWith '@'
-                m.keyval.key.token.text = 'static ' + name[1..]
+                m.keyval.key.text = 'static ' + name[1..]
             else if m.keyval.val.func?.arrow.text == '=>'
                 bind.push m
                 
@@ -146,7 +146,7 @@ class Renderer
             
         if bind.length
             for b in bind
-                bn = b.keyval.key.token.text
+                bn = b.keyval.key.text
                 log 'method to bind:' bn if @verbose
                 constructor.keyval.val.func.body ?= []
                 constructor.keyval.val.func.body.push 
@@ -166,11 +166,11 @@ class Renderer
     
     mthd: (n) ->
 
-        if n.token?.type == 'comment'
-            return @comment n.token
+        if n.type == 'comment'
+            return @comment n
         
         if n.keyval
-            s = @func n.keyval.val.func, n.keyval.key.token.text
+            s = @func n.keyval.val.func, n.keyval.key.text
         s
 
     # 00000000  000   000  000   000   0000000  
@@ -286,7 +286,7 @@ class Renderer
         gi = @indent ? ''
         @indent = gi+id
 
-        val = n.vals.token?.text ? n.vals[0]?.token?.text
+        val = n.vals.text ? n.vals[0]?.text
         list = @node n.list
         if not list or list == 'undefined'
             print.noon 'no list for' n.list

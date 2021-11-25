@@ -96,26 +96,23 @@ describe 'modules' ->
         .should.eql [
             if:
                 exp:
-                    token:
-                        col: 3
-                        line: 1
-                        text: "a"
-                        type: "var"
+                    col: 3
+                    line: 1
+                    text: "a"
+                    type: "var"
                 else:
                     [
-                        token:
-                            col: 17
-                            line: 1
-                            text: 'c'
-                            type: 'var'
+                        col: 17
+                        line: 1
+                        text: 'c'
+                        type: 'var'
                     ]
                 then:
                     [
-                        token:
-                            col: 10
-                            line: 1
-                            text: 'b'
-                            type: 'var'
+                        col: 10
+                        line: 1
+                        text: 'b'
+                        type: 'var'
                     ]
             ]
             
@@ -126,34 +123,31 @@ describe 'modules' ->
             # prop:
                 # obj:
                     # obj:
-                        # token:
-                            # type:    'var'
-                            # text:    'a'
-                            # line:    1
-                            # col:     0
+                        # type:    'var'
+                        # text:    'a'
+                        # line:    1
+                        # col:     0
                     # dot:
                         # type:    'punct'
                         # text:    '.'
                         # line:    1
                         # col:     1
-#                 
+#                  
                     # prop:
-                        # token:
-                            # type:    'var'
-                            # text:    'b'
-                            # line:    1
-                            # col:     2
+                        # type:    'var'
+                        # text:    'b'
+                        # line:    1
+                        # col:     2
                 # dot:
                     # type:    'punct'
                     # text:    '.'
                     # line:    1
                     # col:     3
                 # prop:
-                    # token:
-                        # type:    'var'
-                        # text:    'c'
-                        # line:    1
-                        # col:     4
+                    # type:    'var'
+                    # text:    'c'
+                    # line:    1
+                    # col:     4
             # ]
 
     # 00000000   00000000  000   000  0000000    00000000  00000000

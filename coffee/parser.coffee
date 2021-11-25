@@ -338,12 +338,12 @@ class Parser extends Parse
 
         @push "op#{op.text}"
         
-        if lhs?.token then lhs = lhs.token
+        # if lhs?.token then lhs = lhs.token
         print.tokens "operation #{lhs.text} #{op.text}" tokens if lhs and @debug
         
         rhs = @blockExp 'operation' tokens if tokens
         
-        if rhs?.token then rhs = rhs.token
+        # if rhs?.token then rhs = rhs.token
         
         @pop "op#{op.text}"
         
@@ -414,8 +414,8 @@ class Parser extends Parse
 
         if not upto then return error "no slice end!"
         
-        if from.token then from = from.token
-        if upto.token then upto = upto.token
+        # if from.token then from = from.token
+        # if upto.token then upto = upto.token
 
         slice:
             from: from
@@ -522,10 +522,10 @@ class Parser extends Parse
 
         tokens.shift() if tokens[0]?.type == 'nl'
         
-        if tokens[0]? and (tokens[0].col == key.token.col or tokens[0].line == key.token.line)
+        if tokens[0]? and (tokens[0].col == key.col or tokens[0].line == key.line)
             if tokens[0].text not in '])'
                 @verb 'continue object...' if @debug
-                if tokens[0].line == key.token.line then stop='nl' else stop=null
+                if tokens[0].line == key.line then stop='nl' else stop=null
                 exps = exps.concat @exps 'object' tokens, stop
 
         print.tokens 'object pop' tokens if @debug
