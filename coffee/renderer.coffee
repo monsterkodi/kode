@@ -257,7 +257,7 @@ class Renderer
             s += '\n'
             s += gi + "else if (#{@node(elif.elif.exp)})\n"
             s += gi+"{\n"
-            for e in elif.elif.then
+            for e in elif.elif.then ? []
                 s += gi + id + @node(e) + '\n'
             s += gi+"}"
 

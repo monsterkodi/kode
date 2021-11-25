@@ -18,6 +18,28 @@ describe 'loops' ->
 
     it 'if' ->
 
+        cmp """
+            if undefined == null
+                no
+            """ """
+            if (undefined === null)
+            {
+                false
+            }
+            """
+            
+        cmp """
+            if 2
+                c = 0
+                1
+            """ """
+            if (2)
+            {
+                c = 0
+                1
+            }
+            """
+    
         cmp 'if false then true',
             """
             if (false)

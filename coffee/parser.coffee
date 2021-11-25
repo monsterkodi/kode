@@ -336,17 +336,17 @@ class Parser extends Parse
 
     operation: (lhs, op, tokens) ->
 
-        if tokens?[0]?.type == 'block'
-            block = tokens.shift()
-            tokens = block.tokens
+        @push "op#{op.text}"
         
-        rhs = @exp tokens if tokens
-        
-        print.tokens 'dangling operation block tokens!' block.tokens if block and not empty block.tokens
-            
         if lhs?.token then lhs = lhs.token
+        print.tokens "operation #{lhs.text} #{op.text}" tokens if lhs and @debug
+        
+        rhs = @blockExp 'operation' tokens if tokens
+        
         if rhs?.token then rhs = rhs.token
-
+        
+        @pop "op#{op.text}"
+        
         operation:
             lhs:        lhs
             operator:   op
@@ -389,11 +389,11 @@ class Parser extends Parse
 
         @pop '['
         
-        if tokens[0]?.type == 'block' and @stack[-1] != 'for'
-            error 'INDENTATION ERROR! block after array'
-            print.tokens 'tokens before splice' tokens
+        if tokens[0]?.type == 'block' and @stack[-1] not in ['for' 'if']
+            @verb 'fucked up indentation! block after array! flattening block tokens:'
+            print.tokens 'tokens before splice' tokens if @verbose
             tokens.splice.apply tokens, [0 1].concat tokens[0].tokens
-            print.tokens 'tokens after splice' tokens
+            print.tokens 'tokens after splice' tokens if @verbose
 
         array:
             open:  open

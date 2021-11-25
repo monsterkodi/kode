@@ -31,7 +31,7 @@ class Parse # the base class of Parser
         ast = []
 
         while block.tokens.length
-            ast = ast.concat @exps 'tl block' block.tokens
+            ast = ast.concat @exps 'tl' block.tokens
 
         if @raw then print.noon 'raw ast' ast
 
@@ -109,11 +109,6 @@ class Parse # the base class of Parser
             if tokens[0].type == 'nl' 
                 
                 @verb 'exps nl stop:' stop, tokens[0], @stack
-
-                if @stack[-1] == 'if' and tokens[1]?.text != 'else'
-                    @verb 'exps nl in if (shift and break)' 
-                    tokens.shift()
-                    break
                     
                 if @stack[-1] == '[' and tokens[1]?.text == ']'
                     @verb 'exps nl in array (shift and break)'
@@ -173,7 +168,9 @@ class Parse # the base class of Parser
 
         switch tok.type
             when 'block'            then return error "INTERNAL ERROR: unexpected block token in exp!"
-            when 'nl'               then return @exp tokens # skip nl
+            when 'nl'               
+                @verb 'exp start shift nl!'
+                return @exp tokens # skip nl
             when 'keyword'
                 switch tok.text 
                     when 'if'       then return @if     tok, tokens
@@ -316,9 +313,9 @@ class Parse # the base class of Parser
                     
             else # if e is not a token anymore
                 if nxt.text in ['++''--'] and last == nxt.col
-                    e = @operation e, tokens.shift()                
+                    e = @operation e, tokens.shift() # missing break here?
                 else if nxt.type == 'dots' and @stack[-1] not in '.'
-                    e = @slice e, tokens
+                    e = @slice e, tokens # missing break here?
                 else if @stack[-1] == 'call' and nxt.text == ']'
                     @verb 'exp call array end'
                     break
@@ -403,6 +400,15 @@ class Parse # the base class of Parser
             print.tokens 'dangling block tokens' tokens
             
         exps
+        
+    blockExp: (id, tokens) ->
+        @verb "blockExp #{id}"
+        if tokens[0]?.type == 'block'
+            block = tokens.shift()
+            # if tokens[0]?.type == 'nl' then tokens.shift()
+            @exp block.tokens
+        else 
+            @exp tokens
         
     #  0000000  000   000  00000000   0000000   00000000     
     # 000       000   000  000       000   000  000   000    

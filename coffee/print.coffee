@@ -26,22 +26,28 @@ class Print
     @tokens: (header, tokens) ->
             log R3 y5 "\n #{header}"
             log b6(kstr.pad '' 80 ' ')
+            s = ''
             for tok in tokens
-                @token tok
+                s += @token tok
+            log s
 
     @token: (tok) ->
         
         indent = kstr.lpad '' tok.col
-        log red '◂' if tok.type == 'nl'
-        return if tok.type in ['ws''nl']
-        toktext = (tok) -> 
+        return red '◂\n' if tok.type == 'nl'
+        return '' if tok.type in ['ws''nl']
+        toktext = (tok) => 
             if tok.text == '' then '\n'+indent 
-            else if tok.text then tok.text 
+            else if tok.text then tok.text
             else if tok.tokens
-                '\n'+((kstr.lpad '' 20)+tok.indent)+(tok.tokens.map (t) -> toktext(t)).join ' '
+                # '\n'+((kstr.lpad '' 20)+tok.indent)+(tok.tokens.map (t) -> toktext(t)).join ' '
+                s = ''
+                for t in tok.tokens
+                    s += @token(t)# + '\n'
+                '\n' + s
             else
                 '???'
-        log b6(kstr.lpad tok.line, 4), blue(kstr.lpad tok.col, 3), gray(kstr.pad tok.type, 10), bold yellow(indent + toktext tok)
+        b6(kstr.lpad tok.line, 4) + ' ' + blue(kstr.lpad tok.col, 3) + ' ' + gray(kstr.pad tok.type, 10) + ' ' + bold yellow(indent + toktext tok) + '\n'
             
     #  0000000  000000000   0000000    0000000  000   000
     # 000          000     000   000  000       000  000
@@ -55,12 +61,12 @@ class Print
         
     @sheap: (sheap, popped) ->
         
-        s = B4 '   '
+        s = B2 '   '
         for r in sheap
             if r.type == 'exps' 
-                s += B5 r.text + B4 ' '
+                s += B5 r.text + B2 ' '
             else
-                s += Y4 black r.text + ' '
+                s += Y4 black r.text + Y2 ' '
         if popped
             c = if popped.type == 'exps' then B1 else W1
             s += black c(popped.text) + ' '

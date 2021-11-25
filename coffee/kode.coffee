@@ -68,8 +68,6 @@ class Kode
                 out = slash.swapExt out, 'js'
                 log 'out' out if @args.verbose
                 slash.writeText out, code
-            else
-                log code
 
     #  0000000   0000000   00     00  00000000   000  000      00000000
     # 000       000   000  000   000  000   000  000  000      000
@@ -88,7 +86,7 @@ class Kode
 
         js = @renderer.render ast
 
-        print.code 'js' js if @args.js or @args.verbose or @args.debug
+        print.code 'js' js if @args.js or @args.debug
 
         js
 
@@ -165,7 +163,8 @@ if not module.parent or module.parent.path.endsWith '/kode/bin'
             compile     . ? compile a string and print the result
             outdir      . ? output directory for transpiled files
             map         . ? generate inline source maps             . = true
-            js          . ? print js code                           . = false
+            js          . ? print transpiled js code                . = true
+            run         . ? execute file                            . = false
             tokens      . ? print tokens                            . = false  . - T
             block       . ? print block tree                        . = false  . - B
             parse       . ? print parse tree                        . = false  . - P
