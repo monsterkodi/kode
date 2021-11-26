@@ -568,8 +568,8 @@ class Parser extends Parse
                 text: "'#{@renderer.node key}'"
                 line: line
                 col:  col
-        else
-            log key
+        # else
+            # log key
 
         keyval:
             key:   key

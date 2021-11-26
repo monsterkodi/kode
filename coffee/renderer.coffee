@@ -315,7 +315,6 @@ class Renderer
         
     for_of: (n) ->
         
-        log n
         id = '    '
         gi = @indent ? ''
         @indent = gi+id
