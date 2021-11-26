@@ -33,7 +33,7 @@ class Renderer
 
         nodes.map((s) => @node s).join '\n'
         
-    nodes: (nodes, sep=';') ->
+    nodes: (nodes, sep='') ->
         ss = nodes.map (s) => @node s
         ss.join sep
         
@@ -203,7 +203,7 @@ class Renderer
             if not ss[-1].startsWith('return') and name != 'constructor'
                 ss.push 'return ' + kstr.lstrip ss.pop()
             ss = ss.map (s) => @indent + s
-            s += ss.join ';\n'
+            s += ss.join '\n'
             s += '\n' + gi
             @indent = gi
         s += '}'
@@ -282,21 +282,53 @@ class Renderer
         
         if not n.then then error 'for expected then' n
 
+        switch n.inof.text 
+            when 'in' then @for_in n
+            when 'of' then @for_of n
+            else error 'for expected in/of'
+        
+    for_in: (n) ->
+        
         id = '    '
         gi = @indent ? ''
         @indent = gi+id
 
         val = n.vals.text ? n.vals[0]?.text
         list = @node n.list
+        
         if not list or list == 'undefined'
             print.noon 'no list for' n.list
             print.ast 'no list for' n.list
+            
         listVar = 'list'    
         s = ''
         s += "var #{listVar} = #{list}\n"
         s += gi+"for (var i = 0; i < #{listVar}.length; i++)\n"
         s += gi+"{\n"
         s += gi+id+"#{val} = #{listVar}[i]\n"
+        for e in n.then ? []
+            s += gi+id + @node(e) + '\n'
+        s += gi+"}"
+            
+        @indent = gi
+        s
+        
+    for_of: (n) ->
+        
+        log n
+        id = '    '
+        gi = @indent ? ''
+        @indent = gi+id
+
+        key = n.vals.text ? n.vals[0]?.text
+        val = n.vals[1]?.text
+        
+        obj = @node n.list
+        s = ''
+        s += gi+"for (key in #{obj})\n"
+        s += gi+"{\n"
+        if val
+            s += gi+id+"#{val} = #{obj}[key]\n"
         for e in n.then ? []
             s += gi+id + @node(e) + '\n'
         s += gi+"}"

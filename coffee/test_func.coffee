@@ -33,7 +33,7 @@ describe 'func' ->
             """ """
             function ()
             {
-                1;
+                1
                 return 2
             }
             """
@@ -45,7 +45,7 @@ describe 'func' ->
             """ """
             function ()
             {
-                return 1;
+                return 1
                 return 2
             }
             """
@@ -57,7 +57,7 @@ describe 'func' ->
             """ """
             function ()
             {
-                1;
+                1
                 return 2
             }
             """
