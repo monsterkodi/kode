@@ -514,6 +514,8 @@ class Parser extends Parse
 
         @push '{'
 
+        first = @firstLineCol key
+        
         print.tokens 'object val' tokens if @debug
         
         exps = [@keyval key, tokens]
@@ -521,11 +523,11 @@ class Parser extends Parse
         print.tokens 'object continue...?' tokens if @debug
 
         tokens.shift() if tokens[0]?.type == 'nl'
-        
-        if tokens[0]? and (tokens[0].col == key.col or tokens[0].line == key.line)
+                
+        if tokens[0]? and (tokens[0].col == first.col or tokens[0].line == first.line)
             if tokens[0].text not in '])'
                 @verb 'continue object...' if @debug
-                if tokens[0].line == key.line then stop='nl' else stop=null
+                if tokens[0].line == first.line then stop='nl' else stop=null
                 exps = exps.concat @exps 'object' tokens, stop
 
         print.tokens 'object pop' tokens if @debug
@@ -588,5 +590,18 @@ class Parser extends Parse
             dot:  tokens.shift()
             prop: tokens.shift()
             # qmrk: qmrk
+            
+    # 000000000  000   000  000   0000000  
+    #    000     000   000  000  000       
+    #    000     000000000  000  0000000   
+    #    000     000   000  000       000  
+    #    000     000   000  000  0000000   
+    
+    this: (obj, tokens) ->
 
+        prop:
+            obj:  obj
+            dot:  type:'punct' text:'.' line:obj.line, col:obj.col
+            prop: tokens.shift()
+        
 module.exports = Parser

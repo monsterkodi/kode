@@ -6,14 +6,14 @@
 000   000   0000000   0000000    00000000
 ###
 
-slash    = require 'kslash'
-kstr     = require 'kstr'
-klor     = require 'klor'
-karg     = require 'karg'
-childp   = require 'child_process'
-print    = require './print'
-pkg      = require "#{__dirname}/../package"
-empty    = (a) -> a in ['' null undefined] or (typeof(a) == 'object' and Object.keys(a).length == 0)
+slash  = require 'kslash'
+kstr   = require 'kstr'
+klor   = require 'klor'
+karg   = require 'karg'
+childp = require 'child_process'
+print  = require './print'
+pkg    = require "#{__dirname}/../package"
+empty  = (a) -> a in ['' null undefined] or (typeof(a) == 'object' and Object.keys(a).length == 0)
 
 klor.kolor.globalize()
 

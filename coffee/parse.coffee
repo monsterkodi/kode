@@ -319,7 +319,7 @@ class Parse # the base class of Parser
                     @verb 'rhs is last minute lhs of index' e
                     e = @index e, tokens                
                     
-                # implement null checks here!
+                # implement null checks here?
                 
         @sheapPop 'rhs' 'rhs'
         e
@@ -350,6 +350,13 @@ class Parse # the base class of Parser
                 when '{' then nxt.text == '}'
                 
             break if b
+            
+            if e.text == '@' 
+                if nxt.type == 'block' and @stack[-1] == 'if' or nxt.text == 'then'
+                    break
+                else
+                    e = @this e, tokens
+                    break
             
             if nxt.text == '.'
                 @verb 'lhs prop'
@@ -392,16 +399,17 @@ class Parse # the base class of Parser
                     (e.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and 
                     (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no']) and 
                     (e.type != 'keyword' or (e.text in ['new' 'require' 'typeof' 'delete'])) and 
-                    # ((@stack[-1] not in ['if' 'for']) or nxt.line == e.line) and 
                     not e.array and
                     not e.object and
                     not e.keyval and
                     not e.operation and
+                    not e.incond and
                     e.call?.callee?.text not in ['delete''new''typeof'] and
                     'onearg' not in @stack
                     )
                 @verb 'lhs is lhs of implicit call! e' e, @stack[-1]
                 @verb '    is lhs of implicit call! nxt' nxt
+                @verb '    is lhs first' first 
                 e = @call e, tokens
                 break
 
@@ -513,6 +521,12 @@ class Parse # the base class of Parser
         line:1
         col: 0
 
+    # 00000000  000  00000000    0000000  000000000  000      000  000   000  00000000   0000000   0000000   000      
+    # 000       000  000   000  000          000     000      000  0000  000  000       000       000   000  000      
+    # 000000    000  0000000    0000000      000     000      000  000 0 000  0000000   000       000   000  000      
+    # 000       000  000   000       000     000     000      000  000  0000  000       000       000   000  000      
+    # 000       000  000   000  0000000      000     0000000  000  000   000  00000000   0000000   0000000   0000000  
+    
     firstLineCol: (e) =>
         
         if e?.col?
@@ -520,15 +534,15 @@ class Parse # the base class of Parser
                 line: e.line
                 col:  e.col
         else if e? and e instanceof Object
-            cols = Object.values(e).map @lastLineCol
+            cols = Object.values(e).map @firstLineCol
             if not empty cols
                 return cols.reduce (a,b) -> 
                     if a.line < b.line then a 
                     else if a.line == b.line
                         if a.col < b.col then a else b
                     else b
-        line:1
-        col: 0
+        line:Infinity
+        col: Infinity
         
     #  0000000  000   000  00000000   0000000   00000000     
     # 000       000   000  000       000   000  000   000    

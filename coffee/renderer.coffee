@@ -52,28 +52,29 @@ class Renderer
         if exp instanceof Array then return (@node(a) for a in exp).join ';\n'
 
         s = ''
+
         for k,v of exp
 
             s += switch k
                 when 'if'        then @if v
                 when 'for'       then @for v
                 when 'while'     then @while v
+                when 'return'    then @return v
                 when 'class'     then @class v
                 when 'switch'    then @switch v
                 when 'when'      then @when v
-                when 'incond'    then @incond v
                 when 'operation' then @operation v
+                when 'incond'    then @incond v
                 when 'parens'    then @parens v
-                when 'array'     then @array v
                 when 'object'    then @object v
                 when 'keyval'    then @keyval v
-                when 'call'      then @call v
-                when 'prop'      then @prop v
+                when 'array'     then @array v
                 when 'index'     then @index v
                 when 'slice'     then @slice v
-                when 'var'       then v.text
+                when 'prop'      then @prop v
                 when 'func'      then @func v
-                when 'return'    then @return v
+                when 'call'      then @call v
+                when 'var'       then v.text
                 else
                     log R4('renderer.node unhandled exp'), exp # if @debug or @verbose
                     ''
@@ -128,8 +129,8 @@ class Renderer
                 if constructor then error 'more than one constructor?'
                 m.keyval.key.text= 'constructor'
                 constructor = m
-            else if name.startsWith '@'
-                m.keyval.key.text = 'static ' + name[1..]
+            else if name.startsWith "'this." #'@'
+                m.keyval.key.text = 'static ' + name[6..-2]
             else if m.keyval.val.func?.arrow.text == '=>'
                 bind.push m
                 
@@ -293,7 +294,7 @@ class Renderer
         listVar = 'list'    
         s = ''
         s += "var #{listVar} = #{list}\n"
-        s += "for (var i = 0; i < #{listVar}.length; i++)\n"
+        s += gi+"for (var i = 0; i < #{listVar}.length; i++)\n"
         s += gi+"{\n"
         s += gi+id+"#{val} = #{listVar}[i]\n"
         for e in n.then ? []
@@ -385,6 +386,8 @@ class Renderer
         
         if tok.type == 'comment'
             @comment tok
+        else if tok.type == 'this' 
+            'this'
         else if tok.type == 'triple'
             '`' + tok.text[3..-4] + '`'
         else if tok.type == 'keyword' and tok.text == 'yes'
