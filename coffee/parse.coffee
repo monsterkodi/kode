@@ -86,15 +86,16 @@ class Parse # the base class of Parser
 
                 if tokens[0]?.type == 'nl' 
                     @verb "exps block end shift nl" 
-                    tokens.shift()
+                    nl = tokens.shift()
                     
                 if tokens[0]?.text == ','
-                    @verb "exps block end shift ,"
+                    @verb "exps block end shift , and continue..."
                     tokens.shift()
+                    continue
                     
-                @verb 'exps block end ...continue...'
-                continue
-                                            
+                @verb 'exps block end break!'
+                break
+                
             if tokens[0].type == 'block' 
                 @verb 'exps break on block'
                 break

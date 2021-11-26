@@ -109,6 +109,35 @@ describe 'func' ->
                 }
             }
             """
+
+        cmp """
+            a = ->
+                'a'
+            1
+            """ """
+            a = function ()
+            {
+                return 'a'
+            }
+            1
+            """
+            
+        cmp """
+            a = ->
+                log 'a'
+                    
+            b = ->
+                log 'b'
+            """ """
+            a = function ()
+            {
+                return console.log('a')
+            }
+            b = function ()
+            {
+                return console.log('b')
+            }
+            """
             
     #  0000000   0000000   000      000       0000000
     # 000       000   000  000      000      000

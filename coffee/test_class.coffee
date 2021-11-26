@@ -56,4 +56,44 @@ describe 'class' ->
                 {}
             }
             """
+            
+        cmp """
+            class X
+                @: -> 
+                    '@'
+                         
+                m: -> 'm'
+            """ """
+            class X
+            {
+                constructor ()
+                {
+                    '@'
+                }
+                m ()
+                {
+                    return 'm'
+                }
+            }
+            """
+             
+        cmp """
+            class X
+                @: -> '@'
+                         
+                m: ->
+                    'm'
+            """ """
+            class X
+            {
+                constructor ()
+                {
+                    '@'
+                }
+                m ()
+                {
+                    return 'm'
+                }
+            }
+            """
 
