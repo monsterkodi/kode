@@ -72,9 +72,7 @@ class Parse # the base class of Parser
                 when rule           then tokens[0].text == stop                    
                 else false
 
-            if b
-                @verb 'exps break for stack top' @stack
-                break 
+            if b then @verb 'exps break for stack top' @stack ; break 
                     
             if tokens[0].type == 'block'
     
@@ -96,17 +94,9 @@ class Parse # the base class of Parser
                 @verb 'exps block end break!'
                 break
                 
-            if tokens[0].type == 'block' 
-                @verb 'exps break on block'
-                break
-                
-            if tokens[0].text == ')'
-                @verb 'exps break on )'
-                break
-                
-            if rule == 'for vals' and tokens[0].text in ['in''of']
-                @verb 'exps break on in|of'
-                break
+            if tokens[0].type == 'block'    then @verb 'exps break on block'    ; break
+            if tokens[0].text == ')'        then @verb 'exps break on )'        ; break
+            if tokens[0].text in ['in''of'] and rule == 'for vals' then @verb 'exps break on in|of' ; break
                 
             if tokens[0].type == 'nl' 
                 
@@ -133,8 +123,6 @@ class Parse # the base class of Parser
                     log 'exps nl next line starts with .var!'
                     es.push @prop es.pop(), tokens
                     
-                # log 'tokens[0].col' tokens[0].col
-                
                 @verb 'exps nl continue...' 
                 continue
                 
@@ -242,9 +230,7 @@ class Parse # the base class of Parser
             if nxt.text in '({' and e.type in ['single' 'double' 'triple' 'num' 'regex']
                 break
             
-            if @stack[-1] == 'onearg' and nxt.type == 'op'
-                @verb 'rhs break for onearg'
-                break
+            if @stack[-1] == 'onearg' and nxt.type == 'op' then @verb 'rhs break for onearg'; break
                 
             else if nxt.text == ':'
                 if @stack[-1] != '{'
@@ -256,7 +242,9 @@ class Parse # the base class of Parser
             else if nxt.type == 'keyword' and nxt.text == 'in' and @stack[-1] != 'for'
                 e = @incond e, tokens
             else if e.text?
-                if      e.text == '['   then e = @array           e, tokens
+                if e.type in ['var''num'] and \
+                    nxt.type == 'dots'  then e = @slice           e, tokens
+                else if e.text == '['   then e = @array           e, tokens
                 else if e.text == '('   then e = @parens          e, tokens
                 else if e.text == '{'   then e = @curly           e, tokens                
                 else if e.text == 'not' then e = @operation null, e, tokens
@@ -276,29 +264,17 @@ class Parse # the base class of Parser
                         error 'wrong rhs increment'
                         return
                     e = @operation e, tokens.shift() 
-                else if nxt.type == 'dots' and e.type in ['var' 'num']
-                    e = @slice e, tokens
-                else if @stack[-1] == '[' and nxt.text == ']'
-                    @verb 'rhs array end'
-                    break
-                else if @stack[-1] == '{' and nxt.text == '}'
-                    @verb 'rhs curly end'
-                    break                    
                 else
                     print.tokens "rhs no nxt match? break! stack:#{@stack} nxt:" [nxt] if @verbose
                     break                    
                     
             else # if e is not a token anymore
-                if nxt.text in ['++''--'] and unspaced
-                    e = @operation e, tokens.shift() # missing break here?
-                else if nxt.type == 'dots' and @stack[-1] not in '.' # i think this should be removed!
-                    e = @slice e, tokens # missing break here?
-                else if @stack[-1] == 'call' and nxt.text == ']'
-                    @verb 'rhs call array end'
-                    break
-                else if @stack[-1] == '[' and nxt.text == ']'
-                    @verb 'rhs [ array end' nxt
-                    break
+                
+                if nxt.text in ['++''--']    and unspaced        then e = @operation e, tokens.shift(); break
+                else if @stack[-1] == 'call' and nxt.text == ']' then @verb 'rhs call array end';       break
+                else if @stack[-1] == '{'    and nxt.text == '}' then @verb 'rhs curly end';            break                    
+                else if @stack[-1] == '['    and nxt.text == ']' then @verb 'rhs array end';            break
+                else if @stack[-1] == '['    and nxt.text == ']' then @verb 'rhs [ array end' nxt;      break
                 else
                     if @verbose
                         print.ast "rhs no nxt match?? stack:#{@stack} e:" e
@@ -388,26 +364,22 @@ class Parse # the base class of Parser
                 e = @operation e, tokens.shift(), tokens
             
             else if nxt.type == 'func' and e.parens
-                f = tokens.shift()
-                @verb 'rhs is args for func' e
-                e = @func e, f, tokens
+                @verb 'lhs is args for func' e
+                e = @func e, tokens.shift(), tokens
                 
             else if nxt.text == '(' and unspaced
                 @verb 'lhs is lhs of call'
                 e = @call e, tokens
                     
-            else if nxt.text == '[' and unspaced and tokens[1]?.text != ']' # and e.text != '['
-                @verb 'rhs is lhs of index' e
+            else if nxt.text == '[' and unspaced and tokens[1]?.text != ']'
+                @verb 'lhs is lhs of index' e
                 e = @index e, tokens
                     
             else if (
                     spaced and (nxt.line == last.line or nxt.col > first.col) and
-                    nxt.text not in ')]},;:.' and 
                     nxt.text not in ['then' 'else' 'break' 'continue' 'in' 'of'] and 
-                    nxt.type not in ['nl'] and 
                     (e.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and 
                     (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no']) and 
-                    (e.type != 'keyword' or (e.text in ['new' 'require' 'typeof' 'delete'])) and 
                     not e.array and
                     not e.object and
                     not e.keyval and
