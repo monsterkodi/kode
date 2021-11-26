@@ -579,7 +579,7 @@ class Parser extends Parse
             {line, col} = @firstLineCol key
             key = 
                 type: 'single'
-                text: "'#{@renderer.node key}'"
+                text: "'#{@kode.renderer.node key}'"
                 line: line
                 col:  col
         # else

@@ -151,7 +151,7 @@ class Print
     # 000   000       000     000     000   000  
     # 000   000  0000000      000     000   000  
     
-    @astr: (ast) ->
+    @astr: (ast, scopes) ->
 
         printNode = (node, indent='', visited=[]) ->
 
@@ -166,22 +166,20 @@ class Print
                 return s if node in visited
                 visited.push node
                 
-                if not node.length
-                    s += indent + '[]\n'
-                else
-                    s += indent + '['
+                if node.length
                     for value in node
-                        s += '\n' 
                         s += printNode value, indent, visited
-                    s += indent + ']\n'
             else
                 return s if node in visited
                 visited.push node
                 
-                for name,value of node
-                    s += indent + name
-                    s += '\n'  
-                    s += printNode value, indent+'    ', visited
+                if node.vars? and node.exps? and not scopes
+                    s = printNode node.exps, indent, visited
+                else
+                    for name,value of node
+                        s += indent + name
+                        s += '\n'  
+                        s += printNode value, indent+'    ' visited
             s
 
         if ast instanceof Array

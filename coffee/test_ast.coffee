@@ -104,11 +104,6 @@ describe 'ast' ->
                 list
                     l
                 then
-                    vars
-                        []
-                    exps
-                        [
-                        a
-                        ]
+                    a
             """
             

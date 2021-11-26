@@ -27,10 +27,12 @@ class Kode
 
         Lexer     = require './lexer'
         Parser    = require './parser'
+        Scoper    = require './scoper'
         Renderer  = require './renderer'
 
-        @lexer    = new Lexer
-        @parser   = new Parser   @args
+        @lexer    = new Lexer    @
+        @parser   = new Parser   @
+        @scoper   = new Scoper   @
         @renderer = new Renderer @
 
     #  0000000  000      000
@@ -83,7 +85,7 @@ class Kode
         ast = @ast text
 
         if @args.parse then print.ast 'ast' ast
-        if @args.astr  then log print.astr ast
+        if @args.astr  then log print.astr ast, @args.scope
 
         js = @renderer.render ast
 
@@ -107,9 +109,9 @@ class Kode
         if @args.raw   then print.noon 'raw block' block
         if @args.block then print.block 'tl block' block
 
-        @parser.parse block
+        @scoper.vars @parser.parse block
 
-    astr: (text) -> print.astr @ast text
+    astr: (text, scopes) -> print.astr @ast(text), scopes
         
     # 00000000  000   000   0000000   000
     # 000       000   000  000   000  000
@@ -172,9 +174,10 @@ if not module.parent or module.parent.path.endsWith '/kode/bin'
             block       . ? print block tree                        . = false  . - B
             parse       . ? print parse tree                        . = false  . - P
             astr        . ? print parse tree as string              . = false  . - A
+            scope       . ? print scopes                            . = false  . - S
+            verbose     . ? log more                                . = false
             debug       . ? log debug                               . = false  . - D
             raw         . ? log raw                                 . = false  . - R
-            verbose     . ? log more                                . = false
 
         version  #{pkg.version}
         """

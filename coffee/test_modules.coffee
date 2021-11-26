@@ -93,65 +93,69 @@ describe 'modules' ->
         parser.parse lexer.blockify lexer.tokenize """
             if a then b else c
             """
-        .should.eql [
-            if:
-                exp:
-                    col: 3
-                    line: 1
-                    text: "a"
-                    type: "var"
-                then:
-                    vars:   []
-                    exps:   [ 
-                            col: 10
+        .should.eql
+            vars:   []            
+            exps:   [
+                    if:
+                        exp:
+                            col: 3
                             line: 1
-                            text: 'b'
-                            type: 'var'
-                            ]
-                else:
-                    vars:   []
-                    exps:   [
-                            col: 17
-                            line: 1
-                            text: 'c'
-                            type: 'var'
-                            ]
-            ]
-                        
+                            text: "a"
+                            type: "var"
+                        then:
+                            vars:   []
+                            exps:   [ 
+                                    col: 10
+                                    line: 1
+                                    text: 'b'
+                                    type: 'var'
+                                    ]
+                        else:
+                            vars:   []
+                            exps:   [
+                                    col: 17
+                                    line: 1
+                                    text: 'c'
+                                    type: 'var'
+                                    ]
+                    ]
+
         parser.parse lexer.blockify lexer.tokenize """
             a.b.c
             """
-        .should.eql [
-            prop:
-                obj:
+        .should.eql
+            vars:   []
+            exps:   [
                     prop:
                         obj:
-                            type:    'var'
-                            text:    'a'
-                            line:    1
-                            col:     0
+                            prop:
+                                obj:
+                                    type:    'var'
+                                    text:    'a'
+                                    line:    1
+                                    col:     0
+                                dot:
+                                    type:    'punct'
+                                    text:    '.'
+                                    line:    1
+                                    col:     1
+                              
+                                prop:
+                                    type:    'var'
+                                    text:    'b'
+                                    line:    1
+                                    col:     2
                         dot:
                             type:    'punct'
                             text:    '.'
                             line:    1
-                            col:     1
-                      
+                            col:     3
                         prop:
                             type:    'var'
-                            text:    'b'
+                            text:    'c'
                             line:    1
-                            col:     2
-                dot:
-                    type:    'punct'
-                    text:    '.'
-                    line:    1
-                    col:     3
-                prop:
-                    type:    'var'
-                    text:    'c'
-                    line:    1
-                    col:     4
-            ]
+                            col:     4
+                    ]
 
     # 00000000   00000000  000   000  0000000    00000000  00000000
     # 000   000  000       0000  000  000   000  000       000   000

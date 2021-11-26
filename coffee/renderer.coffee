@@ -20,14 +20,10 @@ class Renderer
     render: (ast) ->
 
         s = ''
-        s += @block ast
+        s += ast.exps.map((s) => @node s).join '\n'
         s
 
-    block: (nodes) ->
-
-        nodes.map((s) => @node s).join '\n'
-        
-    nodes: (nodes, sep='') ->
+    nodes: (nodes, sep=',') ->
         ss = nodes.map (s) => @node s
         ss.join sep
         
@@ -131,7 +127,7 @@ class Renderer
         if bind.length and not constructor # found some methods to bind, but no constructor
             ast = @kode.ast "constructor: ->" # create one from scratch
             print.noon 'ast' ast if @debug
-            constructor = ast[0].object.keyvals[0]
+            constructor = ast.exps[0].object.keyvals[0]
             mthds.unshift constructor
             if @debug
                 print.noon 'constructor' constructor
@@ -472,13 +468,7 @@ class Renderer
         sep = '' if not op.lhs or not op.rhs
         
         if o in ['<''<=''===''!==''>=''>']
-            lo = opmap op.lhs?.operation?.operator.text
-            if lo in ['<''<=''===''!==''>=''>']
-                print.ast "lo #{lo}" op
-                return '(' + @node(op.lhs) + ' && ' + @node(op.lhs.operation.rhs) + sep + o + sep + kstr.lstrip(@node(op.rhs)) + ')'
-                
             ro = opmap op.rhs?.operation?.operator.text
-            # print.ast "ro #{ro}" op
             if ro in ['<''<=''===''!==''>=''>']
                 return '(' + @node(op.lhs) + sep + o + sep + @node(op.rhs.operation.lhs) + ' && ' + kstr.lstrip(@node(op.rhs)) + ')'
 

@@ -10,16 +10,13 @@ kstr  = require 'kstr'
 print = require './print'
 empty = (a) -> a in ['' null undefined] or (typeof(a) == 'object' and Object.keys(a).length == 0)
 
-Renderer = require './renderer'
-
 class Parse # the base class of Parser
 
-    @: (args) ->
+    @: (@kode) ->
 
-        @renderer = new Renderer args
-        @debug    = args?.debug
-        @verbose  = args?.verbose
-        @raw      = args?.raw
+        @debug    = @kode.args?.debug
+        @verbose  = @kode.args?.verbose
+        @raw      = @kode.args?.raw
 
     # 00000000    0000000   00000000    0000000  00000000
     # 000   000  000   000  000   000  000       000
@@ -39,7 +36,8 @@ class Parse # the base class of Parser
 
         if @raw then print.noon 'raw ast' ast
 
-        ast
+        vars:[] 
+        exps:ast
 
     # 00000000  000   000  00000000    0000000
     # 000        000 000   000   000  000
@@ -429,8 +427,6 @@ class Parse # the base class of Parser
                 tokens.shift()
             tokens = block.tokens
             nl = null
-        else 
-            error "#{id}: then or block expected!"
 
         thn = @exps id, tokens, nl
         
@@ -544,9 +540,6 @@ class Parse # the base class of Parser
         if @verbose
             print.stack @stack, p, (s) -> W1 w1 s
 
-    verb: ->
-
-        if @verbose
-            console.log.apply console.log, arguments
-        
+    verb: -> if @verbose then console.log.apply console.log, arguments 
+    
 module.exports = Parse
