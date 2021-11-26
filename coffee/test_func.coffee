@@ -121,11 +121,11 @@ describe 'func' ->
             }
             1
             """
-            
+
         cmp """
             a = ->
                 log 'a'
-                    
+
             b = ->
                 log 'b'
             """ """
@@ -138,7 +138,7 @@ describe 'func' ->
                 return console.log('b')
             }
             """
-            
+
     #  0000000   0000000   000      000       0000000
     # 000       000   000  000      000      000
     # 000       000000000  000      000      0000000
@@ -151,7 +151,7 @@ describe 'func' ->
         cmp 'a(b,c)'          'a(b,c)'
         cmp 'a(1,null,"2")'   'a(1,null,"2")'
         cmp 'a[1](b)'         'a[1](b)'
-
+        cmp "f 'b', (a) ->"   "f('b',function (a)\n{})"
         cmp "a('1' 2 3.4 true false null undefined NaN Infinity)",
             "a('1',2,3.4,true,false,null,undefined,NaN,Infinity)"
 
@@ -221,14 +221,41 @@ describe 'func' ->
                 return c
             })
             """
-            
+
         cmp 'l = pat.map ->' 'l = pat.map(function ()\n{})'
-        
-        # cmp 'l = pat.l.map ((i) -> i), y',
+
+        cmp """
+            ((a) -> 1)
+            """ """
+            (function (a)
+            {
+                return 1
+            })
+            """
+
+        # cmp """
+            # l = a (i) -> 0
+            # """ """
+            # l = a(function (i)
+            # {
+                # return 0
+            # }
             # """
-            # l = pat.map(function (i)
+
+        # cmp """
+            # l = timer ((i) -> 1)
+            # """ """
+            # l = timer(function (i)
+            # {
+                # return 1
+            # }
+            # """
+
+        # cmp """
+            # l = timer ((i) -> i), y
+            # """ """
+            # l = timer(function (i)
             # {
                 # return i
-            # }, y)'
+            # }, y)
             # """
-            

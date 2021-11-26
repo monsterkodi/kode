@@ -17,6 +17,9 @@ describe 'misc' ->
         cmp '@a.b'   'this.a.b'
         cmp '@a.b()' 'this.a.b()'
         cmp 't = @'  't = this'
+        
+        cmp "a.on 'b', @c", "a.on('b',this.c)" 
+        cmp "a.on 'b' @c", "a.on('b',this.c)" 
 
         cmp """
             if @

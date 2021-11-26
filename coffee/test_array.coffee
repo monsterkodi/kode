@@ -79,17 +79,21 @@ describe 'array' ->
         cmp "['1' '2']"         "['1','2']"
         cmp '["1" , "2"]'       '["1","2"]'
         cmp "['1' , '2']"       "['1','2']"
+        cmp "[['1'] , [2]]"     "[['1'],[2]]"
         cmp '[[]]'              '[[]]'
         cmp '[{}]'              '[{}]'
         cmp '[[[]]]'            '[[[]]]'
         cmp '[[[] []]]'         '[[[],[]]]'
         cmp '[[[],[]]]'         '[[[],[]]]'
         cmp '[[[][]]]'          '[[[],[]]]'
-        
         cmp '[[[1]], 1]'        '[[[1]],1]'
         
-        cmp "[['1'] , [2]]"     "[['1'],[2]]"
-        cmp "['1' , a, true, false, null, undefined]" "['1',a,true,false,null,undefined]"
+        cmp "['1' , a, true, false, null, undefined]",
+            "['1',a,true,false,null,undefined]"
+            
+        cmp "a = [1 2 - 3 x 4 + 5 'a' b 'c']",  
+            "a = [1,2 - 3,x(4 + 5,'a',b('c'))]"
+            
         cmp """['1' "2" 3 4.5 [] {} true false null undefined NaN Infinity yes no]""",
             """['1',"2",3,4.5,[],{},true,false,null,undefined,NaN,Infinity,true,false]"""
 

@@ -245,7 +245,7 @@ class Parse # the base class of Parser
                             
             if spaced and nxt.text == '('
                 @verb 'rhs is open paren'
-                e = @parens tok, tokens
+                e = @parens e, tokens
 
             else if nxt.text == ':'
                 if @stack[-1] != '{'

@@ -67,7 +67,6 @@ describe 'punctuation' ->
         # cmp "a = ( a:1 b:2 ) ->",     "a = function(arg)"
         # cmp 'log "#{a+1}", "#{a}"',   'console.log("" + (a + 1), "" + a)'
         # cmp 'log "#{a+1}" "#{a}"',    'console.log("" + (a + 1), "" + a)'
-        # cmp "a = [1 2 - 3 x 4 + 5 'a' b 'c']", "a = [1,2 - 3,x(4 + 5,'a',b('c'))]"
             
         # cmp """
             # switch a
@@ -102,9 +101,5 @@ describe 'punctuation' ->
                 # ]
             # ];"""    
             
-        # cmp "@c", "this.c" 
-        # cmp "a.on 'b', @c", "a.on('b', this.c)" 
-        # cmp "a.on 'b' @c", "a.on('b', this.c)" 
-        # cmp "f 'b', (a) ->", "f('b',function(a)\n{})" 
         # cmp "f 'a' (b) ->", "f('a',function(b)\n{})" 
         # cmp "f 'b' not a", "f('b', !a)" 
