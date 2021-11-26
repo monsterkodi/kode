@@ -103,6 +103,32 @@ class Lexer
 
         newTokens
         
+    # 00     00  00000000  00000000    0000000   00000000   0000000   00000000   
+    # 000   000  000       000   000  000        000       000   000  000   000  
+    # 000000000  0000000   0000000    000  0000  0000000   000   000  00000000   
+    # 000 0 000  000       000   000  000   000  000       000   000  000        
+    # 000   000  00000000  000   000   0000000   00000000   0000000   000        
+    
+    # walks through tokens and joins lines that end with operators (except ++ and --)
+    
+    mergeop: (tokens) ->
+
+        newTokens = []
+
+        idx = 0
+        while idx < tokens.length
+            tok = tokens[idx]
+            if tok.type == 'op' and tok.text not in ['--''++']
+                newTokens.push tok
+                idx += 1
+                while tokens[idx].type in ['nl' 'ws']
+                    idx += 1
+            else
+                newTokens.push tok
+                idx += 1
+
+        newTokens
+        
     # 000   000  000   000   0000000   0000000   00     00  00     00  00000000  000   000  000000000  
     # 000   000  0000  000  000       000   000  000   000  000   000  000       0000  000     000     
     # 000   000  000 0 000  000       000   000  000000000  000000000  0000000   000 0 000     000     
@@ -120,25 +146,6 @@ class Lexer
                 # if not (tokens[idx-1]?.type == 'nl' or tokens[idx-2]?.type == 'nl' and tokens[idx-1]?.type == 'ws')
                 idx += 1
                 continue
-
-            newTokens.push tok
-            idx += 1
-
-        newTokens
-
-    commatise: (tokens) ->
-        
-        newTokens = []
-
-        idx = 0
-        while idx < tokens.length
-            tok = tokens[idx]
-            if tok.type in ['num''single''double''triple'] or tok.text == '}'
-                if tokens[idx+1]?.type == 'ws' and tokens[idx+2]?.type in ['num''single''double''triple']
-                    newTokens.push tok
-                    newTokens.push type:'punct' text:',' col:tok.col, line:tok.line
-                    idx += 2
-                    continue
 
             newTokens.push tok
             idx += 1
@@ -168,8 +175,8 @@ class Lexer
     blockify: (tokens) ->
 
         tokens = @unslash   tokens
+        tokens = @mergeop   tokens
         tokens = @uncomment tokens
-        tokens = @commatise tokens
 
         blocks = []
 

@@ -62,44 +62,22 @@ describe 'punctuation' ->
         
         cmp "a = ['a' 1 2.3 null undefined true false yes no]", 
               "a = ['a',1,2.3,null,undefined,true,false,true,false]"
-              
-        # cmp "a = ( a, b=1 c=2 ) ->",  "a = function(a,b=1,c=1)"
-        # cmp "a = ( a:1 b:2 ) ->",     "a = function(arg)"
-        # cmp 'log "#{a+1}", "#{a}"',   'console.log("" + (a + 1), "" + a)'
-        # cmp 'log "#{a+1}" "#{a}"',    'console.log("" + (a + 1), "" + a)'
+                  
+        cmp "a = [ [a:2] [b:'4'] [c:[]] ]"  "a = [[{a:2}],[{b:'4'}],[{c:[]}]]"
             
-        # cmp """
-            # switch a
-                # when 1 2 3 then
-                # when 'a' 'b' 'c' then
-            # ""","""
-            # switch (a)
-            # {
-                # case 1:
-                # case 2:
-                # case 3:
-                    # break;
-                # case 'a':
-                # case 'b':
-                # case 'c':
-            # }"""
-    
-        # cmp "a = [ [a:2] [b:'4'] [c:[]] ]", """
-            # a = [
-                # [
-                    # {
-                        # a: 2
-                    # }
-                # ], [
-                    # {
-                        # b: '4'
-                    # }
-                # ], [
-                    # {
-                        # c: []
-                    # }
-                # ]
-            # ];"""    
-            
-        # cmp "f 'a' (b) ->", "f('a',function(b)\n{})" 
-        # cmp "f 'b' not a", "f('b', !a)" 
+        cmp "f 'a' ->"          "f('a',function ()\n{})" 
+        cmp "f 'a' (b) ->"      "f('a',function (b)\n{})" 
+        cmp "f 'b' not a"       "f('b',!a)" 
+        cmp "f 'b' {a:1}"       "f('b',{a:1})" 
+        cmp "f 'b' ++a"         "f('b',++a)" 
+        cmp "f 'b' []"          "f('b',[])" 
+        cmp "f 'b' 1 2"         "f('b',1,2)" 
+        
+        cmp "g 2 ->"            "g(2,function ()\n{})" 
+        cmp "g 2 (b) ->"        "g(2,function (b)\n{})" 
+        cmp "g 2 not a"         "g(2,!a)" 
+        cmp "g 2 {a:1}"         "g(2,{a:1})" 
+        cmp "g 2 ++a"           "g(2,++a)" 
+        cmp "g 2 []"            "g(2,[])" 
+        cmp "g 2 1 2"           "g(2,1,2)" 
+        

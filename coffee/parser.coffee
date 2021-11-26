@@ -260,8 +260,12 @@ class Parser extends Parse
 
     func: (args, arrow, tokens) ->
 
+        @push 'func'
+        
         body = @exps 'func body' tokens, 'nl'
-            
+        
+        @pop 'func'
+        
         func:
             args:  args
             arrow: arrow
@@ -296,7 +300,8 @@ class Parser extends Parse
         if tok.type == 'keyword' and tok.text in ['typeof' 'delete']
             @push 'onearg'
         
-        if tokens[0].text == '('
+        last = @lastLineCol tok
+        if tokens[0].text == '(' and tokens[0].line == last.line and tokens[0].col == last.col
             open = tokens.shift()
             if tokens[0]?.text == ')'
                 args = []
@@ -337,12 +342,17 @@ class Parser extends Parse
 
         @push "op#{op.text}"
         
-        # if lhs?.token then lhs = lhs.token
-        print.tokens "operation #{lhs.text} #{op.text}" tokens if lhs and @debug
+        print.ast 'operation lhs' lhs if @debug
+        print.tokens "operation #{lhs?.text} #{op.text}" tokens if @debug
         
-        rhs = @blockExp 'operation' tokens if tokens
+        if op.text == '='
+            # rhs = @blockExp 'operation lhs' tokens
+            rhs = @exp tokens
+        else
+            rhs = @exp tokens
         
-        # if rhs?.token then rhs = rhs.token
+        print.ast 'operation rhs' rhs if @debug
+        print.tokens "operation #{rhs?.text} #{op.text}" tokens if @debug
         
         @pop "op#{op.text}"
         
@@ -413,9 +423,6 @@ class Parser extends Parse
 
         if not upto then return error "no slice end!"
         
-        # if from.token then from = from.token
-        # if upto.token then upto = upto.token
-
         slice:
             from: from
             dots: dots

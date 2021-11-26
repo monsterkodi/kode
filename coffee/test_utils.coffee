@@ -14,3 +14,4 @@ kode = new Kode()
 module.exports = 
     
     cmp: (c,p) -> kode.compile(c).should.eql p
+    ast: (c,p) -> kode.astr(c).should.eql p

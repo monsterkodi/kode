@@ -10,12 +10,6 @@ kstr  = require 'kstr'
 print = require './print'
 empty = (a) -> a in ['' null undefined] or (typeof(a) == 'object' and Object.keys(a).length == 0)
 
-opmap =
-    and:    '&&'
-    or:     '||'
-    '==':   '==='
-    '!=':   '!=='
-
 class Renderer
 
     @: (@kode) ->
@@ -451,17 +445,37 @@ class Renderer
     #  0000000   000        00000000  000   000  000   000     000     000   0000000   000   000
 
     operation: (op) ->
+        
+        opmap = (o) ->
+            omp =
+                and:    '&&'
+                or:     '||'
+                not:    '!'
+                '==':   '==='
+                '!=':   '!=='
+            omp[o] ? o
 
-        o   = opmap[op.operator.text] ? op.operator.text
+        o   = opmap op.operator.text
         sep = ' '
         sep = '' if not op.lhs or not op.rhs
         
         if o in ['<''<=''===''!==''>=''>']
-            ro = opmap[op.rhs?.operation?.operator.text] ? op.rhs?.operation?.operator.text
+            lo = opmap op.lhs?.operation?.operator.text
+            if lo in ['<''<=''===''!==''>=''>']
+                print.ast "lo #{lo}" op
+                return '(' + @node(op.lhs) + ' && ' + @node(op.lhs.operation.rhs) + sep + o + sep + kstr.lstrip(@node(op.rhs)) + ')'
+                
+            ro = opmap op.rhs?.operation?.operator.text
+            # print.ast "ro #{ro}" op
             if ro in ['<''<=''===''!==''>=''>']
                 return '(' + @node(op.lhs) + sep + o + sep + @node(op.rhs.operation.lhs) + ' && ' + kstr.lstrip(@node(op.rhs)) + ')'
 
-        @node(op.lhs) + sep + o + sep + kstr.lstrip @node(op.rhs)
+        open = close = ''
+        if o != '=' and op.rhs?.operation?.operator.text == '='
+            open = '('
+            close = ')'
+                
+        @node(op.lhs) + sep + o + sep + open + kstr.lstrip @node(op.rhs) + close
 
     # 000  000   000   0000000   0000000   000   000  0000000    
     # 000  0000  000  000       000   000  0000  000  000   000  

@@ -125,11 +125,11 @@ class Print
                 return s if node in visited
                 visited.push node
                 
-                s += lpad + ' ' + bold w3(indent + '{')
+                s += lpad + ' ' + bold w3(indent + '[')
                 for value in node
                     s += '\n' 
                     s += printNode value, indent, visited
-                s += lpad + ' ' + bold w3(indent + '}\n')
+                s += lpad + ' ' + bold w3(indent + ']\n')
             else
                 return s if node in visited
                 visited.push node
@@ -145,6 +145,49 @@ class Print
         else
             log printNode ast
 
+    #  0000000    0000000  000000000  00000000   
+    # 000   000  000          000     000   000  
+    # 000000000  0000000      000     0000000    
+    # 000   000       000     000     000   000  
+    # 000   000  0000000      000     000   000  
+    
+    @astr: (ast) ->
+
+        printNode = (node, indent='', visited=[]) ->
+
+            s = ''
+
+            return s if not node
+            
+            if node.type
+                s += indent + node.text + '\n'
+            else if node instanceof Array
+                
+                return s if node in visited
+                visited.push node
+                
+                s += indent + '['
+                for value in node
+                    s += '\n' 
+                    s += printNode value, indent, visited
+                s += indent + ']\n'
+            else
+                return s if node in visited
+                visited.push node
+                
+                for name,value of node
+                    s += indent + name
+                    s += '\n'  
+                    s += printNode value, indent+'  ', visited
+            s
+
+        if ast instanceof Array
+            s = (printNode node for node in ast).join ''
+        else
+            s = printNode ast
+            
+        kstr.strip s, ' \n'
+            
     #  0000000   0000000   0000000    00000000
     # 000       000   000  000   000  000
     # 000       000   000  000   000  0000000

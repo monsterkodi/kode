@@ -239,13 +239,16 @@ class Parse # the base class of Parser
             unspaced = (llc = @lastLineCol(e)).col == nxt.col and llc.line == nxt.line
             spaced = not unspaced
 
-            if @stack[-1] == 'onearg' and nxt.type in ['op']
+            if nxt.text in '({' and e.type in ['single' 'double' 'triple' 'num' 'regex']
+                break
+            
+            if @stack[-1] == 'onearg' and nxt.type == 'op'
                 @verb 'rhs break for onearg'
                 break
-                            
-            if spaced and nxt.text == '('
-                @verb 'rhs is open paren'
-                e = @parens e, tokens
+                
+            # if spaced and nxt.text == '('
+                # @verb 'rhs is open paren'
+                # e = @parens e, tokens
 
             else if nxt.text == ':'
                 if @stack[-1] != '{'
@@ -257,15 +260,16 @@ class Parse # the base class of Parser
             else if nxt.type == 'keyword' and nxt.text == 'in' and @stack[-1] != 'for'
                 e = @incond e, tokens
             else if e.text?
-                if      e.text == '(' then e = @parens e, tokens
-                else if e.text == '[' then e = @array  e, tokens
-                else if e.text == '{' then e = @curly  e, tokens
+                if      e.text == '['   then e = @array           e, tokens
+                else if e.text == '('   then e = @parens          e, tokens
+                else if e.text == '{'   then e = @curly           e, tokens                
+                else if e.text == 'not' then e = @operation null, e, tokens
                 else if e.text in ['+''-''++''--'] and unspaced
                     if nxt.type not in ['var''paren'] and e.text in ['++''--']
                         tokens.shift()
                         error 'wrong lhs increment' e, nxt
                         return
-                    @verb 'lhs null operation'
+                    @verb 'rhs null operation'
                     e = @operation null, e, tokens
                     if e.operation.rhs?.operation?.operator?.text in ['++''--']
                         error 'left and right side increment'
@@ -366,9 +370,18 @@ class Parse # the base class of Parser
                 qmark = tokens.shift()
                 e = @prop e, tokens, qmark # this should be done differently!
                 
-            else if nxt.type == 'op' and nxt.text not in ['++' '--' '+' '-'] and e.text not in ['[' '('] and 'onearg' not in @stack
-                @verb 'lhs is lhs of op' e, nxt
-                e = @operation e, tokens.shift(), tokens
+            else if (
+                    nxt.type == 'op' and 
+                    nxt.text not in ['++' '--' '+' '-' 'not'] and 
+                    e.text not in ['[' '('] and                     
+                    'onearg' not in @stack
+                    )
+                if @stack[-1]?.startsWith 'op' and @stack[-1] != 'op='
+                    @verb 'lhs stop on operation' e, nxt
+                    break
+                else
+                    @verb 'lhs is lhs of op' e, nxt
+                    e = @operation e, tokens.shift(), tokens
                 
             else if (
                     nxt.text in ['+' '-'] and 
@@ -380,7 +393,7 @@ class Parse # the base class of Parser
             
             else if nxt.type == 'func' and e.parens
                 f = tokens.shift()
-                @verb 'rhs func for e' e
+                @verb 'rhs is args for func' e
                 e = @func e, f, tokens
                 
             else if nxt.text == '(' and unspaced
@@ -488,15 +501,15 @@ class Parse # the base class of Parser
     # 000   000  000      000   000  000       000  000   000        000 000   000        
     # 0000000    0000000   0000000    0000000  000   000  00000000  000   000  000        
     
-    blockExp: (id, tokens) ->
-        
-        @verb "blockExp #{id}"
-        if tokens[0]?.type == 'block'
-            block = tokens.shift()
-            # if tokens[0]?.type == 'nl' then tokens.shift()
-            @exp block.tokens
-        else 
-            @exp tokens
+    # blockExp: (id, tokens) ->
+#         
+        # @verb "blockExp #{id}"
+        # if tokens[0]?.type == 'block'
+            # block = tokens.shift()
+            # # if tokens[0]?.type == 'nl' then tokens.shift()
+            # @exp block.tokens
+        # else 
+            # @exp tokens
             
     # 000       0000000    0000000  000000000  000      000  000   000  00000000   0000000   0000000   000      
     # 000      000   000  000          000     000      000  0000  000  000       000       000   000  000      

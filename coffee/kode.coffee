@@ -83,6 +83,7 @@ class Kode
         ast = @ast text
 
         if @args.parse then print.ast 'ast' ast
+        if @args.astr  then log print.astr ast
 
         js = @renderer.render ast
 
@@ -108,6 +109,8 @@ class Kode
 
         @parser.parse block
 
+    astr: (text) -> print.astr @ast text
+        
     # 00000000  000   000   0000000   000
     # 000       000   000  000   000  000
     # 0000000    000 000   000000000  000
@@ -168,6 +171,7 @@ if not module.parent or module.parent.path.endsWith '/kode/bin'
             tokens      . ? print tokens                            . = false  . - T
             block       . ? print block tree                        . = false  . - B
             parse       . ? print parse tree                        . = false  . - P
+            astr        . ? print parse tree as string              . = false  . - A
             debug       . ? log debug                               . = false  . - D
             raw         . ? log raw                                 . = false  . - R
             verbose     . ? log more                                . = false

@@ -72,27 +72,62 @@ describe 'func' ->
             """
 
         cmp """
+            a.x = (y,z) -> q
+            """ """
+            a.x = function (y, z)
+            {
+                return q
+            }
+            """
+
+        cmp """
+            a = ->
+                b = ->
+            """ """
+            a = function ()
+            {
+                return b = function ()
+                {}
+            }
+            """
+            
+        cmp """
             a = (b,c) ->
                 b = (e, f) -> g
+                b
+            """ """
+            a = function (b, c)
+            {
+                b = function (e, f)
+                {
+                    return g
+                }
+                return b
+            }
+            """
+            
+        cmp """
+            a = (b,c) ->
+                b = (e, f) -> h
             """ """
             a = function (b, c)
             {
                 return b = function (e, f)
                 {
-                    return g
+                    return h
                 }
             }
             """
 
         cmp """
             a = (b,c) ->
-                (e, f) -> g
+                (e, f) -> j
             """ """
             a = function (b, c)
             {
                 return function (e, f)
                 {
-                    return g
+                    return j
                 }
             }
             """
@@ -138,6 +173,8 @@ describe 'func' ->
                 return console.log('b')
             }
             """
+            
+        cmp "a = ( a, b=1 c=2 ) ->",  "a = function (a, b = 1, c = 2)\n{}"            
 
     #  0000000   0000000   000      000       0000000
     # 000       000   000  000      000      000
@@ -233,29 +270,29 @@ describe 'func' ->
             })
             """
 
-        # cmp """
-            # l = a (i) -> 0
-            # """ """
-            # l = a(function (i)
-            # {
-                # return 0
-            # }
-            # """
+        cmp """
+            l = a (i) -> 0
+            """ """
+            l = a(function (i)
+            {
+                return 0
+            })
+            """
 
-        # cmp """
-            # l = timer ((i) -> 1)
-            # """ """
-            # l = timer(function (i)
-            # {
-                # return 1
-            # }
-            # """
+        cmp """
+            l = timer ((i) -> 1)
+            """ """
+            l = timer((function (i)
+            {
+                return 1
+            }))
+            """
 
-        # cmp """
-            # l = timer ((i) -> i), y
-            # """ """
-            # l = timer(function (i)
-            # {
-                # return i
-            # }, y)
-            # """
+        cmp """
+            l = timer ((i) -> i), y
+            """ """
+            l = timer((function (i)
+            {
+                return i
+            }),y)
+            """
