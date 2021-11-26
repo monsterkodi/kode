@@ -86,6 +86,8 @@ class Parser extends Parse
         print.tokens 'for' tokens if @debug
 
         vals = @exps 'for vals' tokens
+        
+        vals = vals[0] if vals.length == 1
 
         print.tokens 'inof' tokens if @debug
         

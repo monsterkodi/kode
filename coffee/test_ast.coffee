@@ -94,3 +94,18 @@ describe 'ast' ->
                     c
             """
             
+        ast 'for a in l then a',
+            """
+            for
+              vals
+                a
+              inof
+                in
+              list
+                l
+              then
+                [
+                a
+                ]
+            """
+            

@@ -160,11 +160,11 @@ class Renderer
     
     mthd: (n) ->
 
-        if n.type == 'comment'
-            return @comment n
+        # if n.type == 'comment'
+            # return @comment n
         
         if n.keyval
-            s = @func n.keyval.val.func, n.keyval.key.text
+            s = @indent + @func n.keyval.val.func, n.keyval.key.text
         s
 
     # 00000000  000   000  000   000   0000000  
@@ -178,7 +178,7 @@ class Renderer
         id = '    '
         gi = @indent ? ''
         
-        s = gi + name
+        s = name
         s += ' ('
         args = n.args?.parens?.exps
         if args
@@ -287,7 +287,6 @@ class Renderer
         gi = @indent ? ''
         @indent = gi+id
 
-        val = n.vals.text ? n.vals[0]?.text
         list = @node n.list
         
         if not list or list == 'undefined'
@@ -297,9 +296,22 @@ class Renderer
         listVar = 'list'    
         s = ''
         s += "var #{listVar} = #{list}\n"
-        s += gi+"for (var i = 0; i < #{listVar}.length; i++)\n"
-        s += gi+"{\n"
-        s += gi+id+"#{val} = #{listVar}[i]\n"
+        if n.vals.text
+            s += gi+"for (var i = 0; i < #{listVar}.length; i++)\n"
+            s += gi+"{\n"
+            s += gi+id+"var #{n.vals.text} = #{listVar}[i]\n"
+        else if n.vals.array?.items
+            s += gi+"for (var i = 0; i < #{listVar}.length; i++)\n"
+            s += gi+"{\n"
+            for j in 0...n.vals.array.items.length
+                v = n.vals.array.items[j]
+                s += gi+id+"var #{v.text} = #{listVar}[i][#{j}]\n"
+        else if n.vals.length > 1
+            lv = n.vals[1].text
+            s += gi+"for (var #{lv} = 0; #{lv} < #{listVar}.length; #{lv}++)\n"
+            s += gi+"{\n"
+            s += gi+id+"var #{n.vals[0].text} = #{listVar}[i]\n"
+            
         for e in n.then ? []
             s += gi+id + @node(e) + '\n'
         s += gi+"}"
@@ -318,7 +330,7 @@ class Renderer
         
         obj = @node n.list
         s = ''
-        s += gi+"for (key in #{obj})\n"
+        s += "for (key in #{obj})\n"
         s += gi+"{\n"
         if val
             s += gi+id+"#{val} = #{obj}[key]\n"
