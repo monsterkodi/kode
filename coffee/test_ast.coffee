@@ -21,91 +21,94 @@ describe 'ast' ->
         ast 'a and b', 
             """
             operation
-              lhs
-                a
-              operator
-                and
-              rhs
-                b
+                lhs
+                    a
+                operator
+                    and
+                rhs
+                    b
             """
             
         ast '1 + 2',
             """
             operation
-              lhs
-                1
-              operator
-                +
-              rhs
-                2
+                lhs
+                    1
+                operator
+                    +
+                rhs
+                    2
             """
             
         ast '++a',
             """
             operation
-              lhs
-              operator
-                ++
-              rhs
-                a
+                lhs
+                operator
+                    ++
+                rhs
+                    a
             """
 
         ast 'not a',
             """
             operation
-              lhs
-              operator
-                not
-              rhs
-                a
+                lhs
+                operator
+                    not
+                rhs
+                    a
             """
             
         ast 'a = b + 1',
             """
             operation
-              lhs
-                a
-              operator
-                =
-              rhs
-                operation
-                  lhs
-                    b
-                  operator
-                    +
-                  rhs
-                    1
+                lhs
+                    a
+                operator
+                    =
+                rhs
+                    operation
+                        lhs
+                            b
+                        operator
+                            +
+                        rhs
+                            1
             """
 
         ast 'a = b = c',
             """
             operation
-              lhs
-                a
-              operator
-                =
-              rhs
-                operation
-                  lhs
-                    b
-                  operator
+                lhs
+                    a
+                operator
                     =
-                  rhs
-                    c
+                rhs
+                    operation
+                        lhs
+                            b
+                        operator
+                            =
+                        rhs
+                            c
             """
             
         ast 'for a in l then a',
             """
             for
-              vals
-                a
-              inof
-                in
-              list
-                l
-              then
-                [
-                a
-                ]
+                vals
+                    a
+                inof
+                    in
+                list
+                    l
+                then
+                    vars
+                        []
+                    exps
+                        [
+                        a
+                        ]
             """
             

@@ -166,11 +166,14 @@ class Print
                 return s if node in visited
                 visited.push node
                 
-                s += indent + '['
-                for value in node
-                    s += '\n' 
-                    s += printNode value, indent, visited
-                s += indent + ']\n'
+                if not node.length
+                    s += indent + '[]\n'
+                else
+                    s += indent + '['
+                    for value in node
+                        s += '\n' 
+                        s += printNode value, indent, visited
+                    s += indent + ']\n'
             else
                 return s if node in visited
                 visited.push node
@@ -178,7 +181,7 @@ class Print
                 for name,value of node
                     s += indent + name
                     s += '\n'  
-                    s += printNode value, indent+'  ', visited
+                    s += printNode value, indent+'    ', visited
             s
 
         if ast instanceof Array

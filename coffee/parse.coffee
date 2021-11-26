@@ -203,7 +203,7 @@ class Parse # the base class of Parser
             e = @rhs e, tokens               # first, try to eat as much tokens as possible to the right
             print.ast "rhs" e if @verbose    
 
-            e = @lhs e, tokens               # see, if we can the result as the left hand side of something
+            e = @lhs e, tokens               # see, if we can use the result as the left hand side of something
             print.ast "lhs" e if @verbose   
             
             if numTokens == tokens.length
@@ -246,10 +246,6 @@ class Parse # the base class of Parser
                 @verb 'rhs break for onearg'
                 break
                 
-            # if spaced and nxt.text == '('
-                # @verb 'rhs is open paren'
-                # e = @parens e, tokens
-
             else if nxt.text == ':'
                 if @stack[-1] != '{'
                     @verb 'rhs is first key of implicit object' e
@@ -494,23 +490,7 @@ class Parse # the base class of Parser
             print.tokens 'dangling block tokens' tokens
             
         exps
-        
-    # 0000000    000       0000000    0000000  000   000  00000000  000   000  00000000   
-    # 000   000  000      000   000  000       000  000   000        000 000   000   000  
-    # 0000000    000      000   000  000       0000000    0000000     00000    00000000   
-    # 000   000  000      000   000  000       000  000   000        000 000   000        
-    # 0000000    0000000   0000000    0000000  000   000  00000000  000   000  000        
-    
-    # blockExp: (id, tokens) ->
-#         
-        # @verb "blockExp #{id}"
-        # if tokens[0]?.type == 'block'
-            # block = tokens.shift()
-            # # if tokens[0]?.type == 'nl' then tokens.shift()
-            # @exp block.tokens
-        # else 
-            # @exp tokens
-            
+                    
     # 000       0000000    0000000  000000000  000      000  000   000  00000000   0000000   0000000   000      
     # 000      000   000  000          000     000      000  0000  000  000       000       000   000  000      
     # 000      000000000  0000000      000     000      000  000 0 000  0000000   000       000   000  000      

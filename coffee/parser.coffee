@@ -13,6 +13,11 @@ Parse = require './parse'
 
 class Parser extends Parse
 
+    scope: (exps) ->
+        
+        vars: []
+        exps: exps
+    
     ###
     000  00000000
     000  000
@@ -35,7 +40,7 @@ class Parser extends Parse
 
         e = if:
                 exp:    exp
-                then:   thn
+                then:   @scope thn
 
         while tokens[0]?.text == 'else' and tokens[1]?.text == 'if'
 
@@ -55,7 +60,7 @@ class Parser extends Parse
             e.if.elifs.push
                 elif:
                     exp:  exp
-                    then: thn
+                    then: @scope thn
 
         if tokens[0]?.text == 'else'
 
@@ -63,7 +68,7 @@ class Parser extends Parse
 
             tokens.shift()
 
-            e.if.else = @block 'else' tokens
+            e.if.else = @scope @block 'else' tokens
             
         @pop 'if'
 
@@ -83,17 +88,17 @@ class Parser extends Parse
         
         @push 'for'
 
-        print.tokens 'for' tokens if @debug
+        # print.tokens 'for' tokens if @debug
 
         vals = @exps 'for vals' tokens
         
         vals = vals[0] if vals.length == 1
 
-        print.tokens 'inof' tokens if @debug
+        # print.tokens 'inof' tokens if @debug
         
         inof = tokens.shift()
         
-        print.tokens 'list' tokens if @debug
+        # print.tokens 'list' tokens if @debug
         
         list = @exp tokens
 
@@ -105,7 +110,7 @@ class Parser extends Parse
             vals:   vals
             inof:   inof
             list:   list
-            then:   thn
+            then:   @scope thn
             
     ###
     000   000  000   000  000  000      00000000  
@@ -129,7 +134,7 @@ class Parser extends Parse
         
         while:
             cond: cond
-            then: thn
+            then: @scope thn
         
     ###
      0000000  000   000  000  000000000   0000000  000   000
@@ -209,7 +214,7 @@ class Parser extends Parse
         
         when:
             vals: vals
-            then: thn
+            then: @scope thn
 
     ###
      0000000  000       0000000    0000000   0000000
@@ -264,7 +269,7 @@ class Parser extends Parse
 
         @push 'func'
         
-        body = @exps 'func body' tokens, 'nl'
+        body = @scope @exps 'func body' tokens, 'nl'
         
         @pop 'func'
         

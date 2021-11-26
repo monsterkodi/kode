@@ -136,16 +136,16 @@ class Renderer
             if @debug
                 print.noon 'constructor' constructor
                 print.ast 'implicit constructor' constructor
-                print.ast 'mthds with implicit construcotr' mthds
+                print.ast 'mthds with implicit constructor' mthds
             
         if bind.length
             for b in bind
                 bn = b.keyval.key.text
                 log 'method to bind:' bn if @verbose
-                constructor.keyval.val.func.body ?= []
-                constructor.keyval.val.func.body.push 
+                constructor.keyval.val.func.body.exps ?= []
+                constructor.keyval.val.func.body.exps.push 
                     type: 'code'
-                    text: "this.#{bn} = this.#{bn}.bind(this);"
+                    text: "this.#{bn} = this.#{bn}.bind(this)"
                     
             print.ast 'constructor after bind' constructor if @debug
 
@@ -188,11 +188,11 @@ class Renderer
         
         # print.noon 'func' n if @verbose
         
-        if not empty n.body
+        if not empty n.body.exps
             
             @indent = gi + id
             s += '\n'
-            ss = n.body.map (s) => @node s
+            ss = n.body.exps.map (s) => @node s
             
             if not ss[-1].startsWith('return') and name != 'constructor'
                 ss.push 'return ' + kstr.lstrip ss.pop()
@@ -243,7 +243,7 @@ class Renderer
         s = ''
         s += "if (#{@node(n.exp)})\n"
         s += gi+"{\n"
-        for e in n.then ? []
+        for e in n.then.exps ? []
             s += gi + id + @node(e) + '\n'
         s += gi+"}"
 
@@ -251,7 +251,7 @@ class Renderer
             s += '\n'
             s += gi + "else if (#{@node(elif.elif.exp)})\n"
             s += gi+"{\n"
-            for e in elif.elif.then ? []
+            for e in elif.elif.then.exps ? []
                 s += gi + id + @node(e) + '\n'
             s += gi+"}"
 
@@ -259,7 +259,7 @@ class Renderer
             s += '\n'
             s += gi + 'else\n'
             s += gi+"{\n"
-            for e in n.else
+            for e in n.else.exps ? []
                  s += gi + id + @node(e) + '\n'
             s += gi+"}"
             
@@ -312,7 +312,7 @@ class Renderer
             s += gi+"{\n"
             s += gi+id+"var #{n.vals[0].text} = #{listVar}[i]\n"
             
-        for e in n.then ? []
+        for e in n.then.exps ? []
             s += gi+id + @node(e) + '\n'
         s += gi+"}"
             
@@ -334,7 +334,7 @@ class Renderer
         s += gi+"{\n"
         if val
             s += gi+id+"#{val} = #{obj}[key]\n"
-        for e in n.then ? []
+        for e in n.then.exps ? []
             s += gi+id + @node(e) + '\n'
         s += gi+"}"
             
@@ -358,7 +358,7 @@ class Renderer
         s = ''
         s += "while (#{@node n.cond})\n"
         s += gi+"{\n"
-        for e in n.then ? []
+        for e in n.then.exps ? []
             s += gi+id + @node(e) + '\n'
         s += gi+"}"
             
@@ -408,7 +408,7 @@ class Renderer
         s = ''
         for e in n.vals
             s += @indent + 'case ' + @node(e) + ':\n'
-        for e in n.then
+        for e in n.then.exps ? []
             s += @indent + '    ' + @node(e) + '\n'
         s += @indent + '    ' + 'break'
         s

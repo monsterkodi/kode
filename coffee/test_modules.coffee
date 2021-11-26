@@ -100,20 +100,22 @@ describe 'modules' ->
                     line: 1
                     text: "a"
                     type: "var"
-                else:
-                    [
-                        col: 17
-                        line: 1
-                        text: 'c'
-                        type: 'var'
-                    ]
                 then:
-                    [
-                        col: 10
-                        line: 1
-                        text: 'b'
-                        type: 'var'
-                    ]
+                    vars:   []
+                    exps:   [ 
+                            col: 10
+                            line: 1
+                            text: 'b'
+                            type: 'var'
+                            ]
+                else:
+                    vars:   []
+                    exps:   [
+                            col: 17
+                            line: 1
+                            text: 'c'
+                            type: 'var'
+                            ]
             ]
                         
         parser.parse lexer.blockify lexer.tokenize """

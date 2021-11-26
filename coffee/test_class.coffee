@@ -50,7 +50,7 @@ describe 'class' ->
             {
                 constructor ()
                 {
-                    this.a = this.a.bind(this);
+                    this.a = this.a.bind(this)
                 }
                 a ()
                 {}
