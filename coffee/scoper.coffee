@@ -46,7 +46,7 @@ class Scoper
                     @vars[-1].push text:e.operation.lhs.text, type:e.operation.operator.text
                     @maps[-1][e.operation.lhs.text] = e.operation.operator.text
                     # log 'insert' @vars, @maps
-            log 'scoper node' e
+            # log 'scoper node' e
             for key,val of e
                 if val.type? then @exp val
                 else
