@@ -179,6 +179,11 @@ class Renderer
         s += ')\n'
         s += gi + '{'
         
+        if not empty n.body.vars
+            s += '\n'
+            vs = (v.text for v in n.body.vars).join ', '
+            s += @indent + "var #{vs}\n"
+        
         if not empty n.body.exps
             
             s += '\n'
