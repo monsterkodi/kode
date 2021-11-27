@@ -23,30 +23,38 @@ class Scoper
 
     scope: (body) ->
 
-        # log 'Scoper scope' body
         @maps.push {}
         @vars.push body.vars
         @exp e for e in body.exps
         @maps.pop()
         @vars.pop()
-        # log 'scoper:' body #if body.vars.length
         body
         
     exp: (e) ->
 
-        # log e
+        insert = (v,t) => 
+            @verb yellow(v), red(t)
+            if not @maps[-1][v]
+                @vars[-1].push text:v, type:t
+                @maps[-1][v] = t
+        
         if e.type == 'var'
             @verb gray(e.type), green(e.text)
         else if e.type
             @verb gray(e.type), blue(e.text)
         else 
+            
             if e.operation and e.operation.lhs?.text and e.operation.operator.text == '='
-                @verb yellow(e.operation.lhs.text), red(e.operation.operator.text)
-                if not @maps[-1][e.operation.lhs.text]
-                    @vars[-1].push text:e.operation.lhs.text, type:e.operation.operator.text
-                    @maps[-1][e.operation.lhs.text] = e.operation.operator.text
-                    # log 'insert' @vars, @maps
-            # log 'scoper node' e
+                insert e.operation.lhs.text, e.operation.operator.text
+                    
+            if e.for
+                if e.for.vals.text
+                    insert e.for.vals.text, 'for'
+                else 
+                    vals = e.for.vals.array?.items ? e.for.vals
+                    for v in vals ? []
+                        insert v.text, 'for' if v.text
+                    
             for key,val of e
                 if val.type? then @exp val
                 else

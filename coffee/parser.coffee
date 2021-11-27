@@ -585,8 +585,6 @@ class Parser extends Parse
                 text: "'#{@kode.renderer.node key}'"
                 line: line
                 col:  col
-        # else
-            # log key
 
         keyval:
             key:   key
@@ -599,13 +597,12 @@ class Parser extends Parse
     # 000        000   000  000   000  000
     # 000        000   000   0000000   000
 
-    prop: (obj, tokens, qmrk) ->
+    prop: (obj, tokens) ->
 
         prop:
             obj:  obj
             dot:  tokens.shift()
             prop: tokens.shift()
-            # qmrk: qmrk
             
     # 000000000  000   000  000   0000000  
     #    000     000   000  000  000       

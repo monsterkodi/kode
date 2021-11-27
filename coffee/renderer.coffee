@@ -326,10 +326,10 @@ class Renderer
         
         obj = @node n.list
         s = ''
-        s += "for (key in #{obj})\n"
+        s += "for (#{key} in #{obj})\n"
         s += gi+"{\n"
         if val
-            s += gi+id+"#{val} = #{obj}[key]\n"
+            s += gi+id+"#{val} = #{obj}[#{key}]\n"
         for e in n.then.exps ? []
             s += gi+id + @node(e) + '\n'
         s += gi+"}"
