@@ -140,6 +140,8 @@ class Lexer
     # 000   000  000  0000  000       000   000  000 0 000  000 0 000  000       000  0000     000     
     #  0000000   000   000   0000000   0000000   000   000  000   000  00000000  000   000     000     
     
+    # TODO: keep the swallowed tokens and reinsert them after parsing
+    
     uncomment: (tokens) ->
         
         newTokens = []
@@ -236,7 +238,6 @@ class Lexer
             tokens: array           # tokens of the block
             indent: string          # indentation string
             line:   number          # first line number
-            last:   number          # last line number
             col:    number
 
         ws tokens and empty lines are pruned from the tree
@@ -252,14 +253,13 @@ class Lexer
 
         blocks = []
 
-        block = type:'block' tokens:[] line:1 last:1 indent:'' col:0
+        block = type:'block' tokens:[] indent:'' line:1 col:0
         blocks.push block
 
         outdentTo = (depth, line) ->
             while depth < block.indent.length
                 blocks.pop()
                 block = blocks[-1]
-                block.last = line
 
         for idx in 0...tokens.length
             tok = tokens[idx]
@@ -276,7 +276,7 @@ class Lexer
 
                     if nxt.text.length > block.indent.length
 
-                        block = type:'block' tokens:[] line:nxt.line, last:nxt.line, indent:nxt.text, col:nxt.text.length
+                        block = type:'block' tokens:[] line:nxt.line, indent:nxt.text, col:nxt.text.length
                         blocks[-1].tokens.push block
                         blocks.push block
                         continue
@@ -292,7 +292,6 @@ class Lexer
                 continue
 
             block.tokens.push tok
-            block.last = tok.line
 
         blocks[0]
         

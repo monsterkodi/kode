@@ -25,24 +25,25 @@ class Scoper
 
         @maps.push {}
         @vars.push body.vars
-        @exp e for e in body.exps
+        @exp e for e in body.exps ? []
         @maps.pop()
         @vars.pop()
         body
         
     exp: (e) ->
 
+        if not e then return log 'dafuk!'
+            
         insert = (v,t) => 
             @verb yellow(v), red(t)
             if not @maps[-1][v]
                 @vars[-1].push text:v, type:t
                 @maps[-1][v] = t
         
-        if e.type == 'var'
-            @verb gray(e.type), green(e.text)
-        else if e.type
-            @verb gray(e.type), blue(e.text)
-        else 
+        if e.type == 'var'          then @verb gray(e.type), green(e.text)
+        else if e.type              then @verb gray(e.type), blue(e.text)
+        else if e instanceof Array  then @exp v for v in e if e.length
+        else if e instanceof Object
             
             if e.operation and e.operation.lhs?.text and e.operation.operator.text == '='
                 insert e.operation.lhs.text, e.operation.operator.text
@@ -54,14 +55,22 @@ class Scoper
                     vals = e.for.vals.array?.items ? e.for.vals
                     for v in vals ? []
                         insert v.text, 'for' if v.text
-                    
-            for key,val of e
-                if val.type? then @exp val
-                else
-                    if val instanceof Array
-                        @exp v for v in val
-                    else
-                        @exp v for k,v of val
+
+            if e.func
+                @exp   e.func.args if e.func.args
+                @scope e.func.body if e.func.body
+            else
+                for key,val of e
+                    if val
+                        if val.type then @exp val
+                        else
+                            if val instanceof Array
+                                if val.length
+                                    @exp v for v in val
+                            else
+                                @exp v for k,v of val
+        else
+            log 'dafuk?' e
         
     verb: -> if @verbose then console.log.apply console.log, arguments 
 

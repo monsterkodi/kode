@@ -83,7 +83,7 @@ class Print
         log R3 y5 "\n #{header}"
         printBlock = (b) ->
             if legend
-                s = b.indent + b6(kstr.rpad b.line, 3) + b5('- ' + kstr.pad b.last, 3) + w2(kstr.rpad b.col, 3) + yellow(b.tokens.length)
+                s = b.indent + b6(kstr.rpad b.line, 3) + w2(kstr.rpad b.col, 3) + yellow(b.tokens.length)
                 s += '\n' + b.indent
             s = b.indent
             if b.type in ['{}''()''[]'] then s += b.type[0] + ' '

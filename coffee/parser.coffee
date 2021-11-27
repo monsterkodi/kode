@@ -273,10 +273,11 @@ class Parser extends Parse
         
         @pop 'func'
         
-        func:
-            args:  args
-            arrow: arrow
-            body:  body
+        e = func:{}
+        e.func.args  = args if args
+        e.func.arrow = arrow
+        e.func.body  = body
+        e
 
     # 00000000   00000000  000000000  000   000  00000000   000   000  
     # 000   000  000          000     000   000  000   000  0000  000  
@@ -289,9 +290,9 @@ class Parser extends Parse
         if tokens[0]?.type != 'nl'
             val = @exp tokens
         
-        return:
-            ret: tok
-            val: val
+        e = return: ret: tok
+        e.return.val = val if val
+        e
             
     #  0000000   0000000   000      000
     # 000       000   000  000      000
@@ -336,10 +337,10 @@ class Parser extends Parse
         @pop 'call'
         
         e = call: callee: tok
-        e.call.open  = open
-        e.call.qmrk  = qmrk if qmrk
+        e.call.open  = open  if open
+        e.call.qmrk  = qmrk  if qmrk
         e.call.args  = args
-        e.call.close = close
+        e.call.close = close if close
         e
             
     #  0000000   00000000   00000000  00000000    0000000   000000000  000   0000000   000   000
@@ -366,10 +367,11 @@ class Parser extends Parse
         
         @pop "op#{op.text}"
         
-        operation:
-            lhs:        lhs
-            operator:   op
-            rhs:        rhs
+        e = operation: {}
+        e.operation.lhs      = lhs if lhs
+        e.operation.operator = op
+        e.operation.rhs      = rhs if rhs
+        e
             
     # 000  000   000   0000000   0000000   000   000  0000000    
     # 000  0000  000  000       000   000  0000  000  000   000  

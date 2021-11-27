@@ -43,7 +43,6 @@ describe 'ast' ->
         ast '++a',
             """
             operation
-                lhs
                 operator
                     ++
                 rhs
@@ -53,7 +52,6 @@ describe 'ast' ->
         ast 'not a',
             """
             operation
-                lhs
                 operator
                     not
                 rhs
