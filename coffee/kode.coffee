@@ -109,7 +109,7 @@ class Kode
         if @args.raw   then print.noon 'raw block' block
         if @args.block then print.block 'tl block' block
 
-        @scoper.vars @parser.parse block
+        @scoper.collect @parser.parse block
 
     astr: (text, scopes) -> print.astr @ast(text), scopes
         

@@ -90,7 +90,7 @@ describe 'func' ->
                 {}
             }
             """
-            
+
         cmp """
             a = (b,c) ->
                 b = (e, f) -> g
@@ -105,7 +105,7 @@ describe 'func' ->
                 return b
             }
             """
-            
+
         cmp """
             a = (b,c) ->
                 b = (e, f) -> h
@@ -173,8 +173,30 @@ describe 'func' ->
                 return console.log('b')
             }
             """
-            
-        cmp "a = ( a, b=1 c=2 ) ->",  "a = function (a, b = 1, c = 2)\n{}"            
+
+        cmp "a = ( a, b=1 c=2 ) ->",  "a = function (a, b = 1, c = 2)\n{}"
+
+        cmp """
+            if true then return
+            """ """
+            if (true)
+            {
+                return
+            }
+            """
+
+        # cmp """
+            # f = =>
+                # if true then return
+            # """ """
+            # f = function ()
+            # {
+                # if (true)
+                # {
+                    # return
+                # }
+            # }
+            # """
 
     #  0000000   0000000   000      000       0000000
     # 000       000   000  000      000      000

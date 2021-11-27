@@ -9,10 +9,15 @@
 noon  = require 'noon'
 slash = require 'kslash'
 kstr  = require 'kstr'
+print = require './print'
 
 class Lexer
 
-    @: ->
+    @: (@kode) ->
+
+        @debug    = @kode.args?.debug
+        @verbose  = @kode.args?.verbose
+        @raw      = @kode.args?.raw
 
         @patterns = noon.load slash.join __dirname, '../coffee/lexer.noon'
 
@@ -152,6 +157,72 @@ class Lexer
 
         newTokens
         
+    # 00000000  00000000    0000000   000   000  000000000  000  00000000  000   000  
+    # 000       000   000  000   000  0000  000     000     000  000        000 000   
+    # 000000    0000000    000   000  000 0 000     000     000  000000      00000    
+    # 000       000   000  000   000  000  0000     000     000  000          000     
+    # 000       000   000   0000000   000   000     000     000  000          000     
+    
+    # swap                            
+    #        exp if cond                ▸      if cond then exp
+    #        exp while cond             ▸      while cond then exp
+    #        exp for ... in/of ...      ▸      for .. in/of .. then exp
+    
+    frontify: (tokens) ->
+        
+        idx = 0
+        lst = ist = wst = fst = ifc = wlc = frc = thc = 0
+
+        swap = =>
+            return if not (ist or wst or fst)
+            log tok.line, tok.col, 'start', ist, wst, fst, 'count', ifc, wlc, frc, thc if @verbose
+            st = Math.max ist, wst, fst
+            print.tokens 'before' tokens[lst...idx] if @debug
+            
+            front = tokens.splice lst, st-lst
+            front.unshift type:'keyword' text:'then' line:tokens[idx]?.line, col:tokens[idx]?.col
+            
+            [].splice.apply tokens, [idx-(st-lst), 0].concat front
+            
+            print.tokens 'after' tokens[lst...idx+1] if @debug
+        
+        while idx < tokens.length
+            
+            tok = tokens[idx]
+            
+            if tok.type == 'nl' or tok.text == ';'
+                
+                swap()                
+                
+                lst = idx+1
+                ist = wst = fst 
+                ifc = wlc = frc = thc = 0
+                
+            else if tok.type == 'ws' and idx == lst then lst = idx+1 
+            
+            else
+                
+                if tok.text in ['if' 'for' 'while' 'else']
+                    
+                    if  tokens[idx-1]?.type == 'nl' or \
+                        tokens[idx-2]?.type == 'nl' or \ # line starts with kw
+                        tokens[idx-1]?.text == '='       # or x = if|for|while... 
+                            ++idx while idx < tokens.length and tokens[idx].type != 'nl' # skip until next nl
+                            continue
+                                        
+                switch tok.text 
+                    when 'if'    then ifc++ ; ist = idx if ist == 0 
+                    when 'for'   then frc++ ; fst = idx if fst == 0 
+                    when 'while' then wlc++ ; wst = idx if wst == 0 
+                    when 'then'  then thc++
+                    when 'else'  
+                        ifc++ if tokens[idx+2].text != 'if' 
+            idx++
+        
+        swap()
+        
+        tokens
+        
     # 0000000    000       0000000    0000000  000   000  000  00000000  000   000
     # 000   000  000      000   000  000       000  000   000  000        000 000
     # 0000000    000      000   000  000       0000000    000  000000      00000
@@ -177,6 +248,7 @@ class Lexer
         tokens = @unslash   tokens
         tokens = @mergeop   tokens
         tokens = @uncomment tokens
+        tokens = @frontify  tokens 
 
         blocks = []
 

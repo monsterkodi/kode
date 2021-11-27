@@ -10,27 +10,38 @@ class Scoper
 
     @: (@kode) ->
 
-        @verbose  = @kode.args?.verbose
-        @debug    = @kode.args?.debug
-        @raw      = @kode.args?.raw
+        @verbose = @kode.args?.verbose
+        @debug   = @kode.args?.debug
+        @raw     = @kode.args?.raw
         
-    vars: (tl) ->
+    collect: (tl) ->
         
-        @stack = []
+        @maps = []
+        @vars = []
         @scope tl
         tl
 
     scope: (body) -> 
         
-        @stack.push {}
+        @maps.push {}
+        @vars.push body.vars
         @exp e for e in body.exps
-        body.vars = Object.keys @stack.pop()
-        # log 'scoper:' body.vars
+        @maps.pop()
+        @vars.pop()
+        # log 'scoper:' body.vars if body.vars.length
         body.vars
         
     exp: (e) ->
-        
-        # log(e)
+
+        if e.type == 'var'
+            # log(gray(e.type), green(e.text)) 
+        else if e.type
+            # log(gray(e.type), blue(e.text))  
+        else if e.operation and e.operation.lhs?.text and e.operation.operator.text == '='
+            # log(yellow(e.operation.lhs.text), red(e.operation.operator.text))   
+            if not @maps[-1][e.operation.lhs.text]
+                @vars[-1].push e.operation.lhs.text
+                @maps[-1][e.operation.lhs.text] = e.operation.operator.text
         
     verb: -> if @verbose then console.log.apply console.log, arguments 
 

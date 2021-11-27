@@ -207,9 +207,9 @@ class Renderer
     
     return: (n) ->
 
-        s = 'return '
-        s += kstr.lstrip @node n.val
-        s
+        s = 'return'
+        s += ' ' + @node n.val
+        kstr.strip s
 
     #  0000000   0000000   000      000      
     # 000       000   000  000      000      
@@ -403,7 +403,7 @@ class Renderer
         
         s = ''
         for e in n.vals
-            s += @indent + 'case ' + @node(e) + ':\n'
+            s += '    case ' + @node(e) + ':\n'
         for e in n.then.exps ? []
             s += @indent + '    ' + @node(e) + '\n'
         s += @indent + '    ' + 'break'
