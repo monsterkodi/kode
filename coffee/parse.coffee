@@ -240,9 +240,7 @@ class Parse # the base class of Parser
             else if nxt.type == 'keyword' and nxt.text == 'in' and @stack[-1] != 'for'
                 e = @incond e, tokens
             else if e.text?
-                if e.type in ['var''num'] and \
-                    nxt.type == 'dots'  then e = @slice           e, tokens
-                else if e.text == '['   then e = @array           e, tokens
+                if      e.text == '['   then e = @array           e, tokens
                 else if e.text == '('   then e = @parens          e, tokens
                 else if e.text == '{'   then e = @curly           e, tokens                
                 else if e.text == 'not' then e = @operation null, e, tokens
@@ -332,10 +330,8 @@ class Parse # the base class of Parser
                     e = @this e, tokens
                     break
             
-            if nxt.text == '.'
-                @verb 'lhs prop'
-                e = @prop e, tokens
-
+            if      nxt.text == '.'    then e = @prop   e, tokens
+            else if nxt.type == 'dots' then e = @slice  e, tokens
             else if nxt.text == '?' and unspaced and tokens[1]?.text == '.'
                 qmark = tokens.shift()
                 e = @prop e, tokens, qmark # this should be done differently!

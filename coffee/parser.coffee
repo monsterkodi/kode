@@ -461,7 +461,8 @@ class Parser extends Parse
         if tokens[0]?.text == ']'
             close = tokens.shift()
         else
-            error 'expected ]'
+            error 'parser.index expected ]'
+            print.tokens 'missing ]' tokens
 
         @pop 'idx'
 

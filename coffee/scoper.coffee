@@ -68,6 +68,7 @@ class Scoper
                                 if val.length
                                     @exp v for v in val
                             else
+                                # log val
                                 @exp v for k,v of val
         else
             log 'dafuk?' e

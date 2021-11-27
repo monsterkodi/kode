@@ -60,6 +60,19 @@ describe 'array' ->
         cmp '[1...100]' "
             (function() { var r = []; for (var i = 1; i < 100; i++){ r.push(i); } return r; }).apply(this)
             "
+
+        cmp "a[1..4]"       "a.slice(1, 4+1)"
+        cmp "a[1...4]"      "a.slice(1, 4)"
+        cmp "a[1...a]"      "a.slice(1, a)"
+        cmp "a[1..a]"       "a.slice(1, a+1)"
+        cmp "a[1..a.b]"     "a.slice(1, a.b+1)"
+        cmp "a[1..a[2]]"    "a.slice(1, a[2]+1)"
+        cmp "a[1..a[3].b]"  "a.slice(1, a[3].b+1)"
+        
+        cmp "b[c...-1]"      "b.slice(c, -1)"
+        cmp "b[c.d...-1]"    "b.slice(c.d, -1)"
+        cmp "b[c[0]...-1]"   "b.slice(c[0], -1)"
+        cmp "b[c[0].d..-1]"  "b.slice(c[0].d, -1+1)"
     
     #  0000000   00000000   00000000    0000000   000   000  
     # 000   000  000   000  000   000  000   000   000 000   
