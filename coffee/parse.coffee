@@ -14,9 +14,9 @@ class Parse # the base class of Parser
 
     @: (@kode) ->
 
-        @debug    = @kode.args?.debug
-        @verbose  = @kode.args?.verbose
-        @raw      = @kode.args?.raw
+        @debug    = @kode.args.debug
+        @verbose  = @kode.args.verbose
+        @raw      = @kode.args.raw
 
     # 00000000    0000000   00000000    0000000  00000000
     # 000   000  000   000  000   000  000       000

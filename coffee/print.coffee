@@ -119,7 +119,7 @@ class Print
             return s if not node
             
             if node.type
-                s += b6(kstr.lpad node.line, 4) + ' ' + blue(kstr.lpad node.col, 3) + ' ' + gray(kstr.pad node.type, 10) + ' ' + bold yellow(indent + node.text) + '\n'
+                s += b6(kstr.lpad node.line ? '', 4) + ' ' + blue(kstr.lpad node.col ? '', 3) + ' ' + gray(kstr.pad node.type, 10) + ' ' + bold yellow(indent + node.text) + '\n'
             else if node instanceof Array
                 
                 return s if node in visited

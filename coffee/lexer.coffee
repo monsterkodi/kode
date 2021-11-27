@@ -15,9 +15,9 @@ class Lexer
 
     @: (@kode) ->
 
-        @debug    = @kode.args?.debug
-        @verbose  = @kode.args?.verbose
-        @raw      = @kode.args?.raw
+        @debug    = @kode.args.debug
+        @verbose  = @kode.args.verbose
+        @raw      = @kode.args.raw
 
         @patterns = noon.load slash.join __dirname, '../coffee/lexer.noon'
 

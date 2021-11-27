@@ -286,9 +286,12 @@ class Parser extends Parse
     
     return: (tok, tokens) ->
         
+        if tokens[0]?.type != 'nl'
+            val = @exp tokens
+        
         return:
             ret: tok
-            val: @exp tokens
+            val: val
             
     #  0000000   0000000   000      000
     # 000       000   000  000      000
