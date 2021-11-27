@@ -19,6 +19,7 @@ class Renderer
 
     render: (ast) ->
 
+        @indent = ''
         s = ''
         s += ast.exps.map((s) => @node s).join '\n'
         s
@@ -137,7 +138,7 @@ class Renderer
         if bind.length
             for b in bind
                 bn = b.keyval.key.text
-                log 'method to bind:' bn if @verbose
+                @verb 'method to bind:' bn
                 constructor.keyval.val.func.body.exps ?= []
                 constructor.keyval.val.func.body.exps.push 
                     type: 'code'
@@ -155,9 +156,6 @@ class Renderer
     # 000   000     000     000   000  0000000    
     
     mthd: (n) ->
-
-        # if n.type == 'comment'
-            # return @comment n
         
         if n.keyval
             s = @indent + @func n.keyval.val.func, n.keyval.key.text
@@ -168,11 +166,10 @@ class Renderer
     # 000000    000   000  000 0 000  000       
     # 000       000   000  000  0000  000       
     # 000        0000000   000   000   0000000  
-    
+            
     func: (n, name='function') ->
         
-        id = '    '
-        gi = @indent ? ''
+        gi = @ind()
         
         s = name
         s += ' ('
@@ -182,11 +179,8 @@ class Renderer
         s += ')\n'
         s += gi + '{'
         
-        # print.noon 'func' n if @verbose
-        
         if not empty n.body.exps
             
-            @indent = gi + id
             s += '\n'
             ss = n.body.exps.map (s) => @node s
             
@@ -195,8 +189,9 @@ class Renderer
             ss = ss.map (s) => @indent + s
             s += ss.join '\n'
             s += '\n' + gi
-            @indent = gi
         s += '}'
+        
+        @ded()
         s
                 
     # 00000000   00000000  000000000  000   000  00000000   000   000  
@@ -232,15 +227,13 @@ class Renderer
 
         if not n.then then error 'if expected then' n
 
-        id = '    '
-        gi = @indent ? ''
-        @indent = gi + id
+        gi = @ind()
 
         s = ''
         s += "if (#{@node(n.exp)})\n"
         s += gi+"{\n"
         for e in n.then.exps ? []
-            s += gi + id + @node(e) + '\n'
+            s += @indent + @node(e) + '\n'
         s += gi+"}"
 
         for elif in n.elifs ? []
@@ -248,7 +241,7 @@ class Renderer
             s += gi + "else if (#{@node(elif.elif.exp)})\n"
             s += gi+"{\n"
             for e in elif.elif.then.exps ? []
-                s += gi + id + @node(e) + '\n'
+                s += @indent + @node(e) + '\n'
             s += gi+"}"
 
         if n.else
@@ -256,10 +249,10 @@ class Renderer
             s += gi + 'else\n'
             s += gi+"{\n"
             for e in n.else.exps ? []
-                 s += gi + id + @node(e) + '\n'
+                 s += @indent + @node(e) + '\n'
             s += gi+"}"
             
-        @indent = gi
+        @ded()
         s
         
     # 00000000   0000000   00000000   
@@ -279,9 +272,7 @@ class Renderer
         
     for_in: (n) ->
         
-        id = '    '
-        gi = @indent ? ''
-        @indent = gi+id
+        gi = @ind()
 
         list = @node n.list
         
@@ -295,31 +286,29 @@ class Renderer
         if n.vals.text
             s += gi+"for (var i = 0; i < #{listVar}.length; i++)\n"
             s += gi+"{\n"
-            s += gi+id+"var #{n.vals.text} = #{listVar}[i]\n"
+            s += @indent+"var #{n.vals.text} = #{listVar}[i]\n"
         else if n.vals.array?.items
             s += gi+"for (var i = 0; i < #{listVar}.length; i++)\n"
             s += gi+"{\n"
             for j in 0...n.vals.array.items.length
                 v = n.vals.array.items[j]
-                s += gi+id+"var #{v.text} = #{listVar}[i][#{j}]\n"
+                s += @indent+"var #{v.text} = #{listVar}[i][#{j}]\n"
         else if n.vals.length > 1
             lv = n.vals[1].text
             s += gi+"for (var #{lv} = 0; #{lv} < #{listVar}.length; #{lv}++)\n"
             s += gi+"{\n"
-            s += gi+id+"var #{n.vals[0].text} = #{listVar}[i]\n"
+            s += @indent+"var #{n.vals[0].text} = #{listVar}[i]\n"
             
         for e in n.then.exps ? []
-            s += gi+id + @node(e) + '\n'
+            s += @indent + @node(e) + '\n'
         s += gi+"}"
             
-        @indent = gi
+        @ded()
         s
         
     for_of: (n) ->
         
-        id = '    '
-        gi = @indent ? ''
-        @indent = gi+id
+        gi = @ind()
 
         key = n.vals.text ? n.vals[0]?.text
         val = n.vals[1]?.text
@@ -329,12 +318,12 @@ class Renderer
         s += "for (#{key} in #{obj})\n"
         s += gi+"{\n"
         if val
-            s += gi+id+"#{val} = #{obj}[#{key}]\n"
+            s += @indent+"#{val} = #{obj}[#{key}]\n"
         for e in n.then.exps ? []
-            s += gi+id + @node(e) + '\n'
+            s += @indent + @node(e) + '\n'
         s += gi+"}"
             
-        @indent = gi
+        @ded()
         s
 
     # 000   000  000   000  000  000      00000000  
@@ -347,18 +336,16 @@ class Renderer
         
         if not n.then then error 'when expected then' n
 
-        id = '    '
-        gi = @indent ? ''
-        @indent = gi+id
+        gi = @ind()
 
         s = ''
         s += "while (#{@node n.cond})\n"
         s += gi+"{\n"
         for e in n.then.exps ? []
-            s += gi+id + @node(e) + '\n'
+            s += @indent + @node(e) + '\n'
         s += gi+"}"
             
-        @indent = gi
+        @ded()
         s
         
     #  0000000  000   000  000  000000000   0000000  000   000  
@@ -372,9 +359,7 @@ class Renderer
         if not n.match then error 'switch expected match' n
         if not n.whens then error 'switch expected whens' n
 
-        id = '    '
-        gi = @indent ? ''
-        @indent = gi+id
+        gi = @ind()
         
         s = ''
         s += "switch (#{@node n.match})\n"
@@ -382,12 +367,12 @@ class Renderer
         for e in n.whens ? []
             s += gi+ @node(e) + '\n'            
         if n.else
-            s += gi+id+'default:\n'
+            s += @indent+'default:\n'
             for e in n.else
-                s += gi+id+id+ @node(e) + '\n'            
+                s += @indent+'    '+ @node(e) + '\n'            
         s += gi+"}\n"
 
-        @indent = gi
+        @ded()
         s
 
     # 000   000  000   000  00000000  000   000  
@@ -580,4 +565,15 @@ class Renderer
             o = if p.dots.text == '...' then '<' else '<='
             "(function() { var r = []; for (var i = #{@node p.from}; i #{o} #{@node p.upto}; i++){ r.push(i); } return r; }).apply(this)"
             
+    verb: -> if @verbose then console.log.apply console.log, arguments 
+    ind: ->
+        
+        oi = @indent
+        @indent += '    '
+        oi
+        
+    ded: ->
+        
+        @indent = @indent[...-4]
+    
 module.exports = Renderer
