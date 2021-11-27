@@ -172,11 +172,11 @@ describe 'func' ->
             """ """
             a = function ()
             {
-                return console.log('a')
+                console.log('a')
             }
             b = function ()
             {
-                return console.log('b')
+                console.log('b')
             }
             """
 

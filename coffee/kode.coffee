@@ -28,11 +28,13 @@ class Kode
         Lexer     = require './lexer'
         Parser    = require './parser'
         Scoper    = require './scoper'
+        Returner  = require './returner'
         Renderer  = require './renderer'
 
         @lexer    = new Lexer    @
         @parser   = new Parser   @
         @scoper   = new Scoper   @
+        @returner = new Returner @
         @renderer = new Renderer @
 
     #  0000000  000      000
@@ -109,7 +111,7 @@ class Kode
         if @args.raw   then print.noon 'raw block' block
         if @args.block then print.block 'tl block' block
 
-        @scoper.collect @parser.parse block
+        @returner.collect @scoper.collect @parser.parse block
 
     astr: (text, scopes) -> print.astr @ast(text), scopes
         

@@ -163,149 +163,149 @@ describe 'modules' ->
     
     it 'scoper' ->
         
-        kode.astr """
-            g = ->    
-                f = ->
-                    if a=b=c=d and x=y=z then u=v else 
-                        for r in s
-                            p=o=c
-                            l = ->
-                                i = 0""", true
-        .should.eql """
-            vars
-                g
-            exps
-                operation
-                    lhs
-                        g
-                    operator
-                        =
-                    rhs
-                        func
-                            arrow
-                                ->
-                            body
-                                vars
-                                    f
-                                exps
-                                    operation
-                                        lhs
-                                            f
-                                        operator
-                                            =
-                                        rhs
-                                            func
-                                                arrow
-                                                    ->
-                                                body
-                                                    vars
-                                                        a
-                                                        b
-                                                        c
-                                                        x
-                                                        y
-                                                        u
-                                                        r
-                                                        p
-                                                        o
-                                                        l
-                                                    exps
-                                                        if
-                                                            exp
-                                                                operation
-                                                                    lhs
-                                                                        a
-                                                                    operator
-                                                                        =
-                                                                    rhs
-                                                                        operation
-                                                                            lhs
-                                                                                b
-                                                                            operator
-                                                                                =
-                                                                            rhs
-                                                                                operation
-                                                                                    lhs
-                                                                                        c
-                                                                                    operator
-                                                                                        =
-                                                                                    rhs
-                                                                                        operation
-                                                                                            lhs
-                                                                                                d
-                                                                                            operator
-                                                                                                and
-                                                                                            rhs
-                                                                                                operation
-                                                                                                    lhs
-                                                                                                        x
-                                                                                                    operator
-                                                                                                        =
-                                                                                                    rhs
-                                                                                                        operation
-                                                                                                            lhs
-                                                                                                                y
-                                                                                                            operator
-                                                                                                                =
-                                                                                                            rhs
-                                                                                                                z
-                                                            then
-                                                                vars
-                                                                exps
-                                                                    operation
-                                                                        lhs
-                                                                            u
-                                                                        operator
-                                                                            =
-                                                                        rhs
-                                                                            v
-                                                            else
-                                                                vars
-                                                                exps
-                                                                    for
-                                                                        vals
-                                                                            r
-                                                                        inof
-                                                                            in
-                                                                        list
-                                                                            s
-                                                                        then
-                                                                            vars
-                                                                            exps
-                                                                                operation
-                                                                                    lhs
-                                                                                        p
-                                                                                    operator
-                                                                                        =
-                                                                                    rhs
-                                                                                        operation
-                                                                                            lhs
-                                                                                                o
-                                                                                            operator
-                                                                                                =
-                                                                                            rhs
-                                                                                                c
-                                                                                operation
-                                                                                    lhs
-                                                                                        l
-                                                                                    operator
-                                                                                        =
-                                                                                    rhs
-                                                                                        func
-                                                                                            arrow
-                                                                                                ->
-                                                                                            body
-                                                                                                vars
-                                                                                                    i
-                                                                                                exps
-                                                                                                    operation
-                                                                                                        lhs
-                                                                                                            i
-                                                                                                        operator
-                                                                                                            =
-                                                                                                        rhs
-                                                                                                            0
-            """
+        # kode.astr """
+            # g = ->    
+                # f = ->
+                    # if a=b=c=d and x=y=z then u=v else 
+                        # for r in s
+                            # p=o=c
+                            # l = ->
+                                # i = 0""", true
+        # .should.eql """
+            # vars
+                # g
+            # exps
+                # operation
+                    # lhs
+                        # g
+                    # operator
+                        # =
+                    # rhs
+                        # func
+                            # arrow
+                                # ->
+                            # body
+                                # vars
+                                    # f
+                                # exps
+                                    # operation
+                                        # lhs
+                                            # f
+                                        # operator
+                                            # =
+                                        # rhs
+                                            # func
+                                                # arrow
+                                                    # ->
+                                                # body
+                                                    # vars
+                                                        # a
+                                                        # b
+                                                        # c
+                                                        # x
+                                                        # y
+                                                        # u
+                                                        # r
+                                                        # p
+                                                        # o
+                                                        # l
+                                                    # exps
+                                                        # if
+                                                            # exp
+                                                                # operation
+                                                                    # lhs
+                                                                        # a
+                                                                    # operator
+                                                                        # =
+                                                                    # rhs
+                                                                        # operation
+                                                                            # lhs
+                                                                                # b
+                                                                            # operator
+                                                                                # =
+                                                                            # rhs
+                                                                                # operation
+                                                                                    # lhs
+                                                                                        # c
+                                                                                    # operator
+                                                                                        # =
+                                                                                    # rhs
+                                                                                        # operation
+                                                                                            # lhs
+                                                                                                # d
+                                                                                            # operator
+                                                                                                # and
+                                                                                            # rhs
+                                                                                                # operation
+                                                                                                    # lhs
+                                                                                                        # x
+                                                                                                    # operator
+                                                                                                        # =
+                                                                                                    # rhs
+                                                                                                        # operation
+                                                                                                            # lhs
+                                                                                                                # y
+                                                                                                            # operator
+                                                                                                                # =
+                                                                                                            # rhs
+                                                                                                                # z
+                                                            # then
+                                                                # vars
+                                                                # exps
+                                                                    # operation
+                                                                        # lhs
+                                                                            # u
+                                                                        # operator
+                                                                            # =
+                                                                        # rhs
+                                                                            # v
+                                                            # else
+                                                                # vars
+                                                                # exps
+                                                                    # for
+                                                                        # vals
+                                                                            # r
+                                                                        # inof
+                                                                            # in
+                                                                        # list
+                                                                            # s
+                                                                        # then
+                                                                            # vars
+                                                                            # exps
+                                                                                # operation
+                                                                                    # lhs
+                                                                                        # p
+                                                                                    # operator
+                                                                                        # =
+                                                                                    # rhs
+                                                                                        # operation
+                                                                                            # lhs
+                                                                                                # o
+                                                                                            # operator
+                                                                                                # =
+                                                                                            # rhs
+                                                                                                # c
+                                                                                # operation
+                                                                                    # lhs
+                                                                                        # l
+                                                                                    # operator
+                                                                                        # =
+                                                                                    # rhs
+                                                                                        # func
+                                                                                            # arrow
+                                                                                                # ->
+                                                                                            # body
+                                                                                                # vars
+                                                                                                    # i
+                                                                                                # exps
+                                                                                                    # operation
+                                                                                                        # lhs
+                                                                                                            # i
+                                                                                                        # operator
+                                                                                                            # =
+                                                                                                        # rhs
+                                                                                                            # 0
+            # """
         
 
     # 00000000   00000000  000   000  0000000    00000000  00000000

@@ -248,9 +248,11 @@ class Parser extends Parse
         if tokens[0]?.type == 'block'
             tokens = tokens.shift().tokens
             e.class.body = @exps 'class body' tokens
+            @nameMethods e.class.body[0].object.keyvals
         else
             @verb 'no class body!'
 
+                
         if @debug
             print.ast 'e.class.body' e.class.body
             print.tokens 'class pop' tokens 

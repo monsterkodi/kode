@@ -111,9 +111,8 @@ class Renderer
         bind = []
         for m in mthds
             if not m.keyval 
-                if not m.type == 'comment'
-                    log 'wtf?' m 
-                    print.ast 'not an method?' m
+                log 'wtf?' m 
+                print.ast 'not an method?' m
                 continue
             name = m.keyval.key.text
             if name in ['@' 'constructor']
@@ -189,8 +188,8 @@ class Renderer
             s += '\n'
             ss = n.body.exps.map (s) => @node s
             
-            if not ss[-1].startsWith('return') and name != 'constructor'
-                ss.push 'return ' + kstr.lstrip ss.pop()
+            # if not ss[-1].startsWith('return') and name != 'constructor'
+                # ss.push 'return ' + kstr.lstrip ss.pop()
             ss = ss.map (s) => @indent + s
             s += ss.join '\n'
             s += '\n' + gi
