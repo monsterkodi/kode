@@ -85,6 +85,13 @@ class Parse # the base class of Parser
                     
                 es = es.concat @exps 'block' block.tokens                    
 
+                if block.tokens.length
+                    @verb 'exps block end remaining block tokens:' block.tokens.length
+                    print.tokens 'before unshifting dangling block tokens' tokens if @debug
+                    while block.tokens.length
+                        tokens.unshift block.tokens.pop()
+                    print.tokens 'after unshifting dangling block tokens' tokens if @debug
+                    
                 if tokens[0]?.text == ','
                     @verb "exps block end shift comma , and continue..."
                     tokens.shift()
@@ -94,7 +101,7 @@ class Parse # the base class of Parser
                     tokens.shift()
                     continue
                     
-                @verb 'exps block end break!' block.tokens.length
+                @verb 'exps block end, break!'
                 break
                 
             if tokens[0].type == 'block'    then @verb 'exps break on block'    ; break
@@ -281,7 +288,7 @@ class Parse # the base class of Parser
                     break
                     
             if numTokens == tokens.length
-                error 'rhs no token consumed?'
+                @verb 'rhs no token consumed, break!'
                 break
         
         if nxt = tokens[0]
@@ -415,6 +422,23 @@ class Parse # the base class of Parser
         @sheapPop 'lhs' 'lhs'       
         e
 
+    #  0000000  000   000  000  00000000  000000000   0000000  000       0000000    0000000  00000000  
+    # 000       000   000  000  000          000     000       000      000   000  000       000       
+    # 0000000   000000000  000  000000       000     000       000      000   000  0000000   0000000   
+    #      000  000   000  000  000          000     000       000      000   000       000  000       
+    # 0000000   000   000  000  000          000      0000000  0000000   0000000   0000000   00000000  
+    
+    shiftClose: (rule, text, tokens) ->
+        
+        if tokens[0]?.text == text
+            return tokens.shift() 
+
+        if tokens[0]?.type == 'nl' and tokens[1]?.text == text
+            @shiftNewline rule, tokens
+            return tokens.shift()
+            
+        error "parse.shiftClose: '#{rule}' expected closing '#{text}'"
+        
     #  0000000  000   000  000  00000000  000000000  000   000  00000000  000   000  000      000  000   000  00000000  
     # 000       000   000  000  000          000     0000  000  000       000 0 000  000      000  0000  000  000       
     # 0000000   000000000  000  000000       000     000 0 000  0000000   000000000  000      000  000 0 000  0000000   

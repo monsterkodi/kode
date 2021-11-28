@@ -44,8 +44,6 @@ class Scoper
                 @vars[-1].push text:v, type:t
                 @maps[-1][v] = t
         
-        # if e.type == 'var'          then @verb gray(e.type), green(e.text)
-        # else if e.type              then @verb gray(e.type), blue(e.text)
         if e.type then null
         else if e instanceof Array  then @exp v for v in e if e.length
         else if e instanceof Object
@@ -73,7 +71,6 @@ class Scoper
                                 if val.length
                                     @exp v for v in val
                             else
-                                # log val
                                 @exp v for k,v of val
         else
             log 'dafuk?' e
