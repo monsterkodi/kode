@@ -30,11 +30,11 @@ class Parser extends Parse
 
         @push 'if'
 
-        print.tokens 'if' tokens if @debug
+        # print.tokens 'if' tokens if @debug
 
         exp = @exp tokens
 
-        print.tokens 'then' tokens if @debug
+        # print.tokens 'then' tokens if @debug
 
         thn = @then 'if then' tokens
 
@@ -44,7 +44,7 @@ class Parser extends Parse
 
         while tokens[0]?.text == 'else' and tokens[1]?.text == 'if'
 
-            print.tokens 'else if' tokens if @debug
+            # print.tokens 'else if' tokens if @debug
 
             tokens.shift()
             tokens.shift()
@@ -53,7 +53,7 @@ class Parser extends Parse
 
             exp = @exp tokens
 
-            print.tokens 'else if then' tokens if @debug
+            # print.tokens 'else if then' tokens if @debug
 
             thn = @then 'elif then' tokens
 
@@ -64,7 +64,7 @@ class Parser extends Parse
 
         if tokens[0]?.text == 'else'
 
-            print.tokens 'else' tokens if @debug
+            # print.tokens 'else' tokens if @debug
 
             tokens.shift()
 
@@ -72,7 +72,7 @@ class Parser extends Parse
             
         @pop 'if'
 
-        print.tokens 'if leftover' tokens if tokens.length and @debug
+        # print.tokens 'if leftover' tokens if tokens.length and @debug
 
         e
 
@@ -126,7 +126,7 @@ class Parser extends Parse
         
         cond = @exp tokens
 
-        print.tokens 'while then|block' tokens if @verbose
+        # print.tokens 'while then|block' tokens if @verbose
         
         thn = @then 'while then' tokens
         
@@ -156,7 +156,7 @@ class Parser extends Parse
             @pop 'switch'
             return error 'parser.switch: block expected!'
         
-        print.tokens 'switch whens' tokens if @debug
+        # print.tokens 'switch whens' tokens if @debug
         
         whens = []
         while tokens[0]?.text == 'when'
@@ -167,14 +167,11 @@ class Parser extends Parse
                 match:  match
                 whens:  whens
         
-        print.tokens 'switch else?' tokens if @debug
-        
-        if tokens[0]?.type == 'nl'
-            tokens.shift()
+        # print.tokens 'switch else?' tokens if @debug
         
         if tokens[0]?.text == 'else'
 
-            print.tokens 'switch else' tokens if @debug
+            # print.tokens 'switch else' tokens if @debug
             
             tokens.shift()
 
@@ -194,17 +191,17 @@ class Parser extends Parse
         
         @push 'when'
         
-        print.tokens 'when vals' tokens if @debug
+        # print.tokens 'when vals' tokens if @debug
         
         vals = []
         
-        @verb 'when.vals tokens[0]' tokens[0]
+        # @verb 'when.vals tokens[0]' tokens[0]
         
         while (tokens[0]? and (tokens[0].type not in ['block''nl']) and tokens[0].text != 'then')
             print.tokens 'when val' tokens if @debug
             vals.push @exp tokens
         
-        print.tokens 'when then' tokens if @debug
+        # print.tokens 'when then' tokens if @debug
         
         @verb 'when.then tokens[0]' tokens[0]
         
@@ -235,23 +232,23 @@ class Parser extends Parse
         e = class:
             name:name
 
-        print.tokens 'class extends' tokens if @debug
+        # print.tokens 'class extends' tokens if @debug
 
         if tokens[0]?.text == 'extends'
             tokens.shift()
             e.class.extends = @exps 'class extends' tokens, 'nl'
 
-        print.tokens 'class body' tokens if @debug
-
-        print.noon 'before class body' tokens if @debug
+        # print.tokens 'class body' tokens if @debug
+        # print.noon 'before class body' tokens if @debug
         
         if tokens[0]?.type == 'block'
             tokens = tokens.shift().tokens
             e.class.body = @exps 'class body' tokens
+            # print.ast 'class before named methods' e if @debug
             @nameMethods e.class.body[0].object.keyvals
+            # print.ast 'class after named methods' e if @debug
         else
             @verb 'no class body!'
-
                 
         if @debug
             print.ast 'e.class.body' e.class.body
@@ -306,24 +303,28 @@ class Parser extends Parse
 
         @push 'call'
 
-        print.tokens 'call.open' tokens if @debug
+        # print.tokens 'call.open' tokens if @debug
 
         tok = tok.token if tok.token
-                
-        if tok.type == 'keyword' and tok.text in ['typeof' 'delete']
-            @push 'onearg'
-        
+                        
         last = @lastLineCol tok
         if tokens[0].text == '(' and tokens[0].line == last.line and tokens[0].col == last.col
             open = tokens.shift()
             if tokens[0]?.text == ')'
                 args = []
             else
-                args = @exps 'call' tokens, ')'
+                @push 'args('
+                args = @exps '(' tokens, ')'
+                @pop 'args('
         else
-            print.tokens 'call args' tokens if @debug
-            args = @block 'call' tokens
-            print.ast 'call args' args if @debug
+            # print.tokens 'call args' tokens if @debug
+            if tok.type == 'keyword' and tok.text in ['typeof' 'delete']
+                name = 'arg'
+            else
+                name = 'args'
+            
+            args = @block name, tokens
+            # print.ast 'call args' args if @debug
 
         if open and tokens[0]?.text == ')'
             close = tokens.shift()
@@ -331,11 +332,8 @@ class Parser extends Parse
         if open and not close
             error 'expected )'
 
-        print.tokens 'call.close' tokens if @debug
+        # print.tokens 'call.close' tokens if @debug
 
-        if tok.type == 'keyword' and tok.text in ['typeof' 'delete']
-            @pop 'onearg'
-        
         @pop 'call'
         
         e = call: callee: tok
@@ -356,7 +354,7 @@ class Parser extends Parse
         @push "op#{op.text}"
         
         print.ast 'operation lhs' lhs if @debug
-        print.tokens "operation #{lhs?.text} #{op.text}" tokens if @debug
+        # print.tokens "operation #{lhs?.text} #{op.text}" tokens if @debug
         
         if op.text == '='
             # rhs = @blockExp 'operation lhs' tokens
@@ -364,8 +362,8 @@ class Parser extends Parse
         else
             rhs = @exp tokens
         
-        print.ast 'operation rhs' rhs if @debug
-        print.tokens "operation #{rhs?.text} #{op.text}" tokens if @debug
+        # print.ast 'operation rhs' rhs if @debug
+        # print.tokens "operation #{rhs?.text} #{op.text}" tokens if @debug
         
         @pop "op#{op.text}"
         
@@ -408,7 +406,15 @@ class Parser extends Parse
 
         items = @exps '[' tokens, ']'
 
-        if tokens[0]?.text == ']' then close = tokens.shift() else close = text:']' type:'paren' line:-1 col:-1 
+        if tokens[0]?.text == ']' 
+            close = tokens.shift() 
+        else
+            if tokens[0]?.type == 'nl' and tokens[1]?.text == ']'
+                @shiftNewline 'array ends' tokens
+                close = tokens.shift()
+            else
+                @verb 'array fake closing ]?'
+                close = text:']' type:'paren' line:-1 col:-1 
 
         @pop '['
         
@@ -452,13 +458,13 @@ class Parser extends Parse
 
         @push 'idx'
 
-        print.tokens 'index.open' tokens if @debug
+        # print.tokens 'index.open' tokens if @debug
                 
         open = tokens.shift()
 
         slice = @exp tokens
 
-        print.tokens 'index.close' tokens if @debug
+        # print.tokens 'index.close' tokens if @debug
 
         if tokens[0]?.text == ']'
             close = tokens.shift()
@@ -516,7 +522,15 @@ class Parser extends Parse
 
         exps = @exps '{' tokens, '}'
 
-        if tokens[0]?.text == '}' then close = tokens.shift() else close = text:'}' type:'paren' line:-1 col:-1 
+        if tokens[0]?.text == '}' 
+            close = tokens.shift() 
+        else 
+            if tokens[0]?.type == 'nl' and tokens[1]?.text == '}'
+                @shiftNewline 'curly ends' tokens
+                close = tokens.shift()
+            else
+                @verb 'curly fake closing }?'
+                close = text:'}' type:'paren' line:-1 col:-1 
 
         @pop '{'
 
@@ -541,17 +555,22 @@ class Parser extends Parse
         
         exps = [@keyval key, tokens]
         
-        print.tokens 'object continue...?' tokens if @debug
+        # print.tokens 'object continue...?' tokens if @debug
 
-        tokens.shift() if tokens[0]?.type == 'nl'
+        if tokens[0]?.type == 'nl'
+            @verb 'object nl' first.col, tokens[1]?.col
+            if tokens[1]?.col >= first.col and tokens[1].text not in '])'
+                @verb 'continue block object...' if @debug
+                @shiftNewline 'continue block object ...' tokens
+                exps = exps.concat @exps 'object' tokens
+            else
+                @verb 'outdent! object done'
+        else
+            if tokens[0]?.line == first.line and tokens[0].text not in '])};'
+                @verb 'continue inline object...' if @debug
+                exps = exps.concat @exps 'object' tokens, ';'
                 
-        if tokens[0]? and (tokens[0].col == first.col or tokens[0].line == first.line)
-            if tokens[0].text not in '])'
-                @verb 'continue object...' if @debug
-                if tokens[0].line == first.line then stop='nl' else stop=null
-                exps = exps.concat @exps 'object' tokens, stop
-
-        print.tokens 'object pop' tokens if @debug
+        # print.tokens 'object pop' tokens if @debug
         @pop '{'
 
         object:
@@ -571,25 +590,31 @@ class Parser extends Parse
 
         if tokens[0]?.type == 'block'
             block = tokens.shift()
-            tokens.shift() if tokens[0]?.type == 'nl'
             value = @exps 'keyval value' block.tokens
         else 
             value = @exp tokens
 
         @pop ':'
 
-        if key.type in ['keyword' 'op' 'punct']
-            key.type = 'single'
-            key.text = "'#{key.text}'"
-        else if key.type == 'var'
+        if key.type in ['keyword' 'op' 'punct' 'var' 'this']
+            
             key.type = 'key'
+            key.text = key.text
+            
         else if key.prop
+            
             {line, col} = @firstLineCol key
-            key = 
-                type: 'single'
-                text: "'#{@kode.renderer.node key}'"
-                line: line
-                col:  col
+            text = @kode.renderer.node key
+            if text.startsWith 'this'
+                if text == 'this' then text = '@'
+                else if text.startsWith 'this.' then text = '@' + text[5..]
+            delete key.prop
+            key.type = 'key'
+            key.text = text
+            key.line = line
+            key.col  = col
+        else
+            log 'WHAT COULD THAT BE?' key
 
         keyval:
             key:   key

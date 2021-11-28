@@ -31,8 +31,8 @@ class Parse # the base class of Parser
 
         ast = []
 
-        while block.tokens.length
-            ast = ast.concat @exps 'tl' block.tokens
+        # while block.tokens.length
+        ast = ast.concat @exps 'tl' block.tokens
 
         if @raw then print.noon 'raw ast' ast
 
@@ -61,16 +61,20 @@ class Parse # the base class of Parser
             
             b = switch @stack[-1]
             
-                when 'onearg'       then es.length
-                when 'if' 'switch'  then tokens[0].text == 'else'
-                when '['            then tokens[0].text == ']'  
-                when 'call'         then tokens[0].text in ')}];' # bail out for implicit calls
-                when '{'            then tokens[0].text in ')}];' # bail out for implicit objects
+                when '▸arg'                 then es.length
+                when 'if' 'switch' '▸else'  then tokens[0].text == 'else'
+                when '['                    then tokens[0].text == ']'  
+                when '{'                    then tokens[0].text in '}'
+                when '('                    then tokens[0].text == ')'
+                when '▸args'                then tokens[0].text in '];'
+                when 'call'                 then tokens[0].text in ';' # bail out for implicit calls
                                                                                    
-                when rule           then tokens[0].text == stop                    
+                when rule                   then tokens[0].text == stop                    
                 else false
 
-            if b then @verb 'exps break for stack top' @stack ; break 
+            if b then @verb "exps break for #{tokens[0].text} and stack top" @stack ; break 
+                
+            if tokens[0].text == stop then @verb "exps break for #{tokens[0].text} and stop" stop ; break 
                     
             if tokens[0].type == 'block'
     
@@ -78,18 +82,18 @@ class Parse # the base class of Parser
     
                 @verb "exps block start" block
                     
-                es = es.concat @exps 'exps block' block.tokens                    
+                es = es.concat @exps 'block' block.tokens                    
 
-                if tokens[0]?.type == 'nl' 
-                    @verb "exps block end shift nl" 
-                    nl = tokens.shift()
-                    
                 if tokens[0]?.text == ','
-                    @verb "exps block end shift , and continue..."
+                    @verb "exps block end shift comma , and continue..."
+                    tokens.shift()
+                    continue
+                else if tokens[0]?.type == 'nl' and tokens[1]?.text == ','
+                    @shiftNewline "exps block end nl comma , and continue..." tokens
                     tokens.shift()
                     continue
                     
-                @verb 'exps block end break!'
+                @verb 'exps block end break!' block.tokens.length
                 break
                 
             if tokens[0].type == 'block'    then @verb 'exps break on block'    ; break
@@ -101,27 +105,24 @@ class Parse # the base class of Parser
                 @verb 'exps nl stop:' stop, tokens[0], @stack
                     
                 if @stack[-1] == '[' and tokens[1]?.text == ']'
-                    @verb 'exps nl in array (shift and break)'
-                    tokens.shift()
+                    @shiftNewline 'exps nl ] in array' tokens
                     break
                     
                 if stop
-                    @verb 'exps nl with stop' 
-                    if @stack[-1] == 'call'
-                        @verb "exps nl with stop in call (break, but don't shift nl)"
+                    @verb 'exps nl with stop' stop
+                    if @stack[-1] in ['call' ':' 'func' '▸args']
+                        @verb "exps nl with stop in #{@stack[-1]} (break, but don't shift nl)"
                     else
-                        @verb 'exps nl with stop (shift and break)' 
-                        tokens.shift() 
+                        @shiftNewline "exps nl with stop #{stop}" tokens 
                     break 
 
-                @verb 'exps nl shift and ...'     
-                nl = tokens.shift()
+                nl = @shiftNewline "exps nl (no stop) ..." tokens
                 
                 if tokens[0]?.text == '.' and tokens[1]?.type == 'var'
                     log 'exps nl next line starts with .var!'
                     es.push @prop es.pop(), tokens
                     
-                @verb 'exps nl continue...' 
+                @verb 'exps nl continue...'
                 continue
                 
             ex = @exp tokens
@@ -228,7 +229,7 @@ class Parse # the base class of Parser
             if nxt.text in '({' and e.type in ['single' 'double' 'triple' 'num' 'regex']
                 break
             
-            if @stack[-1] == 'onearg' and nxt.type == 'op' then @verb 'rhs break for onearg'; break
+            if @stack[-1] == '▸arg' and nxt.type == 'op' then @verb 'rhs break for ▸arg'; break
                 
             else if nxt.text == ':'
                 if @stack[-1] != '{'
@@ -340,7 +341,7 @@ class Parse # the base class of Parser
                     nxt.type == 'op' and 
                     nxt.text not in ['++' '--' '+' '-' 'not'] and 
                     e.text not in ['[' '('] and                     
-                    'onearg' not in @stack
+                    '▸arg' not in @stack
                     )
                 if @stack[-1]?.startsWith 'op' and @stack[-1] != 'op='
                     @verb 'lhs stop on operation' e, nxt
@@ -380,7 +381,7 @@ class Parse # the base class of Parser
                     not e.operation and
                     not e.incond and
                     e.call?.callee?.text not in ['delete''new''typeof'] and
-                    'onearg' not in @stack
+                    '▸arg' not in @stack
                     )
                 @verb 'lhs is lhs of implicit call! e' e, @stack[-1]
                 @verb '    is lhs of implicit call! nxt' nxt
@@ -406,6 +407,17 @@ class Parse # the base class of Parser
         @sheapPop 'lhs' 'lhs'       
         e
 
+    #  0000000  000   000  000  00000000  000000000  000   000  00000000  000   000  000      000  000   000  00000000  
+    # 000       000   000  000  000          000     0000  000  000       000 0 000  000      000  0000  000  000       
+    # 0000000   000000000  000  000000       000     000 0 000  0000000   000000000  000      000  000 0 000  0000000   
+    #      000  000   000  000  000          000     000  0000  000       000   000  000      000  000  0000  000       
+    # 0000000   000   000  000  000          000     000   000  00000000  00     00  0000000  000  000   000  00000000  
+    
+    shiftNewline: (rule, tokens) ->
+        
+        if @debug then log M3 y5 " ◂ #{w1 rule}" 
+        tokens.shift()
+        
     # 000   000   0000000   00     00  00000000  00     00  00000000  000000000  000   000   0000000   0000000     0000000  
     # 0000  000  000   000  000   000  000       000   000  000          000     000   000  000   000  000   000  000       
     # 000 0 000  000000000  000000000  0000000   000000000  0000000      000     000000000  000   000  000   000  0000000   
@@ -417,7 +429,7 @@ class Parse # the base class of Parser
         if mthds?.length
             for m in mthds
                 if name = m.keyval.key?.text
-                    m.keyval.val.func?.name = name
+                    m.keyval.val.func.name = type:'name' text:name
         mthds
         
     # 000000000  000   000  00000000  000   000 
@@ -455,14 +467,14 @@ class Parse # the base class of Parser
         
         if tokens[0]?.type == 'block'
             block = tokens.shift()
-            if tokens[0]?.type == 'nl'
-                tokens.shift()
             tokens = block.tokens
             nl = null
         else 
             nl = 'nl'
-            
+
+        @push '▸'+id
         exps = @exps id, tokens, nl
+        @pop '▸'+id
 
         if block and block.tokens.length
             print.tokens 'dangling block tokens' tokens
@@ -524,13 +536,13 @@ class Parse # the base class of Parser
     sheapPush: (type, text) ->
         
         @sheap.push type:type, text:text
-        print.sheap @sheap if @verbose
+        print.sheap @sheap if @debug
         
     sheapPop: (m, t) ->
         
         popped = @sheap.pop()
         if popped.text != t and popped.text != kstr.strip(t, "'") then error 'wrong pop?' popped.text, t
-        print.sheap @sheap, popped if @verbose
+        print.sheap @sheap, popped if @debug
         
     #  0000000  000000000   0000000    0000000  000   000  
     # 000          000     000   000  000       000  000   
@@ -540,14 +552,14 @@ class Parse # the base class of Parser
 
     push: (node) ->
 
-        print.stack @stack, node if @verbose
+        print.stack @stack, node if @debug
         @stack.push node
 
     pop: (n) ->
         p = @stack.pop()
         if p != n
             error "unexpected pop!" p, n
-        if @verbose
+        if @debug
             print.stack @stack, p, (s) -> W1 w1 s
 
     verb: -> if @verbose then console.log.apply console.log, arguments 

@@ -27,7 +27,7 @@ class Returner
         
         if f.body?.exps?.length
 
-            if f.name not in ['@' 'constructor']
+            if f.name?.text not in ['@' 'constructor']
                 
                 lst = f.body.exps[-1]
                 # log f.arrow.line, f.arrow.text, lst

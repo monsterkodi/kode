@@ -178,7 +178,7 @@ if not module.parent or module.parent.path.endsWith '/kode/bin'
             astr        . ? print parse tree as string              . = false  . - A
             scope       . ? print scopes                            . = false  . - S
             verbose     . ? log more                                . = false
-            debug       . ? log debug                               . = false  . - D
+            debug       . ? log debug                               . = false
             raw         . ? log raw                                 . = false  . - R
 
         version  #{pkg.version}

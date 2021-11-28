@@ -124,12 +124,15 @@ class Print
                 
                 return s if node in visited
                 visited.push node
-                
-                s += lpad + ' ' + bold w3(indent + '[')
-                for value in node
-                    s += '\n' 
-                    s += printNode value, indent, visited
-                s += lpad + ' ' + bold w3(indent + ']\n')
+
+                if node.length
+                    s += lpad + ' ' + indent + bold w3('[')
+                    for value in node
+                        s += '\n' 
+                        s += printNode value, indent, visited
+                    s += lpad + ' ' + bold w3(indent + ']\n')
+                else
+                    s += lpad + ' ' + indent + bold w3('[]\n')
             else
                 return s if node in visited
                 visited.push node

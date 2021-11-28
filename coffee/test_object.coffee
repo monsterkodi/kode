@@ -74,6 +74,13 @@ describe 'object' ->
             """
 
         cmp """
+            u = v:0 w:1; x=y:2
+            """ """
+            u = {v:0,w:1}
+            x = {y:2}
+            """
+            
+        cmp """
             i = y:1 z:2; z=a:1
             log i
             """ """

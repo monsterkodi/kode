@@ -67,7 +67,7 @@ class Renderer
                 when 'call'      then @call v
                 when 'var'       then v.text
                 else
-                    log R4('renderer.node unhandled exp'), exp # if @debug or @verbose
+                    log R4("renderer.node unhandled key #{k} in exp"), exp # if @debug or @verbose
                     ''
         s
         
@@ -114,13 +114,14 @@ class Renderer
                 log 'wtf?' m 
                 print.ast 'not an method?' m
                 continue
-            name = m.keyval.key.text
+            name = m.keyval.val.func.name.text
             if name in ['@' 'constructor']
                 if constructor then error 'more than one constructor?'
-                m.keyval.key.text= 'constructor'
+                m.keyval.val.func.name.text = 'constructor'
+                # log 'prepareMethods' name, m.keyval.val.func.name.text
                 constructor = m
-            else if name.startsWith "'this." #'@'
-                m.keyval.key.text = 'static ' + name[6..-2]
+            else if name.startsWith '@'
+                m.keyval.val.func.name.text = 'static ' + name[1..]
             else if m.keyval.val.func?.arrow.text == '=>'
                 bind.push m
                 
@@ -128,6 +129,7 @@ class Renderer
             ast = @kode.ast "constructor: ->" # create one from scratch
             print.noon 'ast' ast if @debug
             constructor = ast.exps[0].object.keyvals[0]
+            constructor.keyval.val.func.name = type:'name' text:'constructor'
             mthds.unshift constructor
             if @debug
                 print.noon 'constructor' constructor
@@ -136,7 +138,7 @@ class Renderer
             
         if bind.length
             for b in bind
-                bn = b.keyval.key.text
+                bn = b.keyval.val.func.name.text
                 @verb 'method to bind:' bn
                 constructor.keyval.val.func.body.exps ?= []
                 constructor.keyval.val.func.body.exps.push 
@@ -157,7 +159,7 @@ class Renderer
     mthd: (n) ->
         
         if n.keyval
-            s = @indent + @func n.keyval.val.func, n.keyval.key.text
+            s = @indent + @func n.keyval.val.func
         s
 
     # 00000000  000   000  000   000   0000000  
@@ -166,11 +168,11 @@ class Renderer
     # 000       000   000  000  0000  000       
     # 000        0000000   000   000   0000000  
             
-    func: (n, name='function') ->
+    func: (n) ->
         
         gi = @ind()
         
-        s = name
+        s = n.name?.text ? 'function'
         s += ' ('
         args = n.args?.parens?.exps
         if args
@@ -187,9 +189,6 @@ class Renderer
             
             s += '\n'
             ss = n.body.exps.map (s) => @node s
-            
-            # if not ss[-1].startsWith('return') and name != 'constructor'
-                # ss.push 'return ' + kstr.lstrip ss.pop()
             ss = ss.map (s) => @indent + s
             s += ss.join '\n'
             s += '\n' + gi
@@ -500,7 +499,10 @@ class Renderer
     # 000  000   000          000        000     000   000  000      
     # 000   000  00000000     000         0      000   000  0000000  
     
-    keyval: (p) -> "#{@node(p.key)}:#{@node(p.val)}"
+    keyval: (p) -> 
+        key = @node p.key
+        if key[0] not in "'\"" and /[\.\,\;\*\+\-\/\=\|]/.test key then key = "'#{key}'"
+        "#{key}:#{@node(p.val)}"
     
     # 00000000   00000000    0000000   00000000   
     # 000   000  000   000  000   000  000   000  

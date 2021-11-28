@@ -100,6 +100,8 @@ describe 'array' ->
         cmp '[[[],[]]]'         '[[[],[]]]'
         cmp '[[[][]]]'          '[[[],[]]]'
         cmp '[[[1]], 1]'        '[[[1]],1]'
+        cmp '[b(c)]'            '[b(c)]'
+        cmp '[b c]'             '[b(c)]'
         
         cmp "['1' , a, true, false, null, undefined]",
             "['1',a,true,false,null,undefined]"

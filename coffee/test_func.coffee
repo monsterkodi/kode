@@ -281,7 +281,7 @@ describe 'func' ->
             """ """
             a('1',2,3.4,true,[null,undefined])
             """
-
+        
         cmp """
             a '1'
             b  2
@@ -370,4 +370,12 @@ describe 'func' ->
             {
                 return i
             }),y)
+            """
+            
+        cmp """
+            a.b c:2
+            x = y
+            """ """
+            a.b({c:2})
+            x = y
             """

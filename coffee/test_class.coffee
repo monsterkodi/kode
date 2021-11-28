@@ -78,13 +78,13 @@ describe 'class' ->
             """
              
         cmp """
-            class X
+            class Y
                 @: -> '@'
                          
                 m: ->
                     'm'
             """ """
-            class X
+            class Y
             {
                 constructor ()
                 {
