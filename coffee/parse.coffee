@@ -394,8 +394,8 @@ class Parse # the base class of Parser
                     rhs:@incond e, tokens
                 
             else if (
-                    spaced and (nxt.line == last.line or nxt.col > first.col) and
-                    nxt.text not in ['then' 'else' 'break' 'continue' 'in' 'of'] and 
+                    spaced and (nxt.line == last.line or (nxt.col > first.col and @stack[-1] not in ['if'])) and
+                    nxt.text not in ['if' 'then' 'else' 'break' 'continue' 'in' 'of'] and 
                     (e.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and 
                     (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no']) and 
                     not e.array and

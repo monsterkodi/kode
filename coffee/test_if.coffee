@@ -17,6 +17,16 @@ describe 'if' ->
     #    000     000   000  00000000  000   000  
     
     it 'then' ->
+        
+        cmp """
+            if n
+                b 
+            """ """
+            if (n)
+            {
+                b
+            }
+            """
 
         cmp """
             if undefined == null

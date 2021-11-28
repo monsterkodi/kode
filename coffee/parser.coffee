@@ -29,7 +29,7 @@ class Parser extends Parse
         @push 'if'
 
         exp = @exp tokens
-
+        
         thn = @then 'then' tokens
 
         e = if:
