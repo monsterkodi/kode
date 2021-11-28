@@ -27,11 +27,11 @@ class Print
             log R3 y5 "\n #{header}"
             log b6(kstr.pad '' 80 ' ')
             s = ''
-            for tok in tokens
-                s += @token tok
+            for tok,idx in tokens
+                s += @token tok, idx
             log s
 
-    @token: (tok) ->
+    @token: (tok, idx='') ->
         
         indent = kstr.lpad '' tok.col
         return red '◂\n' if tok.type == 'nl'
@@ -40,14 +40,13 @@ class Print
             if tok.text == '' then '\n'+indent 
             else if tok.text then tok.text
             else if tok.tokens
-                # '\n'+((kstr.lpad '' 20)+tok.indent)+(tok.tokens.map (t) -> toktext(t)).join ' '
                 s = ''
                 for t in tok.tokens
                     s += @token(t)# + '\n'
                 '\n' + s
             else
                 '???'
-        b6(kstr.lpad tok.line, 4) + ' ' + blue(kstr.lpad tok.col, 3) + ' ' + gray(kstr.pad tok.type, 10) + ' ' + bold yellow(indent + toktext tok) + '\n'
+        b6(kstr.lpad tok.line, 4) + ' ' + blue(kstr.lpad tok.col, 3) + ' ' + w2(kstr.lpad idx, 4) + ' ' + gray(kstr.pad tok.type, 10) + ' ' + bold yellow(indent + toktext tok) + '\n'
             
     #  0000000  000000000   0000000    0000000  000   000
     # 000          000     000   000  000       000  000
@@ -63,12 +62,17 @@ class Print
         
         s = B2 '   '
         for r in sheap
-            if r.type == 'exps' 
-                s += B5 r.text + B2 ' '
-            else
-                s += Y4 black r.text + Y2 ' '
+            switch r.type
+                when 'exps'  then s += B5(r.text) + B2 ' '
+                when 'stack' then s += W4(r.text) + W2 ' '
+                when 'rhs'   then s += R3(r1 r.text) + R1 ' '
+                when 'lhs'   then s += G3(g1 r.text) + G1 ' '
+                else              s += Y4 black(r.text) + Y2 ' '
         if popped
-            c = if popped.type == 'exps' then B1 else W1
+            c = switch popped.type 
+                when 'exps' then B1 
+                when 'stack' then W3
+                else W1
             s += black c(popped.text) + ' '
         log s
 

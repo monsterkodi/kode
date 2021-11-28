@@ -206,12 +206,14 @@ class Lexer
                 
                 if tok.text in ['if' 'for' 'while' 'else']
                     
-                    if  tok.col == 0 or \
+                    lineStart = tok.col == 0 or \
                         tokens[idx-1]?.type == 'nl' or \
-                        tokens[idx-2]?.type == 'nl' or \ # line starts with kw
-                        tokens[idx-1]?.text == '='       # or x = if|for|while... 
-                            ++idx while idx < tokens.length and tokens[idx].type != 'nl' # skip until next nl
-                            continue
+                        tokens[idx-2]?.type == 'nl' # line starts with kw
+                    
+                    if lineStart or \
+                            tokens[idx-1]?.text == '=' # x = if|for|while... 
+                        ++idx while idx < tokens.length and tokens[idx].type != 'nl' # skip until nl
+                        continue
                                         
                 switch tok.text 
                     when 'if'    then ifc++ ; ist = idx if ist == 0 
@@ -223,6 +225,50 @@ class Lexer
             idx++
         
         swap()
+        
+        tokens
+        
+    # 000   000  000   000  000000000   0000000   000  000      
+    # 000   000  0000  000     000     000   000  000  000      
+    # 000   000  000 0 000     000     000000000  000  000      
+    # 000   000  000  0000     000     000   000  000  000      
+    #  0000000   000   000     000     000   000  000  0000000  
+    
+    untail: (tokens) ->
+
+        print.tokens "untail" tokens
+        
+        idx = 0
+        
+        while idx < tokens.length
+            
+            idx++ while tokens[idx]?.type in ['nl' 'ws'] or tokens[idx]?.text == ';'
+            
+            first = idx
+            idx++ while idx < tokens.length and tokens[idx].type != 'nl' and tokens[idx].text != ';'
+            last = idx-1
+        
+            thc = 0
+            ifc = 0
+            bwd = last
+
+            while bwd > first
+
+                bwd--
+
+                if tokens[bwd].text == 'if' and tokens[bwd-2]?.text != 'else' and thc == 0 and bwd > first
+                    print.tokens "untail #{first} #{last}" tokens[first..last]
+                    log 'tailing if!' first, bwd, last
+                    start = bwd-1
+                    start-- while tokens[start-1]?.text not in ['(' 'if' 'then'] and start > first
+                    start++ if tokens[start]?.type == 'ws'
+                    end = bwd+1
+                    end++ while tokens[end+1]?.text not in [')' 'if' 'else'] and end < last
+                    end-- if tokens[end]?.type == 'ws'
+                    log 'tailing if:' start, bwd, end
+                    log 'tailing if:' tokens[start], tokens[end]
+                            
+                thc++ if tokens[bwd].text == 'then'
         
         tokens
         
@@ -250,7 +296,8 @@ class Lexer
         tokens = @unslash   tokens
         tokens = @mergeop   tokens
         tokens = @uncomment tokens
-        tokens = @frontify  tokens 
+        # tokens = @untail    tokens 
+        # tokens = @frontify  tokens 
 
         blocks = []
 

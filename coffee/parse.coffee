@@ -208,6 +208,14 @@ class Parse # the base class of Parser
                     tokens.shift()
                     break
                 else
+                    if tokens[0]?.text == 'if'
+                        # log 'exp lhs if?' e
+                        # print.sheap @sheap
+                        # print.stack @stack
+                        if empty(@stack) or not @stack[-1].startsWith('op')
+                            e = @ifTail e, tokens.shift(), tokens
+                            continue
+                    
                     @verb 'exp no token consumed: break!'
                     break                    # bail out if no token was consumed
             
@@ -410,7 +418,7 @@ class Parse # the base class of Parser
                     break
                 @verb 'lhs is lhs of op' e, nxt
                 e = @operation e, tokens.shift(), tokens
-                
+                                
             else
                 print.tokens "lhs no nxt match? break! stack:#{@stack} nxt:" [nxt] if @verbose
                 break                    
@@ -540,11 +548,14 @@ class Parse # the base class of Parser
 
         print.stack @stack, node if @debug
         @stack.push node
+        @sheapPush 'stack' node
 
     pop: (n) ->
         p = @stack.pop()
+        @sheapPop 'stack' p
         if p != n
             error "unexpected pop!" p, n
+            
         if @debug
             print.stack @stack, p, (s) -> W1 w1 s
 

@@ -132,6 +132,25 @@ describe 'if' ->
     it 'inline' ->
         
         cmp "v = if k == 1 then 2 else 3" "v = k === 1 ? 2 : 3"
+        
+        cmp "i = 1 if i == 0",             
+            """
+            if (i === 0)
+            {
+                i = 1
+            }
+            """
+
+        cmp "if a then i = 1 if i == 0",
+            """
+            if (a)
+            {
+                if (i === 0)
+                {
+                    i = 1
+                }
+            }
+            """
             
         cmp """
             if false then true else no

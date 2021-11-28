@@ -30,7 +30,7 @@ class Parser extends Parse
 
         exp = @exp tokens
 
-        thn = @then 'if then' tokens
+        thn = @then 'then' tokens
 
         e = if:
                 exp:    exp
@@ -45,7 +45,7 @@ class Parser extends Parse
 
             exp = @exp tokens
 
-            thn = @then 'elif then' tokens
+            thn = @then 'elif' tokens
 
             e.if.elifs.push
                 elif:
@@ -61,6 +61,18 @@ class Parser extends Parse
         @pop 'if'
 
         e
+        
+    # 000  00000000  000000000   0000000   000  000      
+    # 000  000          000     000   000  000  000      
+    # 000  000000       000     000000000  000  000      
+    # 000  000          000     000   000  000  000      
+    # 000  000          000     000   000  000  0000000  
+    
+    ifTail: (e, tok, tokens) ->
+        
+        if:
+            exp:  @exp tokens
+            then: @scope [e]
 
     # 00000000   0000000   00000000   
     # 000       000   000  000   000  

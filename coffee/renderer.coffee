@@ -479,7 +479,9 @@ class Renderer
         for e in n.vals
             s += '    case ' + @node(e) + ':\n'
         for e in n.then.exps ? []
-            s += @indent + '    ' + @node(e) + '\n'
+            gi = @ind()
+            s += gi + '    ' + @node(e) + '\n'
+            @ded()
         s += @indent + '    ' + 'break'
         s
                 
