@@ -150,6 +150,48 @@ describe 'if' ->
             """
             
         cmp "a = if 1 then 2 else if 3 then 4 else if 5 then 6 else 7" "a = 1 ? 2 : 3 ? 4 : 5 ? 6 : 7"
+        
+        cmp """
+            a = if 0 then if 1 then if 2 then 3 else if 4 then 5 else 6 else if 7 then 8 else 9 else if 10 then 11 else 12
+            """ """
+            a = 0 ? 1 ? 2 ? 3 : 4 ? 5 : 6 : 7 ? 8 : 9 : 10 ? 11 : 12
+            """
+        ###
+            a = if (0)
+            {
+                if (1)
+                {
+                    if (2)
+                    {
+                        3
+                    }
+                    else if (4)
+                    {
+                        5
+                    }
+                    else
+                    {
+                        6
+                    }
+                }
+                else if (7)
+                {
+                    8
+                }
+                else
+                {
+                    9
+                }
+            }
+            else if (10)
+            {
+                11
+            }
+            else
+            {
+                12
+            }
+        ###
 
     # 00000000  000       0000000  00000000        000  00000000  
     # 000       000      000       000             000  000       
@@ -201,45 +243,4 @@ describe 'if' ->
             console.log('END')
             """
             
-        cmp """
-            a = if 0 then if 1 then if 2 then 3 else if 4 then 5 else 6 else if 7 then 8 else 9 else if 10 then 11 else 12
-            """ """
-            a = 0 ? 1 ? 2 ? 3 : 4 ? 5 : 6 : 7 ? 8 : 9 : 10 ? 11 : 12
-            """
-            # """
-            # a = if (0)
-            # {
-                # if (1)
-                # {
-                    # if (2)
-                    # {
-                        # 3
-                    # }
-                    # else if (4)
-                    # {
-                        # 5
-                    # }
-                    # else
-                    # {
-                        # 6
-                    # }
-                # }
-                # else if (7)
-                # {
-                    # 8
-                # }
-                # else
-                # {
-                    # 9
-                # }
-            # }
-            # else if (10)
-            # {
-                # 11
-            # }
-            # else
-            # {
-                # 12
-            # }
-            # """
             

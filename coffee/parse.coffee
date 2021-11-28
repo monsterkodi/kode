@@ -111,8 +111,9 @@ class Parse # the base class of Parser
                     
                 if stop
                     @verb 'exps nl with stop' stop
-                    if @stack[-1] in ['call' ':' 'func' '▸args']
-                        @verb "exps nl with stop in #{@stack[-1]} (break, but don't shift nl)"
+                    # if @stack[-1] in ['call' ':' 'func' '▸args'] or stop != 'nl'
+                    if @stack[-1] in ['func' '▸args'] or stop != 'nl'
+                        @verb "exps nl with stop #{stop} in #{@stack[-1]} (break, but don't shift nl)"
                     else
                         @shiftNewline "exps nl with stop #{stop}" tokens 
                     break 

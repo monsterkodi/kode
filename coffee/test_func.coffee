@@ -267,6 +267,20 @@ describe 'func' ->
         cmp "a('1' 2 3.4 true false null undefined NaN Infinity)",
             "a('1',2,3.4,true,false,null,undefined,NaN,Infinity)"
 
+        cmp """            
+            a b:c[1], d:2
+            """ """
+            a({b:c[1],d:2})
+            """            
+            
+        cmp """            
+            a b:c[2], d:3
+            4
+            """ """
+            a({b:c[2],d:3})
+            4
+            """            
+            
         cmp """
             a(
                 '1'
