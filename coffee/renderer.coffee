@@ -20,8 +20,14 @@ class Renderer
 
     render: (ast) ->
 
+        @varstack = [ast.vars]
         @indent = ''
         s = ''
+        
+        if not empty ast.vars
+            vs = (v.text for v in ast.vars).join ', '
+            s += @indent + "var #{vs}\n\n"
+        
         s += ast.exps.map((s) => @node s).join '\n'
         s
 
@@ -181,6 +187,8 @@ class Renderer
         s += ')\n'
         s += gi + '{'
         
+        @varstack.push n.body.vars
+        
         if not empty n.body.vars
             s += '\n'
             vs = (v.text for v in n.body.vars).join ', '
@@ -194,6 +202,8 @@ class Renderer
             s += ss.join '\n'
             s += '\n' + gi
         s += '}'
+        
+        @varstack.pop()
         
         @ded()
         s
@@ -317,24 +327,24 @@ class Renderer
             print.noon 'no list for' n.list
             print.ast 'no list for' n.list
             
-        listVar = 'list'    
+        listVar = @freshVar 'list'    
         s = ''
         s += "var #{listVar} = #{list}\n"
         if n.vals.text
-            s += gi+"for (var i = 0; i < #{listVar}.length; i++)\n"
+            s += gi+"for (i = 0; i < #{listVar}.length; i++)\n"
             s += gi+"{\n"
-            s += @indent+"var #{n.vals.text} = #{listVar}[i]\n"
+            s += @indent+"#{n.vals.text} = #{listVar}[i]\n"
         else if n.vals.array?.items
-            s += gi+"for (var i = 0; i < #{listVar}.length; i++)\n"
+            s += gi+"for (i = 0; i < #{listVar}.length; i++)\n"
             s += gi+"{\n"
             for j in 0...n.vals.array.items.length
                 v = n.vals.array.items[j]
-                s += @indent+"var #{v.text} = #{listVar}[i][#{j}]\n"
+                s += @indent+"#{v.text} = #{listVar}[i][#{j}]\n"
         else if n.vals.length > 1
             lv = n.vals[1].text
-            s += gi+"for (var #{lv} = 0; #{lv} < #{listVar}.length; #{lv}++)\n"
+            s += gi+"for (#{lv} = 0; #{lv} < #{listVar}.length; #{lv}++)\n"
             s += gi+"{\n"
-            s += @indent+"var #{n.vals[0].text} = #{listVar}[i]\n"
+            s += @indent+"#{n.vals[0].text} = #{listVar}[i]\n"
             
         for e in n.then.exps ? []
             s += @indent + @node(e) + '\n'
@@ -604,7 +614,17 @@ class Renderer
         else 
             o = if p.dots.text == '...' then '<' else '<='
             "(function() { var r = []; for (var i = #{@node p.from}; i #{o} #{@node p.upto}; i++){ r.push(i); } return r; }).apply(this)"
-            
+       
+    freshVar: (name, suffix=0) ->
+
+        for vars in @varstack
+            for v in vars
+                if v.text == name + (suffix or '')
+                    return @freshVar name, suffix+1
+                    
+        @varstack[-1].push text:name + (suffix or '')
+        name + (suffix or '')
+                
     verb: -> if @verbose then console.log.apply console.log, arguments 
     ind: ->
         

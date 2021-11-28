@@ -6,6 +6,10 @@
 000   000  00000000     000      0000000   000   000  000   000  00000000  000   000  
 ###
 
+###
+    walks through an abstract syntax tree and inserts implicit return statements
+###
+
 class Returner
 
     @: (@kode) ->
@@ -30,7 +34,6 @@ class Returner
             if f.name?.text not in ['@' 'constructor']
                 
                 lst = f.body.exps[-1]
-                # log f.arrow.line, f.arrow.text, lst
                 
                 insert = -> 
                     f.body.exps.push return:

@@ -104,6 +104,16 @@ describe 'if' ->
             """          
 
         cmp """
+            if not op in ['--''++']
+                decr
+            """ """
+            if (!['--','++'].indexOf(op) >= 0)
+            {
+                decr
+            }
+            """          
+            
+        cmp """
             if op not in ['--''++']
                 incr
             """ """

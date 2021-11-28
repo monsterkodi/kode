@@ -23,9 +23,9 @@ describe 'loops' ->
                 t
             """ """
             var list = l
-            for (var i = 0; i < list.length; i++)
+            for (i = 0; i < list.length; i++)
             {
-                var t = list[i]
+                t = list[i]
                 t
             }
             """
@@ -34,9 +34,9 @@ describe 'loops' ->
             for a in [1,2,3] then log a
             """ """
             var list = [1,2,3]
-            for (var i = 0; i < list.length; i++)
+            for (i = 0; i < list.length; i++)
             {
-                var a = list[i]
+                a = list[i]
                 console.log(a)
             }
             """
@@ -46,9 +46,9 @@ describe 'loops' ->
             log a
             """ """
             var list = [1,2,3]
-            for (var i = 0; i < list.length; i++)
+            for (i = 0; i < list.length; i++)
             {
-                var a = list[i]
+                a = list[i]
                 console.log(a)
             }
             console.log(a)
@@ -61,9 +61,9 @@ describe 'loops' ->
             log '3' a
             """ """
             var list = [1,2,3]
-            for (var i = 0; i < list.length; i++)
+            for (i = 0; i < list.length; i++)
             {
-                var a = list[i]
+                a = list[i]
                 console.log('1',a)
                 console.log('2',a)
             }
@@ -75,9 +75,9 @@ describe 'loops' ->
                 log i,v
             """ """
             var list = this.regs
-            for (var i = 0; i < list.length; i++)
+            for (i = 0; i < list.length; i++)
             {
-                var v = list[i]
+                v = list[i]
                 console.log(i,v)
             }
             """
@@ -87,14 +87,52 @@ describe 'loops' ->
                 log a,b
             """ """
             var list = this.regs
-            for (var i = 0; i < list.length; i++)
+            for (i = 0; i < list.length; i++)
             {
-                var a = list[i][0]
-                var b = list[i][1]
+                a = list[i][0]
+                b = list[i][1]
                 console.log(a,b)
             }
             """
-            
+
+        # todo: list var names
+        cmp """
+            for a in [1..2] then for b in [1..3] then c = 1; d = 1
+            """ """
+            var list = [1,2]
+            for (i = 0; i < list.length; i++)
+            {
+                a = list[i]
+                var list1 = [1,2,3]
+                for (i = 0; i < list1.length; i++)
+                {
+                    b = list1[i]
+                    c = 1
+                    d = 1
+                }
+            }
+            """
+
+        cmp """
+            for a in [1..9] then for b in [1..9]
+                c = 3
+                d:
+                    e: 1
+            """ """
+            var list = [1,2,3,4,5,6,7,8,9]
+            for (i = 0; i < list.length; i++)
+            {
+                a = list[i]
+                var list1 = [1,2,3,4,5,6,7,8,9]
+                for (i = 0; i < list1.length; i++)
+                {
+                    b = list1[i]
+                    c = 3
+                    {d:{e:1}}
+                }
+            }
+            """
+
     # 00000000   0000000   00000000          0000000   00000000
     # 000       000   000  000   000        000   000  000
     # 000000    000   000  0000000          000   000  000000
