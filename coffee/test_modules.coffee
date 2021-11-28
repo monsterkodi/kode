@@ -318,12 +318,5 @@ describe 'modules' ->
 
         renderer.render parser.parse lexer.blockify lexer.tokenize """
             if a then b else c"""
-        .should.eql """
-            if (a)
-            {
-                b
-            }
-            else
-            {
-                c
-            }"""
+        .should.eql "a ? b : c"
+        

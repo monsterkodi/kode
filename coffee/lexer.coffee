@@ -206,7 +206,8 @@ class Lexer
                 
                 if tok.text in ['if' 'for' 'while' 'else']
                     
-                    if  tokens[idx-1]?.type == 'nl' or \
+                    if  tok.col == 0 or \
+                        tokens[idx-1]?.type == 'nl' or \
                         tokens[idx-2]?.type == 'nl' or \ # line starts with kw
                         tokens[idx-1]?.text == '='       # or x = if|for|while... 
                             ++idx while idx < tokens.length and tokens[idx].type != 'nl' # skip until next nl

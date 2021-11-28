@@ -8,7 +8,8 @@
 
 kstr  = require 'kstr'
 print = require './print'
-empty = (a) -> a in ['' null undefined] or (typeof(a) == 'object' and Object.keys(a).length == 0)
+
+{ firstLineCol, lastLineCol, empty } = require './utils'
 
 class Parse # the base class of Parser
 
@@ -223,7 +224,7 @@ class Parse # the base class of Parser
 
             if not e then return error 'no e?' nxt
             
-            unspaced = (llc = @lastLineCol(e)).col == nxt.col and llc.line == nxt.line
+            unspaced = (llc = lastLineCol(e)).col == nxt.col and llc.line == nxt.line
             spaced = not unspaced
 
             if nxt.text in '({' and e.type in ['single' 'double' 'triple' 'num' 'regex']
@@ -313,8 +314,8 @@ class Parse # the base class of Parser
 
             if not e then return error 'no e?' nxt
             
-            last  = @lastLineCol  e
-            first = @firstLineCol e
+            last  = lastLineCol  e
+            first = firstLineCol e
             unspaced = last.col == nxt.col and last.line == nxt.line
             spaced = not unspaced
 
@@ -480,53 +481,7 @@ class Parse # the base class of Parser
             print.tokens 'dangling block tokens' tokens
             
         exps
-                    
-    # 000       0000000    0000000  000000000  000      000  000   000  00000000   0000000   0000000   000      
-    # 000      000   000  000          000     000      000  0000  000  000       000       000   000  000      
-    # 000      000000000  0000000      000     000      000  000 0 000  0000000   000       000   000  000      
-    # 000      000   000       000     000     000      000  000  0000  000       000       000   000  000      
-    # 0000000  000   000  0000000      000     0000000  000  000   000  00000000   0000000   0000000   0000000  
-    
-    lastLineCol: (e) =>
-        
-        if e?.col?
-            return
-                line: e.line
-                col:  e.col+e.text?.length
-        else if e? and e instanceof Object
-            cols = Object.values(e).map @lastLineCol
-            if not empty cols
-                return cols.reduce (a,b) -> 
-                    if a.line > b.line then a 
-                    else if a.line == b.line
-                        if a.col > b.col then a else b
-                    else b
-        line:1
-        col: 0
-
-    # 00000000  000  00000000    0000000  000000000  000      000  000   000  00000000   0000000   0000000   000      
-    # 000       000  000   000  000          000     000      000  0000  000  000       000       000   000  000      
-    # 000000    000  0000000    0000000      000     000      000  000 0 000  0000000   000       000   000  000      
-    # 000       000  000   000       000     000     000      000  000  0000  000       000       000   000  000      
-    # 000       000  000   000  0000000      000     0000000  000  000   000  00000000   0000000   0000000   0000000  
-    
-    firstLineCol: (e) =>
-        
-        if e?.col?
-            return
-                line: e.line
-                col:  e.col
-        else if e? and e instanceof Object
-            cols = Object.values(e).map @firstLineCol
-            if not empty cols
-                return cols.reduce (a,b) -> 
-                    if a.line < b.line then a 
-                    else if a.line == b.line
-                        if a.col < b.col then a else b
-                    else b
-        line:Infinity
-        col: Infinity
-        
+                            
     #  0000000  000   000  00000000   0000000   00000000     
     # 000       000   000  000       000   000  000   000    
     # 0000000   000000000  0000000   000000000  00000000     

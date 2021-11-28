@@ -8,7 +8,8 @@
 
 kstr  = require 'kstr'
 print = require './print'
-empty = (a) -> a in ['' null undefined] or (typeof(a) == 'object' and Object.keys(a).length == 0)
+
+{ firstLineCol, lastLineCol, empty } = require './utils'
 
 class Renderer
 
@@ -230,6 +231,12 @@ class Renderer
 
         if not n.then then error 'if expected then' n
 
+        first = firstLineCol n
+        last  = lastLineCol n
+        
+        if first.line == last.line and n.else
+            return @ifInline n
+        
         gi = @ind()
 
         s = ''
@@ -256,6 +263,33 @@ class Renderer
             s += gi+"}"
             
         @ded()
+        s
+        
+    # 000  00000000  000  000   000  000      000  000   000  00000000  
+    # 000  000       000  0000  000  000      000  0000  000  000       
+    # 000  000000    000  000 0 000  000      000  000 0 000  0000000   
+    # 000  000       000  000  0000  000      000  000  0000  000       
+    # 000  000       000  000   000  0000000  000  000   000  00000000  
+    
+    ifInline: (n) ->
+        
+        s = ''
+        
+        s += "#{@node(n.exp)} ? "
+        if n.then.exps
+            s += (@node(e) for e in n.then.exps).join ', '
+
+        if n.elifs
+            for e in n.elifs
+                s += ' : '
+                s += @ifInline e.elif
+
+        if n.else
+            s += ' : '
+            if n.else.exps.length == 1
+                s += @node n.else.exps[0]
+            else
+                s += '(' + (@node e for e in n.else.exps).join(', ') + ')'
         s
         
     # 00000000   0000000   00000000   

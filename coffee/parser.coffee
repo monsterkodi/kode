@@ -7,9 +7,9 @@
 ###
 
 print = require './print'
-empty = (a) -> a in ['' null undefined] or (typeof(a) == 'object' and Object.keys(a).length == 0)
-
 Parse = require './parse'
+
+{ firstLineCol, lastLineCol, empty } = require './utils'
 
 class Parser extends Parse
 
@@ -307,7 +307,7 @@ class Parser extends Parse
 
         tok = tok.token if tok.token
                         
-        last = @lastLineCol tok
+        last = lastLineCol tok
         if tokens[0].text == '(' and tokens[0].line == last.line and tokens[0].col == last.col
             open = tokens.shift()
             if tokens[0]?.text == ')'
@@ -549,7 +549,7 @@ class Parser extends Parse
 
         @push '{'
 
-        first = @firstLineCol key
+        first = firstLineCol key
         
         print.tokens 'object val' tokens if @debug
         
@@ -603,7 +603,7 @@ class Parser extends Parse
             
         else if key.prop
             
-            {line, col} = @firstLineCol key
+            {line, col} = firstLineCol key
             text = @kode.renderer.node key
             if text.startsWith 'this'
                 if text == 'this' then text = '@'

@@ -207,7 +207,10 @@ class Print
         fs.unlink tmp
 
     @noon: (msg, arg) ->
-        log red msg
+        if not arg
+            arg = msg
+            msg = null
+        log red msg if msg
         log noon.stringify arg, colors:true
 
 module.exports = Print

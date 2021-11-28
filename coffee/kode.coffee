@@ -13,7 +13,8 @@ karg   = require 'karg'
 childp = require 'child_process'
 print  = require './print'
 pkg    = require "#{__dirname}/../package"
-empty  = (a) -> a in ['' null undefined] or (typeof(a) == 'object' and Object.keys(a).length == 0)
+
+{ empty } = require './utils'
 
 klor.kolor.globalize()
 
