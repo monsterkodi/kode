@@ -101,7 +101,7 @@ describe 'func' ->
             a = function (b, c)
             {
                 var b
-            
+
                 b = function (e, f)
                 {
                     return g
@@ -117,7 +117,7 @@ describe 'func' ->
             a = function (b, c)
             {
                 var b
-            
+
                 return b = function (e, f)
                 {
                     return h
@@ -202,6 +202,32 @@ describe 'func' ->
             a
             """
 
+        cmp "-> @a",
+            """
+            function ()
+            {
+                return this.a
+            }
+            """
+
+        cmp "(@a) -> @a",
+            """
+            function (a)
+            {
+                this.a = a
+                return this.a
+            }
+            """
+
+        cmp "(@a,a) -> log @a",
+            """
+            function (a1, a)
+            {
+                this.a = a1
+                console.log(this.a)
+            }
+            """
+
     # 00000000   00000000  000000000  000   000  00000000   000   000
     # 000   000  000          000     000   000  000   000  0000  000
     # 0000000    0000000      000     000   000  0000000    000 0 000
@@ -267,20 +293,20 @@ describe 'func' ->
         cmp "a('1' 2 3.4 true false null undefined NaN Infinity)",
             "a('1',2,3.4,true,false,null,undefined,NaN,Infinity)"
 
-        cmp """            
+        cmp """
             a b:c[1], d:2
             """ """
             a({b:c[1],d:2})
-            """            
-            
-        cmp """            
+            """
+
+        cmp """
             a b:c[2], d:3
             4
             """ """
             a({b:c[2],d:3})
             4
-            """            
-            
+            """
+
         cmp """
             a(
                 '1'
@@ -295,7 +321,7 @@ describe 'func' ->
             """ """
             a('1',2,3.4,true,[null,undefined])
             """
-        
+
         cmp """
             a '1'
             b  2
@@ -385,7 +411,7 @@ describe 'func' ->
                 return i
             }),y)
             """
-            
+
         cmp """
             a.b c:2
             x = y

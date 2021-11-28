@@ -181,9 +181,12 @@ class Renderer
         
         s = n.name?.text ? 'function'
         s += ' ('
+        
         args = n.args?.parens?.exps
         if args
-            s += args.map((a) => @node a).join ', '
+            [str, ths] = @args args
+            s += str
+            
         s += ')\n'
         s += gi + '{'
         
@@ -194,6 +197,9 @@ class Renderer
             vs = (v.text for v in n.body.vars).join ', '
             s += @indent + "var #{vs}\n"
         
+        for t in ths ? []
+            s += '\n' + @indent + ths
+            
         if not empty n.body.exps
             
             s += '\n'
@@ -201,12 +207,48 @@ class Renderer
             ss = ss.map (s) => @indent + s
             s += ss.join '\n'
             s += '\n' + gi
+            
         s += '}'
         
         @varstack.pop()
         
         @ded()
         s
+        
+    #  0000000   00000000    0000000    0000000  
+    # 000   000  000   000  000        000       
+    # 000000000  0000000    000  0000  0000000   
+    # 000   000  000   000  000   000       000  
+    # 000   000  000   000   0000000   0000000   
+    
+    args: (args) ->
+        
+        ths  = []
+        used = {}
+        
+        for a in args
+            if a.text then used[a.text] = a.text
+        
+        args = args.map (a) ->
+            if a.prop and a.prop.obj.type == 'this'
+                thisVar = a.prop.prop
+                if used[thisVar.text]
+                    for i in [1..100]
+                        if not used[thisVar.text+i]
+                            ths.push "this.#{thisVar.text} = #{thisVar.text+i}"
+                            thisVar.text = thisVar.text+i
+                            used[thisVar.text] = thisVar.text
+                            break
+                else
+                    ths.push "this.#{thisVar.text} = #{thisVar.text}"
+                    
+                thisVar
+            else
+                a
+        
+        str = args.map((a) => @node a).join ', '
+
+        [str,ths]
                 
     # 00000000   00000000  000000000  000   000  00000000   000   000  
     # 000   000  000          000     000   000  000   000  0000  000  

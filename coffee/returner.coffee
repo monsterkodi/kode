@@ -41,10 +41,15 @@ class Returner
                         val: f.body.exps.pop()
                 
                 if lst.type in ['var' 'num' 'single' 'double' 'triple'] then insert()
-                else if lst.call and lst.call.callee.text not in ['log' 'warn' 'error'] then insert()
+                else if lst.call then if lst.call.callee.text not in ['log' 'warn' 'error'] then insert()
                 else if lst.func then insert()
                 else if lst.array then insert()
                 else if lst.operation then insert()
+                else if lst.prop then insert()
+                else if lst.index then insert()
+                else if lst.return then null
+                else
+                    log 'returner?' lst
             
             @scope f.body 
         
