@@ -112,6 +112,8 @@ describe 'misc' ->
         cmp "a in l"          "l.indexOf(a) >= 0"
         cmp "a in 'xyz'"      "'xyz'.indexOf(a) >= 0"
         cmp "a in [1,2,3]"    "[1,2,3].indexOf(a) >= 0"
+        cmp "a not in b"      "!b.indexOf(a) >= 0"
+        cmp "a not in [3,4]"  "![3,4].indexOf(a) >= 0"
 
         cmp """
             if a in l then 1
@@ -123,6 +125,15 @@ describe 'misc' ->
             """
 
         cmp """
+            if not a in l then 2
+            """ """
+            if (!l.indexOf(a) >= 0)
+            {
+                2
+            }
+            """
+            
+        cmp """
             if a in l
                 2
             """ """
@@ -131,6 +142,7 @@ describe 'misc' ->
                 2
             }
             """
+            
 
         # cmp "a = ( a:1 b:2 ) ->",     "a = function(arg)"
         # cmp """

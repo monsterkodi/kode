@@ -371,7 +371,13 @@ class Parse # the base class of Parser
             else if nxt.text == '[' and unspaced and tokens[1]?.text != ']'
                 @verb 'lhs is lhs of index' e
                 e = @index e, tokens
-                    
+                
+            else if nxt.text == 'not' and tokens[1]?.text == 'in'
+
+                e = operation:
+                    operator:tokens.shift()
+                    rhs:@incond e, tokens
+                
             else if (
                     spaced and (nxt.line == last.line or nxt.col > first.col) and
                     nxt.text not in ['then' 'else' 'break' 'continue' 'in' 'of'] and 
