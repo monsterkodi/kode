@@ -137,8 +137,7 @@ class Parser extends Parse
         if tokens[0]?.type == 'block'
             tokens = tokens.shift().tokens
         else
-            @pop 'switch'
-            return error 'parser.switch: block expected!'
+            return @error pop:'switch' msg:'block expected!' tokens
         
         whens = []
         while tokens[0]?.text == 'when'
@@ -157,7 +156,7 @@ class Parser extends Parse
         @pop 'switch'
         
         e
-                
+                        
     # 000   000  000   000  00000000  000   000  
     # 000 0 000  000   000  000       0000  000  
     # 000000000  000000000  0000000   000 0 000  
@@ -280,8 +279,7 @@ class Parser extends Parse
                 @shiftNewline 'implicit call ends' tokens
                 close = tokens.shift()
 
-        if open and not close
-            error 'parser.call explicit call without closing )'
+        if open and not close then @error hdr:'call' msg:'explicit call without closing )' tokens
 
         @pop 'call'
         
@@ -499,10 +497,16 @@ class Parser extends Parse
 
         @pop ':'
 
-        if key.type in ['keyword' 'op' 'punct' 'var' 'this']
+        k = type:'key'
+        
+        if key.type 
             
-            key.type = 'key'
-            key.text = key.text
+            if key.type not in ['keyword' 'op' 'punct' 'var' 'this' 'single' 'double' 'triple']
+                log 'what could that be?' key
+            
+            k.text = key.text
+            k.line = key.line
+            k.col  = key.col
             
         else if key.prop
             
@@ -511,16 +515,16 @@ class Parser extends Parse
             if text.startsWith 'this'
                 if text == 'this' then text = '@'
                 else if text.startsWith 'this.' then text = '@' + text[5..]
-            delete key.prop
-            key.type = 'key'
-            key.text = text
-            key.line = line
-            key.col  = col
+
+            k.text = text
+            k.line = line
+            k.col  = col
+            
         else
             log 'WHAT COULD THAT BE?' key
-
+            
         keyval:
-            key:   key
+            key:   k
             colon: colon
             val:   value
 
@@ -555,5 +559,11 @@ class Parser extends Parse
             obj:  obj
             dot:  type:'punct' text:'.' line:obj.line, col:obj.col
             prop: tokens.shift()
+
+    error: (o, tokens) ->
         
+        @pop o.pop if o.pop
+        error B3(b7(" #{tokens[0]?.line ? ' '} ")) + R1(y4(" #{o.hdr ? o.pop} ")) + R2(y7(" #{o.msg} "))
+        null
+            
 module.exports = Parser

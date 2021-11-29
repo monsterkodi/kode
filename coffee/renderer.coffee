@@ -23,20 +23,19 @@ class Renderer
         @varstack = [ast.vars]
         @indent = ''
         s = ''
-        
+
         if not empty ast.vars
             vs = (v.text for v in ast.vars).join ', '
             s += @indent + "var #{vs}\n\n"
-        
+
         s += @nodes ast.exps, '\n'
         s
 
     nodes: (nodes, sep=',') ->
-        
-        # sl = nodes.map (s) => @node s
+
         sl = nodes.map (s) => @atom s
         ss = sl.join sep
-        
+
     # 000   000   0000000   0000000    00000000
     # 0000  000  000   000  000   000  000
     # 000 0 000  000   000  000   000  0000000
@@ -44,7 +43,7 @@ class Renderer
     # 000   000   0000000   0000000    00000000
 
     node: (exp) ->
-        
+
         return '' if not exp
 
         if exp.type? and exp.text? then return @token exp
@@ -77,66 +76,65 @@ class Renderer
                 when 'call'      then @call v
                 else
                     log R4("renderer.node unhandled key #{k} in exp"), exp # if @debug or @verbose
-                    '' 
+                    ''
         s
 
-    #  0000000   000000000   0000000   00     00  
-    # 000   000     000     000   000  000   000  
-    # 000000000     000     000   000  000000000  
-    # 000   000     000     000   000  000 0 000  
-    # 000   000     000      0000000   000   000  
-    
-    atom: (exp) -> 
-    
-        s = @node exp     
-        s = @fixAsserts s
-        s
-        
+    #  0000000   000000000   0000000   00     00
+    # 000   000     000     000   000  000   000
+    # 000000000     000     000   000  000000000
+    # 000   000     000     000   000  000 0 000
+    # 000   000     000      0000000   000   000
+
+    atom: (exp) ->
+
+        @fixAsserts @node exp
+
     assert: (p) ->
-    
-        @node(p.obj) + "_#{p.qmrk.line}_#{p.qmrk.col}_"
-                
-    # 00000000  000  000   000   0000000    0000000   0000000  00000000  00000000   000000000   0000000  
-    # 000       000   000 000   000   000  000       000       000       000   000     000     000       
-    # 000000    000    00000    000000000  0000000   0000000   0000000   0000000       000     0000000   
-    # 000       000   000 000   000   000       000       000  000       000   000     000          000  
-    # 000       000  000   000  000   000  0000000   0000000   00000000  000   000     000     0000000   
-    
+
+        @node(p.obj) + "▸#{p.qmrk.line}_#{p.qmrk.col}◂"
+
+    # 00000000  000  000   000   0000000    0000000   0000000  00000000  00000000   000000000   0000000
+    # 000       000   000 000   000   000  000       000       000       000   000     000     000
+    # 000000    000    00000    000000000  0000000   0000000   0000000   0000000       000     0000000
+    # 000       000   000 000   000   000       000       000  000       000   000     000          000
+    # 000       000  000   000  000   000  0000000   0000000   00000000  000   000     000     0000000
+
     fixAsserts: (s) ->
-        
+
         return s if not s
-        
-        splt = s.split /_\d+_\d+_/
-        mtch = s.match /_\d+_\d+_/g
-        
+
+        splt = s.split /▸\d+_\d+◂/
+        mtch = s.match /▸\d+_\d+◂/g
+
         if splt.length > 1
-          
-            log splt, mtch
-            
+
+            mtch = mtch.map (m) -> "_#{m[1..-2]}_"
+            # log splt, mtch
+
             s = ''
-            
+
             for i in 0...mtch.length
 
-                if mtch.length > 1 
+                if mtch.length > 1
                     l = "(#{mtch[i]}=#{(if i then mtch[i-1]+splt[i] else splt[0])})"
                 else
                     l = splt[0]
-                    
+
                 if splt[i+1][0] == '('
                     s += "typeof #{l} === \"function\" ? "
                 else
                     s += "#{l} != null ? "
 
-            if mtch.length > 1                     
+            if mtch.length > 1
                 s += mtch[-1]+splt[-1]
             else
                 s += splt[0]+splt[1]
-                
+
             for i in 0...mtch.length then s += " : undefined"
-                
+
             s = "(#{s})"
         s
-        
+
     #  0000000  000       0000000    0000000   0000000
     # 000       000      000   000  000       000
     # 000       000      000000000  0000000   0000000
@@ -154,7 +152,7 @@ class Renderer
         s += '\n{'
 
         mthds = n.body?.object?.keyvals ? n.body?[0]?.object?.keyvals
-        
+
         if mthds?.length
             mthds = @prepareMethods mthds
             @indent = '    '
@@ -165,20 +163,24 @@ class Renderer
             @indent = ''
         s += '}'
         s
-        
+
     # 00000000   00000000   00000000  00000000   00     00  00000000  000000000  000   000
     # 000   000  000   000  000       000   000  000   000  000          000     000   000
     # 00000000   0000000    0000000   00000000   000000000  0000000      000     000000000
     # 000        000   000  000       000        000 0 000  000          000     000   000
     # 000        000   000  00000000  000        000   000  00000000     000     000   000
-    
+
     prepareMethods: (mthds) ->
 
         bind = []
         for m in mthds
-            if not m.keyval 
+            if not m.keyval
                 print.ast 'not an method?' m
                 continue
+            if not m.keyval.val.func
+                print.ast 'no func for method?' m
+                continue
+
             name = m.keyval.val.func.name.text
             if name in ['@' 'constructor']
                 if constructor then error 'more than one constructor?'
@@ -188,94 +190,96 @@ class Renderer
                 m.keyval.val.func.name.text = 'static ' + name[1..]
             else if m.keyval.val.func?.arrow.text == '=>'
                 bind.push m
-                
+
         if bind.length and not constructor # found some methods to bind, but no constructor
             ast = @kode.ast "constructor: ->" # create one from scratch
             constructor = ast.exps[0].object.keyvals[0]
             constructor.keyval.val.func.name = type:'name' text:'constructor'
             mthds.unshift constructor
-            
+
         if bind.length
             for b in bind
                 bn = b.keyval.val.func.name.text
                 constructor.keyval.val.func.body.exps ?= []
-                constructor.keyval.val.func.body.exps.push 
+                constructor.keyval.val.func.body.exps.push
                     type: 'code'
                     text: "this.#{bn} = this.#{bn}.bind(this)"
         mthds
-                
-    # 00     00  000000000  000   000  0000000    
-    # 000   000     000     000   000  000   000  
-    # 000000000     000     000000000  000   000  
-    # 000 0 000     000     000   000  000   000  
-    # 000   000     000     000   000  0000000    
-    
+
+    # 00     00  000000000  000   000  0000000
+    # 000   000     000     000   000  000   000
+    # 000000000     000     000000000  000   000
+    # 000 0 000     000     000   000  000   000
+    # 000   000     000     000   000  0000000
+
     mthd: (n) ->
-        
+
         if n.keyval
             s = @indent + @func n.keyval.val.func
         s
 
-    # 00000000  000   000  000   000   0000000  
-    # 000       000   000  0000  000  000       
-    # 000000    000   000  000 0 000  000       
-    # 000       000   000  000  0000  000       
-    # 000        0000000   000   000   0000000  
-            
+    # 00000000  000   000  000   000   0000000
+    # 000       000   000  0000  000  000
+    # 000000    000   000  000 0 000  000
+    # 000       000   000  000  0000  000
+    # 000        0000000   000   000   0000000
+
     func: (n) ->
-        
+
+        return '' if not n
+
         gi = @ind()
-        
+
         s = n.name?.text ? 'function'
         s += ' ('
-        
+
         args = n.args?.parens?.exps
         if args
             [str, ths] = @args args
             s += str
-            
+
         s += ')\n'
         s += gi + '{'
-        
+
         @varstack.push n.body.vars
-        
+
         if not empty n.body.vars
             s += '\n'
             vs = (v.text for v in n.body.vars).join ', '
             s += @indent + "var #{vs}\n"
-        
+
         for t in ths ? []
             s += '\n' + @indent + ths
-            
+
         if not empty n.body.exps
-            
+
             s += '\n'
             ss = n.body.exps.map (s) => @node s
             ss = ss.map (s) => @indent + s
             s += ss.join '\n'
             s += '\n' + gi
-            
+
         s += '}'
-        
+
         @varstack.pop()
-        
+
         @ded()
         s
-        
-    #  0000000   00000000    0000000    0000000  
-    # 000   000  000   000  000        000       
-    # 000000000  0000000    000  0000  0000000   
-    # 000   000  000   000  000   000       000  
-    # 000   000  000   000   0000000   0000000   
-    
+
+    #  0000000   00000000    0000000    0000000
+    # 000   000  000   000  000        000
+    # 000000000  0000000    000  0000  0000000
+    # 000   000  000   000  000   000       000
+    # 000   000  000   000   0000000   0000000
+
     args: (args) ->
-        
+
         ths  = []
         used = {}
-        
+
         for a in args
             if a.text then used[a.text] = a.text
-        
+
         args = args.map (a) ->
             if a.prop and a.prop.obj.type == 'this'
                 thisVar = a.prop.prop
@@ -288,33 +292,33 @@ class Renderer
                             break
                 else
                     ths.push "this.#{thisVar.text} = #{thisVar.text}"
-                    
+
                 thisVar
             else
                 a
-        
+
         str = args.map((a) => @node a).join ', '
 
         [str,ths]
-                
-    # 00000000   00000000  000000000  000   000  00000000   000   000  
-    # 000   000  000          000     000   000  000   000  0000  000  
-    # 0000000    0000000      000     000   000  0000000    000 0 000  
-    # 000   000  000          000     000   000  000   000  000  0000  
-    # 000   000  00000000     000      0000000   000   000  000   000  
-    
+
+    # 00000000   00000000  000000000  000   000  00000000   000   000
+    # 000   000  000          000     000   000  000   000  0000  000
+    # 0000000    0000000      000     000   000  0000000    000 0 000
+    # 000   000  000          000     000   000  000   000  000  0000
+    # 000   000  00000000     000      0000000   000   000  000   000
+
     return: (n) ->
 
         s = 'return'
         s += ' ' + @node n.val
         kstr.strip s
 
-    #  0000000   0000000   000      000      
-    # 000       000   000  000      000      
-    # 000       000000000  000      000      
-    # 000       000   000  000      000      
-    #  0000000  000   000  0000000  0000000  
-    
+    #  0000000   0000000   000      000
+    # 000       000   000  000      000
+    # 000       000000000  000      000
+    # 000       000   000  000      000
+    #  0000000  000   000  0000000  0000000
+
     call: (p) ->
         if p.callee.text in ['log''warn''error']
             p.callee.text = "console.#{p.callee.text}"
@@ -323,7 +327,7 @@ class Renderer
             "#{callee} #{@nodes p.args, ','}"
         else
             "#{callee}(#{@nodes p.args, ','})"
-            
+
     # 000  00000000
     # 000  000
     # 000  000000
@@ -336,10 +340,10 @@ class Renderer
 
         first = firstLineCol n
         last  = lastLineCol n
-        
+
         if first.line == last.line and n.else
             return @ifInline n
-        
+
         gi = @ind()
 
         s = ''
@@ -364,20 +368,20 @@ class Renderer
             for e in n.else.exps ? []
                  s += @indent + @node(e) + '\n'
             s += gi+"}"
-            
+
         @ded()
         s
-        
-    # 000  00000000  000  000   000  000      000  000   000  00000000  
-    # 000  000       000  0000  000  000      000  0000  000  000       
-    # 000  000000    000  000 0 000  000      000  000 0 000  0000000   
-    # 000  000       000  000  0000  000      000  000  0000  000       
-    # 000  000       000  000   000  0000000  000  000   000  00000000  
-    
+
+    # 000  00000000  000  000   000  000      000  000   000  00000000
+    # 000  000       000  0000  000  000      000  0000  000  000
+    # 000  000000    000  000 0 000  000      000  000 0 000  0000000
+    # 000  000       000  000  0000  000      000  000  0000  000
+    # 000  000       000  000   000  0000000  000  000   000  00000000
+
     ifInline: (n) ->
-        
+
         s = ''
-        
+
         s += "#{@atom(n.cond)} ? "
         if n.then.exps
             s += (@atom(e) for e in n.then.exps).join ', '
@@ -394,32 +398,32 @@ class Renderer
             else
                 s += '(' + (@atom e for e in n.else.exps).join(', ') + ')'
         s
-        
-    # 00000000   0000000   00000000   
-    # 000       000   000  000   000  
-    # 000000    000   000  0000000    
-    # 000       000   000  000   000  
-    # 000        0000000   000   000  
-    
+
+    # 00000000   0000000   00000000
+    # 000       000   000  000   000
+    # 000000    000   000  0000000
+    # 000       000   000  000   000
+    # 000        0000000   000   000
+
     for: (n) ->
-        
+
         if not n.then then error 'for expected then' n
 
-        switch n.inof.text 
+        switch n.inof.text
             when 'in' then @for_in n
             when 'of' then @for_of n
             else error 'for expected in/of'
-        
+
     for_in: (n) ->
-        
+
         gi = @ind()
 
         list = @node n.list
-        
+
         if not list or list == 'undefined'
             print.noon 'no list for' n.list
             print.ast 'no list for' n.list
-            
+
         listVar = @freshVar 'list'
         iterVar = @freshVar 'i'
         s = ''
@@ -439,21 +443,21 @@ class Renderer
             s += gi+"for (#{lv} = 0; #{lv} < #{listVar}.length; #{lv}++)\n"
             s += gi+"{\n"
             s += @indent+"#{n.vals[0].text} = #{listVar}[i]\n"
-            
+
         for e in n.then.exps ? []
             s += @indent + @node(e) + '\n'
         s += gi+"}"
-            
+
         @ded()
         s
-        
+
     for_of: (n) ->
-        
+
         gi = @ind()
 
         key = n.vals.text ? n.vals[0]?.text
         val = n.vals[1]?.text
-        
+
         obj = @node n.list
         s = ''
         s += "for (#{key} in #{obj})\n"
@@ -463,18 +467,18 @@ class Renderer
         for e in n.then.exps ? []
             s += @indent + @node(e) + '\n'
         s += gi+"}"
-            
+
         @ded()
         s
 
-    # 000   000  000   000  000  000      00000000  
-    # 000 0 000  000   000  000  000      000       
-    # 000000000  000000000  000  000      0000000   
-    # 000   000  000   000  000  000      000       
-    # 00     00  000   000  000  0000000  00000000  
+    # 000   000  000   000  000  000      00000000
+    # 000 0 000  000   000  000  000      000
+    # 000000000  000000000  000  000      0000000
+    # 000   000  000   000  000  000      000
+    # 00     00  000   000  000  0000000  00000000
 
     while: (n) ->
-        
+
         if not n.then then error 'when expected then' n
 
         gi = @ind()
@@ -485,48 +489,48 @@ class Renderer
         for e in n.then.exps ? []
             s += @indent + @node(e) + '\n'
         s += gi+"}"
-            
+
         @ded()
         s
-        
-    #  0000000  000   000  000  000000000   0000000  000   000  
-    # 000       000 0 000  000     000     000       000   000  
-    # 0000000   000000000  000     000     000       000000000  
-    #      000  000   000  000     000     000       000   000  
-    # 0000000   00     00  000     000      0000000  000   000  
-    
+
+    #  0000000  000   000  000  000000000   0000000  000   000
+    # 000       000 0 000  000     000     000       000   000
+    # 0000000   000000000  000     000     000       000000000
+    #      000  000   000  000     000     000       000   000
+    # 0000000   00     00  000     000      0000000  000   000
+
     switch: (n) ->
-        
+
         if not n.match then error 'switch expected match' n
         if not n.whens then error 'switch expected whens' n
 
         gi = @ind()
-        
+
         s = ''
         s += "switch (#{@node n.match})\n"
         s += gi+"{\n"
         for e in n.whens ? []
-            s += gi+ @node(e) + '\n'            
+            s += gi+ @node(e) + '\n'
         if n.else
             s += @indent+'default:\n'
             for e in n.else
-                s += @indent+'    '+ @node(e) + '\n'            
+                s += @indent+'    '+ @node(e) + '\n'
         s += gi+"}\n"
 
         @ded()
         s
 
-    # 000   000  000   000  00000000  000   000  
-    # 000 0 000  000   000  000       0000  000  
-    # 000000000  000000000  0000000   000 0 000  
-    # 000   000  000   000  000       000  0000  
-    # 00     00  000   000  00000000  000   000  
-    
+    # 000   000  000   000  00000000  000   000
+    # 000 0 000  000   000  000       0000  000
+    # 000000000  000000000  0000000   000 0 000
+    # 000   000  000   000  000       000  0000
+    # 00     00  000   000  00000000  000   000
+
     when: (n) ->
 
         if not n.vals then return error 'when expected vals' n
         if not n.then then return error 'when expected then' n
-        
+
         s = ''
         for e in n.vals
             s += '    case ' + @node(e) + ':\n'
@@ -536,7 +540,7 @@ class Renderer
             @ded()
         s += @indent + '    ' + 'break'
         s
-                
+
     # 000000000   0000000   000   000  00000000  000   000
     #    000     000   000  000  000   000       0000  000
     #    000     000   000  0000000    0000000   000 0 000
@@ -544,10 +548,10 @@ class Renderer
     #    000      0000000   000   000  00000000  000   000
 
     token: (tok) ->
-        
+
         if tok.type == 'comment'
             @comment tok
-        else if tok.type == 'this' 
+        else if tok.type == 'this'
             'this'
         else if tok.type == 'triple'
             '`' + tok.text[3..-4] + '`'
@@ -581,7 +585,7 @@ class Renderer
     #  0000000   000        00000000  000   000  000   000     000     000   0000000   000   000
 
     operation: (op) ->
-        
+
         opmap = (o) ->
             omp =
                 and:    '&&'
@@ -594,7 +598,7 @@ class Renderer
         o   = opmap op.operator.text
         sep = ' '
         sep = '' if not op.lhs or not op.rhs
-        
+
         if o in ['<''<=''===''!==''>=''>']
             ro = opmap op.rhs?.operation?.operator.text
             if ro in ['<''<=''===''!==''>=''>']
@@ -604,72 +608,72 @@ class Renderer
         if o != '=' and op.rhs?.operation?.operator.text == '='
             open = '('
             close = ')'
-                
+
         @atom(op.lhs) + sep + o + sep + open + kstr.lstrip @atom(op.rhs) + close
 
-    # 000  000   000   0000000   0000000   000   000  0000000    
-    # 000  0000  000  000       000   000  0000  000  000   000  
-    # 000  000 0 000  000       000   000  000 0 000  000   000  
-    # 000  000  0000  000       000   000  000  0000  000   000  
-    # 000  000   000   0000000   0000000   000   000  0000000    
-    
+    # 000  000   000   0000000   0000000   000   000  0000000
+    # 000  0000  000  000       000   000  0000  000  000   000
+    # 000  000 0 000  000       000   000  000 0 000  000   000
+    # 000  000  0000  000       000   000  000  0000  000   000
+    # 000  000   000   0000000   0000000   000   000  0000000
+
     incond: (p) ->
-        
+
         "#{@node p.rhs}.indexOf(#{@atom p.lhs}) >= 0"
-        
-    # 00000000    0000000   00000000   00000000  000   000   0000000  
-    # 000   000  000   000  000   000  000       0000  000  000       
-    # 00000000   000000000  0000000    0000000   000 0 000  0000000   
-    # 000        000   000  000   000  000       000  0000       000  
-    # 000        000   000  000   000  00000000  000   000  0000000   
-    
+
+    # 00000000    0000000   00000000   00000000  000   000   0000000
+    # 000   000  000   000  000   000  000       0000  000  000
+    # 00000000   000000000  0000000    0000000   000 0 000  0000000
+    # 000        000   000  000   000  000       000  0000       000
+    # 000        000   000  000   000  00000000  000   000  0000000
+
     parens: (p) -> "(#{@nodes p.exps})"
-    
-    #  0000000   0000000          000  00000000   0000000  000000000  
-    # 000   000  000   000        000  000       000          000     
-    # 000   000  0000000          000  0000000   000          000     
-    # 000   000  000   000  000   000  000       000          000     
-    #  0000000   0000000     0000000   00000000   0000000     000     
-    
+
+    #  0000000   0000000          000  00000000   0000000  000000000
+    # 000   000  000   000        000  000       000          000
+    # 000   000  0000000          000  0000000   000          000
+    # 000   000  000   000  000   000  000       000          000
+    #  0000000   0000000     0000000   00000000   0000000     000
+
     object: (p) -> "{#{@nodes p.keyvals, ','}}"
-    
-    # 000   000  00000000  000   000  000   000   0000000   000      
-    # 000  000   000        000 000   000   000  000   000  000      
-    # 0000000    0000000     00000     000 000   000000000  000      
-    # 000  000   000          000        000     000   000  000      
-    # 000   000  00000000     000         0      000   000  0000000  
-    
-    keyval: (p) -> 
+
+    # 000   000  00000000  000   000  000   000   0000000   000
+    # 000  000   000        000 000   000   000  000   000  000
+    # 0000000    0000000     00000     000 000   000000000  000
+    # 000  000   000          000        000     000   000  000
+    # 000   000  00000000     000         0      000   000  0000000
+
+    keyval: (p) ->
         key = @node p.key
         if key[0] not in "'\"" and /[\.\,\;\*\+\-\/\=\|]/.test key then key = "'#{key}'"
         "#{key}:#{@atom(p.val)}"
-    
-    # 00000000   00000000    0000000   00000000   
-    # 000   000  000   000  000   000  000   000  
-    # 00000000   0000000    000   000  00000000   
-    # 000        000   000  000   000  000        
-    # 000        000   000   0000000   000        
-    
-    prop:   (p) -> 
-    
+
+    # 00000000   00000000    0000000   00000000
+    # 000   000  000   000  000   000  000   000
+    # 00000000   0000000    000   000  00000000
+    # 000        000   000  000   000  000
+    # 000        000   000   0000000   000
+
+    prop:   (p) ->
+
         "#{@node(p.obj)}.#{@node p.prop}"
-                    
-    # 000  000   000  0000000    00000000  000   000  
-    # 000  0000  000  000   000  000        000 000   
-    # 000  000 0 000  000   000  0000000     00000    
-    # 000  000  0000  000   000  000        000 000   
-    # 000  000   000  0000000    00000000  000   000  
-    
-    index:  (p) -> 
-        
+
+    # 000  000   000  0000000    00000000  000   000
+    # 000  0000  000  000   000  000        000 000
+    # 000  000 0 000  000   000  0000000     00000
+    # 000  000  0000  000   000  000        000 000
+    # 000  000   000  0000000    00000000  000   000
+
+    index:  (p) ->
+
         if slice = p.slidx.slice
-            
+
             from = if slice.from? then @node slice.from else '0'
 
             addOne = slice.dots.text == '..'
 
             if slice.upto? then upto = @node slice.upto
-                
+
             if slice.upto?.type == 'num' or slice.upto?.operation
                 u = parseInt upto
                 if u == -1 and addOne
@@ -680,7 +684,7 @@ class Renderer
             else
                 if addOne then if upto then upper = ", typeof #{upto} === 'number' && #{upto}+1 || Infinity"
                 else                        upper = ", typeof #{upto} === 'number' && #{upto} || -1"
-                
+
             "#{@node(p.idxee)}.slice(#{from}#{upper ? ''})"
         else
             if p.slidx.text?[0] == '-'
@@ -689,15 +693,15 @@ class Renderer
                     return "#{@atom(p.idxee)}.slice(#{ni})[0]"
                 else
                     return "#{@atom(p.idxee)}.slice(#{ni},#{ni+1})[0]"
-            
+
             "#{@atom(p.idxee)}[#{@node p.slidx}]"
-        
-    #  0000000   00000000   00000000    0000000   000   000  
-    # 000   000  000   000  000   000  000   000   000 000   
-    # 000000000  0000000    0000000    000000000    00000    
-    # 000   000  000   000  000   000  000   000     000     
-    # 000   000  000   000  000   000  000   000     000     
-    
+
+    #  0000000   00000000   00000000    0000000   000   000
+    # 000   000  000   000  000   000  000   000   000 000
+    # 000000000  0000000    0000000    000000000    00000
+    # 000   000  000   000  000   000  000   000     000
+    # 000   000  000   000  000   000  000   000     000
+
     array: (p) ->
 
         if p.items[0]?.slice
@@ -705,14 +709,14 @@ class Renderer
         else
             "[#{@nodes p.items, ','}]"
 
-    #  0000000  000      000   0000000  00000000  
-    # 000       000      000  000       000       
-    # 0000000   000      000  000       0000000   
-    #      000  000      000  000       000       
-    # 0000000   0000000  000   0000000  00000000  
-    
-    slice: (p) -> 
-        
+    #  0000000  000      000   0000000  00000000
+    # 000       000      000  000       000
+    # 0000000   000      000  000       0000000
+    #      000  000      000  000       000
+    # 0000000   0000000  000   0000000  00000000
+
+    slice: (p) ->
+
         if p.from.type == 'num' == p.upto.type
             from = parseInt p.from.text
             upto = parseInt p.upto.text
@@ -722,29 +726,29 @@ class Renderer
             else
                 o = if p.dots.text == '...' then '<' else '<='
                 "(function() { var r = []; for (var i = #{from}; i #{o} #{upto}; i++){ r.push(i); } return r; }).apply(this)"
-        else 
+        else
             o = if p.dots.text == '...' then '<' else '<='
             "(function() { var r = []; for (var i = #{@node p.from}; i #{o} #{@node p.upto}; i++){ r.push(i); } return r; }).apply(this)"
-       
+
     freshVar: (name, suffix=0) ->
 
         for vars in @varstack
             for v in vars
                 if v.text == name + (suffix or '')
                     return @freshVar name, suffix+1
-                    
+
         @varstack[-1].push text:name + (suffix or '')
         name + (suffix or '')
-                
-    verb: -> if @verbose then console.log.apply console.log, arguments 
+
+    verb: -> if @verbose then console.log.apply console.log, arguments
     ind: ->
-        
+
         oi = @indent
         @indent += '    '
         oi
-        
+
     ded: ->
-        
+
         @indent = @indent[...-4]
-    
+
 module.exports = Renderer

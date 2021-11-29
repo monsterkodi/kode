@@ -169,14 +169,15 @@ class Parse # the base class of Parser
                 @verb 'exp start shift nl!'
                 return @exp tokens # skip nl
             when 'keyword'
-                switch tok.text 
-                    when 'if'       then return @if     tok, tokens
-                    when 'for'      then return @for    tok, tokens
-                    when 'while'    then return @while  tok, tokens
-                    when 'return'   then return @return tok, tokens
-                    when 'switch'   then return @switch tok, tokens
-                    when 'when'     then return @when   tok, tokens
-                    when 'class'    then return @class  tok, tokens
+                if tokens[0]?.text not in ':'
+                    switch tok.text 
+                        when 'if'       then return @if     tok, tokens
+                        when 'for'      then return @for    tok, tokens
+                        when 'while'    then return @while  tok, tokens
+                        when 'return'   then return @return tok, tokens
+                        when 'switch'   then return @switch tok, tokens
+                        when 'when'     then return @when   tok, tokens
+                        when 'class'    then return @class  tok, tokens
             else
                 switch tok.text 
                     when '->' '=>'  then return @func null, tok, tokens
@@ -347,8 +348,7 @@ class Parse # the base class of Parser
             if      nxt.text == '.'    then e = @prop   e, tokens
             else if nxt.type == 'dots' then e = @slice  e, tokens
             else if nxt.text == '?' and unspaced # and tokens[1]?.text == '.'
-                # qmark = tokens.shift()
-                # e = @prop e, tokens, qmark # this should be done differently!
+
                 e = @assert e, tokens
                 
             else if (
@@ -465,8 +465,11 @@ class Parse # the base class of Parser
  
         if mthds?.length
             for m in mthds
-                if name = m.keyval.key?.text
-                    m.keyval.val.func.name = type:'name' text:name
+                if name = m.keyval?.key?.text
+                    if m.keyval.val?.func?
+                        m.keyval.val.func.name = type:'name' text:name
+                    else
+                        log 'no function for method?' name, m
         mthds
         
     # 000000000  000   000  00000000  000   000 
