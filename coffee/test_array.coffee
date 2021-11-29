@@ -6,7 +6,7 @@
 000   000  000   000  000   000  000   000     000
 ###
 
-{cmp} = require './test_utils'
+{ cmp, evl } = require './test_utils'
 
 describe 'array' ->
 
@@ -26,7 +26,7 @@ describe 'array' ->
 
     it 'index slice' ->
 
-        cmp 'a[0..1]'         'a.slice(0, 1+1)'
+        cmp 'a[0..1]'         'a.slice(0, 2)'
         cmp 'a[0...1]'        'a.slice(0, 1)'
         cmp 'a[-1]'           'a.slice(-1)[0]'
         cmp 'a[-2]'           'a.slice(-2,-1)[0]'
@@ -60,19 +60,40 @@ describe 'array' ->
         cmp '[1...100]' "
             (function() { var r = []; for (var i = 1; i < 100; i++){ r.push(i); } return r; }).apply(this)
             "
+            
+        # cmp '[-3..3]' '[-3,-2,-1,0,1,2,3]'
 
-        cmp "a[1..4]"       "a.slice(1, 4+1)"
+    #  0000000  000      000   0000000  00000000  
+    # 000       000      000  000       000       
+    # 0000000   000      000  000       0000000   
+    #      000  000      000  000       000       
+    # 0000000   0000000  000   0000000  00000000  
+    
+    it 'slice' ->
+            
+        cmp "a[1..4]"       "a.slice(1, 5)"
         cmp "a[1...4]"      "a.slice(1, 4)"
-        cmp "a[1...a]"      "a.slice(1, a)"
-        cmp "a[1..a]"       "a.slice(1, a+1)"
-        cmp "a[1..a.b]"     "a.slice(1, a.b+1)"
-        cmp "a[1..a[2]]"    "a.slice(1, a[2]+1)"
-        cmp "a[1..a[3].b]"  "a.slice(1, a[3].b+1)"
+        cmp "a[1...a]"      "a.slice(1, typeof a === 'number' && a || -1)"
+        cmp "a[1..a]"       "a.slice(1, typeof a === 'number' && a+1 || Infinity)"
+        cmp "a[1..a.b]"     "a.slice(1, typeof a.b === 'number' && a.b+1 || Infinity)"
+        cmp "a[1..a[2]]"    "a.slice(1, typeof a[2] === 'number' && a[2]+1 || Infinity)"
+        cmp "a[1..a[3].b]"  "a.slice(1, typeof a[3].b === 'number' && a[3].b+1 || Infinity)"
         
         cmp "b[c...-1]"      "b.slice(c, -1)"
         cmp "b[c.d...-1]"    "b.slice(c.d, -1)"
         cmp "b[c[0]...-1]"   "b.slice(c[0], -1)"
-        cmp "b[c[0].d..-1]"  "b.slice(c[0].d, -1+1)"
+        cmp "b[c[0].d..-1]"  "b.slice(c[0].d)"
+        
+        cmp "o[0..-1]" "o.slice(0)"  
+        cmp "q[..-1]"  "q.slice(0)" 
+        cmp "p[0..]"   "p.slice(0)"
+        cmp "r[..]"    "r.slice(0)"
+        
+        evl "'abc'[0..1]" "ab"
+        evl "'abc'[0..2]" "abc"
+        
+        evl "'xyz'[0..]"    "xyz"
+        evl "'uvw'[0...]"   "uv"
     
     #  0000000   00000000   00000000    0000000   000   000  
     # 000   000  000   000  000   000  000   000   000 000   

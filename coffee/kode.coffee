@@ -66,13 +66,15 @@ class Kode
 
             if empty text then error Y4 r2 "can't read #{R3 y5 file}"; continue
 
-            code = @compile text
+            js = @compile text
 
             if @args.output
                 out = slash.join @args.output, slash.file file
                 out = slash.swapExt out, 'js'
                 log 'out' out if @args.verbose
-                slash.writeText out, code
+                slash.writeText out, js
+            else
+                log js
 
     #  0000000   0000000   00     00  00000000   000  000      00000000
     # 000       000   000  000   000  000   000  000  000      000
@@ -92,8 +94,8 @@ class Kode
 
         js = @renderer.render ast
 
-        print.code 'js' js if @args.js or @args.debug
-
+        if @args.js or @args.debug
+            print.code 'js' js 
         js
 
     ast: (text) ->
@@ -171,7 +173,7 @@ if not module.parent or module.parent.path.endsWith '/kode/bin'
             compile     . ? compile a string and print the result
             outdir      . ? output directory for transpiled files
             map         . ? generate inline source maps             . = true
-            js          . ? print transpiled js code                . = true
+            js          . ? print transpiled js code                . = false
             run         . ? execute file                            . = false
             tokens      . ? print tokens                            . = false  . - T
             block       . ? print block tree                        . = false  . - B

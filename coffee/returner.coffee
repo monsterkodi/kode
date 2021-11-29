@@ -55,7 +55,7 @@ class Returner
         
     exp: (e) ->
 
-        if not e then return log 'dafuk!'
+        if not e then return
             
         if e.type                   then return
         else if e instanceof Array  then @exp v for v in e if e.length

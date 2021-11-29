@@ -236,19 +236,33 @@ describe 'func' ->
 
     it 'return' ->
 
-        # cmp """
-            # f = =>
-                # if true then return
-            # """ """
-            # f = function ()
-            # {
-                # if (true)
-                # {
-                    # return
-                # }
-            # }
-            # """
+        cmp """
+            f = =>
+                if true then return
+            """ """
+            f = function ()
+            {
+                if (true)
+                {
+                    return
+                }
+            }
+            """
 
+        cmp """
+            f = ->
+                if yes
+                    log '42'
+            """ """
+            f = function ()
+            {
+                if (true)
+                {
+                    console.log('42')
+                }
+            }
+            """
+            
         # cmp """
             # f = ->
                 # if yes
@@ -259,20 +273,6 @@ describe 'func' ->
                 # if (true)
                 # {
                     # return '42'
-                # }
-            # }
-            # """
-
-        # cmp """
-            # f = ->
-                # if yes
-                    # log '42'
-            # """ """
-            # f = function ()
-            # {
-                # if (true)
-                # {
-                    # console.log '42'
                 # }
             # }
             # """

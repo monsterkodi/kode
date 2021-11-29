@@ -28,12 +28,12 @@ class Parser extends Parse
 
         @push 'if'
 
-        exp = @exp tokens
+        cond = @exp tokens
         
         thn = @then 'then' tokens
 
         e = if:
-                exp:    exp
+                cond:   cond
                 then:   @scope thn
 
         while tokens[0]?.text == 'else' and tokens[1]?.text == 'if'
@@ -43,13 +43,13 @@ class Parser extends Parse
 
             e.if.elifs ?= []
 
-            exp = @exp tokens
+            cond = @exp tokens
 
             thn = @then 'elif' tokens
 
             e.if.elifs.push
                 elif:
-                    exp:  exp
+                    cond: cond
                     then: @scope thn
 
         if tokens[0]?.text == 'else'
@@ -71,7 +71,7 @@ class Parser extends Parse
     ifTail: (e, tok, tokens) ->
         
         if:
-            exp:  @exp tokens
+            cond: @exp tokens
             then: @scope [e]
 
     # 00000000   0000000   00000000   
@@ -387,9 +387,13 @@ class Parser extends Parse
 
         dots = tokens.shift()
 
-        upto = @exp tokens
+        if tokens[0]?.text == ']'
+            # upto = type:'num' text:'-1'
+            upto = null
+        else
+            upto = @exp tokens
 
-        if not upto then return error "no slice end!"
+        # if not upto then return error "no slice end!"
         
         slice:
             from: from
@@ -407,8 +411,12 @@ class Parser extends Parse
         @push 'idx'
 
         open = tokens.shift()
-
-        slice = @exp tokens
+        
+        if tokens[0]?.type == 'dots'
+            # slice = @slice {type:'num' text:'0'}, tokens
+            slice = @slice null, tokens
+        else
+            slice = @exp tokens
 
         close = @shiftClose 'index' ']' tokens
         

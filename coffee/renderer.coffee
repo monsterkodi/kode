@@ -292,7 +292,7 @@ class Renderer
         gi = @ind()
 
         s = ''
-        s += "if (#{@node(n.exp)})\n"
+        s += "if (#{@node(n.cond)})\n"
         s += gi+"{\n"
         for e in n.then.exps ? []
             s += @indent + @node(e) + '\n'
@@ -300,7 +300,7 @@ class Renderer
 
         for elif in n.elifs ? []
             s += '\n'
-            s += gi + "else if (#{@node(elif.elif.exp)})\n"
+            s += gi + "else if (#{@node(elif.elif.cond)})\n"
             s += gi+"{\n"
             for e in elif.elif.then.exps ? []
                 s += @indent + @node(e) + '\n'
@@ -327,7 +327,7 @@ class Renderer
         
         s = ''
         
-        s += "#{@node(n.exp)} ? "
+        s += "#{@node(n.cond)} ? "
         if n.then.exps
             s += (@node(e) for e in n.then.exps).join ', '
 
@@ -609,10 +609,34 @@ class Renderer
     index:  (p) -> 
         
         if p.slidx.slice
-            add = ''
-            if p.slidx.slice.dots.text == '..'
-                add = '+1'
-            "#{@node(p.idxee)}.slice(#{@node p.slidx.slice.from}, #{@node p.slidx.slice.upto}#{add})"
+            
+            if p.slidx.slice.from?
+                from = @node p.slidx.slice.from
+            else
+                from = '0'
+
+            addOne = p.slidx.slice.dots.text == '..'
+
+            if p.slidx.slice.upto?
+                upto = @node p.slidx.slice.upto
+            # else
+                # upto = '-1'
+                
+            if p.slidx.slice.upto?.type == 'num' or p.slidx.slice.upto?.operation
+                u = parseInt upto
+                if u == -1 and addOne
+                    upper = ''
+                else
+                    u += 1 if addOne
+                    upper = ", #{u}"
+            else
+                if addOne
+                    if upto
+                        upper = ", typeof #{upto} === 'number' && #{upto}+1 || Infinity"
+                else
+                    upper = ", typeof #{upto} === 'number' && #{upto} || -1"
+                
+            "#{@node(p.idxee)}.slice(#{from}#{upper ? ''})"
         else
             if p.slidx.operation 
                 o = p.slidx.operation
@@ -644,7 +668,7 @@ class Renderer
     #      000  000      000  000       000       
     # 0000000   0000000  000   0000000  00000000  
     
-    slice:  (p) -> 
+    slice: (p) -> 
         
         if p.from.type == 'num' == p.upto.type
             from = parseInt p.from.text

@@ -13,9 +13,11 @@ kode = new Kode()
 
 module.exports = 
     
+    evl: (c,p) -> chai.assert.deepEqual kode.eval(c), p
     ast: (c,p) -> kode.astr(c, no).should.eql p
     cmp: (c,p) -> 
         k = kode.compile c
         if k.startsWith 'var '
             k = k[k.indexOf('\n')+2..]
         k.should.eql p
+        

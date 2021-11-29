@@ -36,7 +36,7 @@ class Scoper
         
     exp: (e) ->
 
-        if not e then return log 'dafuk!'
+        if not e then return
             
         insert = (v,t) => 
             @verb yellow(v), red(t)
