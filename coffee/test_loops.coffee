@@ -23,7 +23,7 @@ describe 'loops' ->
                 t
             """ """
             var list = l
-            for (i = 0; i < list.length; i++)
+            for (var i = 0; i < list.length; i++)
             {
                 t = list[i]
                 t
@@ -34,7 +34,7 @@ describe 'loops' ->
             for a in [1,2,3] then log a
             """ """
             var list = [1,2,3]
-            for (i = 0; i < list.length; i++)
+            for (var i = 0; i < list.length; i++)
             {
                 a = list[i]
                 console.log(a)
@@ -46,7 +46,7 @@ describe 'loops' ->
             log a
             """ """
             var list = [1,2,3]
-            for (i = 0; i < list.length; i++)
+            for (var i = 0; i < list.length; i++)
             {
                 a = list[i]
                 console.log(a)
@@ -61,7 +61,7 @@ describe 'loops' ->
             log '3' a
             """ """
             var list = [1,2,3]
-            for (i = 0; i < list.length; i++)
+            for (var i = 0; i < list.length; i++)
             {
                 a = list[i]
                 console.log('1',a)
@@ -87,7 +87,7 @@ describe 'loops' ->
                 log a,b
             """ """
             var list = this.regs
-            for (i = 0; i < list.length; i++)
+            for (var i = 0; i < list.length; i++)
             {
                 a = list[i][0]
                 b = list[i][1]
@@ -95,18 +95,17 @@ describe 'loops' ->
             }
             """
 
-        # todo: list var names
         cmp """
             for a in [1..2] then for b in [1..3] then c = 1; d = 1
             """ """
             var list = [1,2]
-            for (i = 0; i < list.length; i++)
+            for (var i = 0; i < list.length; i++)
             {
                 a = list[i]
                 var list1 = [1,2,3]
-                for (i = 0; i < list1.length; i++)
+                for (var i1 = 0; i1 < list1.length; i1++)
                 {
-                    b = list1[i]
+                    b = list1[i1]
                     c = 1
                     d = 1
                 }
@@ -120,13 +119,13 @@ describe 'loops' ->
                     e: 1
             """ """
             var list = [1,2,3,4,5,6,7,8,9]
-            for (i = 0; i < list.length; i++)
+            for (var i = 0; i < list.length; i++)
             {
                 a = list[i]
                 var list1 = [1,2,3,4,5,6,7,8,9]
-                for (i = 0; i < list1.length; i++)
+                for (var i1 = 0; i1 < list1.length; i1++)
                 {
-                    b = list1[i]
+                    b = list1[i1]
                     c = 3
                     {d:{e:1}}
                 }

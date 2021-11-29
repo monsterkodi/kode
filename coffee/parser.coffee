@@ -537,6 +537,12 @@ class Parser extends Parse
             dot:  tokens.shift()
             prop: tokens.shift()
             
+    assert: (obj, tokens) ->
+        
+        assert:
+            obj:  obj
+            qmrk: tokens.shift()
+            
     # 000000000  000   000  000   0000000  
     #    000     000   000  000  000       
     #    000     000000000  000  0000000   

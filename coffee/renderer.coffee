@@ -28,12 +28,14 @@ class Renderer
             vs = (v.text for v in ast.vars).join ', '
             s += @indent + "var #{vs}\n\n"
         
-        s += ast.exps.map((s) => @node s).join '\n'
+        s += @nodes ast.exps, '\n'
         s
 
     nodes: (nodes, sep=',') ->
-        ss = nodes.map (s) => @node s
-        ss.join sep
+        
+        # sl = nodes.map (s) => @node s
+        sl = nodes.map (s) => @atom s
+        ss = sl.join sep
         
     # 000   000   0000000   0000000    00000000
     # 0000  000  000   000  000   000  000
@@ -53,7 +55,7 @@ class Renderer
 
         for k,v of exp
 
-            s += switch k
+            s+= switch k
                 when 'if'        then @if v
                 when 'for'       then @for v
                 when 'while'     then @while v
@@ -61,6 +63,7 @@ class Renderer
                 when 'class'     then @class v
                 when 'switch'    then @switch v
                 when 'when'      then @when v
+                when 'assert'    then @assert v
                 when 'operation' then @operation v
                 when 'incond'    then @incond v
                 when 'parens'    then @parens v
@@ -72,10 +75,38 @@ class Renderer
                 when 'prop'      then @prop v
                 when 'func'      then @func v
                 when 'call'      then @call v
-                when 'var'       then v.text
                 else
                     log R4("renderer.node unhandled key #{k} in exp"), exp # if @debug or @verbose
-                    ''
+                    '' 
+        s
+
+    #  0000000   000000000   0000000   00     00  
+    # 000   000     000     000   000  000   000  
+    # 000000000     000     000   000  000000000  
+    # 000   000     000     000   000  000 0 000  
+    # 000   000     000      0000000   000   000  
+    
+    atom: (exp) -> 
+    
+        s = @node exp     
+        s = @fixAsserts s
+        s
+                
+    # 00000000  000  000   000   0000000    0000000   0000000  00000000  00000000   000000000   0000000  
+    # 000       000   000 000   000   000  000       000       000       000   000     000     000       
+    # 000000    000    00000    000000000  0000000   0000000   0000000   0000000       000     0000000   
+    # 000       000   000 000   000   000       000       000  000       000   000     000          000  
+    # 000       000  000   000  000   000  0000000   0000000   00000000  000   000     000     0000000   
+    
+    fixAsserts: (s) ->
+        
+        return s if not s.split?
+        # if ((a != null ? (ref = a.b) != null ? (ref1 = ref.c) != null ? (ref2 = ref1.d) != null ? ref2.e : void 0 : void 0 : void 0 : void 0) === 1) {
+        splt = s.split /\sq\d+_\d+\s/
+        if splt.length > 1
+            log splt
+            return splt.join '!'
+            # return "(#{splt[0]} != null ? q=#{splt[0]}#{splt[1]} : undefined)"
         s
         
     #  0000000  000       0000000    0000000   0000000
@@ -259,7 +290,11 @@ class Renderer
     call: (p) ->
         if p.callee.text in ['log''warn''error']
             p.callee.text = "console.#{p.callee.text}"
-        "#{@node(p.callee)}(#{@nodes p.args, ','})"
+        callee = @node p.callee
+        if callee == 'new'
+            "#{callee} #{@nodes p.args, ','}"
+        else
+            "#{callee}(#{@nodes p.args, ','})"
             
     # 000  00000000
     # 000  000
@@ -280,7 +315,7 @@ class Renderer
         gi = @ind()
 
         s = ''
-        s += "if (#{@node(n.cond)})\n"
+        s += "if (#{@atom(n.cond)})\n"
         s += gi+"{\n"
         for e in n.then.exps ? []
             s += @indent + @node(e) + '\n'
@@ -288,7 +323,7 @@ class Renderer
 
         for elif in n.elifs ? []
             s += '\n'
-            s += gi + "else if (#{@node(elif.elif.cond)})\n"
+            s += gi + "else if (#{@atom(elif.elif.cond)})\n"
             s += gi+"{\n"
             for e in elif.elif.then.exps ? []
                 s += @indent + @node(e) + '\n'
@@ -357,19 +392,20 @@ class Renderer
             print.noon 'no list for' n.list
             print.ast 'no list for' n.list
             
-        listVar = @freshVar 'list'    
+        listVar = @freshVar 'list'
+        iterVar = @freshVar 'i'
         s = ''
         s += "var #{listVar} = #{list}\n"
         if n.vals.text
-            s += gi+"for (i = 0; i < #{listVar}.length; i++)\n"
+            s += gi+"for (var #{iterVar} = 0; #{iterVar} < #{listVar}.length; #{iterVar}++)\n"
             s += gi+"{\n"
-            s += @indent+"#{n.vals.text} = #{listVar}[i]\n"
+            s += @indent+"#{n.vals.text} = #{listVar}[#{iterVar}]\n"
         else if n.vals.array?.items
-            s += gi+"for (i = 0; i < #{listVar}.length; i++)\n"
+            s += gi+"for (var #{iterVar} = 0; #{iterVar} < #{listVar}.length; #{iterVar}++)\n"
             s += gi+"{\n"
             for j in 0...n.vals.array.items.length
                 v = n.vals.array.items[j]
-                s += @indent+"#{v.text} = #{listVar}[i][#{j}]\n"
+                s += @indent+"#{v.text} = #{listVar}[#{iterVar}][#{j}]\n"
         else if n.vals.length > 1
             lv = n.vals[1].text
             s += gi+"for (#{lv} = 0; #{lv} < #{listVar}.length; #{lv}++)\n"
@@ -534,14 +570,14 @@ class Renderer
         if o in ['<''<=''===''!==''>=''>']
             ro = opmap op.rhs?.operation?.operator.text
             if ro in ['<''<=''===''!==''>=''>']
-                return '(' + @node(op.lhs) + sep + o + sep + @node(op.rhs.operation.lhs) + ' && ' + kstr.lstrip(@node(op.rhs)) + ')'
+                return '(' + @atom(op.lhs) + sep + o + sep + @atom(op.rhs.operation.lhs) + ' && ' + kstr.lstrip(@atom(op.rhs)) + ')'
 
         open = close = ''
         if o != '=' and op.rhs?.operation?.operator.text == '='
             open = '('
             close = ')'
                 
-        @node(op.lhs) + sep + o + sep + open + kstr.lstrip @node(op.rhs) + close
+        @atom(op.lhs) + sep + o + sep + open + kstr.lstrip @atom(op.rhs) + close
 
     # 000  000   000   0000000   0000000   000   000  0000000    
     # 000  0000  000  000       000   000  0000  000  000   000  
@@ -586,7 +622,13 @@ class Renderer
     # 000        000   000  000   000  000        
     # 000        000   000   0000000   000        
     
-    prop:   (p) -> "#{@node(p.obj)}.#{@node p.prop}"
+    prop:   (p) -> 
+    
+        "#{@node(p.obj)}.#{@node p.prop}"
+            
+    assert: (p) ->
+    
+        @node(p.obj) + " q#{p.qmrk.line}_#{p.qmrk.col} "
         
     # 000  000   000  0000000    00000000  000   000  
     # 000  0000  000  000   000  000        000 000   
@@ -620,11 +662,11 @@ class Renderer
             if p.slidx.text?[0] == '-'
                 ni = parseInt p.slidx.text
                 if ni == -1
-                    return "#{@node(p.idxee)}.slice(#{ni})[0]"
+                    return "#{@atom(p.idxee)}.slice(#{ni})[0]"
                 else
-                    return "#{@node(p.idxee)}.slice(#{ni},#{ni+1})[0]"
+                    return "#{@atom(p.idxee)}.slice(#{ni},#{ni+1})[0]"
             
-            "#{@node(p.idxee)}[#{@node p.slidx}]"
+            "#{@atom(p.idxee)}[#{@node p.slidx}]"
         
     #  0000000   00000000   00000000    0000000   000   000  
     # 000   000  000   000  000   000  000   000   000 000   

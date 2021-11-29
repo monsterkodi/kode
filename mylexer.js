@@ -20,7 +20,7 @@ class Lexer
             pat = this.patterns[key]
             if (typeof(pat) === 'string')
             {
-                this.regs.push([key,new(RegExp(pat))])
+                this.regs.push([key,new RegExp(pat)])
             }
             else if (pat instanceof Array)
             {
@@ -29,7 +29,7 @@ class Lexer
                     return kstr.escapeRegexp("#{p}")
                 })
                 reg = '\\b(' + pat.join('|') + ')\\b'
-                this.regs.push([key,new(RegExp(reg))])
+                this.regs.push([key,new RegExp(reg)])
             }
         }
     }
@@ -44,7 +44,7 @@ class Lexer
         {
             before = text.length
             var list = this.regs
-            for (i = 0; i < list.length; i++)
+            for (var i = 0; i < list.length; i++)
             {
                 key = list[i][0]
                 reg = list[i][1]
@@ -130,8 +130,12 @@ class Lexer
                 while (['nl','ws'].indexOf(tokens[idx].type) >= 0)
                 {
                     idx += 1
-                    else(newTokens.push(tok),idx += 1)
                 }
+            }
+            else
+            {
+                newTokens.push(tok)
+                idx += 1
             }
         }
         return newTokens
@@ -176,7 +180,7 @@ class Lexer
             }
         }
         var list = (function() { var r = []; for (var i = 0; i < tokens.length; i++){ r.push(i); } return r; }).apply(this)
-        for (i = 0; i < list.length; i++)
+        for (var i = 0; i < list.length; i++)
         {
             idx = list[i]
             tok = tokens[idx]
