@@ -118,14 +118,12 @@ class Renderer
         bind = []
         for m in mthds
             if not m.keyval 
-                log 'wtf?' m 
                 print.ast 'not an method?' m
                 continue
             name = m.keyval.val.func.name.text
             if name in ['@' 'constructor']
                 if constructor then error 'more than one constructor?'
                 m.keyval.val.func.name.text = 'constructor'
-                # log 'prepareMethods' name, m.keyval.val.func.name.text
                 constructor = m
             else if name.startsWith '@'
                 m.keyval.val.func.name.text = 'static ' + name[1..]
@@ -134,27 +132,17 @@ class Renderer
                 
         if bind.length and not constructor # found some methods to bind, but no constructor
             ast = @kode.ast "constructor: ->" # create one from scratch
-            print.noon 'ast' ast if @debug
             constructor = ast.exps[0].object.keyvals[0]
             constructor.keyval.val.func.name = type:'name' text:'constructor'
             mthds.unshift constructor
-            if @debug
-                print.noon 'constructor' constructor
-                print.ast 'implicit constructor' constructor
-                print.ast 'mthds with implicit constructor' mthds
             
         if bind.length
             for b in bind
                 bn = b.keyval.val.func.name.text
-                @verb 'method to bind:' bn
                 constructor.keyval.val.func.body.exps ?= []
                 constructor.keyval.val.func.body.exps.push 
                     type: 'code'
                     text: "this.#{bn} = this.#{bn}.bind(this)"
-                    
-            print.ast 'constructor after bind' constructor if @debug
-
-        print.ast 'prepared mthds' mthds if @debug
         mthds
                 
     # 00     00  000000000  000   000  0000000    

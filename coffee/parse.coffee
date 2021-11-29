@@ -32,7 +32,6 @@ class Parse # the base class of Parser
 
         ast = []
 
-        # while block.tokens.length
         ast = ast.concat @exps 'tl' block.tokens
 
         if @raw then print.noon 'raw ast' ast
@@ -206,18 +205,14 @@ class Parse # the base class of Parser
                 if tokens[0]?.text in ','
                     @verb 'exp shift comma'
                     tokens.shift()
-                    break
-                else
-                    if tokens[0]?.text == 'if'
-                        # log 'exp lhs if?' e
-                        # print.sheap @sheap
-                        # print.stack @stack
-                        if empty(@stack) or not @stack[-1].startsWith('op')
-                            e = @ifTail e, tokens.shift(), tokens
-                            continue
-                    
-                    @verb 'exp no token consumed: break!'
-                    break                    # bail out if no token was consumed
+
+                if tokens[0]?.text == 'if'
+                    if empty(@stack) or not @stack[-1].startsWith('op')
+                        e = @ifTail e, tokens.shift(), tokens
+                        continue
+                
+                @verb 'exp no token consumed: break!'
+                break                    # bail out if no token was consumed
             
         print.ast "exp #{if empty(@stack) then 'DONE' else ''}" e if @verbose
         
@@ -263,14 +258,12 @@ class Parse # the base class of Parser
                 else if e.text == '{'   then e = @curly           e, tokens                
                 else if e.text == 'not' then e = @operation null, e, tokens
                 else if e.text in ['++''--'] and unspaced
-                    # if nxt.type not in ['var''paren'] then return error 'wrong lhs increment' e, nxt
                     @verb 'rhs increment'
                     e = @operation null, e, tokens
-                    # if e.operation.rhs?.operation?.operator?.text in ['++''--'] then return error 'left and right side increment'
                 else if e.text in ['+''-'] and unspaced
                     if nxt.type == 'num'
                         @verb 'rhs +- num'
-                        if e.text == '-' # and nxt[0] != '-'
+                        if e.text == '-'
                             nxt.text = '-' + nxt.text
                             nxt.col -= 1
                         e = tokens.shift()
@@ -279,7 +272,6 @@ class Parse # the base class of Parser
                         e = @operation null, e, tokens
                 else if nxt.text in ['++''--'] and unspaced
                     if e.type not in ['var']
-                        # tokens.shift()
                         return error 'wrong rhs increment'
                     e = @operation e, tokens.shift()
                 else

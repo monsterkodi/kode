@@ -142,7 +142,6 @@ class Parser extends Parse
         
         whens = []
         while tokens[0]?.text == 'when'
-            print.tokens 'switch when' tokens if @debug
             whens.push @exp tokens
                         
         e = switch:
@@ -172,10 +171,7 @@ class Parser extends Parse
         vals = []
         
         while (tokens[0]? and (tokens[0].type not in ['block''nl']) and tokens[0].text != 'then')
-            print.tokens 'when val' tokens if @debug
             vals.push @exp tokens
-        
-        @verb 'when.then tokens[0]' tokens[0]
         
         thn = @then 'when then' tokens
         
@@ -195,8 +191,6 @@ class Parser extends Parse
 
         @push 'class'
 
-        print.tokens 'class' tokens if @debug
-
         name = tokens.shift()
 
         e = class:
@@ -210,13 +204,7 @@ class Parser extends Parse
             tokens = tokens.shift().tokens
             e.class.body = @exps 'class body' tokens
             @nameMethods e.class.body[0].object.keyvals
-        else
-            @verb 'no class body!'
                 
-        if @debug
-            print.ast 'e.class.body' e.class.body
-            print.tokens 'class pop' tokens 
-
         @pop 'class'
 
         e
@@ -314,8 +302,6 @@ class Parser extends Parse
 
         @push "op#{op.text}"
         
-        print.ast 'operation lhs' lhs if @debug
-        
         if op.text == '='
             rhs = @exp tokens
         else
@@ -368,9 +354,7 @@ class Parser extends Parse
         
         if tokens[0]?.type == 'block' and @stack[-1] not in ['for' 'if']
             @verb 'fucked up indentation! block after array! flattening block tokens:'
-            print.tokens 'tokens before splice' tokens if @verbose
             tokens.splice.apply tokens, [0 1].concat tokens[0].tokens
-            print.tokens 'tokens after splice' tokens if @verbose
 
         array:
             open:  open
@@ -388,13 +372,10 @@ class Parser extends Parse
         dots = tokens.shift()
 
         if tokens[0]?.text == ']'
-            # upto = type:'num' text:'-1'
             upto = null
         else
             upto = @exp tokens
 
-        # if not upto then return error "no slice end!"
-        
         slice:
             from: from
             dots: dots
@@ -413,7 +394,6 @@ class Parser extends Parse
         open = tokens.shift()
         
         if tokens[0]?.type == 'dots'
-            # slice = @slice {type:'num' text:'0'}, tokens
             slice = @slice null, tokens
         else
             slice = @exp tokens
@@ -488,21 +468,14 @@ class Parser extends Parse
 
         first = firstLineCol key
         
-        print.tokens 'object val' tokens if @debug
-        
         exps = [@keyval key, tokens]
         
         if tokens[0]?.type == 'nl'
-            @verb 'object nl' first.col, tokens[1]?.col
             if tokens[1]?.col >= first.col and tokens[1].text not in '])'
-                @verb 'continue block object...' if @debug
                 @shiftNewline 'continue block object ...' tokens
                 exps = exps.concat @exps 'object' tokens
-            else
-                @verb 'outdent! object done'
         else
             if tokens[0]?.line == first.line and tokens[0].text not in '])};'
-                @verb 'continue inline object...' if @debug
                 exps = exps.concat @exps 'object' tokens, ';'
                 
         @pop '{'
