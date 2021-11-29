@@ -48,6 +48,7 @@ class Returner
                 else if lst.prop then insert()
                 else if lst.index then insert()
                 else if lst.return then null
+                else if lst.while then null
                 else
                     log 'todo: returner' Object.keys(lst)[0]
             

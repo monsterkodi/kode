@@ -74,7 +74,8 @@ class Kode
                 log 'out' out if @args.verbose
                 slash.writeText out, js
             else
-                log js
+                if not args.js
+                    log js
 
     #  0000000   0000000   00     00  00000000   000  000      00000000
     # 000       000   000  000   000  000   000  000  000      000
