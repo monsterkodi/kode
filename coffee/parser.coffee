@@ -352,10 +352,6 @@ class Parser extends Parse
 
         @pop '['
         
-        if tokens[0]?.type == 'block' and @stack[-1] not in ['for' 'if']
-            @verb 'fucked up indentation! block after array! flattening block tokens:'
-            tokens.splice.apply tokens, [0 1].concat tokens[0].tokens
-
         array:
             open:  open
             items: items
