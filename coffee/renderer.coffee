@@ -608,15 +608,15 @@ class Renderer
     
     index:  (p) -> 
         
-        if p.slidx.slice
+        if slice = p.slidx.slice
             
-            from = if p.slidx.slice.from? then @node p.slidx.slice.from else '0'
+            from = if slice.from? then @node slice.from else '0'
 
-            addOne = p.slidx.slice.dots.text == '..'
+            addOne = slice.dots.text == '..'
 
-            if p.slidx.slice.upto? then upto = @node p.slidx.slice.upto
+            if slice.upto? then upto = @node slice.upto
                 
-            if p.slidx.slice.upto?.type == 'num' or p.slidx.slice.upto?.operation
+            if slice.upto?.type == 'num' or slice.upto?.operation
                 u = parseInt upto
                 if u == -1 and addOne
                     upper = ''
