@@ -91,6 +91,10 @@ class Renderer
         s = @node exp     
         s = @fixAsserts s
         s
+        
+    assert: (p) ->
+    
+        @node(p.obj) + "_#{p.qmrk.line}_#{p.qmrk.col}_"
                 
     # 00000000  000  000   000   0000000    0000000   0000000  00000000  00000000   000000000   0000000  
     # 000       000   000 000   000   000  000       000       000       000   000     000     000       
@@ -100,13 +104,37 @@ class Renderer
     
     fixAsserts: (s) ->
         
-        return s if not s.split?
-        # if ((a != null ? (ref = a.b) != null ? (ref1 = ref.c) != null ? (ref2 = ref1.d) != null ? ref2.e : void 0 : void 0 : void 0 : void 0) === 1) {
-        splt = s.split /\sq\d+_\d+\s/
+        return s if not s
+        
+        splt = s.split /_\d+_\d+_/
+        mtch = s.match /_\d+_\d+_/g
+        
         if splt.length > 1
-            log splt
-            return splt.join '!'
-            # return "(#{splt[0]} != null ? q=#{splt[0]}#{splt[1]} : undefined)"
+          
+            log splt, mtch
+            
+            s = ''
+            
+            for i in 0...mtch.length
+
+                if mtch.length > 1 
+                    l = "(#{mtch[i]}=#{(if i then mtch[i-1]+splt[i] else splt[0])})"
+                else
+                    l = splt[0]
+                    
+                if splt[i+1][0] == '('
+                    s += "typeof #{l} === \"function\" ? "
+                else
+                    s += "#{l} != null ? "
+
+            if mtch.length > 1                     
+                s += mtch[-1]+splt[-1]
+            else
+                s += splt[0]+splt[1]
+                
+            for i in 0...mtch.length then s += " : undefined"
+                
+            s = "(#{s})"
         s
         
     #  0000000  000       0000000    0000000   0000000
@@ -350,9 +378,9 @@ class Renderer
         
         s = ''
         
-        s += "#{@node(n.cond)} ? "
+        s += "#{@atom(n.cond)} ? "
         if n.then.exps
-            s += (@node(e) for e in n.then.exps).join ', '
+            s += (@atom(e) for e in n.then.exps).join ', '
 
         if n.elifs
             for e in n.elifs
@@ -362,9 +390,9 @@ class Renderer
         if n.else
             s += ' : '
             if n.else.exps.length == 1
-                s += @node n.else.exps[0]
+                s += @atom n.else.exps[0]
             else
-                s += '(' + (@node e for e in n.else.exps).join(', ') + ')'
+                s += '(' + (@atom e for e in n.else.exps).join(', ') + ')'
         s
         
     # 00000000   0000000   00000000   
@@ -587,7 +615,7 @@ class Renderer
     
     incond: (p) ->
         
-        "#{@node p.rhs}.indexOf(#{@node p.lhs}) >= 0"
+        "#{@node p.rhs}.indexOf(#{@atom p.lhs}) >= 0"
         
     # 00000000    0000000   00000000   00000000  000   000   0000000  
     # 000   000  000   000  000   000  000       0000  000  000       
@@ -614,7 +642,7 @@ class Renderer
     keyval: (p) -> 
         key = @node p.key
         if key[0] not in "'\"" and /[\.\,\;\*\+\-\/\=\|]/.test key then key = "'#{key}'"
-        "#{key}:#{@node(p.val)}"
+        "#{key}:#{@atom(p.val)}"
     
     # 00000000   00000000    0000000   00000000   
     # 000   000  000   000  000   000  000   000  
@@ -625,11 +653,7 @@ class Renderer
     prop:   (p) -> 
     
         "#{@node(p.obj)}.#{@node p.prop}"
-            
-    assert: (p) ->
-    
-        @node(p.obj) + " q#{p.qmrk.line}_#{p.qmrk.col} "
-        
+                    
     # 000  000   000  0000000    00000000  000   000  
     # 000  0000  000  000   000  000        000 000   
     # 000  000 0 000  000   000  0000000     00000    
