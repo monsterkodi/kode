@@ -610,17 +610,11 @@ class Renderer
         
         if p.slidx.slice
             
-            if p.slidx.slice.from?
-                from = @node p.slidx.slice.from
-            else
-                from = '0'
+            from = if p.slidx.slice.from? then @node p.slidx.slice.from else '0'
 
             addOne = p.slidx.slice.dots.text == '..'
 
-            if p.slidx.slice.upto?
-                upto = @node p.slidx.slice.upto
-            # else
-                # upto = '-1'
+            if p.slidx.slice.upto? then upto = @node p.slidx.slice.upto
                 
             if p.slidx.slice.upto?.type == 'num' or p.slidx.slice.upto?.operation
                 u = parseInt upto
@@ -630,22 +624,17 @@ class Renderer
                     u += 1 if addOne
                     upper = ", #{u}"
             else
-                if addOne
-                    if upto
-                        upper = ", typeof #{upto} === 'number' && #{upto}+1 || Infinity"
-                else
-                    upper = ", typeof #{upto} === 'number' && #{upto} || -1"
+                if addOne then if upto then upper = ", typeof #{upto} === 'number' && #{upto}+1 || Infinity"
+                else                        upper = ", typeof #{upto} === 'number' && #{upto} || -1"
                 
             "#{@node(p.idxee)}.slice(#{from}#{upper ? ''})"
         else
-            if p.slidx.operation 
-                o = p.slidx.operation
-                if o.operator.text == '-' and not o.lhs and o.rhs?.type == 'num'
-                    ni = parseInt o.rhs.text
-                    if ni == 1
-                        return "#{@node(p.idxee)}.slice(-#{ni})[0]"
-                    else
-                        return "#{@node(p.idxee)}.slice(-#{ni},-#{ni-1})[0]"
+            if p.slidx.text?[0] == '-'
+                ni = parseInt p.slidx.text
+                if ni == -1
+                    return "#{@node(p.idxee)}.slice(#{ni})[0]"
+                else
+                    return "#{@node(p.idxee)}.slice(#{ni},#{ni+1})[0]"
             
             "#{@node(p.idxee)}[#{@node p.slidx}]"
         

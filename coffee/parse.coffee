@@ -262,22 +262,26 @@ class Parse # the base class of Parser
                 else if e.text == '('   then e = @parens          e, tokens
                 else if e.text == '{'   then e = @curly           e, tokens                
                 else if e.text == 'not' then e = @operation null, e, tokens
-                else if e.text in ['+''-''++''--'] and unspaced
-                    if nxt.type not in ['var''paren'] and e.text in ['++''--']
-                        tokens.shift()
-                        error 'wrong lhs increment' e, nxt
-                        return
-                    @verb 'rhs null operation'
+                else if e.text in ['++''--'] and unspaced
+                    # if nxt.type not in ['var''paren'] then return error 'wrong lhs increment' e, nxt
+                    @verb 'rhs increment'
                     e = @operation null, e, tokens
-                    if e.operation.rhs?.operation?.operator?.text in ['++''--']
-                        error 'left and right side increment'
-                        return
+                    # if e.operation.rhs?.operation?.operator?.text in ['++''--'] then return error 'left and right side increment'
+                else if e.text in ['+''-'] and unspaced
+                    if nxt.type == 'num'
+                        @verb 'rhs +- num'
+                        if e.text == '-' # and nxt[0] != '-'
+                            nxt.text = '-' + nxt.text
+                            nxt.col -= 1
+                        e = tokens.shift()
+                    else
+                        @verb 'rhs +- operation'
+                        e = @operation null, e, tokens
                 else if nxt.text in ['++''--'] and unspaced
                     if e.type not in ['var']
-                        tokens.shift()
-                        error 'wrong rhs increment'
-                        return
-                    e = @operation e, tokens.shift() 
+                        # tokens.shift()
+                        return error 'wrong rhs increment'
+                    e = @operation e, tokens.shift()
                 else
                     print.tokens "rhs no nxt match? break! stack:#{@stack} nxt:" [nxt] if @verbose
                     break                    
@@ -412,11 +416,11 @@ class Parse # the base class of Parser
                 e = @call e, tokens
                 break
 
-            else if nxt.type == 'op' and nxt.text in ['+' '-'] and e.text not in ['[' '(']
+            else if nxt.text in ['+' '-'] and e.text not in ['[' '(']
                 if spaced and tokens[1]?.col == nxt.col+nxt.text.length
                     @verb 'lhs op is unbalanced +- break...' e, nxt, @stack
                     break
-                @verb 'lhs is lhs of op' e, nxt
+                @verb 'lhs is lhs of +- op' e, nxt
                 e = @operation e, tokens.shift(), tokens
                                 
             else

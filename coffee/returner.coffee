@@ -49,7 +49,7 @@ class Returner
                 else if lst.index then insert()
                 else if lst.return then null
                 else
-                    log 'returner?' lst
+                    log 'todo: returner' Object.keys(lst)[0]
             
             @scope f.body 
         
