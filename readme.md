@@ -126,7 +126,11 @@ f = -> profile_end 'a'         # when to start and stop timing
 f()                            # -> a 824μs
 ```
 
-## Compatibility
+- string interpolation
+- sourcemaps
+- rhs for?
+
+# Compatibility
 
 While my first CoffeeScript clone [**koffee**](http://github.com/monsterkodi/koffee) is backwards compatible with CoffeeScript v1,
 I don't intend to do the same with **kode**, but converting coffee to kode shouldn't be too painful.
