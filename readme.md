@@ -4,9 +4,9 @@
 
 It is highly inspired by and *tries* to be compatible with [CoffeeScript](http://coffeescript.org), while adding a few enhancements.
 
-Right now (end of 2021) it is a work in progress and not yet functional.
+Right now (end of 2021) it is a work in progress and not yet fully functional.
 
-A list of features I plan to take over from my first CoffeeScript clone [koffee](http://github.com/monsterkodi/koffee):
+# A list of things that work already:
 
 ## Constructor shortcut
 
@@ -51,16 +51,22 @@ error 'world!'    # -> world!
 
 Simple shortcuts for `log`, `warn` and `error` methods of `console`.
 
-## BigInt
+## Ternary condition operator
 
 ```coffeescript
-a = 12345678901234567890n
-log a*a  # -> 152415787532388367501905199875019052100n
+false ? 1 : 2     # -> 2
+```
+
+A nifty `if` `then` `else` shortcut, which I have always been missing in CoffeeScript.
+It introduces some ambiguity in a few corner cases, which can be resolved by different spacing:
+
+```coffeescript
+null ? a: 'b'     # -> {a:'b'}
 ```
 
 ## Optional commata
 
-Coffeescript has a very nice way of initializing arrays:
+CoffeeScript has a very nice way of initializing arrays:
 
 ```coffeescript
 a = [
@@ -92,6 +98,15 @@ on 'event' @myCallback
 log 'a:' a , 'd:' 3            # some commas still make sense :-)
 ```
 
+# Planned stuff that does not work yet:
+
+## BigInt
+
+```coffeescript
+a = 12345678901234567890n
+log a*a  # -> 152415787532388367501905199875019052100n
+```
+
 ### Debug and profiling support
 
 ```coffeescript
@@ -113,7 +128,7 @@ f()                            # -> a 824μs
 
 ## Compatibility
 
-While **koffee** is backwards compatible with CoffeeScript v1,
+While my first CoffeeScript clone [**koffee**](http://github.com/monsterkodi/koffee) is backwards compatible with CoffeeScript v1,
 I don't intend to do the same with **kode**, but converting coffee to kode shouldn't be too painful.
 
 ## Future plans
@@ -131,7 +146,6 @@ Since I will most likely be the only person using **kode**, it's probably wise t
 
 Just in case I manage to get it to work, this is what I would like to add instead:
 
-- ternary `?` operator `:` aka `if` `then` `else` shortcut
 - native tests
 - keywords `empty` and `valid`
 - 🥚 `ei` 🥚
