@@ -652,7 +652,10 @@ class Renderer
             open = '('
             close = ')'
 
-        @atom(op.lhs) + sep + o + sep + open + kstr.lstrip @atom(op.rhs) + close
+        first = firstLineCol op.lhs
+        prfx = if first.col == 0 and op.rhs?.func then '\n' else ''
+            
+        prfx + @atom(op.lhs) + sep + o + sep + open + kstr.lstrip @atom(op.rhs) + close
 
     # 000  000   000   0000000   0000000   000   000  0000000
     # 000  0000  000  000       000   000  0000  000  000   000

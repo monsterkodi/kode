@@ -15,7 +15,7 @@ describe 'func' ->
         cmp '->'               'function ()\n{}'
         cmp '(a) ->'           'function (a)\n{}'
         cmp '(a,b,c) ->'       'function (a, b, c)\n{}'
-        cmp 'a = (a,b,c) ->'   'a = function (a, b, c)\n{}'
+        cmp 'a = (a,b) ->'     '\na = function (a, b)\n{}'
 
         cmp """
             -> return 1
@@ -65,6 +65,7 @@ describe 'func' ->
         cmp """
             a = (a,b,c) -> d
             """ """
+            
             a = function (a, b, c)
             {
                 return d
@@ -74,6 +75,7 @@ describe 'func' ->
         cmp """
             a.x = (y,z) -> q
             """ """
+            
             a.x = function (y, z)
             {
                 return q
@@ -84,6 +86,7 @@ describe 'func' ->
             a = ->
                 b = ->
             """ """
+            
             a = function ()
             {
                 var b
@@ -98,6 +101,7 @@ describe 'func' ->
                 b = (e, f) -> g
                 b
             """ """
+            
             a = function (b, c)
             {
                 var b
@@ -114,6 +118,7 @@ describe 'func' ->
             a = (b,c) ->
                 b = (e, f) -> h
             """ """
+            
             a = function (b, c)
             {
                 var b
@@ -129,6 +134,7 @@ describe 'func' ->
             a = (b,c) ->
                 (e, f) -> j
             """ """
+            
             a = function (b, c)
             {
                 return function (e, f)
@@ -142,6 +148,7 @@ describe 'func' ->
             f = ->
                 (a) -> 1
             """ """
+            
             f = function ()
             {
                 return function (a)
@@ -155,7 +162,9 @@ describe 'func' ->
             a = ->
                 'a'
             1
+            
             """ """
+            
             a = function ()
             {
                 return 'a'
@@ -170,17 +179,19 @@ describe 'func' ->
             b = ->
                 log 'b'
             """ """
+            
             a = function ()
             {
                 console.log('a')
             }
+            
             b = function ()
             {
                 console.log('b')
             }
             """
 
-        cmp "a = ( a, b=1 c=2 ) ->",  "a = function (a, b = 1, c = 2)\n{}"
+        cmp "a = ( a, b=1 c=2 ) ->",  "\na = function (a, b = 1, c = 2)\n{}"
 
         cmp """
             if true then return
@@ -240,6 +251,7 @@ describe 'func' ->
             f = =>
                 if true then return
             """ """
+            
             f = function ()
             {
                 if (true)
@@ -254,6 +266,7 @@ describe 'func' ->
                 if yes
                     log '42'
             """ """
+            
             f = function ()
             {
                 if (true)
