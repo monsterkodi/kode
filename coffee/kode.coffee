@@ -68,11 +68,12 @@ class Kode
 
             js = @compile text
 
-            if @args.output
-                out = slash.join @args.output, slash.file file
+            if @args.outdir
+                out = slash.resolve @args.outdir, slash.file file
                 out = slash.swapExt out, 'js'
-                log 'out' out if @args.verbose
-                slash.writeText out, js
+                js  = "// kode #{pkg.version}\n\n" + js
+                if not slash.writeText out, js
+                    error R2 y3 "can't write #{R3 y6 out}"
             else
                 if not args.js
                     log js

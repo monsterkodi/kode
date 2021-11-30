@@ -1,6 +1,6 @@
 {
   "name": "kode",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "programming language",
   "main": "js/kode.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "fs-extra": "^10.0.0",
     "karg": "^1.26.0",
     "klor": "^2.16.1",
-    "kslash": "^2.6.0",
+    "kslash": "^2.7.0",
     "kstr": "^0.13.0",
     "lodash.clone": "^4.5.0",
     "lodash.isfunction": "^3.0.9",
