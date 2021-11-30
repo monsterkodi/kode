@@ -126,20 +126,20 @@ Since I will most likely be the only person using **kode**, it's probably wise t
 - `unless`  `until`  `is`  `or=` ...
 - `when` outside of `switch`
 - **koffee** macros in general?
-- wrapper code for browser packaging?
-- implicitly returning arrays if last expression is a loop?
+- wrapper code
+- implicitly returning arrays if last expression is a loop
 
 Just in case I manage to get it to work, this is what I would like to add instead:
 
 ▸ ternary `?` operator `:` (aka `if` `then` `else` short)
 - native tests
 - keywords `empty` and `valid`
+- `ei` 🥚
 - `include` keyword to merge source files
 - native `dbg`  `assert`  `profile` instead of macros
 - `profile` in same scope
 - option to use both: new `class` and old school `function` style classes
 - optional square brackets in `(a for a in ...)`
 - `await`?
-- rendering to another language?
 
 
