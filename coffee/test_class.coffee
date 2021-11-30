@@ -15,19 +15,23 @@ describe 'class' ->
         cmp """
             class A
             """ """
+
             class A
             {}
+            
             """
 
         cmp """
             class B
                 @: ->
             """ """
+
             class B
             {
                 constructor ()
                 {}
             }
+            
             """
 
         cmp """
@@ -35,28 +39,34 @@ describe 'class' ->
                 @a: ->
                 b: ->
             """ """
+            
             class C
             {
                 static a ()
                 {}
+            
                 b ()
                 {}
             }
+            
             """
 
         cmp """
             class D
                 a: =>
             """ """
+            
             class D
             {
                 constructor ()
                 {
                     this.a = this.a.bind(this)
                 }
+            
                 a ()
                 {}
             }
+            
             """
             
         cmp """
@@ -66,17 +76,20 @@ describe 'class' ->
                          
                 m: -> 'm'
             """ """
+            
             class X
             {
                 constructor ()
                 {
                     '@'
                 }
+            
                 m ()
                 {
                     return 'm'
                 }
             }
+            
             """
              
         cmp """
@@ -86,16 +99,19 @@ describe 'class' ->
                 m: ->
                     'm'
             """ """
+            
             class Y
             {
                 constructor ()
                 {
                     '@'
                 }
+            
                 m ()
                 {
                     return 'm'
                 }
             }
+            
             """
 

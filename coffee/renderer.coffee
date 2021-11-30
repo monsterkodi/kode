@@ -155,7 +155,7 @@ class Renderer
 
     class: (n) ->
 
-        s = ''
+        s = '\n'
         s += "class #{n.name.text}"
 
         if n.extends
@@ -168,12 +168,12 @@ class Renderer
         if mthds?.length
             mthds = @prepareMethods mthds
             @indent = '    '
-            for m in mthds
-                s += '\n'
-                s += @mthd m
+            for mi in 0...mthds.length
+                s += '\n' if mi
+                s += @mthd mthds[mi]
             s += '\n'
             @indent = ''
-        s += '}'
+        s += '}\n'
         s
 
     # 00000000   00000000   00000000  00000000   00     00  00000000  000000000  000   000
@@ -227,7 +227,8 @@ class Renderer
     mthd: (n) ->
 
         if n.keyval
-            s = @indent + @func n.keyval.val.func
+            s  = '\n'
+            s += @indent + @func n.keyval.val.func
         s
 
     # 00000000  000   000  000   000   0000000
@@ -568,16 +569,16 @@ class Renderer
         s += @indent+@nodes n.exps, '\n'+@indent
         s += gi+'\n'
         s += gi+'}\n'
-        for c in n.catches ? []
-            s += gi+"catch (#{@node c.catch.errr})\n" 
+        if n.catch ? []
+            s += gi+"catch (#{@node n.catch.errr})\n" 
             s += gi+'{\n'
-            s += @indent+@nodes c.catch.exps, '\n'+@indent
+            s += @indent+@nodes n.catch.exps, '\n'+@indent
             s += gi+'\n'
             s += gi+'}\n'
         if n.finally
             s += gi+'finally\n'
             s += gi+'{\n'
-            s += @indent+@nodes c.fnlly, '\n'+@indent
+            s += @indent+@nodes n.finally, '\n'+@indent
             s += gi+'\n'
             s += gi+'}\n'
         @ded()

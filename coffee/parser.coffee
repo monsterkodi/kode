@@ -195,42 +195,31 @@ class Parser extends Parse
         if tokens[0]?.type == 'nl' and tokens[1].text in ['catch' 'finally']
             @shiftNewline 'try body end' tokens
         
-        ctchs = []
-        while tokens[0]?.text == 'catch'
+        if tokens[0]?.text == 'catch'
             
-            ctchs.push @catch tokens.shift(), tokens
+            @push 'catch'
 
-            if tokens[0]?.type == 'nl' and tokens[1].text in ['catch' 'finally']
+            tokens.shift()
+        
+            ctch = 
+                errr: @exp tokens
+                exps: @block 'body' tokens
+        
+            @pop  'catch'
+
+            if tokens[0]?.type == 'nl' and tokens[1].text == 'finally'
                 @shiftNewline 'try catch end' tokens
             
         if tokens[0]?.text == 'finally'
+            tokens.shift()
             fnlly = @block 'body' tokens
             
         @pop 'try'
 
         try:
             exps:    exps
-            catches: ctchs
+            catch:   ctch
             finally: fnlly
-            
-    #  0000000   0000000   000000000   0000000  000   000  
-    # 000       000   000     000     000       000   000  
-    # 000       000000000     000     000       000000000  
-    # 000       000   000     000     000       000   000  
-    #  0000000  000   000     000      0000000  000   000  
-    
-    catch: (tok, tokens) ->
-        
-        @push 'catch'
-
-        errr = @exp tokens
-        exps = @block 'body' tokens
-        
-        @pop  'catch'
-        
-        catch:
-            errr: errr
-            exps: exps
             
     #  0000000  000       0000000    0000000   0000000
     # 000       000      000   000  000       000

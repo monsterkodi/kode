@@ -8,7 +8,7 @@ Right now (end of 2021) it is a work in progress and not yet fully functional.
 
 # A list of things that work already:
 
-## for ...
+## ranges
 
 ```coffeescript
 

@@ -10,6 +10,12 @@
 
 describe 'misc' ->
 
+    # 000000000  000   000  000   0000000  
+    #    000     000   000  000  000       
+    #    000     000000000  000  0000000   
+    #    000     000   000  000       000  
+    #    000     000   000  000  0000000   
+    
     it 'this' ->
 
         cmp '@'      'this'
@@ -39,7 +45,47 @@ describe 'misc' ->
                 1
             }
             """
+            
+    it 'try' ->
+        
+        cmp """
+            try 
+                something
+            catch err
+                error err
+            """ """
+            try
+            {
+                something
+            }
+            catch (err)
+            {
+                console.error(err)
+            }\n
+            """
 
+        cmp """
+            try 
+                sthelse
+            catch err
+                error err
+            finally
+                cleanup
+            """ """
+            try
+            {
+                sthelse
+            }
+            catch (err)
+            {
+                console.error(err)
+            }
+            finally
+            {
+                cleanup
+            }\n
+            """
+            
     # 00000000   00000000   0000000   000   000  000  00000000   00000000
     # 000   000  000       000   000  000   000  000  000   000  000
     # 0000000    0000000   000 00 00  000   000  000  0000000    0000000
