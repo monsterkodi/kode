@@ -8,29 +8,6 @@ Right now (end of 2021) it is a work in progress and not yet fully functional.
 
 # A list of things that work already:
 
-## Constructor shortcut
-
-```coffeescript
-class C
-    @: ->
-```
-
-... is an *optional* shortcut for ...
-
-```coffeescript
-class C
-    constructor: ->
-```
-
-## Negative indexing
-
-```coffeescript
-"abc"[-2]    # -> 'b'
-[1,2,3][-2]  # -> 2
-```
-
-`v[-n]` is a shortcut for `v[-n..-n][0]` for number literals `n`
-
 ## for ...
 
 ```coffeescript
@@ -64,6 +41,15 @@ It introduces some ambiguity in a few corner cases, which can be resolved by dif
 null ? a: 'b'     # -> {a:'b'}
 ```
 
+## Negative indexing
+
+```coffeescript
+"abc"[-2]    # -> 'b'
+[1,2,3][-2]  # -> 2
+```
+
+`v[-n]` is a shortcut for `v[-n..-n][0]` for number literals `n`
+
 ## Optional commata
 
 CoffeeScript has a very nice way of initializing arrays:
@@ -96,6 +82,20 @@ describe 'something' ->
 on 'event' @myCallback
 
 log 'a:' a , 'd:' 3            # some commas still make sense :-)
+```
+
+## Constructor shortcut
+
+```coffeescript
+class C
+    @: ->
+```
+
+... is an *optional* shortcut for ...
+
+```coffeescript
+class C
+    constructor: ->
 ```
 
 # Planned stuff that does not work yet:
