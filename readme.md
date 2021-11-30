@@ -131,10 +131,10 @@ Since I will most likely be the only person using **kode**, it's probably wise t
 
 Just in case I manage to get it to work, this is what I would like to add instead:
 
-▸ ternary `?` operator `:` (aka `if` `then` `else` short)
+- ternary `?` operator `:` aka `if` `then` `else` shortcut
 - native tests
 - keywords `empty` and `valid`
-- `ei` 🥚
+- 🥚 `ei` 🥚
 - `include` keyword to merge source files
 - native `dbg`  `assert`  `profile` instead of macros
 - `profile` in same scope
