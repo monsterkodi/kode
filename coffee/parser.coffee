@@ -6,6 +6,18 @@
 000        000   000  000   000  0000000   00000000  000   000
 ###
 
+# this is the equivalent of a BNF or grammar for this little language.
+#    
+# instead of converting an essentially dynamic problem to a static 
+# representation and then converting that back into dynamic code again,
+# i decided to go the direct route.
+#
+# it might be less formal and sligthly less concise, but it's definitely 
+# more customizable and easier to debug.
+#
+# but the biggest advantage is that the main features are seperated from
+# the nasty details and corner cases, which are handled in the base class
+
 print = require './print'
 Parse = require './parse'
 
@@ -92,7 +104,7 @@ class Parser extends Parse
         
         list = @exp tokens
 
-        thn = @then 'for then' tokens
+        thn  = @then 'for then' tokens
         
         @pop 'for' 
 

@@ -354,7 +354,7 @@ class Renderer
         first = firstLineCol n
         last  = lastLineCol n
 
-        if first.line == last.line and n.else
+        if first.line == last.line and n.else and not n.returns
             return @ifInline n
 
         gi = @ind()

@@ -78,8 +78,6 @@ class Scoper
                                     @exp v for v in val
                             else
                                 @exp v for k,v of val
-        else
-            log 'dafuk?' e
         
     verb: -> if @verbose then console.log.apply console.log, arguments 
 

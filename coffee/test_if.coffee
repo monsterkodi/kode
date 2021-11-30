@@ -292,4 +292,43 @@ describe 'if' ->
             console.log('END')
             """
             
+    it 'returns' ->
+        
+        cmp """
+            -> if false then true
+            """ """
+            function ()
+            {
+                if (false)
+                {
+                    return true
+                }
+            }
+            """
+
+        cmp """
+            -> if 1 then 2 else 3
+            """ """
+            function ()
+            {
+                if (1)
+                {
+                    return 2
+                }
+                else
+                {
+                    return 3
+                }
+            }
+            """
+            
+    # it 'fun' ->
+#         
+            # """
+            # 🐔  a == 5 ➜ bla
+            # 🥚  a == 8 ➜ blub
+            # 🪣           fark
+            # """
+        
+            
             

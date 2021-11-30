@@ -45,7 +45,16 @@ class Parse # the base class of Parser
     # 000        000 000   000             000
     # 00000000  000   000  000        0000000
 
-    # consumes tokens and returns list of expressions
+    # consumes tokens and returns a list of expressions
+    #
+    # the entry point for ...
+    #   - the tl scope
+    #   - class and function bodies
+    #   - argument lists
+    #   - arrays and objects
+    #   - parens
+    #   - ...
+    # essentially everything that represents a list of something
 
     exps: (rule, tokens, stop) ->
         
@@ -121,8 +130,7 @@ class Parse # the base class of Parser
                     
                 if stop
                     @verb 'exps nl with stop' stop
-                    # if @stack[-1] in ['call' ':' 'func' '▸args'] or stop != 'nl'
-                    if @stack[-1] in ['func' '▸args' '▸body'] or stop != 'nl'
+                    if @stack[-1] in ['▸args' '▸body'] or stop != 'nl'
                         @verb "exps nl with stop #{stop} in #{@stack[-1]} (break, but don't shift nl)"
                     else
                         @shiftNewline "exps nl with stop #{stop}" tokens 
@@ -141,7 +149,7 @@ class Parse # the base class of Parser
             es.push ex
             
             if numTokens == tokens.length
-                error 'exps no token consumed?'
+                @verb 'exps no token consumed' tokens # happens for unbalanced closing ]
                 break
 
         @sheapPop 'exps' rule
@@ -155,6 +163,12 @@ class Parse # the base class of Parser
     # 00000000  000   000  000
 
     # consumes tokens and returns a single expression
+    #
+    # expression can be anything, from single digits to whole classes 
+    # but it is always a single object
+    #
+    # assumes that the handling of newlines is done somewhere else
+    # skips over leading semicolons
 
     exp: (tokens) ->
 
@@ -164,16 +178,14 @@ class Parse # the base class of Parser
 
         log Y5 w1 tok?.text if @debug
         
-        # this assumes that the handling of lists of expressions is done in exps and
-        # silently skips over leading separating tokens like commatas, semicolons and nl.
-
         switch tok.type
-            when 'block'            then return error "INTERNAL ERROR: unexpected block token in exp!"
-            when 'nl'               
-                @verb 'exp start shift nl!'
-                return @exp tokens # skip nl
-            when 'keyword'
-                if tokens[0]?.text not in ':'
+            
+            when 'block'    then return error "INTERNAL ERROR: unexpected block token in exp!"
+            when 'nl'       then return error "INTERNAL ERROR: unexpected nl token in exp!"
+                
+            when 'keyword' # dispatch to block rules identified by keyword
+                
+                if tokens[0]?.text not in ':' # allow keywords as keys
                     switch tok.text 
                         when 'if'       then return @if     tok, tokens
                         when 'for'      then return @for    tok, tokens
@@ -188,26 +200,25 @@ class Parse # the base class of Parser
                     when '->' '=>'  then return @func null, tok, tokens
                     when ';'        then if tokens[0]?.text != ':' then return @exp tokens # skip ;
 
-        ###
-        here comes the hairy part :-)
-        
-        combine information about the rule stack, current and future tokens
-        to figure out when the expression ends
-        ###
+        # here starts the hairy part :-)
 
         @sheapPush 'exp' tok.text ? tok.type
         
         e = tok
-        while tokens.length
+        while tokens.length                  # repeatedly call rhs and lhs until all tokens are swallowed
+            
             numTokens = tokens.length
 
             e = @rhs e, tokens               # first, try to eat as much tokens as possible to the right
+            
             print.ast "rhs" e if @verbose    
 
             e = @lhs e, tokens               # see, if we can use the result as the left hand side of something
-            print.ast "lhs" e if @verbose   
             
-            if numTokens == tokens.length
+            print.ast "lhs" e if @verbose
+            
+            if numTokens == tokens.length    
+                
                 if tokens[0]?.text in ','
                     @verb 'exp shift comma'
                     tokens.shift()
@@ -218,7 +229,7 @@ class Parse # the base class of Parser
                         continue
                 
                 @verb 'exp no token consumed: break!'
-                break                    # bail out if no token was consumed
+                break # bail out if no token was consumed
             
         print.ast "exp #{if empty(@stack) then 'DONE' else ''}" e if @verbose
         
@@ -230,6 +241,16 @@ class Parse # the base class of Parser
     # 0000000    000000000  0000000   
     # 000   000  000   000       000  
     # 000   000  000   000  0000000   
+    
+    # recursively build up stuff that can be identified by looking at the next token only:
+    #
+    # anything that opens and closes
+    #   - objects
+    #   - arrays
+    #   - parens
+    #
+    # but also 
+    #   - single operand operations
     
     rhs: (e, tokens) ->
         
@@ -321,6 +342,13 @@ class Parse # the base class of Parser
     # 000      000000000  0000000   
     # 000      000   000       000  
     # 0000000  000   000  0000000   
+    
+    # recursively build up stuff that can be identified by looking at the next token *and* what was just parsed
+    #
+    # anything that can be chained
+    #   - operations
+    #   - properties
+    #   - calls
     
     lhs: (e, tokens) ->
         
@@ -448,6 +476,8 @@ class Parse # the base class of Parser
     #      000  000   000  000  000          000     000       000      000   000       000  000       
     # 0000000   000   000  000  000          000      0000000  0000000   0000000   0000000   00000000  
     
+    # rules in parser should use this instead of calling shiftNewline directly
+    
     shiftClose: (rule, text, tokens) ->
         
         if tokens[0]?.text == text
@@ -465,6 +495,10 @@ class Parse # the base class of Parser
     #      000  000   000  000  000          000     000  0000  000       000   000  000      000  000  0000  000       
     # 0000000   000   000  000  000          000     000   000  00000000  00     00  0000000  000  000   000  00000000  
     
+    # this should be the only method to remove newlines from the tokens
+    # it is very important to keep the newlines as a recursion breaker until the last possible moment
+    # using this method makes it much easier to determine when one gets swallwed too early
+    
     shiftNewline: (rule, tokens) ->
         
         if @debug then log M3 y5 " ◂ #{w1 rule}" 
@@ -475,6 +509,8 @@ class Parse # the base class of Parser
     # 000 0 000  000000000  000000000  0000000   000000000  0000000      000     000000000  000   000  000   000  0000000   
     # 000  0000  000   000  000 0 000  000       000 0 000  000          000     000   000  000   000  000   000       000  
     # 000   000  000   000  000   000  00000000  000   000  00000000     000     000   000   0000000   0000000    0000000   
+
+    # adds name tokens to functions that are values in class objects
     
     nameMethods: (mthds) ->
  
@@ -492,6 +528,9 @@ class Parse # the base class of Parser
     #    000     000000000  0000000   000 0 000 
     #    000     000   000  000       000  0000 
     #    000     000   000  00000000  000   000 
+    
+    # eats either tokens to the right of 'then' tokens
+    # or of the next block
     
     then: (id, tokens) ->
         
@@ -517,6 +556,14 @@ class Parse # the base class of Parser
     # 0000000    000      000   000  000       0000000    
     # 000   000  000      000   000  000       000  000   
     # 0000000    0000000   0000000    0000000  000   000  
+    
+    # either eats block tokens
+    # or until next newline
+    # used for things that doesn't expect 'then' when continued in same line
+    #   - function body
+    #   - call arguments
+    #   - try, catch, finally
+    #   - else
     
     block: (id, tokens) ->
         
