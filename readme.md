@@ -25,7 +25,7 @@ class C
 ## Negative indexing
 
 ```coffeescript
-"abcde"[-2]  # -> 'd'
+"abc"[-2]    # -> 'b'
 [1,2,3][-2]  # -> 2
 ```
 
@@ -35,12 +35,12 @@ class C
 
 ```coffeescript
 
+a = 1..3
 for i in 0..5
-    (a for a in 1...8)
 
 ```
 
-Square brackets around ranges in for loops are optional.
+Square brackets around ranges are optional.
 
 ## Console shortcuts
 
