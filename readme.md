@@ -100,6 +100,12 @@ log 'a:' a , 'd:' 3            # some commas still make sense :-)
 
 # Planned stuff that does not work yet:
 
+- string interpolation
+- error messages
+- sourcemaps
+- super
+- rhs for?
+
 ## BigInt
 
 ```coffeescript
@@ -125,10 +131,6 @@ profile_start 'a'              # like profile, but lets you control
 f = -> profile_end 'a'         # when to start and stop timing
 f()                            # -> a 824μs
 ```
-
-- string interpolation
-- sourcemaps
-- rhs for?
 
 # Compatibility
 
