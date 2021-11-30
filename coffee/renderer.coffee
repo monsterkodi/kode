@@ -63,6 +63,7 @@ class Renderer
                 when 'switch'    then @switch v
                 when 'when'      then @when v
                 when 'assert'    then @assert v
+                when 'qmrkop'    then @qmrkop v
                 when 'operation' then @operation v
                 when 'incond'    then @incond v
                 when 'parens'    then @parens v
@@ -92,6 +93,11 @@ class Renderer
     assert: (p) ->
 
         @node(p.obj) + "▸#{p.qmrk.line}_#{p.qmrk.col}◂"
+        
+    qmrkop: (p) ->
+        
+        vn = "_#{p.qmrk.line}_#{p.qmrk.col}_"
+        "((#{vn}=#{@atom(p.lhs)}) != null ? #{vn} : #{@atom(p.rhs)})"
 
     # 00000000  000  000   000   0000000    0000000   0000000  00000000  00000000   000000000   0000000
     # 000       000   000 000   000   000  000       000       000       000   000     000     000

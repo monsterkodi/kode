@@ -501,7 +501,7 @@ class Parser extends Parse
         
         if key.type 
             
-            if key.type not in ['keyword' 'op' 'punct' 'var' 'this' 'single' 'double' 'triple']
+            if key.type not in ['keyword' 'op' 'punct' 'var' 'this' 'num' 'single' 'double' 'triple']
                 log 'what could that be?' key
             
             k.text = key.text
@@ -546,6 +546,13 @@ class Parser extends Parse
         assert:
             obj:  obj
             qmrk: tokens.shift()
+            
+    qmrkop: (lhs, tokens) ->
+        
+        qmrkop:
+            lhs:  lhs
+            qmrk: tokens.shift()
+            rhs:  @exp tokens
             
     # 000000000  000   000  000   0000000  
     #    000     000   000  000  000       

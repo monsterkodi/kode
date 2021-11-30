@@ -347,9 +347,15 @@ class Parse # the base class of Parser
             
             if      nxt.text == '.'    then e = @prop   e, tokens
             else if nxt.type == 'dots' then e = @slice  e, tokens
-            else if nxt.text == '?' and unspaced # and tokens[1]?.text == '.'
+            else if nxt.text == '?' 
+                
+                if unspaced # and tokens[1]?.text in '([.'
 
-                e = @assert e, tokens
+                    e = @assert e, tokens
+                    
+                else
+                    
+                    e = @qmrkop e, tokens
                 
             else if (
                     nxt.type == 'op' and 

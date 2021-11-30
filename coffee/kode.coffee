@@ -103,7 +103,7 @@ class Kode
 
         text += '\n' if not text[-1] == '\n'
 
-        print.code 'coffee' text, 'coffee' if @args.verbose or @args.debug
+        print.code 'kode' text, 'coffee' if @args.verbose or @args.debug or @args.kode
 
         tokens = @lexer.tokenize text
 
@@ -174,7 +174,8 @@ if not module.parent or module.parent.path.endsWith '/kode/bin'
             compile     . ? compile a string and print the result
             outdir      . ? output directory for transpiled files
             map         . ? generate inline source maps             . = true
-            js          . ? print transpiled js code                . = false
+            js          . ? pretty print transpiled js code         . = false
+            kode        . ? pretty print input code                 . = false
             run         . ? execute file                            . = false
             tokens      . ? print tokens                            . = false  . - T
             block       . ? print block tree                        . = false  . - B

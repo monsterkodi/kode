@@ -58,6 +58,12 @@ class Scoper
                     vals = e.for.vals.array?.items ? e.for.vals
                     for v in vals ? []
                         insert v.text, 'for' if v.text
+                        
+            if e.assert
+                insert "_#{e.assert.qmrk.line}_#{e.assert.qmrk.col}_" '?.'
+                
+            if e.qmrkop
+                insert "_#{e.qmrkop.qmrk.line}_#{e.qmrkop.qmrk.col}_" ' ? '
 
             if e.func
                 @exp   e.func.args if e.func.args
