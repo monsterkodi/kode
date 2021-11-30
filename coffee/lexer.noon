@@ -38,6 +38,9 @@ keyword
     false
     yes
     no
+    try
+    catch
+    throw
     await
     typeof
 var         [▸a-zA-Z_$][a-zA-Z0-9_$]*

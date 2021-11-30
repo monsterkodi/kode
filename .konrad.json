@@ -1,0 +1,6 @@
+{
+  "ignore": [
+    "coffee/.*\\.noon",
+    "test\\/"
+  ]
+}

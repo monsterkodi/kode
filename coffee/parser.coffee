@@ -9,7 +9,7 @@
 print = require './print'
 Parse = require './parse'
 
-{ firstLineCol, lastLineCol, empty } = require './utils'
+{ firstLineCol, lastLineCol } = require './utils'
 
 class Parser extends Parse
 
@@ -34,7 +34,7 @@ class Parser extends Parse
 
         e = if:
                 cond:   cond
-                then:   @scope thn
+                then:   thn
 
         while tokens[0]?.text == 'else' and tokens[1]?.text == 'if'
 
@@ -50,13 +50,13 @@ class Parser extends Parse
             e.if.elifs.push
                 elif:
                     cond: cond
-                    then: @scope thn
+                    then: thn
 
         if tokens[0]?.text == 'else'
 
             tokens.shift()
 
-            e.if.else = @scope @block 'else' tokens
+            e.if.else = @block 'else' tokens
             
         @pop 'if'
 
@@ -72,7 +72,7 @@ class Parser extends Parse
         
         if:
             cond: @exp tokens
-            then: @scope [e]
+            then: [e]
 
     # 00000000   0000000   00000000   
     # 000       000   000  000   000  
@@ -180,6 +180,58 @@ class Parser extends Parse
             vals: vals
             then: @scope thn
 
+    # 000000000  00000000   000   000  
+    #    000     000   000   000 000   
+    #    000     0000000      00000    
+    #    000     000   000     000     
+    #    000     000   000     000     
+    
+    try: (tok, tokens) ->
+        
+        @push 'try'
+        
+        exps = @block 'body' tokens
+        
+        if tokens[0]?.type == 'nl' and tokens[1].text in ['catch' 'finally']
+            @shiftNewline 'try body end' tokens
+        
+        ctchs = []
+        while tokens[0]?.text == 'catch'
+            
+            ctchs.push @catch tokens.shift(), tokens
+
+            if tokens[0]?.type == 'nl' and tokens[1].text in ['catch' 'finally']
+                @shiftNewline 'try catch end' tokens
+            
+        if tokens[0]?.text == 'finally'
+            fnlly = @block 'body' tokens
+            
+        @pop 'try'
+
+        try:
+            exps:    exps
+            catches: ctchs
+            finally: fnlly
+            
+    #  0000000   0000000   000000000   0000000  000   000  
+    # 000       000   000     000     000       000   000  
+    # 000       000000000     000     000       000000000  
+    # 000       000   000     000     000       000   000  
+    #  0000000  000   000     000      0000000  000   000  
+    
+    catch: (tok, tokens) ->
+        
+        @push 'catch'
+
+        errr = @exp tokens
+        exps = @block 'body' tokens
+        
+        @pop  'catch'
+        
+        catch:
+            errr: errr
+            exps: exps
+            
     #  0000000  000       0000000    0000000   0000000
     # 000       000      000   000  000       000
     # 000       000      000000000  0000000   0000000
@@ -218,7 +270,7 @@ class Parser extends Parse
 
         @push 'func'
         
-        body = @scope @exps 'func body' tokens, 'nl'
+        body = @scope @block 'body' tokens
         
         @pop 'func'
         

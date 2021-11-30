@@ -9,7 +9,7 @@
 kstr  = require 'kstr'
 print = require './print'
 
-{ firstLineCol, lastLineCol, empty } = require './utils'
+{ empty, firstLineCol, lastLineCol } = require './utils'
 
 class Renderer
 
@@ -76,6 +76,7 @@ class Renderer
                 when 'prop'      then @prop v
                 when 'func'      then @func v
                 when 'call'      then @call v
+                when 'try'       then @try v
                 else
                     log R4("renderer.node unhandled key #{k} in exp"), exp # if @debug or @verbose
                     ''
@@ -360,7 +361,7 @@ class Renderer
         s = ''
         s += "if (#{@atom(n.cond)})\n"
         s += gi+"{\n"
-        for e in n.then.exps ? []
+        for e in n.then ? []
             s += @indent + @node(e) + '\n'
         s += gi+"}"
 
@@ -368,7 +369,7 @@ class Renderer
             s += '\n'
             s += gi + "else if (#{@atom(elif.elif.cond)})\n"
             s += gi+"{\n"
-            for e in elif.elif.then.exps ? []
+            for e in elif.elif.then ? []
                 s += @indent + @node(e) + '\n'
             s += gi+"}"
 
@@ -376,7 +377,7 @@ class Renderer
             s += '\n'
             s += gi + 'else\n'
             s += gi+"{\n"
-            for e in n.else.exps ? []
+            for e in n.else ? []
                  s += @indent + @node(e) + '\n'
             s += gi+"}"
 
@@ -394,8 +395,8 @@ class Renderer
         s = ''
 
         s += "#{@atom(n.cond)} ? "
-        if n.then.exps
-            s += (@atom(e) for e in n.then.exps).join ', '
+        if n.then?.length
+            s += (@atom(e) for e in n.then).join ', '
 
         if n.elifs
             for e in n.elifs
@@ -404,10 +405,10 @@ class Renderer
 
         if n.else
             s += ' : '
-            if n.else.exps.length == 1
-                s += @atom n.else.exps[0]
+            if n.else.length == 1
+                s += @atom n.else[0]
             else
-                s += '(' + (@atom e for e in n.else.exps).join(', ') + ')'
+                s += '(' + (@atom e for e in n.else).join(', ') + ')'
         s
 
     # 00000000   0000000   00000000
@@ -552,6 +553,36 @@ class Renderer
         s += @indent + '    ' + 'break'
         s
 
+    # 000000000  00000000   000   000  
+    #    000     000   000   000 000   
+    #    000     0000000      00000    
+    #    000     000   000     000     
+    #    000     000   000     000     
+    
+    try: (n) ->
+        
+        s = ''
+        gi = @ind()
+        s += 'try\n'
+        s += gi+'{\n'
+        s += @indent+@nodes n.exps, '\n'+@indent
+        s += gi+'\n'
+        s += gi+'}\n'
+        for c in n.catches ? []
+            s += gi+"catch (#{@node c.catch.errr})\n" 
+            s += gi+'{\n'
+            s += @indent+@nodes c.catch.exps, '\n'+@indent
+            s += gi+'\n'
+            s += gi+'}\n'
+        if n.finally
+            s += gi+'finally\n'
+            s += gi+'{\n'
+            s += @indent+@nodes c.fnlly, '\n'+@indent
+            s += gi+'\n'
+            s += gi+'}\n'
+        @ded()
+        s
+        
     # 000000000   0000000   000   000  00000000  000   000
     #    000     000   000  000  000   000       0000  000
     #    000     000   000  0000000    0000000   000 0 000

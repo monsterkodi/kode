@@ -6,7 +6,7 @@
 000  000              000     000   000  00000000  000   000
 ###
 
-{cmp} = require './test_utils'
+{ cmp } = require './test_utils'
 
 describe 'if' ->
 
@@ -151,13 +151,13 @@ describe 'if' ->
             }
             """
 
-        cmp "if a then i = 1 if i == 0",
+        cmp "if a then i = 10 if i == 10",
             """
             if (a)
             {
-                if (i === 0)
+                if (i === 10)
                 {
-                    i = 1
+                    i = 10
                 }
             }
             """

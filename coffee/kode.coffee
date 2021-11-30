@@ -133,28 +133,27 @@ class Kode
         vm = require 'vm'
 
         sandbox = vm.createContext()
-        sandbox.global = sandbox.root = sandbox.GLOBAL = sandbox
+        # sandbox.global = sandbox.root = sandbox.GLOBAL = sandbox
 
         sandbox.__filename = 'eval'
         sandbox.__dirname  = slash.dir sandbox.__filename
+        sandbox.console    = console
 
         # define module/require only if they chose not to specify their own
-        unless sandbox != global or sandbox.module or sandbox.require
-            Module = require 'module'
-            sandbox.module  = _module  = new Module 'eval'
-            sandbox.require = _require = (path) ->  Module._load path, _module, true
-            _module.filename = sandbox.__filename
-            for r in Object.getOwnPropertyNames require
-                if r not in ['paths' 'arguments' 'caller']
-                    _require[r] = require[r]
-            # use the same hack node currently uses for their own REPL
-            _require.paths = _module.paths = Module._nodeModulePaths process.cwd()
-            _require.resolve = (request) -> Module._resolveFilename request, _module
-
-        js = @compile text
+        # if not (sandbox != global or sandbox.module or sandbox.require)
+            # Module = require 'module'
+            # sandbox.module  = _module  = new Module 'eval'
+            # sandbox.require = _require = (path) ->  Module._load path, _module, true
+            # _module.filename = sandbox.__filename
+            # for r in Object.getOwnPropertyNames require
+                # if r not in ['paths' 'arguments' 'caller']
+                    # _require[r] = require[r]
+            # # use the same hack node currently uses for their own REPL
+            # _require.paths = _module.paths = Module._nodeModulePaths process.cwd()
+            # _require.resolve = (request) -> Module._resolveFilename request, _module
 
         try
-            sandbox.console = console
+            js = @compile text
             vm.runInContext js, sandbox
         catch err
             error err, text
@@ -166,7 +165,7 @@ class Kode
 # 000 0 000  000   000  000  000  0000
 # 000   000  000   000  000  000   000
 
-if not module.parent or module.parent.path.endsWith '/kode/bin'
+if not module.parent or slash.resolve(module.parent.path).endsWith '/kode/bin'
 
     args = karg """
         kode option
@@ -175,8 +174,8 @@ if not module.parent or module.parent.path.endsWith '/kode/bin'
             compile     . ? compile a string and print the result
             outdir      . ? output directory for transpiled files
             map         . ? generate inline source maps             . = true
-            js          . ? pretty print transpiled js code         . = false
             kode        . ? pretty print input code                 . = false
+            js          . ? pretty print transpiled js code         . = false
             run         . ? execute file                            . = false
             tokens      . ? print tokens                            . = false  . - T
             block       . ? print block tree                        . = false  . - B

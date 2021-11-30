@@ -9,7 +9,7 @@
 kstr  = require 'kstr'
 print = require './print'
 
-{ firstLineCol, lastLineCol, empty } = require './utils'
+{ empty, firstLineCol, lastLineCol } = require './utils'
 
 class Parse # the base class of Parser
 
@@ -74,13 +74,17 @@ class Parse # the base class of Parser
 
             if b then @verb "exps break for #{tokens[0].text} and stack top" @stack ; break 
                 
-            if tokens[0].text == stop then @verb "exps break for #{tokens[0].text} and stop" stop ; break 
+            if stop and tokens[0].text == stop then @verb "exps break for #{tokens[0].text} and stop" stop ; break 
                     
             if tokens[0].type == 'block'
     
+                if stop in ['nl']
+                    @verb "exps block start with stop #{stop} break!"
+                    break
+                
                 block = tokens.shift()
     
-                @verb "exps block start" block
+                @verb "exps block start stop:#{stop} block:" block
                     
                 es = es.concat @exps 'block' block.tokens                    
 
@@ -104,9 +108,9 @@ class Parse # the base class of Parser
                 break
                 
             if tokens[0].type == 'block'    then @verb 'exps break on block'    ; break
+            if tokens[0].text == 'then'     then @verb 'exps break on then'     ; break 
             if tokens[0].text == ')'        then @verb 'exps break on )'        ; break
             if tokens[0].text in ['in''of'] and rule == 'for vals' then @verb 'exps break on in|of' ; break
-                
             if tokens[0].type == 'nl' 
                 
                 @verb 'exps nl stop:' stop, tokens[0], @stack
@@ -118,7 +122,7 @@ class Parse # the base class of Parser
                 if stop
                     @verb 'exps nl with stop' stop
                     # if @stack[-1] in ['call' ':' 'func' '▸args'] or stop != 'nl'
-                    if @stack[-1] in ['func' '▸args'] or stop != 'nl'
+                    if @stack[-1] in ['func' '▸args' '▸body'] or stop != 'nl'
                         @verb "exps nl with stop #{stop} in #{@stack[-1]} (break, but don't shift nl)"
                     else
                         @shiftNewline "exps nl with stop #{stop}" tokens 
@@ -178,6 +182,7 @@ class Parse # the base class of Parser
                         when 'switch'   then return @switch tok, tokens
                         when 'when'     then return @when   tok, tokens
                         when 'class'    then return @class  tok, tokens
+                        when 'try'      then return @try    tok, tokens
             else
                 switch tok.text 
                     when '->' '=>'  then return @func null, tok, tokens
@@ -339,7 +344,7 @@ class Parse # the base class of Parser
             break if b
             
             if e.text == '@' 
-                if nxt.type == 'block' and @stack[-1] == 'if' or nxt.text == 'then'
+                if nxt.type == 'block' and @stack[-1] == 'if' or nxt.text == 'then' or nxt.type == 'nl'
                     break
                 else
                     e = @this e, tokens
@@ -514,6 +519,8 @@ class Parse # the base class of Parser
     # 0000000    0000000   0000000    0000000  000   000  
     
     block: (id, tokens) ->
+        
+        @verb 'block next token type' tokens[0]?.type 
         
         if tokens[0]?.type == 'block'
             block = tokens.shift()
