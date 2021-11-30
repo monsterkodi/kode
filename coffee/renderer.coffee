@@ -64,6 +64,7 @@ class Renderer
                 when 'when'      then @when v
                 when 'assert'    then @assert v
                 when 'qmrkop'    then @qmrkop v
+                when 'qmrkcolon' then @qmrkcolon v
                 when 'operation' then @operation v
                 when 'incond'    then @incond v
                 when 'parens'    then @parens v
@@ -97,8 +98,12 @@ class Renderer
     qmrkop: (p) ->
         
         vn = "_#{p.qmrk.line}_#{p.qmrk.col}_"
-        "((#{vn}=#{@atom(p.lhs)}) != null ? #{vn} : #{@atom(p.rhs)})"
+        "((#{vn}=#{@atom p.lhs}) != null ? #{vn} : #{@atom p.rhs})"
 
+    qmrkcolon: (p) ->
+        
+        "(#{@atom p.lhs} ? #{@atom p.mid} : #{@atom p.rhs})"
+        
     # 00000000  000  000   000   0000000    0000000   0000000  00000000  00000000   000000000   0000000
     # 000       000   000 000   000   000  000       000       000       000   000     000     000
     # 000000    000    00000    000000000  0000000   0000000   0000000   0000000       000     0000000

@@ -131,6 +131,7 @@ Since I will most likely be the only person using **kode**, it's probably wise t
 
 Just in case I manage to get it to work, this is what I would like to add instead:
 
+▸ ternary `?` operator `:` (aka `if` `then` `else` short)
 - native tests
 - keywords `empty` and `valid`
 - `include` keyword to merge source files

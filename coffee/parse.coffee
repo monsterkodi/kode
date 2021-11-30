@@ -244,7 +244,7 @@ class Parse # the base class of Parser
             
             if @stack[-1] == '▸arg' and nxt.type == 'op' then @verb 'rhs break for ▸arg'; break
                 
-            else if nxt.text == ':'
+            else if nxt.text == ':' and (unspaced or '?' not in @stack)
                 if @stack[-1] != '{'
                     @verb 'rhs is first key of implicit object' e
                     e = @object e, tokens
@@ -356,6 +356,10 @@ class Parse # the base class of Parser
                 else
                     
                     e = @qmrkop e, tokens
+                    
+            else if nxt.text == ':' and e.qmrkop
+                
+                e = @qmrkcolon e.qmrkop, tokens
                 
             else if (
                     nxt.type == 'op' and 
