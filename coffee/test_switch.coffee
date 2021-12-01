@@ -24,34 +24,30 @@ describe 'switch' ->
             }\n
             """
 
-        # cmp """
-            # """ """
-            # """
-
         cmp """
             switch a
-                when 1 then 2; 3
+                when 11 then 22; 33
             """ """
             switch (a)
             {
-                case 1:
-                    2
-                    3
+                case 11:
+                    22
+                    33
                     break
             }\n
             """
 
         cmp """
             switch a
-                when 'a'   then i++ ; i = 1 if i == 0
+                when 'a'   then i++ ; j = 1 if k == 0
             """ """
             switch (a)
             {
                 case 'a':
                     i++
-                    if (i === 0)
+                    if (k === 0)
                     {
-                        i = 1
+                        j = 1
                     }
                     break
             }\n
@@ -59,23 +55,23 @@ describe 'switch' ->
 
         cmp """
             switch a
-                when 'a'   then i++ ; i = 2 if i == 0
-                when 'b'   then j++ ; j = 2 if j == 0
+                when 'a'   then i++ ; j = 0 if k == 1
+                when 'b'   then l++ ; m = 2 if p == 3
             """ """
             switch (a)
             {
                 case 'a':
                     i++
-                    if (i === 0)
+                    if (k === 1)
                     {
-                        i = 2
+                        j = 0
                     }
                     break
                 case 'b':
-                    j++
-                    if (j === 0)
+                    l++
+                    if (p === 3)
                     {
-                        j = 2
+                        m = 2
                     }
                     break
             }\n
@@ -109,6 +105,24 @@ describe 'switch' ->
                     {
                         i++
                     }
+                    break
+            }\n
+            """
+            
+        cmp """
+            switch a
+                when 111 222 333 then
+                when 'a' 'b' 'c' then
+            """ """
+            switch (a)
+            {
+                case 111:
+                case 222:
+                case 333:
+                    break
+                case 'a':
+                case 'b':
+                case 'c':
                     break
             }\n
             """

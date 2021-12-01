@@ -42,7 +42,7 @@ class Parser extends Parse
 
         cond = @exp tokens
         
-        thn = @then 'then' tokens
+        thn = @then 'if' tokens
 
         e = if:
                 cond:   cond
@@ -104,7 +104,7 @@ class Parser extends Parse
         
         list = @exp tokens
 
-        thn  = @then 'for then' tokens
+        thn  = @then 'for' tokens
         
         @pop 'for' 
 
@@ -126,7 +126,7 @@ class Parser extends Parse
         
         cond = @exp tokens
 
-        thn = @then 'while then' tokens
+        thn = @then 'while' tokens
         
         @pop 'while'
         
@@ -184,7 +184,7 @@ class Parser extends Parse
         while (tokens[0]? and (tokens[0].type not in ['block''nl']) and tokens[0].text != 'then')
             vals.push @exp tokens
         
-        thn = @then 'when then' tokens
+        thn = @then 'when' tokens
         
         @pop 'when'
         

@@ -194,9 +194,9 @@ describe 'func' ->
         cmp "a = ( a, b=1 c=2 ) ->",  "\na = function (a, b = 1, c = 2)\n{}"
 
         cmp """
-            if true then return
+            if 1 then return
             """ """
-            if (true)
+            if (1)
             {
                 return
             }
@@ -249,12 +249,12 @@ describe 'func' ->
 
         cmp """
             f = =>
-                if true then return
+                if 2 then return
             """ """
             
             f = function ()
             {
-                if (true)
+                if (2)
                 {
                     return
                 }
@@ -263,32 +263,33 @@ describe 'func' ->
 
         cmp """
             f = ->
-                if yes
+                if 3
                     log '42'
             """ """
             
             f = function ()
             {
-                if (true)
+                if (3)
                 {
                     console.log('42')
                 }
             }
             """
             
-        # cmp """
-            # f = ->
-                # if yes
-                    # '42'
-            # """ """
-            # f = function ()
-            # {
-                # if (true)
-                # {
-                    # return '42'
-                # }
-            # }
-            # """
+        cmp """
+            f = ->
+                if 4
+                    '42'
+            """ """
+            
+            f = function ()
+            {
+                if (4)
+                {
+                    return '42'
+                }
+            }
+            """
 
     #  0000000   0000000   000      000       0000000
     # 000       000   000  000      000      000

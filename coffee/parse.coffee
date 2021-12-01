@@ -71,7 +71,7 @@ class Parse # the base class of Parser
             b = switch @stack[-1]
             
                 when '▸arg'                 then es.length
-                when 'if' 'switch' '▸else'  then tokens[0].text == 'else'
+                when 'if' 'switch' 'then' '▸else'  then tokens[0].text == 'else'
                 when '['                    then tokens[0].text == ']'  
                 when '{'                    then tokens[0].text in '}'
                 when '('                    then tokens[0].text == ')'
@@ -94,7 +94,8 @@ class Parse # the base class of Parser
                 block = tokens.shift()
     
                 @verb "exps block start stop:#{stop} block:" block
-                    
+
+                blocked = true
                 es = es.concat @exps 'block' block.tokens                    
 
                 if block.tokens.length
@@ -108,6 +109,7 @@ class Parse # the base class of Parser
                     @verb "exps block end shift comma , and continue..."
                     tokens.shift()
                     continue
+                    
                 else if tokens[0]?.type == 'nl' and tokens[1]?.text == ','
                     @shiftNewline "exps block end nl comma , and continue..." tokens
                     tokens.shift()
@@ -116,10 +118,9 @@ class Parse # the base class of Parser
                 @verb 'exps block end, break!'
                 break
                 
-            if tokens[0].type == 'block'    then @verb 'exps break on block'    ; break
-            if tokens[0].text == 'then'     then @verb 'exps break on then'     ; break 
-            if tokens[0].text == ')'        then @verb 'exps break on )'        ; break
-            if tokens[0].text in ['in''of'] and rule == 'for vals' then @verb 'exps break on in|of' ; break
+            if tokens[0].type == 'block'                                then @verb 'exps break on block'   ; break
+            if tokens[0].text == ')'                                    then @verb 'exps break on )'       ; break
+            if tokens[0].text in ['in''of']   and rule == 'for vals'    then @verb 'exps break on in|of'   ; break
             if tokens[0].type == 'nl' 
                 
                 @verb 'exps nl stop:' stop, tokens[0], @stack
@@ -145,8 +146,28 @@ class Parse # the base class of Parser
                 @verb 'exps nl continue...'
                 continue
                 
-            ex = @exp tokens
-            es.push ex
+            e = @exp tokens
+            
+            while tokens[0]?.text == 'if' and @stack[-1] not in ['▸args']
+                @verb 'ifTail' e, @stack
+                e = @ifTail e, tokens.shift(), tokens
+            
+            es.push e
+
+            if (
+               tokens[0]?.text in ['if''then'] and 
+               es.length and 
+               not blocked
+               )
+                @verb 'exps break on if|then' ; break 
+            
+            if tokens[0]?.text == ';' 
+                if @stack[-1] not in ['▸args' 'when' '{'] #
+                    @verb 'exps shift colon' @stack
+                    colon = tokens.shift()
+                else
+                    @verb 'exps break on colon' @stack
+                    break
             
             if numTokens == tokens.length
                 @verb 'exps no token consumed' tokens # happens for unbalanced closing ]
@@ -182,12 +203,12 @@ class Parse # the base class of Parser
             
             when 'block'    then return error "INTERNAL ERROR: unexpected block token in exp!"
             when 'nl'       then return error "INTERNAL ERROR: unexpected nl token in exp!"
+            when ';'        then return error "INTERNAL ERROR: unexpected ; token in exp!"
                 
             when 'keyword' # dispatch to block rules identified by keyword
                 
                 if tokens[0]?.text not in ':' # allow keywords as keys
                     switch tok.text 
-                        when 'if'       then return @if     tok, tokens
                         when 'for'      then return @for    tok, tokens
                         when 'while'    then return @while  tok, tokens
                         when 'return'   then return @return tok, tokens
@@ -195,10 +216,13 @@ class Parse # the base class of Parser
                         when 'when'     then return @when   tok, tokens
                         when 'class'    then return @class  tok, tokens
                         when 'try'      then return @try    tok, tokens
+                        when 'if' 
+                            if @stack[-1] not in ['▸args']
+                                @verb 'if' @stack if @stack.length
+                                return @if tok, tokens
             else
                 switch tok.text 
                     when '->' '=>'  then return @func null, tok, tokens
-                    when ';'        then if tokens[0]?.text != ':' then return @exp tokens # skip ;
 
         # here starts the hairy part :-)
 
@@ -216,18 +240,17 @@ class Parse # the base class of Parser
             e = @lhs e, tokens               # see, if we can use the result as the left hand side of something
             
             print.ast "lhs" e if @verbose
+
+            if tokens[0]?.text in ';'
+                @verb 'exp break on ;'
+                break
             
             if numTokens == tokens.length    
                 
                 if tokens[0]?.text in ','
                     @verb 'exp shift comma'
                     tokens.shift()
-
-                if tokens[0]?.text == 'if'
-                    if empty(@stack) or not @stack[-1].startsWith('op')
-                        e = @ifTail e, tokens.shift(), tokens
-                        continue
-                
+                    
                 @verb 'exp no token consumed: break!'
                 break # bail out if no token was consumed
             
@@ -332,8 +355,6 @@ class Parse # the base class of Parser
                     @verb 'rhs is last minute lhs of index' e
                     e = @index e, tokens                
                     
-                # implement null checks here?
-                
         @sheapPop 'rhs' 'rhs'
         e
         
@@ -432,12 +453,12 @@ class Parse # the base class of Parser
                 e = operation:
                     operator:tokens.shift()
                     rhs:@incond e, tokens
-                
+                    
             else if (
                     spaced and (nxt.line == last.line or (nxt.col > first.col and @stack[-1] not in ['if'])) and
                     nxt.text not in ['if' 'then' 'else' 'break' 'continue' 'in' 'of'] and 
                     (e.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and 
-                    (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no']) and 
+                    (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no' 'if' 'then' 'else']) and 
                     not e.array and
                     not e.object and
                     not e.keyval and
@@ -535,16 +556,22 @@ class Parse # the base class of Parser
     then: (id, tokens) ->
         
         if tokens[0]?.text == 'then'
+            
             tokens.shift()
-            nl = 'nl'
+            @push 'then'
+            thn = @exps id, tokens, 'nl'
+            @pop 'then'
+            
         else if tokens[0]?.type == 'block'
+            
             block = tokens.shift()
             if tokens[0]?.type == 'nl'
                 tokens.shift()
             tokens = block.tokens
-            nl = null
-
-        thn = @exps id, tokens, nl
+            thn = @exps id, tokens
+            
+        else
+            error 'INTERNAL ERROR then or block expected'
         
         if block and block.tokens.length
             print.tokens 'dangling then tokens' tokens
@@ -567,7 +594,7 @@ class Parse # the base class of Parser
     
     block: (id, tokens) ->
         
-        @verb 'block next token type' tokens[0]?.type 
+        # @verb 'block next token type' tokens[0]?.type 
         
         if tokens[0]?.type == 'block'
             block = tokens.shift()

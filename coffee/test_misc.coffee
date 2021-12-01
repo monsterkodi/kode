@@ -190,21 +190,6 @@ describe 'misc' ->
             """
 
         # cmp "a = ( a:1 b:2 ) ->",     "a = function(arg)"
-        # cmp """
-            # switch a
-                # when 1 2 3 then
-                # when 'a' 'b' 'c' then
-            # ""","""
-            # switch (a)
-            # {
-                # case 1:
-                # case 2:
-                # case 3:
-                    # break;
-                # case 'a':
-                # case 'b':
-                # case 'c':
-            # }"""
             
     # 000   000  000   000  000      000       0000000  000   000  00000000   0000000  000   000
     # 0000  000  000   000  000      000      000       000   000  000       000       000  000
@@ -212,17 +197,20 @@ describe 'misc' ->
     # 000  0000  000   000  000      000      000       000   000  000       000       000  000
     # 000   000   0000000   0000000  0000000   0000000  000   000  00000000   0000000  000   000
 
-    # it 'nullcmp' ->
+    it 'nullcmp' ->
 
-        # cmp ('a.b?.c.d?.e == 2')  """
-            # (a.b != null ? (a.b.c.d != null ? a.b.c.d.e : null) : null) === 2
-            # """
+        cmp """
+            (a.b?.c.d?.e == 2)
+            """ """
+            (((_1_4_=a.b) != null ? (_1_9_=_1_4_.c.d) != null ? _1_9_.e : undefined : undefined) === 2)
+            """ 
 
-        # if (function(r){return r != null ? function(r){return r != null ? (r.e) : null}(r.c().d) : null}(a().b) === 2) {
-            # console.log('YES');
-        # }
-        # console.log(r)
-
+        cmp """
+            x = a[1]?.b()?.c?().d?.e
+            """ """
+            x = ((_1_8_=a[1]) != null ? (_1_13_=_1_8_.b()) != null ? typeof (_1_16_=_1_13_.c) === "function" ? (_1_21_=_1_16_().d) != null ? _1_21_.e : undefined : undefined : undefined : undefined)
+            """ 
+            
     #  0000000   0000000   00     00  00     00  00000000  000   000  000000000   0000000
     # 000       000   000  000   000  000   000  000       0000  000     000     000
     # 000       000   000  000000000  000000000  0000000   000 0 000     000     0000000
