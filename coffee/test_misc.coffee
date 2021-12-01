@@ -255,31 +255,4 @@ describe 'misc' ->
                  # // b
             # """
 
-    # 000  000   000  000000000  00000000  00000000   00000000    0000000   000
-    # 000  0000  000     000     000       000   000  000   000  000   000  000
-    # 000  000 0 000     000     0000000   0000000    00000000   000   000  000
-    # 000  000  0000     000     000       000   000  000        000   000  000
-    # 000  000   000     000     00000000  000   000  000         0000000   0000000
-
-    # it 'string interpolation as object keys' ->
-
-        # cmp """
-            # interpol='fark'
-            # log \"\"\"
-            # hello \#{interpol}
-            # world
-            # \"\"\":5
-        # """ """
-            # var interpol, obj
-            # interpol = 'fark'
-            # console.log((
-                # obj = {},
-                # obj["hello " + interpol + "\nworld"] = 5,
-                # obj
-            # ))
-        # """
-
-
-        # cmp 'log "#{a+1}", "#{a}"',   'console.log("" + (a + 1), "" + a)'
-        # cmp 'log "#{a+1}" "#{a}"',    'console.log("" + (a + 1), "" + a)'
-            
+        

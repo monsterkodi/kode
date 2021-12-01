@@ -15,6 +15,14 @@ class Renderer
 
     @: (@kode) ->
 
+        @header = """
+            const _k_ = {
+                list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])}
+                length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},
+                in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}
+                }
+            """
+        
         @debug   = @kode.args?.debug
         @verbose = @kode.args?.verbose
 
@@ -64,6 +72,7 @@ class Renderer
                 when 'when'      then @when v
                 when 'assert'    then @assert v
                 when 'qmrkop'    then @qmrkop v
+                when 'stripol'   then @stripol v
                 when 'qmrkcolon' then @qmrkcolon v
                 when 'operation' then @operation v
                 when 'incond'    then @incond v
@@ -784,14 +793,33 @@ class Renderer
         name + (suffix or '')
 
     verb: -> if @verbose then console.log.apply console.log, arguments
+    
     ind: ->
 
         oi = @indent
         @indent += '    '
         oi
 
-    ded: ->
-
-        @indent = @indent[...-4]
+    ded: -> @indent = @indent[...-4]
+        
+    #  0000000  000000000  00000000   000  00000000    0000000   000      
+    # 000          000     000   000  000  000   000  000   000  000      
+    # 0000000      000     0000000    000  00000000   000   000  000      
+    #      000     000     000   000  000  000        000   000  000      
+    # 0000000      000     000   000  000  000         0000000   0000000  
+    
+    stripol: (chunks) ->
+        
+       s = '`'
+       for chunk in chunks
+           t = chunk.text
+           switch chunk.type
+               when 'open'  then s+= t+'${'
+               when 'close' then s+= '}'+t
+               when 'midl'  then s+= '}'+t+'${'
+               when 'code'  
+                   s+= @kode.compile t
+       s += '`'
+       s
 
 module.exports = Renderer

@@ -103,7 +103,6 @@ class C
 - string interpolation
 - error messages
 - sourcemaps
-- rhs while
 - super
 
 ## BigInt
@@ -146,14 +145,16 @@ Since I will most likely be the only person using **kode**, it's probably wise t
 - literal coffeescript / ▸doc macro
 - `unless`  `until`  `is`  `or=` ...
 - `when` outside of `switch`
-- **koffee** macros in general?
 - wrapper code
+- **koffee** macros in general
 - implicitly returning arrays if last expression is a loop
 
 Just in case I manage to get it to work, this is what I would like to add instead:
 
 - native tests
 - keywords `empty` and `valid`
+- for a in l ? []
+- use `is` for instanceof/typeof
 - 🐔 
 - 🥚 `ei`
 - 🪣
