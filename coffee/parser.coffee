@@ -86,6 +86,32 @@ class Parser extends Parse
             cond: @exp tokens
             then: [e]
 
+    # 00000000   0000000   00000000   000000000   0000000   000  000      
+    # 000       000   000  000   000     000     000   000  000  000      
+    # 000000    000   000  0000000       000     000000000  000  000      
+    # 000       000   000  000   000     000     000   000  000  000      
+    # 000        0000000   000   000     000     000   000  000  0000000  
+    
+    forTail: (e, tok, tokens) ->
+        
+        @push 'for'
+        
+        vals = @exps 'for vals' tokens
+
+        vals = vals[0] if vals.length == 1
+
+        inof = tokens.shift()
+        
+        list = @exp tokens
+        
+        @pop 'for' 
+        
+        for:
+            vals:  vals
+            inof:  inof
+            list:  list
+            then: [e]
+            
     # 00000000   0000000   00000000   
     # 000       000   000  000   000  
     # 000000    000   000  0000000    
@@ -112,7 +138,7 @@ class Parser extends Parse
             vals:   vals
             inof:   inof
             list:   list
-            then:   @scope thn
+            then:   thn
             
     # 000   000  000   000  000  000      00000000  
     # 000 0 000  000   000  000  000      000       

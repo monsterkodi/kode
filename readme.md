@@ -103,8 +103,8 @@ class C
 - string interpolation
 - error messages
 - sourcemaps
+- rhs while
 - super
-- rhs for?
 
 ## BigInt
 

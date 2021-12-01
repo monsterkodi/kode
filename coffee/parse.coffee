@@ -147,19 +147,22 @@ class Parse # the base class of Parser
                 continue
                 
             e = @exp tokens
+
+            while tokens[0]?.text in ['if' 'for' 'while'] and @stack[-1] not in ['▸args']
             
-            while tokens[0]?.text == 'if' and @stack[-1] not in ['▸args']
-                @verb 'ifTail' e, @stack
-                e = @ifTail e, tokens.shift(), tokens
+                @verb "#{tokens[0].text }Tail" e, @stack
+                switch tokens[0].text 
+                    when 'if'  then e = @ifTail  e, tokens.shift(), tokens
+                    when 'for' then e = @forTail e, tokens.shift(), tokens
             
             es.push e
 
             if (
-               tokens[0]?.text in ['if''then'] and 
+               tokens[0]?.text in ['if''then''for''while'] and 
                es.length and 
                not blocked
                )
-                @verb 'exps break on if|then' ; break 
+                @verb 'exps break on if|then|for|while' ; break 
             
             if tokens[0]?.text == ';' 
                 if @stack[-1] not in ['▸args' 'when' '{'] #
@@ -209,13 +212,13 @@ class Parse # the base class of Parser
                 
                 if tokens[0]?.text not in ':' # allow keywords as keys
                     switch tok.text 
-                        when 'for'      then return @for    tok, tokens
-                        when 'while'    then return @while  tok, tokens
                         when 'return'   then return @return tok, tokens
                         when 'switch'   then return @switch tok, tokens
-                        when 'when'     then return @when   tok, tokens
                         when 'class'    then return @class  tok, tokens
+                        when 'while'    then return @while  tok, tokens
+                        when 'when'     then return @when   tok, tokens
                         when 'try'      then return @try    tok, tokens
+                        when 'for'      then return @for    tok, tokens
                         when 'if' 
                             if @stack[-1] not in ['▸args']
                                 @verb 'if' @stack if @stack.length
@@ -456,9 +459,9 @@ class Parse # the base class of Parser
                     
             else if (
                     spaced and (nxt.line == last.line or (nxt.col > first.col and @stack[-1] not in ['if'])) and
-                    nxt.text not in ['if' 'then' 'else' 'break' 'continue' 'in' 'of'] and 
+                    nxt.text not in ['if' 'then' 'else' 'break' 'continue' 'in' 'of' 'for' 'while'] and 
                     (e.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and 
-                    (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no' 'if' 'then' 'else']) and 
+                    (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no' 'if' 'then' 'else' 'for' 'while']) and 
                     not e.array and
                     not e.object and
                     not e.keyval and

@@ -457,7 +457,7 @@ class Renderer
             s += gi+"{\n"
             s += @indent+"#{n.vals[0].text} = #{listVar}[i]\n"
 
-        for e in n.then.exps ? []
+        for e in n.then ? []
             s += @indent + @node(e) + '\n'
         s += gi+"}"
 
@@ -477,7 +477,7 @@ class Renderer
         s += gi+"{\n"
         if val
             s += @indent+"#{val} = #{obj}[#{key}]\n"
-        for e in n.then.exps ? []
+        for e in n.then ? []
             s += @indent + @node(e) + '\n'
         s += gi+"}"
 
