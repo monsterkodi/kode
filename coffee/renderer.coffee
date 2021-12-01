@@ -492,14 +492,12 @@ class Renderer
 
     while: (n) ->
 
-        if not n.then then error 'when expected then' n
-
         gi = @ind()
 
         s = ''
         s += "while (#{@node n.cond})\n"
         s += gi+"{\n"
-        for e in n.then.exps ? []
+        for e in n.then ? []
             s += @indent + @node(e) + '\n'
         s += gi+"}"
 
@@ -542,12 +540,11 @@ class Renderer
     when: (n) ->
 
         if not n.vals then return error 'when expected vals' n
-        if not n.then then return error 'when expected then' n
 
         s = ''
         for e in n.vals
             s += '    case ' + @node(e) + ':\n'
-        for e in n.then.exps ? []
+        for e in n.then ? []
             gi = @ind()
             s += gi + '    ' + @node(e) + '\n'
             @ded()

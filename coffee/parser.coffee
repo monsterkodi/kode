@@ -21,7 +21,7 @@
 print = require './print'
 Parse = require './parse'
 
-{ firstLineCol, lastLineCol } = require './utils'
+{ firstLineCol, lastLineCol, empty } = require './utils'
 
 class Parser extends Parse
 
@@ -85,32 +85,6 @@ class Parser extends Parse
         if:
             cond: @exp tokens
             then: [e]
-
-    # 00000000   0000000   00000000   000000000   0000000   000  000      
-    # 000       000   000  000   000     000     000   000  000  000      
-    # 000000    000   000  0000000       000     000000000  000  000      
-    # 000       000   000  000   000     000     000   000  000  000      
-    # 000        0000000   000   000     000     000   000  000  0000000  
-    
-    forTail: (e, tok, tokens) ->
-        
-        @push 'for'
-        
-        vals = @exps 'for vals' tokens
-
-        vals = vals[0] if vals.length == 1
-
-        inof = tokens.shift()
-        
-        list = @exp tokens
-        
-        @pop 'for' 
-        
-        for:
-            vals:  vals
-            inof:  inof
-            list:  list
-            then: [e]
             
     # 00000000   0000000   00000000   
     # 000       000   000  000   000  
@@ -140,6 +114,32 @@ class Parser extends Parse
             list:   list
             then:   thn
             
+    # 00000000   0000000   00000000   000000000   0000000   000  000      
+    # 000       000   000  000   000     000     000   000  000  000      
+    # 000000    000   000  0000000       000     000000000  000  000      
+    # 000       000   000  000   000     000     000   000  000  000      
+    # 000        0000000   000   000     000     000   000  000  0000000  
+    
+    forTail: (e, tok, tokens) ->
+        
+        @push 'for'
+        
+        vals = @exps 'for vals' tokens
+
+        vals = vals[0] if vals.length == 1
+
+        inof = tokens.shift()
+        
+        list = @exp tokens
+        
+        @pop 'for' 
+        
+        for:
+            vals:  vals
+            inof:  inof
+            list:  list
+            then: [e]
+            
     # 000   000  000   000  000  000      00000000  
     # 000 0 000  000   000  000  000      000       
     # 000000000  000000000  000  000      0000000   
@@ -158,8 +158,26 @@ class Parser extends Parse
         
         while:
             cond: cond
-            then: @scope thn
+            then: thn
+
+    # 000   000  000   000  000  000      00000000  000000000   0000000   000  000      
+    # 000 0 000  000   000  000  000      000          000     000   000  000  000      
+    # 000000000  000000000  000  000      0000000      000     000000000  000  000      
+    # 000   000  000   000  000  000      000          000     000   000  000  000      
+    # 00     00  000   000  000  0000000  00000000     000     000   000  000  0000000  
+    
+    whileTail: (e, tok, tokens) ->
         
+        # @push 'while'
+        
+        cond = @exp tokens
+
+        # @pop 'while'
+        
+        while:
+            cond: cond
+            then: [e]
+            
     #  0000000  000   000  000  000000000   0000000  000   000
     # 000       000 0 000  000     000     000       000   000
     # 0000000   000000000  000     000     000       000000000
@@ -212,11 +230,15 @@ class Parser extends Parse
         
         thn = @then 'when' tokens
         
+        if empty(thn) and tokens[0]?.type == 'nl'
+            if tokens[1]?.col == tok.col
+                @shiftNewline 'when with empty then' tokens
+        
         @pop 'when'
         
         when:
             vals: vals
-            then: @scope thn
+            then: thn
 
     # 000000000  00000000   000   000  
     #    000     000   000   000 000   

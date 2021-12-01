@@ -150,10 +150,11 @@ class Parse # the base class of Parser
 
             while tokens[0]?.text in ['if' 'for' 'while'] and @stack[-1] not in ['▸args']
             
-                @verb "#{tokens[0].text }Tail" e, @stack
+                @verb "exps #{tokens[0].text }Tail" e, @stack
                 switch tokens[0].text 
-                    when 'if'  then e = @ifTail  e, tokens.shift(), tokens
-                    when 'for' then e = @forTail e, tokens.shift(), tokens
+                    when 'if'    then e = @ifTail    e, tokens.shift(), tokens
+                    when 'for'   then e = @forTail   e, tokens.shift(), tokens
+                    when 'while' then e = @whileTail e, tokens.shift(), tokens
             
             es.push e
 
@@ -561,9 +562,13 @@ class Parse # the base class of Parser
         if tokens[0]?.text == 'then'
             
             tokens.shift()
-            @push 'then'
-            thn = @exps id, tokens, 'nl'
-            @pop 'then'
+            if tokens[0]?.type in ['block' 'nl']
+                @verb 'empty then!'
+                thn = []
+            else
+                @push 'then'
+                thn = @exps id, tokens, 'nl'
+                @pop 'then'
             
         else if tokens[0]?.type == 'block'
             
@@ -573,12 +578,12 @@ class Parse # the base class of Parser
             tokens = block.tokens
             thn = @exps id, tokens
             
+            if block.tokens.length
+                print.tokens 'then: dangling block tokens' tokens
         else
-            error 'INTERNAL ERROR then or block expected'
+            @verb 'no then and no block after #{id}!'
+            # warn "'#{id}' expected then or block"
         
-        if block and block.tokens.length
-            print.tokens 'dangling then tokens' tokens
-            
         thn
         
     # 0000000    000       0000000    0000000  000   000  

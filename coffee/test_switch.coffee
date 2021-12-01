@@ -127,4 +127,22 @@ describe 'switch' ->
             }\n
             """
 
+        cmp """
+            switch a
+                when 111 222 333
+                when 'a' 'b' 'c'
+            """ """
+            switch (a)
+            {
+                case 111:
+                case 222:
+                case 333:
+                    break
+                case 'a':
+                case 'b':
+                case 'c':
+                    break
+            }\n
+            """
+            
 
