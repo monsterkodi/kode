@@ -74,9 +74,7 @@ class Parser extends Parse
 
             e.if.else = @block 'else' tokens
             
-        print.tokens 'if end ' tokens
-
-        print ''
+        @pop 'if'
         e
         
     # 000  00000000  000000000   0000000   000  000      

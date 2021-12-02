@@ -167,6 +167,8 @@ class Kode
 # 000 0 000  000   000  000  000  0000
 # 000   000  000   000  000  000   000
 
+module.exports = Kode
+
 if not module.parent or slash.resolve(module.parent.path).endsWith '/kode/bin'
 
     args = karg """
@@ -194,5 +196,4 @@ if not module.parent or slash.resolve(module.parent.path).endsWith '/kode/bin'
     kode = new Kode args
     kode.cli()
 
-module.exports = Kode
 

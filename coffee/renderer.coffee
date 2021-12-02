@@ -26,6 +26,12 @@ class Renderer
         @debug   = @kode.args?.debug
         @verbose = @kode.args?.verbose
 
+    compile: (code) -> 
+    
+        Kode = require './kode'
+        @subKode ?= new Kode 
+        @subKode.compile code
+        
     render: (ast) ->
 
         @varstack = [ast.vars]
@@ -817,8 +823,7 @@ class Renderer
                when 'open'  then s+= t+'${'
                when 'close' then s+= '}'+t
                when 'midl'  then s+= '}'+t+'${'
-               when 'code'  
-                   s+= @kode.compile t
+               when 'code'  then s+= @compile t
        s += '`'
        s
 
