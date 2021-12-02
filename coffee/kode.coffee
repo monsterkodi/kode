@@ -86,7 +86,7 @@ class Kode
     # 000       000   000  000 0 000  000        000  000      000
     #  0000000   0000000   000   000  000        000  0000000  00000000
 
-    @compile: (text) -> (new Kode {}).compile text
+    @compile: (text, opt={}) -> (new Kode opt).compile text
     compile: (text) ->
 
         return '' if empty kstr.strip text
@@ -97,8 +97,9 @@ class Kode
         if @args.astr  then log print.astr ast, @args.scope
 
         js = @renderer.render ast
-        
-        js = "// monsterkodi/kode #{pkg.version}\n\n" + js
+
+        if @args.header and kstr.strip(js).length
+            js = "// monsterkodi/kode #{pkg.version}\n\n" + js
 
         if @args.js or @args.debug
             print.code 'js' js 
@@ -183,6 +184,7 @@ if not module.parent or slash.resolve(module.parent.path).endsWith '/kode/bin'
             kode        . ? pretty print input code                 . = false
             js          . ? pretty print transpiled js code         . = false
             run         . ? execute file                            . = false
+            header      . ? prepend output with version header      . = false  . - H
             tokens      . ? print tokens                            . = false  . - T
             block       . ? print block tree                        . = false  . - B
             parse       . ? print parse tree                        . = false  . - P
