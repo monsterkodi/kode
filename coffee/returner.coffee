@@ -68,6 +68,7 @@ class Returner
                 else if lst.object      then insert()
                 else if lst.return      then null
                 else if lst.while       then null
+                else if lst.for         then null
                 else if lst.if          then @if lst.if
                 else
                     log 'todo: returner' Object.keys(lst)[0]

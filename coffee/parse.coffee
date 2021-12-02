@@ -588,7 +588,7 @@ class Parse # the base class of Parser
             thn = @exps id, block.tokens
             
             if block.tokens.length
-                print.tokens 'then: dangling block tokens' tokens
+                print.tokens 'then: dangling block tokens' tokens if @debug
         else
             @verb 'no then and no block after #{id}!'
             # warn "'#{id}' expected then or block"
