@@ -8,9 +8,7 @@
 
 print = require './print'
 
-###
-    walks through an abstract syntax tree and inserts implicit return statements
-###
+# inserts implicit return statements
 
 class Returner
 
@@ -85,12 +83,17 @@ class Returner
         
         e.returns = true
         e.then = @insert e.then
-        
         for ei in e.elifs ? []
-            @insert ei.elif.exps if ei.elif.exps
+            @insert ei.elif.then if ei.elif.then
         
         e.else = @insert e.else if e.else
             
+    # 000  000   000   0000000  00000000  00000000   000000000  
+    # 000  0000  000  000       000       000   000     000     
+    # 000  000 0 000  0000000   0000000   0000000       000     
+    # 000  000  0000       000  000       000   000     000     
+    # 000  000   000  0000000   00000000  000   000     000     
+    
     insert: (e) ->
 
         if e instanceof Array

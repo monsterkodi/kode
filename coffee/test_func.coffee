@@ -290,6 +290,30 @@ describe 'func' ->
                 }
             }
             """
+            
+        cmp """
+            -> 
+                if 1 then h 
+                else if 2
+                    if 3 then j else k
+                else l
+            """ """
+            function ()
+            {
+                if (1)
+                {
+                    return h
+                }
+                else if (2)
+                {
+                    return 3 ? j : k
+                }
+                else
+                {
+                    return l
+                }
+            }
+            """
 
     #  0000000   0000000   000      000       0000000
     # 000       000   000  000      000      000

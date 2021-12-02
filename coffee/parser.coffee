@@ -336,9 +336,12 @@ class Parser extends Parse
     
     return: (tok, tokens) ->
         
-        if tokens[0]?.type != 'nl'
-            val = @exp tokens
-        
+        if tokens[0]?.type != 'nl'        
+            val = @block 'return' tokens
+            if val?.length > 1
+                log 'dafuk?'
+            val = val?[0]
+            
         e = return: ret: tok
         e.return.val = val if val
         e

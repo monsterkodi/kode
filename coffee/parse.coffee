@@ -466,6 +466,7 @@ class Parse # the base class of Parser
             else if (
                     spaced and (nxt.line == last.line or (nxt.col > first.col and @stack[-1] not in ['if'])) and
                     nxt.text not in ['if' 'then' 'else' 'break' 'continue' 'in' 'of' 'for' 'while'] and 
+                    nxt.type not in ['nl'] and
                     (e.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and 
                     (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no' 'if' 'then' 'else' 'for' 'while']) and 
                     not e.array and
@@ -607,6 +608,7 @@ class Parse # the base class of Parser
     #   - call arguments
     #   - try, catch, finally
     #   - else
+    #   - return
     
     block: (id, tokens) ->
         
