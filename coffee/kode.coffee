@@ -97,6 +97,8 @@ class Kode
         if @args.astr  then log print.astr ast, @args.scope
 
         js = @renderer.render ast
+        
+        js = "// monsterkodi/kode/n/n #{pkg.version}" + js
 
         if @args.js or @args.debug
             print.code 'js' js 
@@ -195,5 +197,3 @@ if not module.parent or slash.resolve(module.parent.path).endsWith '/kode/bin'
 
     kode = new Kode args
     kode.cli()
-
-
