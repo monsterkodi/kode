@@ -693,7 +693,10 @@ class Renderer
     # 000   000  000   000  000   000  000       000          000
     #  0000000   0000000     0000000   00000000   0000000     000
 
-    object: (p) -> "{#{@nodes p.keyvals, ','}}"
+    object: (p) -> 
+        nodes = p.keyvals.map (s) => @atom s
+        nodes = nodes.map (n) -> if ':' in n then n else "#{n}:#{n}"        
+        "{#{nodes.join ','}}"
 
     # 000   000  00000000  000   000  000   000   0000000   000
     # 000  000   000        000 000   000   000  000   000  000
