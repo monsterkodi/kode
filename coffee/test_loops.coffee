@@ -131,6 +131,16 @@ describe 'loops' ->
                 }
             }
             """
+            
+        cmp """
+            empty = (a) -> a in ['' null undefined] or b
+            """ """
+            
+            empty = function (a)
+            {
+                return ['',null,undefined].indexOf(a) >= 0 || b
+            }
+            """
 
     # 00000000   0000000   00000000          0000000   00000000
     # 000       000   000  000   000        000   000  000

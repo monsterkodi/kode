@@ -305,7 +305,8 @@ class Parse # the base class of Parser
                 else
                     @verb 'rhs is key of (implicit) object' e
                     e = @keyval e, tokens
-            else if nxt.type == 'keyword' and nxt.text == 'in' and @stack[-1] != 'for'
+            else if nxt.text == 'in' and @stack[-1] != 'for'
+                @verb 'incond' e, tokens
                 e = @incond e, tokens
             else if e.text?
                 if      e.text == '['   then e = @array           e, tokens
@@ -428,6 +429,9 @@ class Parse # the base class of Parser
                     )
                 if @stack[-1]?.startsWith 'op' and @stack[-1] != 'op='
                     @verb 'lhs stop on operation' e, nxt
+                    break
+                else if @stack[-1] == 'in?'
+                    @verb 'lhs stop on in?' e, nxt
                     break
                 else
                     @verb 'lhs is lhs of op' e, nxt

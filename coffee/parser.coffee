@@ -423,10 +423,14 @@ class Parser extends Parse
         
         intok = tokens.shift()
         
+        @push 'in?'
+        rhs = @exp tokens
+        @pop  'in?'
+        
         incond:
             lhs: lhs
             in:  intok
-            rhs: @exp tokens
+            rhs: rhs
             
     #  0000000   00000000   00000000    0000000   000   000
     # 000   000  000   000  000   000  000   000   000 000
