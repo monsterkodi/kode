@@ -147,6 +147,7 @@ Since I will most likely be the only person using **kode**, it's probably wise t
 - `when` outside of `switch`
 - wrapper code
 - **koffee** macros in general
+- string interpolation in object keys
 - implicitly returning arrays if last expression is a loop
 
 Just in case I manage to get it to work, this is what I would like to add instead:

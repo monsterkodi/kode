@@ -131,7 +131,39 @@ describe 'if' ->
             {
                 incr
             }
-            """          
+            """       
+            
+        cmp """
+            if 1
+                if 2
+                    a
+                if 3
+                    if 4
+                        b
+                    else 
+                        c
+                log 'yes1'
+            """ """
+            if (1)
+            {
+                if (2)
+                {
+                    a
+                }
+                if (3)
+                {
+                    if (4)
+                    {
+                        b
+                    }
+                    else
+                    {
+                        c
+                    }
+                }
+                console.log('yes1')
+            }
+            """
 
     # 000  000   000  000      000  000   000  00000000  
     # 000  0000  000  000      000  0000  000  000       
@@ -252,16 +284,16 @@ describe 'if' ->
         
         cmp """
             if 1
-                log 'YES'
+                log 'yes2'
             else if no
                 false
             else
-                log 'NO'
+                log 'no2'
             log 'end'
             """ """
             if (1)
             {
-                console.log('YES')
+                console.log('yes2')
             }
             else if (false)
             {
@@ -269,25 +301,25 @@ describe 'if' ->
             }
             else
             {
-                console.log('NO')
+                console.log('no2')
             }
             console.log('end')
             """
 
         cmp """
             if a in l
-                log 'YES'
+                log 'yes3'
             else
-                log 'NO'
+                log 'no3'
             log 'END'
             """ """
             if (l.indexOf(a) >= 0)
             {
-                console.log('YES')
+                console.log('yes3')
             }
             else
             {
-                console.log('NO')
+                console.log('no3')
             }
             console.log('END')
             """

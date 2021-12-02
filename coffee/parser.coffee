@@ -47,7 +47,9 @@ class Parser extends Parse
         e = if:
                 cond:   cond
                 then:   thn
-
+                
+        @shiftNewlineTok 'if after then' tokens, tok, tokens[1]?.text == 'else'
+        
         while tokens[0]?.text == 'else' and tokens[1]?.text == 'if'
 
             tokens.shift()
@@ -59,6 +61,8 @@ class Parser extends Parse
 
             thn = @then 'elif' tokens
 
+            @shiftNewlineTok 'if after elif then' tokens, tok, tokens[1]?.text == 'else'
+            
             e.if.elifs.push
                 elif:
                     cond: cond
@@ -70,8 +74,9 @@ class Parser extends Parse
 
             e.if.else = @block 'else' tokens
             
-        @pop 'if'
+        print.tokens 'if end ' tokens
 
+        print ''
         e
         
     # 000  00000000  000000000   0000000   000  000      
@@ -230,9 +235,7 @@ class Parser extends Parse
         
         thn = @then 'when' tokens
         
-        if empty(thn) and tokens[0]?.type == 'nl'
-            if tokens[1]?.col == tok.col
-                @shiftNewline 'when with empty then' tokens
+        @shiftNewlineTok 'when with empty then' tokens, tok, empty thn
         
         @pop 'when'
         
@@ -252,8 +255,7 @@ class Parser extends Parse
         
         exps = @block 'body' tokens
         
-        if tokens[0]?.type == 'nl' and tokens[1].text in ['catch' 'finally']
-            @shiftNewline 'try body end' tokens
+        @shiftNewlineTok 'try body end' tokens, tok, tokens[1].text in ['catch' 'finally']
         
         if tokens[0]?.text == 'catch'
             
@@ -267,8 +269,7 @@ class Parser extends Parse
         
             @pop  'catch'
 
-            if tokens[0]?.type == 'nl' and tokens[1].text == 'finally'
-                @shiftNewline 'try catch end' tokens
+            @shiftNewlineTok 'try catch end' tokens, tok, tokens[1]?.text == 'finally'
             
         if tokens[0]?.text == 'finally'
             tokens.shift()

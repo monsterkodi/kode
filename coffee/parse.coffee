@@ -151,6 +151,7 @@ class Parse # the base class of Parser
             while tokens[0]?.text in ['if' 'for' 'while'] and @stack[-1] not in ['▸args']
             
                 @verb "exps #{tokens[0].text }Tail" e, @stack
+                # print.tokens 'tail' tokens
                 switch tokens[0].text 
                     when 'if'    then e = @ifTail    e, tokens.shift(), tokens
                     when 'for'   then e = @forTail   e, tokens.shift(), tokens
@@ -529,6 +530,12 @@ class Parse # the base class of Parser
         if @debug then log M3 y5 " ◂ #{w1 rule}" 
         tokens.shift()
         
+    shiftNewlineTok: (rule, tokens, tok, cond) ->
+        
+        if tokens[0]?.type == 'nl' and cond
+           if tokens[1]?.col == tok.col
+               @shiftNewline rule, tokens
+        
     # 000   000   0000000   00     00  00000000  00     00  00000000  000000000  000   000   0000000   0000000     0000000  
     # 0000  000  000   000  000   000  000       000   000  000          000     000   000  000   000  000   000  000       
     # 000 0 000  000000000  000000000  0000000   000000000  0000000      000     000000000  000   000  000   000  0000000   
@@ -573,10 +580,7 @@ class Parse # the base class of Parser
         else if tokens[0]?.type == 'block'
             
             block = tokens.shift()
-            if tokens[0]?.type == 'nl'
-                tokens.shift()
-            tokens = block.tokens
-            thn = @exps id, tokens
+            thn = @exps id, block.tokens
             
             if block.tokens.length
                 print.tokens 'then: dangling block tokens' tokens
