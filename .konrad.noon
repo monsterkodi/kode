@@ -1,3 +1,4 @@
 ignore
     coffee/.*\.noon
     test\/
+    konrad.json
