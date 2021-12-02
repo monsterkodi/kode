@@ -98,7 +98,7 @@ class Kode
 
         js = @renderer.render ast
         
-        js = "// monsterkodi/kode/n/n #{pkg.version}" + js
+        js = "// monsterkodi/kode #{pkg.version}\n\n" + js
 
         if @args.js or @args.debug
             print.code 'js' js 
