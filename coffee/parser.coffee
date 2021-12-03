@@ -200,7 +200,9 @@ class Parser extends Parse
         
         whens = []
         while tokens[0]?.text == 'when'
+            lastWhen = tokens[0]
             whens.push @exp tokens
+            @shiftNewlineTok 'switch after when' tokens, lastWhen, tokens[1]?.text in ['when' 'else']
                         
         e = switch:
                 match:  match
@@ -571,13 +573,27 @@ class Parser extends Parse
         
         exps = [@keyval key, tokens]
         
-        if tokens[0]?.type == 'nl'
-            if tokens[1]?.col >= first.col and tokens[1].text not in '])'
-                @shiftNewline 'continue block object ...' tokens
-                exps = exps.concat @exps 'object' tokens
-        else
-            if tokens[0]?.line == first.line and tokens[0].text not in '])};'
+        while tokens.length
+            if tokens[0]?.type == 'nl'
+                break if tokens[1]?.type not in ['single''double''triple''var''keyword''num']
+                break if tokens[2]?.text not in ': ' # space checks for newline!
+                
+                if tokens[1]?.col >= first.col and tokens[1].text not in '])'
+                    @shiftNewline 'continue implicit object on nl...' tokens
+                    exps.push @exp tokens
+                    continue
+                break
+            else if tokens[0]?.type == 'block'
+                block = tokens.shift()
+                tokens = block.tokens
+                exps = exps.concat @exps 'object' block.tokens
+                break
+            else if tokens[0]?.line == first.line and tokens[0].text not in '])};'
                 exps = exps.concat @exps 'object' tokens, ';'
+                break
+            else
+                break if tokens[0].text in '])};'
+                break if tokens[0].type not in ['single''double''triple''var''keyword''num']
                 
         @pop '{'
 
@@ -598,7 +614,7 @@ class Parser extends Parse
 
         if tokens[0]?.type == 'block'
             block = tokens.shift()
-            value = @exps 'keyval value' block.tokens
+            value = @exp block.tokens
         else 
             value = @exp tokens
 

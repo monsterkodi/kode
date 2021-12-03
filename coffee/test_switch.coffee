@@ -145,4 +145,32 @@ describe 'switch' ->
             }\n
             """
             
+        cmp """
+            b = switch matches[0][0]
+                when 'close'
+                    c += index+length
+                    true
+                when 'triple' 'double' 'single'
+                    c += index+length
+                    false
+                else
+                    log 'unhandled?' matches[0]
+                    c += index+length
+                    true
+            """ """
+            b = switch (matches[0][0])
+            {
+                case 'close':
+                    c += index + length
+                    true
+                    break
+                case 'triple':
+                case 'double':
+                case 'single':
+                    c += index + length
+                    false
+                    break
+                default:
+            }\n
+            """
 

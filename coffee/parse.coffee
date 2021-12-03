@@ -301,6 +301,7 @@ class Parse # the base class of Parser
             else if nxt.text == ':' and (unspaced or '?' not in @stack)
                 if @stack[-1] != '{'
                     @verb 'rhs is first key of implicit object' e
+                    print.tokens 'rhs is first key of implicit object' tokens if @verbose
                     e = @object e, tokens
                 else
                     @verb 'rhs is key of (implicit) object' e
@@ -626,7 +627,7 @@ class Parse # the base class of Parser
         @pop '▸'+id
 
         if block and block.tokens.length
-            print.tokens 'dangling block tokens' tokens
+            print.tokens 'dangling block tokens' tokens if @debug
             
         exps
                             

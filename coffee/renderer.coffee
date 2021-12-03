@@ -737,11 +737,14 @@ class Renderer
 
             if slice.upto?.type == 'num' or slice.upto?.operation
                 u = parseInt upto
-                if u == -1 and addOne
-                    upper = ''
+                if Number.isFinite u
+                    if u == -1 and addOne
+                        upper = ''
+                    else
+                        u += 1 if addOne
+                        upper = ", #{u}"
                 else
-                    u += 1 if addOne
-                    upper = ", #{u}"
+                    upper = ", #{upto}"
             else
                 if addOne then if upto then upper = ", typeof #{upto} === 'number' && #{upto}+1 || Infinity"
                 else                        upper = ", typeof #{upto} === 'number' && #{upto} || -1"
