@@ -164,6 +164,46 @@ describe 'if' ->
                 console.log('yes1')
             }
             """
+            
+        cmp """
+            if e then 1
+            if 2 then f
+            """ """
+            if (e)
+            {
+                1
+            }
+            if (2)
+            {
+                f
+            }
+            """
+            
+        cmp """
+            ->
+                if not e then return
+                    
+                if 1
+                    if 2 in a
+                        3
+                    return
+            """ """
+            function ()
+            {
+                if (!e)
+                {
+                    return
+                }
+                if (1)
+                {
+                    if (a.indexOf(2) >= 0)
+                    {
+                        3
+                    }
+                    return
+                }
+            }
+            """
 
     # 000  000   000  000      000  000   000  00000000  
     # 000  0000  000  000      000  0000  000  000       

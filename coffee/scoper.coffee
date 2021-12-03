@@ -66,8 +66,11 @@ class Scoper
         else if e instanceof Array  then @exp v for v in e if e.length
         else if e instanceof Object
             
-            if e.operation and e.operation.lhs?.text and e.operation.operator.text == '='
-                insert e.operation.lhs.text, e.operation.operator.text
+            if e.operation and e.operation.operator.text == '='
+                if e.operation.lhs?.text
+                    insert e.operation.lhs.text, e.operation.operator.text
+                else if e.operation.lhs.object
+                    log 'scoper curly lhs' e.operation.lhs
                     
             if e.for
                 if e.for.vals.text

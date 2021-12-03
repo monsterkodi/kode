@@ -147,9 +147,13 @@ class Parse # the base class of Parser
                 continue
                 
             e = @exp tokens
+            last = lastLineCol e
 
-            while tokens[0]?.text in ['if' 'for' 'while'] and @stack[-1] not in ['▸args']
-            
+            while   (
+                    tokens[0]?.text in ['if' 'for' 'while'] and 
+                    @stack[-1] not in ['▸args'] and
+                    last.line == tokens[0].line
+                    )
                 @verb "exps #{tokens[0].text }Tail" e, @stack
                 # print.tokens 'tail' tokens
                 switch tokens[0].text 
@@ -159,15 +163,16 @@ class Parse # the base class of Parser
             
             es.push e
 
-            if (
-               tokens[0]?.text in ['if''then''for''while'] and 
-               es.length and 
-               not blocked
-               )
+            if  (
+                    tokens[0]?.text in ['if''then''for''while'] and 
+                    es.length and 
+                    not blocked and
+                    last.line == tokens[0].line
+                )
                 @verb 'exps break on if|then|for|while' ; break 
             
             if tokens[0]?.text == ';' 
-                if @stack[-1] not in ['▸args' 'when' '{'] #
+                if @stack[-1] not in ['▸args' 'when' '{']
                     @verb 'exps shift colon' @stack
                     colon = tokens.shift()
                 else
