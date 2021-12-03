@@ -136,6 +136,20 @@ class Renderer
         if splt.length > 1
 
             mtch = mtch.map (m) -> "_#{m[1..-2]}_"
+            
+            if splt[-1] == '' # assert ends with ?
+                if splt.length > 2
+                    splt.pop()
+                    mtch.pop()
+                    t = splt.shift()
+                    while splt.length                    
+                        t += '▸'+mtch.shift()[1...-1]+'◂'
+                        t += splt.shift()
+                    t = @fixAsserts t
+                else 
+                    t = splt[0]
+                return  "(#{t} != null)"
+                
             # log splt, mtch
 
             s = ''
@@ -363,8 +377,6 @@ class Renderer
     # 000  000
 
     if: (n) ->
-
-        if not n.then then error 'if expected then' n
 
         first = firstLineCol n
         last  = lastLineCol n
