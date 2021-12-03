@@ -357,15 +357,15 @@ class Parse # the base class of Parser
                 @verb 'rhs no token consumed, break!'
                 break
         
-        if nxt = tokens[0]
-            
-            if empty @stack
-                
-                @verb 'rhs empty stack nxt' nxt
-            
-                if nxt.text == '[' and tokens[1]?.text != ']'
-                    @verb 'rhs is last minute lhs of index' e
-                    e = @index e, tokens                
+        # if nxt = tokens[0]
+#             
+            # if empty @stack
+#                 
+                # @verb 'rhs empty stack nxt' nxt
+#             
+                # if nxt.text == '[' and tokens[1]?.text != ']'
+                    # @verb 'rhs is last minute index of lhs' e
+                    # e = @index e, tokens                
                     
         @sheapPop 'rhs' 'rhs'
         e

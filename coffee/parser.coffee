@@ -459,6 +459,9 @@ class Parser extends Parse
 
         @pop '['
         
+        if comp = @lcomp items
+            return comp
+        
         array:
             open:  open
             items: items
@@ -527,11 +530,26 @@ class Parser extends Parse
         
         @pop '('
 
+        if comp = @lcomp exps
+            return comp
+        
         parens:
             open:  open
             exps:  exps
             close: close
 
+    # 000       0000000   0000000   00     00  00000000   
+    # 000      000       000   000  000   000  000   000  
+    # 000      000       000   000  000000000  00000000   
+    # 000      000       000   000  000 0 000  000        
+    # 0000000   0000000   0000000   000   000  000        
+    
+    lcomp: (exps) ->
+        
+        return if not f = exps[0].for
+        
+        lcomp: exps[0]
+            
     #  0000000  000   000  00000000   000      000   000
     # 000       000   000  000   000  000       000 000
     # 000       000   000  0000000    000        00000

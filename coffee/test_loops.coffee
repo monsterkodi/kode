@@ -6,7 +6,7 @@
 0000000   0000000    0000000   000        0000000
 ###
 
-{cmp} = require './test_utils'
+{ cmp, evl } = require './test_utils'
 
 describe 'loops' ->
 
@@ -23,9 +23,9 @@ describe 'loops' ->
                 t
             """ """
             var list = l
-            for (var i = 0; i < list.length; i++)
+            for (var _1_6_ = 0; _1_6_ < list.length; _1_6_++)
             {
-                t = list[i]
+                t = list[_1_6_]
                 t
             }
             """
@@ -34,9 +34,9 @@ describe 'loops' ->
             for a in [1,2,3] then log a
             """ """
             var list = [1,2,3]
-            for (var i = 0; i < list.length; i++)
+            for (var _1_6_ = 0; _1_6_ < list.length; _1_6_++)
             {
-                a = list[i]
+                a = list[_1_6_]
                 console.log(a)
             }
             """
@@ -46,9 +46,9 @@ describe 'loops' ->
             log a
             """ """
             var list = [1,2,3]
-            for (var i = 0; i < list.length; i++)
+            for (var _1_6_ = 0; _1_6_ < list.length; _1_6_++)
             {
-                a = list[i]
+                a = list[_1_6_]
                 console.log(a)
             }
             console.log(a)
@@ -61,9 +61,9 @@ describe 'loops' ->
             log '3' a
             """ """
             var list = [1,2,3]
-            for (var i = 0; i < list.length; i++)
+            for (var _1_6_ = 0; _1_6_ < list.length; _1_6_++)
             {
-                a = list[i]
+                a = list[_1_6_]
                 console.log('1',a)
                 console.log('2',a)
             }
@@ -87,10 +87,10 @@ describe 'loops' ->
                 log a,b
             """ """
             var list = this.regs
-            for (var i = 0; i < list.length; i++)
+            for (var _1_10_ = 0; _1_10_ < list.length; _1_10_++)
             {
-                a = list[i][0]
-                b = list[i][1]
+                a = list[_1_10_][0]
+                b = list[_1_10_][1]
                 console.log(a,b)
             }
             """
@@ -99,13 +99,13 @@ describe 'loops' ->
             for a in [1..2] then for b in [1..3] then c = 1; d = 1
             """ """
             var list = [1,2]
-            for (var i = 0; i < list.length; i++)
+            for (var _1_6_ = 0; _1_6_ < list.length; _1_6_++)
             {
-                a = list[i]
+                a = list[_1_6_]
                 var list1 = [1,2,3]
-                for (var i1 = 0; i1 < list1.length; i1++)
+                for (var _1_27_ = 0; _1_27_ < list1.length; _1_27_++)
                 {
-                    b = list1[i1]
+                    b = list1[_1_27_]
                     c = 1
                     d = 1
                 }
@@ -119,13 +119,13 @@ describe 'loops' ->
                     e: 1
             """ """
             var list = [1,2,3,4,5,6,7,8,9]
-            for (var i = 0; i < list.length; i++)
+            for (var _1_6_ = 0; _1_6_ < list.length; _1_6_++)
             {
-                a = list[i]
+                a = list[_1_6_]
                 var list1 = [1,2,3,4,5,6,7,8,9]
-                for (var i1 = 0; i1 < list1.length; i1++)
+                for (var _1_27_ = 0; _1_27_ < list1.length; _1_27_++)
                 {
-                    b = list1[i1]
+                    b = list1[_1_27_]
                     c = 3
                     {d:{e:1}}
                 }
@@ -173,12 +173,61 @@ describe 'loops' ->
             f e for e in l ? []
             """ """
             var list = ((_1_15_=l) != null ? _1_15_ : [])
-            for (var i = 0; i < list.length; i++)
+            for (var _1_10_ = 0; _1_10_ < list.length; _1_10_++)
             {
-                e = list[i]
+                e = list[_1_10_]
                 f(e)
             }
             """
+            
+    # 000       0000000   0000000   00     00  00000000   
+    # 000      000       000   000  000   000  000   000  
+    # 000      000       000   000  000000000  00000000   
+    # 000      000       000   000  000 0 000  000        
+    # 0000000   0000000   0000000   000   000  000        
+    
+    it 'list comprehension' ->
+        
+        cmp "m = ([k, r.exec t] for k,r of rgs)",
+            """
+            m = (function ()
+            {
+                var result = []
+                for (k in rgs)
+                {
+                    var r = rgs[k]
+                    result.push([k,r.exec(t)])
+                }
+                return result
+            })()
+            """
+
+        cmp "m = ([i, k] for k,i in rgs)",
+            """
+            m = (function ()
+            {
+                var result = []
+                var list = rgs
+                for (i = 0; i < list.length; i++)
+                {
+                    var k = list[i]
+                    result.push([i,k])
+                }
+                return result
+            })()
+            """
+            
+        evl "1"                                 1
+        evl "'abc'"                             'abc'
+        evl "[1,2,3]"                           [1,2,3]
+        evl "[i for i in [1,2,3]]"              [ 1, 2, 3 ]
+        evl "(i for i in [1,2,3])"              [ 1, 2, 3 ]
+        evl "[i*2 for i in [1,2,3]]"            [ 2, 4, 6 ]
+        evl "(i+3 for i in [1,2,3])"            [ 4, 5, 6 ]
+        evl "(k for k of {a:1,b:2,c:3})"        [ 'a' 'b' 'c' ]
+        evl "(v*v for k,v of {a:1,b:2,c:3})"    [ 1 4 9 ]
+        evl "(''+i+' '+v for i,v of [5,4,3])"   [ '0 5' '1 4' '2 3' ]
+        evl '((-> (a={})[v]=k; a)() for k,v of {a:1,b:2,c:3})'  [ {'1':'a'} {'2':'b'} {'3':'c'} ]
 
     # 000   000  000   000  000  000      00000000
     # 000 0 000  000   000  000  000      000

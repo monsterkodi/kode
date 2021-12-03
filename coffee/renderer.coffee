@@ -86,6 +86,7 @@ class Renderer
                 when 'object'    then @object v
                 when 'keyval'    then @keyval v
                 when 'array'     then @array v
+                when 'lcomp'     then @lcomp v
                 when 'index'     then @index v
                 when 'slice'     then @slice v
                 when 'prop'      then @prop v
@@ -466,7 +467,7 @@ class Renderer
             when 'of' then @for_of n
             else error 'for expected in/of'
 
-    for_in: (n) ->
+    for_in: (n, varPrefix='', lastPrefix='', lastPostfix) ->
 
         gi = @ind()
 
@@ -477,7 +478,8 @@ class Renderer
             print.ast 'no list for' n.list
 
         listVar = @freshVar 'list'
-        iterVar = @freshVar 'i'
+        # iterVar = @freshVar 'i'
+        iterVar = "_#{n.inof.line}_#{n.inof.col}_"
         s = ''
         s += "var #{listVar} = #{list}\n"
         if n.vals.text
@@ -494,16 +496,18 @@ class Renderer
             lv = n.vals[1].text
             s += gi+"for (#{lv} = 0; #{lv} < #{listVar}.length; #{lv}++)\n"
             s += gi+"{\n"
-            s += @indent+"#{n.vals[0].text} = #{listVar}[i]\n"
+            s += @indent+"#{varPrefix}#{n.vals[0].text} = #{listVar}[i]\n"
 
         for e in n.then ? []
-            s += @indent + @node(e) + '\n'
+            prefix = if lastPrefix and e == n.then[-1] then lastPrefix else ''
+            postfix = if lastPostfix and e == n.then[-1] then lastPostfix else ''
+            s += @indent + prefix+@node(e)+postfix + '\n'
         s += gi+"}"
 
         @ded()
         s
 
-    for_of: (n) ->
+    for_of: (n, varPrefix='', lastPrefix='', lastPostfix) ->
 
         gi = @ind()
 
@@ -515,13 +519,41 @@ class Renderer
         s += "for (#{key} in #{obj})\n"
         s += gi+"{\n"
         if val
-            s += @indent+"#{val} = #{obj}[#{key}]\n"
+            s += @indent+"#{varPrefix}#{val} = #{obj}[#{key}]\n"
         for e in n.then ? []
-            s += @indent + @node(e) + '\n'
+            prefix = if lastPrefix and e == n.then[-1] then lastPrefix else ''
+            postfix = if lastPostfix and e == n.then[-1] then lastPostfix else ''
+            s += @indent + prefix+@node(e)+postfix + '\n'
+            
         s += gi+"}"
 
         @ded()
         s
+        
+    # 000       0000000   0000000   00     00  00000000   
+    # 000      000       000   000  000   000  000   000  
+    # 000      000       000   000  000000000  00000000   
+    # 000      000       000   000  000 0 000  000        
+    # 0000000   0000000   0000000   000   000  000        
+    
+    lcomp: (n) ->
+        
+        comp = (f) =>
+            switch f.inof.text
+                when 'in' then @for_in f, 'var ' 'result.push(' ')'
+                when 'of' then @for_of f, 'var ' 'result.push(' ')'
+
+        @ind()
+        t = """
+            (function ()
+            {
+                var result = []
+                #{comp n.for}
+                return result
+            })()
+            """
+        @ded()
+        t
 
     # 000   000  000   000  000  000      00000000
     # 000 0 000  000   000  000  000      000
