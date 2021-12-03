@@ -85,11 +85,11 @@ class Returner
     if: (e) ->
         
         e.returns = true
-        e.then = @insert e.then
+        @insert e.then
         for ei in e.elifs ? []
             @insert ei.elif.then if ei.elif.then
         
-        e.else = @insert e.else if e.else
+        @insert e.else if e.else
             
     # 000  000   000   0000000  00000000  00000000   000000000  
     # 000  0000  000  000       000       000   000     000     
@@ -100,13 +100,17 @@ class Returner
     insert: (e) ->
 
         if e instanceof Array
-            l = e[-1]
-            if not (l.return or l.call?.callee?.text == 'log')
+            lst = e[-1]
+            if lst.if       then return @if lst.if
+            if lst.return   then return
+            if lst.while    then return
+            if lst.for      then return
+            
+            if not (lst.return or lst.call?.callee?.text == 'log')
                 e.push
                     return:
                         ret: type:'keyword' text:'return'
                         val: e.pop()
-        e
             
     # 00000000  000   000  00000000   
     # 000        000 000   000   000  

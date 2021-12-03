@@ -306,7 +306,14 @@ describe 'func' ->
                 }
                 else if (2)
                 {
-                    return 3 ? j : k
+                    if (3)
+                    {
+                        return j
+                    }
+                    else
+                    {
+                        return k
+                    }
                 }
                 else
                 {
