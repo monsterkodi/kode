@@ -109,7 +109,7 @@ class Renderer
 
     assert: (p) ->
 
-        @node(p.obj) + "▸#{p.qmrk.line}_#{p.qmrk.col}◂"
+        '▾' + @node(p.obj) + "▸#{p.qmrk.line}_#{p.qmrk.col}◂"
         
     qmrkop: (p) ->
         
@@ -128,8 +128,20 @@ class Renderer
 
     fixAsserts: (s) ->
 
-        return s if not s
+        if not s?
+            return
+            
+        return '' if not s? or s.length == 0
 
+        while s[0] == '▾' then s = s[1..] 
+        if '▾' in s
+            i = s.indexOf '▾'
+            return s[...i] + @fixAsserts s[i+1..]
+            
+        if '\n' in s
+            i = s.indexOf '\n'
+            return @fixAsserts(s[...i]) + s[i..]
+        
         splt = s.split /▸\d+_\d+◂/
         mtch = s.match /▸\d+_\d+◂/g
 

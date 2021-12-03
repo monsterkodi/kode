@@ -78,7 +78,8 @@ class Scoper
                         insert v.text, 'for' if v.text
                         
             if e.assert
-                insert "_#{e.assert.qmrk.line}_#{e.assert.qmrk.col}_" '?.'
+                if e.assert.obj.type not in ['var']
+                    insert "_#{e.assert.qmrk.line}_#{e.assert.qmrk.col}_" '?.'
                 
             if e.qmrkop
                 insert "_#{e.qmrkop.qmrk.line}_#{e.qmrkop.qmrk.col}_" ' ? '

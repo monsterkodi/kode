@@ -211,11 +211,25 @@ describe 'misc' ->
             x = ((_1_8_=a[1]) != null ? (_1_13_=_1_8_.b()) != null ? typeof (_1_16_=_1_13_.c) === "function" ? (_1_21_=_1_16_().d) != null ? _1_21_.e : undefined : undefined : undefined : undefined)
             """ 
             
-        cmp "a?"                "(a != null)"
-        cmp "a.b.c?"            "(a.b.c != null)"
-        cmp "a.b().c?"          "(a.b().c != null)"
-        cmp "if a.b().c?"       "if ((a.b().c != null))\n{\n}"
-        cmp "e?.col?"           "((e != null ? e.col : undefined) != null)"
+        cmp "a?"                    "(a != null)"
+        cmp "a.b.c?"                "(a.b.c != null)"
+        cmp "a.b().c?"              "(a.b().c != null)"
+        cmp "if a.b().c?"           "if ((a.b().c != null))\n{\n}"
+        cmp "e?.col?"               "((e != null ? e.col : undefined) != null)"
+        cmp "-> m?",
+            """
+            function ()
+            {
+                return (m != null)
+            }
+            """
+        cmp "r.filter (m) -> m?",
+            """
+            r.filter(function (m)
+            {
+                return (m != null)
+            })
+            """
         
     #  0000000   0000000   00     00  00     00  00000000  000   000  000000000   0000000
     # 000       000   000  000   000  000   000  000       0000  000     000     000
