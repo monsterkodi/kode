@@ -13,6 +13,7 @@
 # 00000000  000   000  000           000        000     
 
 empty = (a) -> a in ['' null undefined] or (typeof(a) == 'object' and Object.keys(a).length == 0)
+valid = (a) -> not empty a
 
 # 000       0000000    0000000  000000000  000      000  000   000  00000000   0000000   0000000   000      
 # 000      000   000  000          000     000      000  0000  000  000       000       000   000  000      
@@ -28,7 +29,7 @@ lastLineCol = (e) ->
             col:  e.col+e.text?.length
     else if e? and e instanceof Object
         cols = Object.values(e).map lastLineCol
-        if not empty cols
+        if valid cols
             return cols.reduce (a,b) -> 
                 if a.line > b.line then a 
                 else if a.line == b.line
@@ -51,7 +52,7 @@ firstLineCol = (e) ->
             col:  e.col
     else if e? and e instanceof Object
         cols = Object.values(e).map firstLineCol
-        if not empty cols
+        if valid cols
             return cols.reduce (a,b) -> 
                 if a.line < b.line then a 
                 else if a.line == b.line
@@ -60,4 +61,4 @@ firstLineCol = (e) ->
     line:Infinity
     col: Infinity
         
-module.exports = { firstLineCol, lastLineCol, empty }
+module.exports = { firstLineCol, lastLineCol, empty, valid }

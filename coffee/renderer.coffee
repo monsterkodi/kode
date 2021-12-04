@@ -9,7 +9,7 @@
 kstr  = require 'kstr'
 print = require './print'
 
-{ empty, firstLineCol, lastLineCol } = require './utils'
+{ valid, empty, firstLineCol, lastLineCol } = require './utils'
 
 class Renderer
 
@@ -38,7 +38,7 @@ class Renderer
         @indent = ''
         s = ''
 
-        if not empty ast.vars
+        if valid ast.vars
             vs = (v.text for v in ast.vars).join ', '
             s += @indent + "var #{vs}\n\n"
 
@@ -299,7 +299,7 @@ class Renderer
 
         @varstack.push n.body.vars
 
-        if not empty n.body.vars
+        if valid n.body.vars
             s += '\n'
             vs = (v.text for v in n.body.vars).join ', '
             s += @indent + "var #{vs}\n"
@@ -307,7 +307,7 @@ class Renderer
         for t in ths ? []
             s += '\n' + @indent + ths
 
-        if not empty n.body.exps
+        if valid n.body.exps
 
             s += '\n'
             ss = n.body.exps.map (s) => @node s

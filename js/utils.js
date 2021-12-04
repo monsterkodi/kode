@@ -1,6 +1,6 @@
 // monsterkodi/kode 0.10.1
 
-var empty, lastLineCol, firstLineCol
+var empty, valid, lastLineCol, firstLineCol
 
 
 empty = function (a)
@@ -8,9 +8,14 @@ empty = function (a)
     return ['',null,undefined].indexOf(a) >= 0 || (typeof(a) === 'object' && Object.keys(a).length === 0)
 }
 
+valid = function (a)
+{
+    return !empty(a)
+}
+
 lastLineCol = function (e)
 {
-    var _25_13_, _25_8_, _28_30_, _29_13_, cols
+    var _26_13_, _26_8_, _29_30_, _30_13_, cols
 
     if (((e != null ? e.col : undefined) != null))
     {
@@ -19,7 +24,7 @@ lastLineCol = function (e)
     else if ((e != null) && e instanceof Object)
     {
         cols = Object.values(e).map(lastLineCol)
-        if (!empty(cols))
+        if (valid(cols))
         {
             return cols.reduce(function (a, b)
             {
@@ -43,7 +48,7 @@ lastLineCol = function (e)
 
 firstLineCol = function (e)
 {
-    var _48_13_, _48_8_, _52_13_, cols
+    var _49_13_, _49_8_, _53_13_, cols
 
     if (((e != null ? e.col : undefined) != null))
     {
@@ -52,7 +57,7 @@ firstLineCol = function (e)
     else if ((e != null) && e instanceof Object)
     {
         cols = Object.values(e).map(firstLineCol)
-        if (!empty(cols))
+        if (valid(cols))
         {
             return cols.reduce(function (a, b)
             {
@@ -73,4 +78,4 @@ firstLineCol = function (e)
     }
     return {line:Infinity,col:Infinity}
 }
-module.exports = {firstLineCol:firstLineCol,lastLineCol:lastLineCol,empty:empty}
+module.exports = {firstLineCol:firstLineCol,lastLineCol:lastLineCol,empty:empty,valid:valid}

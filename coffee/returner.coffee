@@ -7,6 +7,7 @@
 ###
 
 print = require './print'
+{ valid } = require './utils'
 
 # inserts implicit return statements
 
@@ -100,10 +101,11 @@ class Returner
     
     switch: (e) ->
         
+        log e
         for w in e.whens
-            @insert w.when.then if w.when.then
-                
-        @insert e.else if e.else
+            @insert w.when.then if valid w.when.then
+
+        @insert e.else if valid e.else
         
     # 000  000   000   0000000  00000000  00000000   000000000  
     # 000  0000  000  000       000       000   000     000     
