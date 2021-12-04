@@ -20,6 +20,7 @@ keyword
     do
     while
     for
+    each
     break
     continue
     switch

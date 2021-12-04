@@ -90,6 +90,7 @@ class Renderer
                 when 'index'     then @index v
                 when 'slice'     then @slice v
                 when 'prop'      then @prop v
+                when 'each'      then @each v
                 when 'func'      then @func v
                 when 'call'      then @call v
                 when 'try'       then @try v
@@ -452,6 +453,68 @@ class Renderer
                 s += '(' + (@atom e for e in n.else).join(', ') + ')'
         s
 
+    # 00000000   0000000    0000000  000   000  
+    # 000       000   000  000       000   000  
+    # 0000000   000000000  000       000000000  
+    # 000       000   000  000       000   000  
+    # 00000000  000   000   0000000  000   000  
+    
+    each: (n) ->
+        
+        numArgs = n.fnc.func.args?.parens.exps.length
+        
+        if numArgs == 1
+            """
+            (function (o) {
+                r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
+                for (k in o)
+                {   
+                    var m = (#{@node n.fnc})(o[k])
+                    if (m != null)
+                    {
+                        r[k] = m
+                    }
+                }
+                return o instanceof Array ? r.filter((f) => { return f !== undefined }) : typeof o == 'string' ? r.join('') : r
+            })(#{@node n.lhs})
+            """
+        else if numArgs
+            """
+            (function (o) {
+                r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
+                for (k in o)
+                {   
+                    var m = (#{@node n.fnc})(k, o[k])
+                    if (m != null && m[0] != null)
+                    {
+                        r[m[0]] = m[1]
+                    }
+                }
+                return o instanceof Array ? r.filter((f) => { return f !== undefined }) : typeof o == 'string' ? r.join('') : r
+            })(#{@node n.lhs})
+            """
+        else # no args
+            if n.fnc.func.body.exps?.length > 0 # some func but no args
+                """
+                (function (o) {
+                    r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
+                    for (k in o)
+                    {   
+                        var m = (#{@node n.fnc})(o[k])
+                        if (m != null)
+                        {
+                            r[k] = m
+                        }
+                    }
+                    return o instanceof Array ? r.filter((f) => { return f !== undefined }) : typeof o == 'string' ? r.join('') : r
+                })(#{@node n.lhs})
+                    
+                """
+            else # no args and empty func
+                """
+                (function (o) { return o instanceof Array ? [] : typeof o == 'string' ? '' : {} })(#{@node n.lhs})
+                """
+        
     # 00000000   0000000   00000000
     # 000       000   000  000   000
     # 000000    000   000  0000000
