@@ -286,10 +286,10 @@ describe 'array' ->
                     2
                 ]
             """ """
-            function ()
+            (function ()
             {
                 return [1,2]
-            }
+            })
             """
 
         cmp """

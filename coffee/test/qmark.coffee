@@ -25,10 +25,10 @@ describe 'qmark' ->
         
         cmp "-> m?",
             """
-            function ()
+            (function ()
             {
                 return (m != null)
-            }
+            })
             """
         cmp "r.filter (m) -> m?",
             """

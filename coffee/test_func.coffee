@@ -12,18 +12,18 @@ describe 'func' ->
 
     it 'func' ->
 
-        cmp '->'               'function ()\n{}'
-        cmp '(a) ->'           'function (a)\n{}'
-        cmp '(a,b,c) ->'       'function (a, b, c)\n{}'
+        cmp '->'               '(function ()\n{})'
+        cmp '(a) ->'           '(function (a)\n{})'
+        cmp '(a,b,c) ->'       '(function (a, b, c)\n{})'
         cmp 'a = (a,b) ->'     '\na = function (a, b)\n{}'
 
         cmp """
             -> return 1
             """ """
-            function ()
+            (function ()
             {
                 return 1
-            }
+            })
             """
 
         cmp """
@@ -31,11 +31,11 @@ describe 'func' ->
                 1
                 2
             """ """
-            function ()
+            (function ()
             {
                 1
                 return 2
-            }
+            })
             """
 
         cmp """
@@ -43,11 +43,11 @@ describe 'func' ->
                 return 1
                 2
             """ """
-            function ()
+            (function ()
             {
                 return 1
                 return 2
-            }
+            })
             """
 
         cmp """
@@ -55,11 +55,11 @@ describe 'func' ->
                 1
                 return 2
             """ """
-            function ()
+            (function ()
             {
                 1
                 return 2
-            }
+            })
             """
 
         cmp """
@@ -215,28 +215,28 @@ describe 'func' ->
 
         cmp "-> @a",
             """
-            function ()
+            (function ()
             {
                 return this.a
-            }
+            })
             """
 
         cmp "(@a) -> @a",
             """
-            function (a)
+            (function (a)
             {
                 this.a = a
                 return this.a
-            }
+            })
             """
 
         cmp "(@a,a) -> log @a",
             """
-            function (a1, a)
+            (function (a1, a)
             {
                 this.a = a1
                 console.log(this.a)
-            }
+            })
             """
 
     # 00000000   00000000  000000000  000   000  00000000   000   000
@@ -298,7 +298,7 @@ describe 'func' ->
                     if 3 then j else k
                 else l
             """ """
-            function ()
+            (function ()
             {
                 if (1)
                 {
@@ -319,7 +319,7 @@ describe 'func' ->
                 {
                     return l
                 }
-            }
+            })
             """
 
     #  0000000   0000000   000      000       0000000

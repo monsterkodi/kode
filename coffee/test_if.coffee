@@ -188,7 +188,7 @@ describe 'if' ->
                         3
                     return
             """ """
-            function ()
+            (function ()
             {
                 if (!e)
                 {
@@ -202,7 +202,7 @@ describe 'if' ->
                     }
                     return
                 }
-            }
+            })
             """
 
     # 000  000   000  000      000  000   000  00000000  
@@ -375,19 +375,19 @@ describe 'if' ->
         cmp """
             -> if false then true
             """ """
-            function ()
+            (function ()
             {
                 if (false)
                 {
                     return true
                 }
-            }
+            })
             """
 
         cmp """
             -> if 1 then 2 else 3
             """ """
-            function ()
+            (function ()
             {
                 if (1)
                 {
@@ -397,7 +397,7 @@ describe 'if' ->
                 {
                     return 3
                 }
-            }
+            })
             """
             
     # it 'fun' ->

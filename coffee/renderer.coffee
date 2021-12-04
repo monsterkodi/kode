@@ -48,8 +48,14 @@ class Renderer
     nodes: (nodes, sep=',') ->
 
         sl = nodes.map (s) => @atom s
+        
         if sep == '\n'
-            sl = sl.map (s) => if kstr.lstrip(s)[0] in '([' then ';'+s else s
+            sl = sl.map (s) =>
+                stripped = kstr.lstrip s
+                if stripped[0] in '([' then ';'+s 
+                else if stripped.startsWith 'function' then "(#{s})"
+                else s
+            
         ss = sl.join sep
 
     # 000   000   0000000   0000000    00000000
