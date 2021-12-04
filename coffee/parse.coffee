@@ -302,6 +302,12 @@ class Parse # the base class of Parser
                 break
             
             if @stack[-1] == '▸arg' and nxt.type == 'op' then @verb 'rhs break for ▸arg'; break
+           
+            else if nxt.text == ':' and @stack[-1] in ['class']
+                
+                print.tokens 'rhs is class method' tokens[..20] if @debug
+                e = @keyval e, tokens
+                break
                 
             else if nxt.text == ':' and (unspaced or '?' not in @stack)
                 if @stack[-1] != '{'

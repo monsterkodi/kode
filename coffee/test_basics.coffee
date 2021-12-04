@@ -25,7 +25,8 @@ describe 'basics' ->
         cmp '2.2'             '2.2'
         cmp '""'              '""'
         cmp "''"              "''"
-        cmp '[]'              '[]'
+        cmp '[]'              ';[]'
+        cmp '()'              ';()'
         cmp '{}'              '{}'
         cmp 'true'            'true'
         cmp 'false'           'false'
@@ -48,7 +49,7 @@ describe 'basics' ->
         cmp '{a:b}.a'         '{a:b}.a'
         cmp 'a.b.c d'         'a.b.c(d)'
         cmp 'a.b.c[d]'        'a.b.c[d]'
-        cmp '[a.b*c[d]]'      '[a.b * c[d]]'
+        cmp '[a.b*c[d]]'      ';[a.b * c[d]]'
 
     # 00000000   00000000   0000000   00000000  000   000
     # 000   000  000       000        000        000 000
@@ -78,7 +79,7 @@ describe 'basics' ->
         cmp 'a and b'         'a && b'
         cmp '1 and 2 and 3'   '1 && 2 && 3'
         cmp 'e and (f or g)'  'e && (f || g)'
-        cmp '(e and f) or g'  '(e && f) || g'
+        cmp '(e and f) or g'  ';(e && f) || g'
 
         cmp """
             a and \
@@ -250,10 +251,10 @@ describe 'basics' ->
         cmp 'a(b).c++'          'a(b).c++'
         cmp 'a(b).c--'          'a(b).c--'
 
-        cmp '(--b)'             '(--b)'
-        cmp '(++b)'             '(++b)'
-        cmp '(b--)'             '(b--)'
-        cmp '(b++)'             '(b++)'
+        cmp '(--b)'             ';(--b)'
+        cmp '(++b)'             ';(++b)'
+        cmp '(b--)'             ';(b--)'
+        cmp '(b++)'             ';(b++)'
         cmp 'log(++b)'          'console.log(++b)'
         cmp 'log(++{b:1}.b)'    'console.log(++{b:1}.b)'
 

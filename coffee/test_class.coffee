@@ -50,7 +50,7 @@ describe 'class' ->
             }
             
             """
-
+            
         cmp """
             class D
                 a: =>
@@ -64,6 +64,44 @@ describe 'class' ->
                 }
             
                 a ()
+                {}
+            }
+            
+            """
+
+        cmp """
+            class E
+                @f: ->
+                @g: ->
+            """ """
+            
+            class E
+            {
+                static f ()
+                {}
+            
+                static g ()
+                {}
+            }
+            
+            """
+
+        cmp """
+            class F
+                @f: ->
+                @g: ->
+                @h: ->
+            """ """
+            
+            class F
+            {
+                static f ()
+                {}
+            
+                static g ()
+                {}
+            
+                static h ()
                 {}
             }
             

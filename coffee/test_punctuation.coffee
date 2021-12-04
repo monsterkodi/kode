@@ -18,8 +18,9 @@ describe 'punctuation' ->
 
     it 'parens' ->
 
-        cmp '(b c)'                       '(b(c))'
-        cmp '(b --c)'                     '(b(--c))'
+        cmp '(b)'                         ';(b)'
+        cmp '(b c)'                       ';(b(c))'
+        cmp '(b --c)'                     ';(b(--c))'
         cmp 'a + (b --c)'                 'a + (b(--c))'
 
     #  0000000   0000000   00     00  00     00   0000000   000000000   0000000   

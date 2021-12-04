@@ -424,7 +424,7 @@ describe 'func' ->
         cmp """
             ((a) -> 1)
             """ """
-            (function (a)
+            ;(function (a)
             {
                 return 1
             })

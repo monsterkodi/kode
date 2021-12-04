@@ -48,6 +48,8 @@ class Renderer
     nodes: (nodes, sep=',') ->
 
         sl = nodes.map (s) => @atom s
+        if sep == '\n'
+            sl = sl.map (s) => if kstr.lstrip(s)[0] in '([' then ';'+s else s
         ss = sl.join sep
 
     # 000   000   0000000   0000000    00000000
@@ -130,6 +132,8 @@ class Renderer
 
     fixAsserts: (s) ->
 
+        @verb 'fixAsserts' s
+        
         if not s?
             return
             
@@ -206,7 +210,8 @@ class Renderer
 
         s += '\n{'
 
-        mthds = n.body?.object?.keyvals ? n.body?[0]?.object?.keyvals
+        # mthds = n.body?.object?.keyvals ? n.body?[0]?.object?.keyvals
+        mthds = n.body
 
         if mthds?.length
             mthds = @prepareMethods mthds
@@ -496,9 +501,11 @@ class Renderer
                         r[m[0]] = m[1]
                     }
                 }
-                return o instanceof Array ? r.filter((f) => { return f !== undefined }) : typeof o == 'string' ? r.join('') : r
+                return o instanceof Array ? r : typeof o == 'string' ? r.join('') : r
             })(#{@node n.lhs})
             """
+            # return o instanceof Array ? r.filter((f) => { return f !== undefined }) : typeof o == 'string' ? r.join('') : r
+            
         else # no args
             if n.fnc.func.body.exps?.length > 0 # some func but no args
                 """
@@ -887,16 +894,16 @@ class Renderer
                 if addOne then if upto then upper = ", typeof #{upto} === 'number' && #{upto}+1 || Infinity"
                 else                        upper = ", typeof #{upto} === 'number' && #{upto} || -1"
 
-            "#{@node(p.idxee)}.slice(#{from}#{upper ? ''})"
+            "#{@atom(p.idxee)}.slice(#{from}#{upper ? ''})"
         else
             if p.slidx.text?[0] == '-'
                 ni = parseInt p.slidx.text
                 if ni == -1
-                    return "#{@atom(p.idxee)}.slice(#{ni})[0]"
+                    return "#{@node(p.idxee)}.slice(#{ni})[0]"
                 else
-                    return "#{@atom(p.idxee)}.slice(#{ni},#{ni+1})[0]"
+                    return "#{@node(p.idxee)}.slice(#{ni},#{ni+1})[0]"
 
-            "#{@atom(p.idxee)}[#{@node p.slidx}]"
+            "#{@node(p.idxee)}[#{@node p.slidx}]"
 
     #  0000000   00000000   00000000    0000000   000   000
     # 000   000  000   000  000   000  000   000   000 000

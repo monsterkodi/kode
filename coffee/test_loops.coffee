@@ -225,10 +225,11 @@ describe 'loops' ->
         evl "a = {a:1,b:2} each (k,v) -> ['▸'+k, v]"        {'▸a':1,'▸b':2}
         
         evl "a = [1,2,3] each (i,v) -> [i, v]"              [1,2,3]
-        evl "a = [1,2,3] each (i,v) -> [4-i, v]"            [3,2,1]
+        evl "a = [1,2,3] each (i,v) -> [2-i, v]"            [3,2,1]
         evl "a = ['3''2''1'] each (i,v) -> [i, v+'▸'+i]"    ['3▸0' '2▸1' '1▸2']
         evl "a = 'hello' each (i,c) -> [i,c+c]"             "hheelllloo"
         evl "a = 'hello world' each (i,c) -> [i,i%2 and c.toUpperCase() or c]"    "hElLo wOrLd"
+        # evl "a = 'hello again' each (i,c) -> [i,((i%2) ? c.toUpperCase() : c)]"   "hElLo aGaIn"
         
     it 'each single' ->
         

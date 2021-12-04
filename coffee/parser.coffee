@@ -317,8 +317,9 @@ class Parser extends Parse
 
         if tokens[0]?.type == 'block'
             tokens = tokens.shift().tokens
+
             e.class.body = @exps 'class body' tokens
-            @nameMethods e.class.body[0].object.keyvals
+            @nameMethods e.class.body
                 
         @pop 'class'
 
@@ -552,6 +553,12 @@ class Parser extends Parse
 
     parens: (open, tokens) ->
 
+        if tokens[0]?.text == ')'
+            return parens:
+                open:  open
+                exps:  []
+                close: tokens.shift()
+        
         @push '('
 
         exps = @exps '(' tokens, ')'

@@ -82,10 +82,12 @@ class Scoper
                         insert v.text, 'for' if v.text
                         
             if e.assert
-                if e.assert.obj.type not in ['var']
+                @verb 'assert' e
+                if e.assert.obj.type not in ['var'] and not e.assert.obj.index
                     insert "_#{e.assert.qmrk.line}_#{e.assert.qmrk.col}_" '?.'
                 
             if e.qmrkop
+                @verb 'qmrkop' e
                 insert "_#{e.qmrkop.qmrk.line}_#{e.qmrkop.qmrk.col}_" ' ? '
 
             if e.func
