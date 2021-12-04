@@ -94,7 +94,7 @@ class Parser extends Parse
         
         @push 'if'
 
-        subbs = @subBlocks tokens.shift()
+        subbs = @subBlocks tokens.shift().tokens
         
         if not e
             tokens = subbs.shift()
@@ -246,7 +246,7 @@ class Parser extends Parse
     # 0000000   00     00  000     000      0000000  000   000
 
     switch: (tok, tokens) ->
-
+        
         @push 'switch'
         
         match = @exp tokens
@@ -257,20 +257,40 @@ class Parser extends Parse
             return @error pop:'switch' msg:'block expected!' tokens
         
         whens = []
-        while tokens[0]?.text == 'when'
-            lastWhen = tokens[0]
-            whens.push @exp tokens
-            @shiftNewlineTok 'switch after when' tokens, lastWhen, tokens[1]?.text in ['when' 'else']
-                        
         e = switch:
                 match:  match
                 whens:  whens
+            
+        if tokens[0]?.text != 'when'
 
-        if tokens[0]?.text == 'else'
-
-            tokens.shift()
-
-            e.switch.else = @block 'else' tokens
+            subbs = @subBlocks tokens
+            
+            while subbs.length
+                
+                tokens = subbs.shift()
+                
+                if tokens[0]?.text == 'else'
+                    tokens.shift()
+                    e.switch.else = @block 'else' tokens
+                    break
+                    
+                whens.push @when null, tokens
+                    
+                if whens[-2]? and empty whens[-2].when.then 
+                    whens[-1].when.vals = whens[-2].when.vals.concat whens[-1].when.vals
+                    whens.splice -2 1 
+        else
+            
+            while tokens[0]?.text == 'when'
+                lastWhen = tokens[0]
+                whens.push @exp tokens
+                @shiftNewlineTok 'switch after when' tokens, lastWhen, tokens[1]?.text in ['when' 'else']
+                        
+            if tokens[0]?.text == 'else'
+    
+                tokens.shift()
+    
+                e.switch.else = @block 'else' tokens
             
         @pop 'switch'
         

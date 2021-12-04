@@ -211,24 +211,58 @@ describe 'switch' ->
             })()
             """
             
-    # it 'nicer' ->
-#             
-        # cmp """
-            # switch x
-                # 'bla'   ➜ bla
-                # 'hello' ➜ blub
-                        # ➜ fark
-            # """ """
-            # """
+    # 000   000  000   0000000  00000000  00000000   
+    # 0000  000  000  000       000       000   000  
+    # 000 0 000  000  000       0000000   0000000    
+    # 000  0000  000  000       000       000   000  
+    # 000   000  000   0000000  00000000  000   000  
+    
+    it 'nicer' ->
+             
+        cmp """
+            switch x
+                'bla'   ➜ bla
+                'hello' ➜ blub
+                        ➜ fork
+            """ """
+            switch (x)
+            {
+                case 'bla':
+                    bla
+                    break
+                case 'hello':
+                    blub
+                    break
+                default:
+                    fork
+            }\n
+            """
 
-        # cmp """
-            # switch x
-                # 'x' 
-                # 1 2 3
-                # 'bla'   ➜ bla
-                # 'a' 'b'
-                # 'hello' ➜ blub
-                        # ➜ fark
-            # """ """
-            # """
+        cmp """
+            switch x
+                'x' 
+                1 2 3
+                'bla'   ➜ bla
+                'a' 'b'
+                'hello' ➜ blub
+                        ➜ fork
+            """ """
+            switch (x)
+            {
+                case 'x':
+                case 1:
+                case 2:
+                case 3:
+                case 'bla':
+                    bla
+                    break
+                case 'a':
+                case 'b':
+                case 'hello':
+                    blub
+                    break
+                default:
+                    fork
+            }\n
+            """
                         

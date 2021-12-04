@@ -110,7 +110,6 @@ class C
 
 # Planned stuff that does not work yet:
 
-- string interpolation
 - error messages
 - sourcemaps
 - super
@@ -164,11 +163,8 @@ Just in case I manage to get it to work, this is what I would like to add instea
 
 - native tests
 - keywords `empty` and `valid`
-- for a in l ? []
-- use `is` for instanceof/typeof
-- 🐔 
-- 🥚 `ei`
-- 🪣
+- for a in l ~~? []~~
+- use `is` for `instanceof`/`typeof`
 - `include` keyword to merge source files
 - native `dbg`  `assert`  `profile` instead of macros
 - `profile` in same scope

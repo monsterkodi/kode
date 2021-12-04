@@ -662,11 +662,9 @@ class Parse # the base class of Parser
     #      000  000   000  000   000  000   000  000      000   000  000       000  000        000  
     # 0000000    0000000   0000000    0000000    0000000   0000000    0000000  000   000  0000000   
     
-    subBlocks: (block) ->
+    subBlocks: (tokens) ->
         
         subbs = [[]]
-        
-        tokens = block.tokens
         
         if tokens[-1].type == 'block' and tokens[-1].tokens[0].text == 'then'
             elseBlock = tokens.pop()
