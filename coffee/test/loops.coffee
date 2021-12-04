@@ -226,6 +226,7 @@ describe 'loops' ->
         
         evl "a = [1,2,3] each (i,v) -> [i, v]"              [1,2,3]
         evl "a = [1,2,3] each (i,v) -> [2-i, v]"            [3,2,1]
+        evl "a = [1,3]   each (i,v) -> [1-i,v*v]"           [9,1]
         evl "a = ['3''2''1'] each (i,v) -> [i, v+'▸'+i]"    ['3▸0' '2▸1' '1▸2']
         evl "a = 'hello' each (i,c) -> [i,c+c]"             "hheelllloo"
         evl "a = 'hello world' each (i,c) -> [i,i%2 and c.toUpperCase() or c]"    "hElLo wOrLd"

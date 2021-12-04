@@ -141,6 +141,25 @@ switch x
     else            Z
 ```
 
+## Each
+
+```coffeescript
+obj each (k,v) -> [k,v]
+obj each (v) -> v
+```
+
+The `each` operator takes an object, array or string on the left hand side and 
+a function on the right hand side.
+The function is called for each key/value, index/item, index/character pair.
+A new object, array or string is build from the results and returned.
+For example:
+
+```coffeescript
+'hello'   each (c) -> c+c            # -> 'hheelllloo'
+[1,3]     each (i,v) -> [1-i,v*v]    # -> [9,1]
+{a:1,b:3} each (k,v) -> ['▸'+k, k+v] # -> { '▸a': 'a1', '▸b': 'b3' }
+```
+
 # Planned stuff that does not work yet:
 
 - error messages
@@ -192,7 +211,7 @@ Since I will most likely be the only person using **kode**, it's probably wise t
 - string interpolation in object keys
 - implicitly returning arrays if last expression is a loop
 
-Just in case I manage to get it to work, this is what I would like to add instead:
+This is what I would like to add instead:
 
 - native tests
 - keywords `empty` and `valid`
