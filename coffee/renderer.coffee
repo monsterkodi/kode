@@ -679,7 +679,8 @@ class Renderer
 
         s = ''
         for e in n.vals
-            s += '    case ' + @node(e) + ':\n'
+            i = e != n.vals[0] and @indent or '    '
+            s += i+'case ' + @node(e) + ':\n'
         for e in n.then ? []
             gi = @ind()
             s += gi + '    ' + @node(e) + '\n'

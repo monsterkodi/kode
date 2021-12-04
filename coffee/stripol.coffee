@@ -123,11 +123,11 @@ class Stripol
                 matches = ([k, r.exec t] for k,r of rgs)
                 matches = matches.filter (m) -> m[1]?
                 
-                if empty matches
-                    log 'INNER MIDL'
-                    push 'midl' s[c..]
-                    c = s.length
-                    break
+                # if empty matches
+                    # log 'INNER MIDL'
+                    # push 'midl' s[c..]
+                    # c = s.length
+                    # break
                 
                 matches.sort (a,b) -> a[1].index - b[1].index
                 

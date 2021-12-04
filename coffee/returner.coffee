@@ -101,7 +101,6 @@ class Returner
     
     switch: (e) ->
         
-        log e
         for w in e.whens
             @insert w.when.then if valid w.when.then
 
