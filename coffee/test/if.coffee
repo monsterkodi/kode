@@ -262,77 +262,7 @@ describe 'if' ->
                 700
             }
             """
-            
-        cmp """
-            if 
-                a 'x' ➜ X
-                b 'y' ➜ Y
-                else    Z
-            """ """
-            if (a('x'))
-            {
-                X
-            }
-            else if (b('y'))
-            {
-                Y
-            }
-            else
-            {
-                Z
-            }
-            """
-
-        cmp """
-            if 
-                a 'x' ➜ X
-                b 'y' ➜ Y
-                      ➜ Z
-            """ """
-            if (a('x'))
-            {
-                X
-            }
-            else if (b('y'))
-            {
-                Y
-            }
-            else
-            {
-                Z
-            }
-            """
-
-        cmp """
-            if 
-                a ➜ P
-                ➜   Q
-            """ """
-            if (a)
-            {
-                P
-            }
-            else
-            {
-                Q
-            }
-            """
-
-        cmp """
-            if 
-                a    ➜ P
-                else ➜ Q
-            """ """
-            if (a)
-            {
-                P
-            }
-            else
-            {
-                Q
-            }
-            """
-            
+                        
     # 000  000   000  000      000  000   000  00000000  
     # 000  0000  000  000      000  0000  000  000       
     # 000  000 0 000  000      000  000 0 000  0000000   
@@ -670,3 +600,70 @@ describe 'if' ->
                 2
             }
             """
+            
+        cmp """
+            if  a 'x' ➜ X
+                b 'y' ➜ Y
+                else    Z
+            """ """
+            if (a('x'))
+            {
+                X
+            }
+            else if (b('y'))
+            {
+                Y
+            }
+            else
+            {
+                Z
+            }
+            """
+
+        cmp """
+            if  a 'x' ➜ X
+                b 'y' ➜ Y
+                      ➜ Z
+            """ """
+            if (a('x'))
+            {
+                X
+            }
+            else if (b('y'))
+            {
+                Y
+            }
+            else
+            {
+                Z
+            }
+            """
+
+        cmp """
+            if  b   ➜ R
+                    ➜ S
+            """ """
+            if (b)
+            {
+                R
+            }
+            else
+            {
+                S
+            }
+            """
+            
+        cmp """
+            if  a ➜ P
+                ➜   Q
+            """ """
+            if (a)
+            {
+                P
+            }
+            else
+            {
+                Q
+            }
+            """
+            

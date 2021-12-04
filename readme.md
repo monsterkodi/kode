@@ -108,6 +108,39 @@ class C
     constructor: ->
 ```
 
+## If shortcut
+
+```coffeescript
+if  a ➜ X
+    b ➜ Y
+      ➜ Z
+```
+... is a shortcut for ...
+
+```coffeescript
+if      a then X
+else if b then Y
+          else Z
+```
+
+## Switch shortcut
+
+```coffeescript
+switch x
+    1
+    2 3   ➜ X
+    'abc' ➜ Y
+          ➜ Z      
+```
+... is a shortcut for ...
+
+```coffeescript
+switch x
+    when 1,2,3 then X
+    when 'abc' then Y
+    else            Z
+```
+
 # Planned stuff that does not work yet:
 
 - error messages

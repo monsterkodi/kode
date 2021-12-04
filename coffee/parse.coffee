@@ -670,6 +670,9 @@ class Parse # the base class of Parser
             elseBlock = tokens.pop()
             elseTokens = elseBlock.tokens
             elseTokens[0].text = 'else'
+        if tokens[0]?.text == 'then'
+            tokens[0].text = 'else'
+            return [tokens]
             
         while valid tokens
             t = tokens.shift()
