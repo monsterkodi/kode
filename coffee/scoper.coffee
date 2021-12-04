@@ -6,9 +6,7 @@
 0000000    0000000   0000000   000        00000000  000   000
 ###
 
-###
-    walks through an abstract syntax tree and collects vars
-###
+# walks through an abstract syntax tree and collects vars
 
 class Scoper
 

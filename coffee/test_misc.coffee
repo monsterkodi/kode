@@ -230,6 +230,11 @@ describe 'misc' ->
                 return (m != null)
             })
             """
+            
+        cmp "matches = matches.filter (m) -> m[1]?",
+            """
+            matches = matches.filter(function (m) { return m[1] != null })
+            """
                     
     #  0000000   0000000   00     00  00     00  00000000  000   000  000000000   0000000
     # 000       000   000  000   000  000   000  000       0000  000     000     000

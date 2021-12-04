@@ -84,6 +84,16 @@ on 'event' @myCallback
 log 'a:' a , 'd:' 3            # some commas still make sense :-)
 ```
 
+## list comprehension
+
+```coffeescript
+l = [1,2,3]
+a = [x for x in l]      # -> [1,2,3]
+a = (x for x in l)      # -> [1,2,3]
+````
+
+**kode** doesn't distuinguish between round and square brackets around list comprehensions
+
 ## Constructor shortcut
 
 ```coffeescript
@@ -162,8 +172,7 @@ Just in case I manage to get it to work, this is what I would like to add instea
 - `include` keyword to merge source files
 - native `dbg`  `assert`  `profile` instead of macros
 - `profile` in same scope
-- option to use both: new `class` and old school `function` style classes
-- optional square brackets in `(a for a in ...)`
+- option to use both: new `class` and old school `function` style classes?
 - `await`?
 
 

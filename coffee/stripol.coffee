@@ -9,9 +9,7 @@
 { empty } = require './utils'
 print = require './print'
 
-###
-    walks through an abstract syntax tree and parses string interpolations
-###
+# walks through an abstract syntax tree and parses string interpolations
 
 class Stripol
 
