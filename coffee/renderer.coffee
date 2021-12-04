@@ -530,9 +530,11 @@ class Renderer
             when 'of' then @for_of n
             else error 'for expected in/of'
 
-    for_in: (n, varPrefix='', lastPrefix='', lastPostfix) ->
+    for_in: (n, varPrefix='', lastPrefix='', lastPostfix='', lineBreak) ->
 
-        gi = @ind()
+        gi = lineBreak or @ind()
+        nl = lineBreak or '\n'
+        eb = lineBreak and ';' or '\n'
 
         list = @node n.list
 
@@ -541,56 +543,57 @@ class Renderer
             print.ast 'no list for' n.list
 
         listVar = @freshVar 'list'
-        # iterVar = @freshVar 'i'
         iterVar = "_#{n.inof.line}_#{n.inof.col}_"
         s = ''
-        s += "var #{listVar} = #{list}\n"
+        s += "var #{listVar} = #{list}" + eb
         if n.vals.text
-            s += gi+"for (var #{iterVar} = 0; #{iterVar} < #{listVar}.length; #{iterVar}++)\n"
-            s += gi+"{\n"
-            s += @indent+"#{n.vals.text} = #{listVar}[#{iterVar}]\n"
+            s += gi+"for (var #{iterVar} = 0; #{iterVar} < #{listVar}.length; #{iterVar}++)" + nl
+            s += gi+"{"+nl
+            s += @indent+"#{n.vals.text} = #{listVar}[#{iterVar}]" + eb
         else if n.vals.array?.items
-            s += gi+"for (var #{iterVar} = 0; #{iterVar} < #{listVar}.length; #{iterVar}++)\n"
-            s += gi+"{\n"
+            s += gi+"for (var #{iterVar} = 0; #{iterVar} < #{listVar}.length; #{iterVar}++)" + nl
+            s += gi+"{"+nl
             for j in 0...n.vals.array.items.length
                 v = n.vals.array.items[j]
-                s += @indent+"#{v.text} = #{listVar}[#{iterVar}][#{j}]\n"
+                s += @indent+"#{v.text} = #{listVar}[#{iterVar}][#{j}]" + eb
         else if n.vals.length > 1
             lv = n.vals[1].text
-            s += gi+"for (#{lv} = 0; #{lv} < #{listVar}.length; #{lv}++)\n"
-            s += gi+"{\n"
-            s += @indent+"#{varPrefix}#{n.vals[0].text} = #{listVar}[i]\n"
+            s += gi+"for (#{lv} = 0; #{lv} < #{listVar}.length; #{lv}++)" + nl
+            s += gi+"{" + nl
+            s += @indent+"#{varPrefix}#{n.vals[0].text} = #{listVar}[i]" + eb
 
         for e in n.then ? []
             prefix = if lastPrefix and e == n.then[-1] then lastPrefix else ''
             postfix = if lastPostfix and e == n.then[-1] then lastPostfix else ''
-            s += @indent + prefix+@node(e)+postfix + '\n'
+            s += @indent + prefix+@node(e)+postfix + nl
         s += gi+"}"
 
-        @ded()
+        @ded() if not lineBreak
         s
 
-    for_of: (n, varPrefix='', lastPrefix='', lastPostfix) ->
+    for_of: (n, varPrefix='', lastPrefix='', lastPostfix='', lineBreak) ->
 
-        gi = @ind()
+        gi = lineBreak or @ind()
+        nl = lineBreak or '\n'
+        eb = lineBreak and ';' or '\n'
 
         key = n.vals.text ? n.vals[0]?.text
         val = n.vals[1]?.text
 
         obj = @node n.list
         s = ''
-        s += "for (#{key} in #{obj})\n"
-        s += gi+"{\n"
+        s += "for (#{key} in #{obj})"+nl
+        s += gi+"{"+nl
         if val
-            s += @indent+"#{varPrefix}#{val} = #{obj}[#{key}]\n"
+            s += @indent+"#{varPrefix}#{val} = #{obj}[#{key}]" + eb
         for e in n.then ? []
             prefix = if lastPrefix and e == n.then[-1] then lastPrefix else ''
             postfix = if lastPostfix and e == n.then[-1] then lastPostfix else ''
-            s += @indent + prefix+@node(e)+postfix + '\n'
+            s += @indent + prefix+@node(e)+postfix + nl
             
         s += gi+"}"
 
-        @ded()
+        @ded() if not lineBreak
         s
         
     # 000       0000000   0000000   00     00  00000000   
@@ -603,20 +606,10 @@ class Renderer
         
         comp = (f) =>
             switch f.inof.text
-                when 'in' then @for_in f, 'var ' 'result.push(' ')'
-                when 'of' then @for_of f, 'var ' 'result.push(' ')'
+                when 'in' then @for_in f, 'var ' 'result.push(' ')' ' '
+                when 'of' then @for_of f, 'var ' 'result.push(' ')' ' '
 
-        @ind()
-        t = """
-            (function ()
-            {
-                var result = []
-                #{comp n.for}
-                return result
-            })()
-            """
-        @ded()
-        t
+        "(function () { var result = []; #{comp n.for} return result })()"
 
     # 000   000  000   000  000  000      00000000
     # 000 0 000  000   000  000  000      000
@@ -779,7 +772,13 @@ class Renderer
                 return '(' + @atom(op.lhs) + sep + o + sep + @atom(op.rhs.operation.lhs) + ' && ' + kstr.lstrip(@atom(op.rhs)) + ')'
 
         open = close = ''
-        if o != '=' and op.rhs?.operation?.operator.text == '='
+        if o == '='
+            if op.lhs.object
+                s = ''
+                for keyval in op.lhs.object.keyvals
+                    s += "#{keyval.text} = #{@atom(op.rhs)}.#{keyval.text}\n"
+                return s
+        else if op.rhs?.operation?.operator.text == '='
             open = '('
             close = ')'
 

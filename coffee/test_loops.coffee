@@ -190,31 +190,12 @@ describe 'loops' ->
         
         cmp "m = ([k, r.exec t] for k,r of rgs)",
             """
-            m = (function ()
-            {
-                var result = []
-                for (k in rgs)
-                {
-                    var r = rgs[k]
-                    result.push([k,r.exec(t)])
-                }
-                return result
-            })()
+            m = (function () { var result = []; for (k in rgs)  { var r = rgs[k];result.push([k,r.exec(t)])  } return result })()
             """
 
         cmp "m = ([i, k] for k,i in rgs)",
             """
-            m = (function ()
-            {
-                var result = []
-                var list = rgs
-                for (i = 0; i < list.length; i++)
-                {
-                    var k = list[i]
-                    result.push([i,k])
-                }
-                return result
-            })()
+            m = (function () { var result = []; var list = rgs; for (i = 0; i < list.length; i++)  { var k = list[i];result.push([i,k])  } return result })()
             """
             
         evl "1"                                 1

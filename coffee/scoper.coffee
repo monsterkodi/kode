@@ -70,7 +70,10 @@ class Scoper
                 if e.operation.lhs?.text
                     insert e.operation.lhs.text, e.operation.operator.text
                 else if e.operation.lhs.object
-                    log 'scoper curly lhs' e.operation.lhs
+                    # log 'scoper curly lhs' e.operation.lhs.object.keyvals
+                    for keyval in e.operation.lhs.object.keyvals
+                        if keyval.type == 'var'
+                            insert keyval.text, 'curly'
                     
             if e.for
                 if e.for.vals.text
