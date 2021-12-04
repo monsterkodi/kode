@@ -535,7 +535,9 @@ class Renderer
         gi = lineBreak or @ind()
         nl = lineBreak or '\n'
         eb = lineBreak and ';' or '\n'
-
+        
+        g2 = if lineBreak then '' else @indent
+        
         list = @node n.list
 
         if not list or list == 'undefined'
@@ -549,23 +551,23 @@ class Renderer
         if n.vals.text
             s += gi+"for (var #{iterVar} = 0; #{iterVar} < #{listVar}.length; #{iterVar}++)" + nl
             s += gi+"{"+nl
-            s += @indent+"#{n.vals.text} = #{listVar}[#{iterVar}]" + eb
+            s += g2+"#{n.vals.text} = #{listVar}[#{iterVar}]" + eb
         else if n.vals.array?.items
             s += gi+"for (var #{iterVar} = 0; #{iterVar} < #{listVar}.length; #{iterVar}++)" + nl
             s += gi+"{"+nl
             for j in 0...n.vals.array.items.length
                 v = n.vals.array.items[j]
-                s += @indent+"#{v.text} = #{listVar}[#{iterVar}][#{j}]" + eb
+                s += g2+"#{v.text} = #{listVar}[#{iterVar}][#{j}]" + eb
         else if n.vals.length > 1
             lv = n.vals[1].text
             s += gi+"for (#{lv} = 0; #{lv} < #{listVar}.length; #{lv}++)" + nl
             s += gi+"{" + nl
-            s += @indent+"#{varPrefix}#{n.vals[0].text} = #{listVar}[i]" + eb
+            s += g2+"#{varPrefix}#{n.vals[0].text} = #{listVar}[i]" + eb
 
         for e in n.then ? []
             prefix = if lastPrefix and e == n.then[-1] then lastPrefix else ''
             postfix = if lastPostfix and e == n.then[-1] then lastPostfix else ''
-            s += @indent + prefix+@node(e)+postfix + nl
+            s += g2 + prefix+@node(e)+postfix + nl
         s += gi+"}"
 
         @ded() if not lineBreak
@@ -576,6 +578,7 @@ class Renderer
         gi = lineBreak or @ind()
         nl = lineBreak or '\n'
         eb = lineBreak and ';' or '\n'
+        g2 = if lineBreak then '' else @indent
 
         key = n.vals.text ? n.vals[0]?.text
         val = n.vals[1]?.text
@@ -585,11 +588,11 @@ class Renderer
         s += "for (#{key} in #{obj})"+nl
         s += gi+"{"+nl
         if val
-            s += @indent+"#{varPrefix}#{val} = #{obj}[#{key}]" + eb
+            s += g2+"#{varPrefix}#{val} = #{obj}[#{key}]" + eb
         for e in n.then ? []
             prefix = if lastPrefix and e == n.then[-1] then lastPrefix else ''
             postfix = if lastPostfix and e == n.then[-1] then lastPostfix else ''
-            s += @indent + prefix+@node(e)+postfix + nl
+            s += g2+ prefix+@node(e)+postfix + nl
             
         s += gi+"}"
 
@@ -912,6 +915,12 @@ class Renderer
             o = if p.dots.text == '...' then '<' else '<='
             "(function() { var r = []; for (var i = #{@node p.from}; i #{o} #{@node p.upto}; i++){ r.push(i); } return r; }).apply(this)"
 
+    # 00000000  00000000   00000000   0000000  000   000  000   000   0000000   00000000   
+    # 000       000   000  000       000       000   000  000   000  000   000  000   000  
+    # 000000    0000000    0000000   0000000   000000000   000 000   000000000  0000000    
+    # 000       000   000  000            000  000   000     000     000   000  000   000  
+    # 000       000   000  00000000  0000000   000   000      0      000   000  000   000  
+    
     freshVar: (name, suffix=0) ->
 
         for vars in @varstack

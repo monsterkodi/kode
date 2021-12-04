@@ -79,8 +79,6 @@ class Stripol
         s = if e.type == 'triple' then e.text[3...-3] else e.text[1...-1]
         chunks = @dissect s, e.line, e.col
         if chunks.length > 1
-            # log red(e.text), green s
-            # print.noon 'chunks' chunks
             if chunks[-1].type != 'close'
                 chunks.push type:'close' text:'' line:e.line, col:e.col+s.length
                 
@@ -97,19 +95,11 @@ class Stripol
 
         c = 0; chunks = []
             
-        push = (type,text) -> 
-            chunks.push type:type, text:text, line:line, col:col+c
-            # switch type
-                # when 'open'  then log m6('open'),  g4 text
-                # when 'code'  then log m6('code'),  w8 text
-                # when 'midl'  then log m6('midl'),  g4 text
-                # when 'close' then log m6('close'), g4 text
+        push = (type,text) -> chunks.push type:type, text:text, line:line, col:col+c
         
         while c < s.length
             
             t = s[c..]
-            
-            # log r5("outer"), b8(c), g3(t)
             
             if not m = /(?<!\\)#{/.exec t
                 push 'close' t
@@ -123,8 +113,6 @@ class Stripol
             while c < s.length
                 
                 t = s[c..]
-                
-                # log r3("inner"), b8(c), g2(t)
                 
                 rgs = 
                     triple:  /"""(?:.|\n)*?"""/     
@@ -154,7 +142,6 @@ class Stripol
                         c += index+length
                         true
                     when 'triple' 'double' 'single'
-                        # log 'str' s[ic...c+index+length]
                         c += index+length
                         false
                     else
