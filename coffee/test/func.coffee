@@ -65,7 +65,7 @@ describe 'func' ->
         cmp """
             a = (a,b,c) -> d
             """ """
-            
+
             a = function (a, b, c)
             {
                 return d
@@ -75,7 +75,7 @@ describe 'func' ->
         cmp """
             a.x = (y,z) -> q
             """ """
-            
+
             a.x = function (y, z)
             {
                 return q
@@ -86,7 +86,7 @@ describe 'func' ->
             a = ->
                 b = ->
             """ """
-            
+
             a = function ()
             {
                 var b
@@ -101,7 +101,7 @@ describe 'func' ->
                 b = (e, f) -> g
                 b
             """ """
-            
+
             a = function (b, c)
             {
                 var b
@@ -118,7 +118,7 @@ describe 'func' ->
             a = (b,c) ->
                 b = (e, f) -> h
             """ """
-            
+
             a = function (b, c)
             {
                 var b
@@ -134,7 +134,7 @@ describe 'func' ->
             a = (b,c) ->
                 (e, f) -> j
             """ """
-            
+
             a = function (b, c)
             {
                 return function (e, f)
@@ -148,7 +148,7 @@ describe 'func' ->
             f = ->
                 (a) -> 1
             """ """
-            
+
             f = function ()
             {
                 return function (a)
@@ -162,9 +162,9 @@ describe 'func' ->
             a = ->
                 'a'
             1
-            
+
             """ """
-            
+
             a = function ()
             {
                 return 'a'
@@ -179,12 +179,12 @@ describe 'func' ->
             b = ->
                 log 'b'
             """ """
-            
+
             a = function ()
             {
                 console.log('a')
             }
-            
+
             b = function ()
             {
                 console.log('b')
@@ -251,7 +251,7 @@ describe 'func' ->
             f = =>
                 if 2 then return
             """ """
-            
+
             f = function ()
             {
                 if (2)
@@ -266,7 +266,7 @@ describe 'func' ->
                 if 3
                     log '42'
             """ """
-            
+
             f = function ()
             {
                 if (3)
@@ -275,13 +275,13 @@ describe 'func' ->
                 }
             }
             """
-            
+
         cmp """
             f = ->
                 if 4
                     '42'
             """ """
-            
+
             f = function ()
             {
                 if (4)
@@ -290,10 +290,10 @@ describe 'func' ->
                 }
             }
             """
-            
+
         cmp """
-            -> 
-                if 1 then h 
+            ->
+                if 1 then h
                 else if 2
                     if 3 then j else k
                 else l
@@ -320,6 +320,15 @@ describe 'func' ->
                     return l
                 }
             })
+            """
+
+        cmp """
+            return 'Q' if t == 'W'
+            """ """
+            if (t === 'W')
+            {
+                return 'Q'
+            }
             """
 
     #  0000000   0000000   000      000       0000000
@@ -464,7 +473,7 @@ describe 'func' ->
             a.b({c:2})
             x = y
             """
-            
+
         cmp "a = (-> 1)()",
             """
             a = (function ()
@@ -474,7 +483,7 @@ describe 'func' ->
             """
 
         cmp """
-            a = (-> 
+            a = (->
                 1)()
             """ """
             a = (function ()

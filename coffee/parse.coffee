@@ -151,7 +151,7 @@ class Parse # the base class of Parser
 
             while   (
                     tokens[0]?.text in ['if' 'for' 'while'] and 
-                    @stack[-1] not in ['▸args'] and
+                    @stack[-1] not in ['▸args' '▸return'] and
                     last.line == tokens[0].line
                     )
                 @verb "exps #{tokens[0].text }Tail" e, @stack
