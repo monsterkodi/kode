@@ -221,12 +221,12 @@ class Parser extends Parse
         e = switch:
                 match:  match
                 whens:  whens
-        
+
         if tokens[0]?.text == 'else'
 
             tokens.shift()
 
-            e.switch.else = @exps 'else' tokens, 'nl'
+            e.switch.else = @block 'else' tokens
             
         @pop 'switch'
         
@@ -420,6 +420,7 @@ class Parser extends Parse
         @push "op#{op.text}"
         
         if op.text == '='
+            
             rhs = @exp tokens
             
             if rhs.switch

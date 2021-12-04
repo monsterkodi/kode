@@ -656,12 +656,16 @@ class Renderer
         s = ''
         s += "switch (#{@node n.match})\n"
         s += gi+"{\n"
+        
         for e in n.whens ? []
             s += gi+ @node(e) + '\n'
-        if n.else
+            
+        if valid n.else
             s += @indent+'default:\n'
+            log 'n.else' n.else
             for e in n.else
                 s += @indent+'    '+ @node(e) + '\n'
+                
         s += gi+"}\n"
 
         @ded()
