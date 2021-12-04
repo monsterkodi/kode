@@ -6,7 +6,7 @@
 000  000              000     000   000  00000000  000   000
 ###
 
-{ cmp } = require './test_utils'
+{ cmp } = require './utils'
 
 describe 'if' ->
 

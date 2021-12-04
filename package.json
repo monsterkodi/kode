@@ -1,11 +1,11 @@
 {
   "name": "kode",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "description": "programming language",
   "main": "js/kode.js",
   "scripts": {
-    "test": "mocha -c --require koffee/js/register coffee/test*.coffee coffee/test/*.coffee",
-    "watch": "mocha -w -c --require koffee/js/register coffee/test*.coffee coffee/test/*.coffee"
+    "test": "mocha -c --require koffee/js/register coffee/test/*.coffee",
+    "watch": "mocha -w -c --require koffee/js/register coffee/test/*.coffee"
   },
   "author": "monsterkodi",
   "license": "Unlicense",

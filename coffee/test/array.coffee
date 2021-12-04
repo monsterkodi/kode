@@ -6,7 +6,7 @@
 000   000  000   000  000   000  000   000     000
 ###
 
-{ cmp, evl } = require './test_utils'
+{ cmp, evl } = require './utils'
 
 describe 'array' ->
 

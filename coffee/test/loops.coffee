@@ -6,7 +6,7 @@
 0000000   0000000    0000000   000        0000000
 ###
 
-{ cmp, evl } = require './test_utils'
+{ cmp, evl } = require './utils'
 
 describe 'loops' ->
 

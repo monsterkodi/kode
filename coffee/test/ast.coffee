@@ -5,7 +5,7 @@
 # 000   000       000     000     
 # 000   000  0000000      000     
 
-{ast} = require './test_utils'
+{ast} = require './utils'
 
 describe 'ast' ->
 

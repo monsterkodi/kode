@@ -6,7 +6,7 @@
 000   000  000  0000000    0000000
 ###
 
-{cmp} = require './test_utils'
+{cmp} = require './utils'
 
 describe 'misc' ->
 
