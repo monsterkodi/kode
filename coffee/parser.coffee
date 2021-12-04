@@ -421,6 +421,21 @@ class Parser extends Parse
         
         if op.text == '='
             rhs = @exp tokens
+            
+            if rhs.switch
+                @verb 'rhs is switch'
+                rhs =
+                    call:
+                        callee:
+                            parens:
+                                exps:   [
+                                            func:
+                                                arrow:
+                                                    text: '->'
+                                                body:
+                                                    vars: []
+                                                    exps: [rhs]
+                                        ]
         else
             rhs = @exp tokens
                 

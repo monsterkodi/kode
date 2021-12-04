@@ -376,13 +376,19 @@ class Renderer
     #  0000000  000   000  0000000  0000000
 
     call: (p) ->
+        
         if p.callee.text in ['log''warn''error']
             p.callee.text = "console.#{p.callee.text}"
+            
         callee = @node p.callee
-        if callee == 'new'
-            "#{callee} #{@nodes p.args, ','}"
+        
+        if p.args
+            if callee == 'new'
+                "#{callee} #{@nodes p.args, ','}"
+            else
+                "#{callee}(#{@nodes p.args, ','})"
         else
-            "#{callee}(#{@nodes p.args, ','})"
+            "#{callee}()"
 
     # 000  00000000
     # 000  000
@@ -678,7 +684,8 @@ class Renderer
             gi = @ind()
             s += gi + '    ' + @node(e) + '\n'
             @ded()
-        s += @indent + '    ' + 'break'
+        if not (n.then and n.then[-1] and n.then[-1].return)
+            s += @indent + '    ' + 'break' 
         s
 
     # 000000000  00000000   000   000  
@@ -775,12 +782,15 @@ class Renderer
                 return '(' + @atom(op.lhs) + sep + o + sep + @atom(op.rhs.operation.lhs) + ' && ' + kstr.lstrip(@atom(op.rhs)) + ')'
 
         open = close = ''
+        
         if o == '='
-            if op.lhs.object
+            
+            if op.lhs.object # lhs is curly, eg. {x,y} = require ''
                 s = ''
                 for keyval in op.lhs.object.keyvals
                     s += "#{keyval.text} = #{@atom(op.rhs)}.#{keyval.text}\n"
                 return s
+                            
         else if op.rhs?.operation?.operator.text == '='
             open = '('
             close = ')'
@@ -806,7 +816,9 @@ class Renderer
     # 000        000   000  000   000  000       000  0000       000
     # 000        000   000  000   000  00000000  000   000  0000000
 
-    parens: (p) -> "(#{@nodes p.exps})"
+    parens: (p) -> 
+        # log 'parens' p
+        "(#{@nodes p.exps})"
 
     #  0000000   0000000          000  00000000   0000000  000000000
     # 000   000  000   000        000  000       000          000

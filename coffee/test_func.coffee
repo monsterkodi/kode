@@ -464,3 +464,21 @@ describe 'func' ->
             a.b({c:2})
             x = y
             """
+            
+        cmp "a = (-> 1)()",
+            """
+            a = (function ()
+            {
+                return 1
+            })()
+            """
+
+        cmp """
+            a = (-> 
+                1)()
+            """ """
+            a = (function ()
+            {
+                return 1
+            })()
+            """

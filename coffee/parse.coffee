@@ -103,7 +103,7 @@ class Parse # the base class of Parser
                     print.tokens 'before unshifting dangling block tokens' tokens if @debug
                     while block.tokens.length
                         tokens.unshift block.tokens.pop()
-                    print.tokens 'after unshifting dangling block tokens' tokens if @debug
+                    print.tokens 'exps after unshifting dangling block tokens' tokens if @debug
                     
                 if tokens[0]?.text == ','
                     @verb "exps block end shift comma , and continue..."
@@ -526,6 +526,7 @@ class Parse # the base class of Parser
             return tokens.shift()
             
         error "parse.shiftClose: '#{rule}' expected closing '#{text}'"
+        print.tokens "shiftClose missing close '#{text}'" tokens
         
     #  0000000  000   000  000  00000000  000000000  000   000  00000000  000   000  000      000  000   000  00000000  
     # 000       000   000  000  000          000     0000  000  000       000 0 000  000      000  0000  000  000       
@@ -596,6 +597,12 @@ class Parse # the base class of Parser
             
             if block.tokens.length
                 print.tokens 'then: dangling block tokens' tokens if @debug
+                while block.tokens.length
+                    @verb 'unshift' block.tokens[-1]
+                    tokens.unshift block.tokens.pop()
+                    
+                print.tokens 'then after unshifting dangling block tokens' tokens
+                
         else
             @verb 'no then and no block after #{id}!'
             # warn "'#{id}' expected then or block"
@@ -622,6 +629,7 @@ class Parse # the base class of Parser
         # @verb 'block next token type' tokens[0]?.type 
         
         if tokens[0]?.type == 'block'
+            origTokens = tokens
             block = tokens.shift()
             tokens = block.tokens
             nl = null
@@ -634,6 +642,11 @@ class Parse # the base class of Parser
 
         if block and block.tokens.length
             print.tokens 'dangling block tokens' tokens if @debug
+            while block.tokens.length
+                @verb 'unshift' block.tokens[-1]
+                origTokens.unshift block.tokens.pop()
+                
+            print.tokens 'block after unshifting dangling block tokens' origTokens if @debug
             
         exps
                             

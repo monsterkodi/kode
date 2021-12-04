@@ -145,32 +145,61 @@ describe 'switch' ->
             }\n
             """
             
+    #  0000000    0000000   0000000  000   0000000   000   000  
+    # 000   000  000       000       000  000        0000  000  
+    # 000000000  0000000   0000000   000  000  0000  000 0 000  
+    # 000   000       000       000  000  000   000  000  0000  
+    # 000   000  0000000   0000000   000   0000000   000   000  
+    
+    it 'assign' ->
+         
         cmp """
-            b = switch matches[0][0]
-                when 'close'
-                    c += index+length
+            b = switch c
+                when 'c'
                     true
-                when 'triple' 'double' 'single'
-                    c += index+length
+                when 'd'
                     false
-                else
-                    log 'unhandled?' matches[0]
-                    c += index+length
-                    true
             """ """
-            b = switch (matches[0][0])
+            b = (function ()
             {
-                case 'close':
-                    c += index + length
-                    true
-                    break
-                case 'triple':
-                case 'double':
-                case 'single':
-                    c += index + length
-                    false
-                    break
-                default:
-            }\n
+                switch (c)
+                {
+                    case 'c':
+                        return true
+            
+                    case 'd':
+                        return false
+            
+                }
+            
+            })()
             """
 
+        # cmp """
+            # b = switch matches[0][0]
+                # when 'close'
+                    # c += index+length
+                    # true
+                # when 'triple' 'double' 'single'
+                    # c += index+length
+                    # false
+                # else
+                    # log 'unhandled?' matches[0]
+                    # c += index+length
+                    # true
+            # """ """
+            # b = switch (matches[0][0])
+            # {
+                # case 'close':
+                    # c += index + length
+                    # true
+                    # break
+                # case 'triple':
+                # case 'double':
+                # case 'single':
+                    # c += index + length
+                    # false
+                    # break
+                # default:
+            # }\n
+            # """
