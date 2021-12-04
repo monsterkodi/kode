@@ -14,6 +14,7 @@ kode = new Kode()
 module.exports = 
     
     evl: (c,p) -> chai.assert.deepEqual kode.eval(c), p
+    sme: (c,p) -> kode.compile(c).should.eql kode.compile(p)
     ast: (c,p) -> kode.astr(c, no).should.eql p
     cmp: (c,p) -> 
         k = kode.compile c

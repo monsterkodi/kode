@@ -175,31 +175,60 @@ describe 'switch' ->
             })()
             """
 
+        cmp """
+            b = switch matches[0][0]
+                when 'close'
+                    c += index+length
+                    true
+                when 'triple' 'double' 'single'
+                    c += index+length
+                    false
+                else
+                    log 'unhandled?' matches[0]
+                    c += index+length
+                    true
+            """ """
+            b = (function ()
+            {
+                switch (matches[0][0])
+                {
+                    case 'close':
+                        c += index + length
+                        return true
+            
+                    case 'triple':
+                    case 'double':
+                    case 'single':
+                        c += index + length
+                        return false
+            
+                    default:
+                        console.log('unhandled?',matches[0])
+                        c += index + length
+                        return true
+                }
+            
+            })()
+            """
+            
+    # it 'nicer' ->
+#             
         # cmp """
-            # b = switch matches[0][0]
-                # when 'close'
-                    # c += index+length
-                    # true
-                # when 'triple' 'double' 'single'
-                    # c += index+length
-                    # false
-                # else
-                    # log 'unhandled?' matches[0]
-                    # c += index+length
-                    # true
+            # switch x
+                # 'bla'   ➜ bla
+                # 'hello' ➜ blub
+                        # ➜ fark
             # """ """
-            # b = switch (matches[0][0])
-            # {
-                # case 'close':
-                    # c += index + length
-                    # true
-                    # break
-                # case 'triple':
-                # case 'double':
-                # case 'single':
-                    # c += index + length
-                    # false
-                    # break
-                # default:
-            # }\n
             # """
+
+        # cmp """
+            # switch x
+                # 'x' 
+                # 1 2 3
+                # 'bla'   ➜ bla
+                # 'a' 'b'
+                # 'hello' ➜ blub
+                        # ➜ fark
+            # """ """
+            # """
+                        

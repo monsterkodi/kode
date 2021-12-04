@@ -9,7 +9,7 @@
 kstr  = require 'kstr'
 print = require './print'
 
-{ empty, firstLineCol, lastLineCol } = require './utils'
+{ empty, valid, firstLineCol, lastLineCol } = require './utils'
 
 class Parse # the base class of Parser
 
@@ -655,6 +655,36 @@ class Parse # the base class of Parser
             print.tokens 'block after unshifting dangling block tokens' origTokens if @debug
             
         exps
+        
+    #  0000000  000   000  0000000    0000000    000       0000000    0000000  000   000   0000000  
+    # 000       000   000  000   000  000   000  000      000   000  000       000  000   000       
+    # 0000000   000   000  0000000    0000000    000      000   000  000       0000000    0000000   
+    #      000  000   000  000   000  000   000  000      000   000  000       000  000        000  
+    # 0000000    0000000   0000000    0000000    0000000   0000000    0000000  000   000  0000000   
+    
+    subBlocks: (block) ->
+        
+        subbs = [[]]
+        
+        tokens = block.tokens
+        
+        if tokens[-1].type == 'block' and tokens[-1].tokens[0].text == 'then'
+            elseBlock = tokens.pop()
+            elseTokens = elseBlock.tokens
+            elseTokens[0].text = 'else'
+            
+        while valid tokens
+            t = tokens.shift()
+            if t.type == 'nl'
+                subbs.push []
+                if tokens[0].text == 'then'
+                    tokens[0].text = 'else'
+            else
+                subbs[-1].push t
+
+        subbs.push elseTokens if elseTokens
+                
+        subbs
                             
     #  0000000  000   000  00000000   0000000   00000000     
     # 000       000   000  000       000   000  000   000    

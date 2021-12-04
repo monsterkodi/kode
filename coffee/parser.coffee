@@ -38,10 +38,12 @@ class Parser extends Parse
 
     if: (tok, tokens) ->
 
-        @push 'if'
+        if tokens[0].type == 'block'
+            return @ifBlock tok, tokens
 
-        cond = @exp tokens
+        @push 'if'
         
+        cond = @exp tokens
         thn = @then 'if' tokens
 
         e = if:
@@ -49,6 +51,11 @@ class Parser extends Parse
                 then:   thn
                 
         @shiftNewlineTok 'if after then' tokens, tok, tokens[1]?.text == 'else'
+        
+        if tokens[0]?.type == 'block'
+            @verb 'block after if then -> switch to block mode' 
+            @pop 'if'
+            return @ifBlock tok, tokens, e
         
         while tokens[0]?.text == 'else' and tokens[1]?.text == 'if'
 
@@ -74,6 +81,43 @@ class Parser extends Parse
 
             e.if.else = @block 'else' tokens
             
+        @pop 'if'
+        e
+        
+    # 000  00000000  0000000    000       0000000    0000000  000   000  
+    # 000  000       000   000  000      000   000  000       000  000   
+    # 000  000000    0000000    000      000   000  000       0000000    
+    # 000  000       000   000  000      000   000  000       000  000   
+    # 000  000       0000000    0000000   0000000    0000000  000   000  
+    
+    ifBlock: (tok, tokens, e) ->
+        
+        @push 'if'
+
+        subbs = @subBlocks tokens.shift()
+        
+        if not e
+            tokens = subbs.shift()
+            e = if:
+                    cond:   @exp tokens
+                    then:   @then 'if' tokens
+        
+        while subbs.length
+            tokens = subbs.shift()
+            if tokens[0]?.text == 'else'
+                tokens.shift()
+                e.if.else = @block 'else' tokens
+                break
+                
+            cond = @exp tokens
+            thn  = @then 'elif' tokens
+
+            e.if.elifs ?= []
+            e.if.elifs.push
+                elif:
+                    cond: cond
+                    then: thn
+                    
         @pop 'if'
         e
         

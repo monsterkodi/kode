@@ -675,7 +675,6 @@ class Renderer
             
         if valid n.else
             s += @indent+'default:\n'
-            log 'n.else' n.else
             for e in n.else
                 s += @indent+'    '+ @node(e) + '\n'
                 

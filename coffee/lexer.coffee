@@ -56,8 +56,12 @@ class Lexer
                 if match?.index == 0
 
                     value = if key == 'nl' then '' else match[0]
+                    if key == 'then' then value = 'then'; key = 'keyword'
+                    if value == 'then' and tokens[-2]?.text == 'else' 
+                        # skip then after else
+                    else
 
-                    tokens.push type:key, text:value, line:line, col:col
+                        tokens.push type:key, text:value, line:line, col:col
 
                     if key == 'nl'
                         col = 0
