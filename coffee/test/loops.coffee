@@ -141,6 +141,17 @@ describe 'loops' ->
                 return ['',null,undefined].indexOf(a) >= 0 || b
             }
             """
+            
+        cmp """
+            @exp body.exps,k,e for e,k in body.exps
+            """ """
+            var list = body.exps
+            for (k = 0; k < list.length; k++)
+            {
+                e = list[k]
+                this.exp(body.exps,k,e)
+            }
+            """
 
     # 00000000   0000000   00000000          0000000   00000000
     # 000       000   000  000   000        000   000  000

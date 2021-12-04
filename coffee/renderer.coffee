@@ -578,10 +578,10 @@ class Renderer
                 v = n.vals.array.items[j]
                 s += g2+"#{v.text} = #{listVar}[#{iterVar}][#{j}]" + eb
         else if n.vals.length > 1
-            lv = n.vals[1].text
-            s += gi+"for (#{lv} = 0; #{lv} < #{listVar}.length; #{lv}++)" + nl
+            iterVar = n.vals[1].text
+            s += gi+"for (#{iterVar} = 0; #{iterVar} < #{listVar}.length; #{iterVar}++)" + nl
             s += gi+"{" + nl
-            s += g2+"#{varPrefix}#{n.vals[0].text} = #{listVar}[i]" + eb
+            s += g2+"#{varPrefix}#{n.vals[0].text} = #{listVar}[#{iterVar}]" + eb
 
         for e in n.then ? []
             prefix = if lastPrefix and e == n.then[-1] then lastPrefix else ''
