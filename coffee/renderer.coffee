@@ -822,11 +822,17 @@ class Renderer
                 for keyval in op.lhs.object.keyvals
                     s += "#{keyval.text} = #{@atom(op.rhs)}.#{keyval.text}\n"
                 return s
+                
+        else if o == '!'
+
+            if op.rhs?.incond
+                    open = '('
+                    close = ')'
                             
-        else if op.rhs?.operation?.operator.text == '=' or o == '!' and op.rhs?.type not in ['var''keyword']
+        else if op.rhs?.operation?.operator.text == '='
             open = '('
             close = ')'
-
+            
         first = firstLineCol op.lhs
         prfx = if first.col == 0 and op.rhs?.func then '\n' else ''
             
