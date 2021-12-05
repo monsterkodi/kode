@@ -82,6 +82,7 @@ class Renderer
                 when 'while'     then @while v
                 when 'return'    then @return v
                 when 'class'     then @class v
+                when 'function'  then @function v
                 when 'switch'    then @switch v
                 when 'when'      then @when v
                 when 'assert'    then @assert v
@@ -236,7 +237,17 @@ class Renderer
         mthds = n.body
 
         if mthds?.length
-            mthds = @prepareMethods mthds
+            
+            [constructor, bind] = @prepareMethods mthds
+            
+            if bind.length
+                for b in bind
+                    bn = b.keyval.val.func.name.text
+                    constructor.keyval.val.func.body.exps ?= []
+                    constructor.keyval.val.func.body.exps.unshift
+                        type: 'code'
+                        text: "this.#{bn} = this.#{bn}.bind(this)"
+            
             @indent = '    '
             for mi in 0...mthds.length
                 s += '\n' if mi
@@ -245,7 +256,81 @@ class Renderer
             @indent = ''
         s += '}\n'
         s
+        
+    # 00     00  000000000  000   000  0000000
+    # 000   000     000     000   000  000   000
+    # 000000000     000     000000000  000   000
+    # 000 0 000     000     000   000  000   000
+    # 000   000     000     000   000  0000000
 
+    mthd: (n) ->
+
+        if n.keyval
+            s  = '\n'
+            s += @indent + @func n.keyval.val.func
+        s
+
+    # 00000000  000   000  000   000   0000000  000000000  000   0000000   000   000  
+    # 000       000   000  0000  000  000          000     000  000   000  0000  000  
+    # 000000    000   000  000 0 000  000          000     000  000   000  000 0 000  
+    # 000       000   000  000  0000  000          000     000  000   000  000  0000  
+    # 000        0000000   000   000   0000000     000     000   0000000   000   000  
+    
+    function: (n) ->
+
+        s = '\n'
+        s += "#{n.name.text} = (function ()\n"
+        s += '{\n'
+
+        # if n.extends
+            # s += " extends " + n.extends.map((e) -> e.text).join ', '
+
+        mthds = n.body
+
+        if mthds?.length
+            
+            [constructor, bind] = @prepareMethods mthds
+            
+            if bind.length
+                for b in bind
+                    bn = b.keyval.val.func.name.text
+                    constructor.keyval.val.func.body.exps ?= []
+                    constructor.keyval.val.func.body.exps.unshift
+                        type: 'code'
+                        text: "this[\"#{bn}\"] = this[\"#{bn}\"].bind(this)"
+            
+            @indent = '    '
+            for mi in 0...mthds.length
+                s += @funcs mthds[mi], n.name.text
+                s += '\n'
+            @indent = ''
+            
+        s += "    return #{n.name.text}\n"
+        s += '})()\n'
+        s
+        
+    # 00000000  000   000  000   000   0000000   0000000  
+    # 000       000   000  0000  000  000       000       
+    # 000000    000   000  000 0 000  000       0000000   
+    # 000       000   000  000  0000  000            000  
+    # 000        0000000   000   000   0000000  0000000   
+    
+    funcs: (n, className) ->
+
+        s = ''
+        if n.keyval
+            f = n.keyval.val.func
+            if f.name.text == 'constructor'
+                s = @indent + @func f, 'function ' + className
+                s += '\n'
+            else if f.name.text.startsWith 'static'
+                s = @indent + @func f, "#{className}[\"#{f.name.text[7..]}\"] = function"
+                s += '\n'
+            else
+                s = @indent + @func f, "#{className}.prototype[\"#{f.name.text}\"] = function"
+                s += '\n'
+        s
+        
     # 00000000   00000000   00000000  00000000   00     00  00000000  000000000  000   000
     # 000   000  000   000  000       000   000  000   000  000          000     000   000
     # 00000000   0000000    0000000   00000000   000000000  0000000      000     000000000
@@ -279,41 +364,23 @@ class Renderer
             constructor.keyval.val.func.name = type:'name' text:'constructor'
             mthds.unshift constructor
 
-        if bind.length
-            for b in bind
-                bn = b.keyval.val.func.name.text
-                constructor.keyval.val.func.body.exps ?= []
-                constructor.keyval.val.func.body.exps.push
-                    type: 'code'
-                    text: "this.#{bn} = this.#{bn}.bind(this)"
-        mthds
-
-    # 00     00  000000000  000   000  0000000
-    # 000   000     000     000   000  000   000
-    # 000000000     000     000000000  000   000
-    # 000 0 000     000     000   000  000   000
-    # 000   000     000     000   000  0000000
-
-    mthd: (n) ->
-
-        if n.keyval
-            s  = '\n'
-            s += @indent + @func n.keyval.val.func
-        s
-
+        [constructor, bind]
+        
     # 00000000  000   000  000   000   0000000
     # 000       000   000  0000  000  000
     # 000000    000   000  000 0 000  000
     # 000       000   000  000  0000  000
     # 000        0000000   000   000   0000000
 
-    func: (n) ->
+    func: (n, name) ->
 
         return '' if not n
 
         gi = @ind()
+        
+        name ?= n.name?.text ? 'function'
 
-        s = n.name?.text ? 'function'
+        s = name
         s += ' ('
 
         args = n.args?.parens?.exps
