@@ -896,6 +896,13 @@ class Renderer
                     s += "#{keyval.text} = #{@atom(op.rhs)}.#{keyval.text}\n"
                 return s
                 
+            if op.lhs.array # lhs is aray, eg. [x,y] = require ''
+                s = ''
+                for val in op.lhs.array.items
+                    i = op.lhs.array.items.indexOf val
+                    s += "#{val.text} = #{@atom(op.rhs)}[#{i}]\n"
+                return s
+                
         else if o == '!'
 
             if op.rhs?.incond or op.rhs?.operation?.operator?.text == '='

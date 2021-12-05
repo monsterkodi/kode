@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.36.0
+// monsterkodi/kode 0.40.0
 
 
 class Scoper
@@ -38,7 +38,7 @@ class Scoper
 
     exp (e)
     {
-        var insert, v, _73_34_, keyval, vals, _86_51_, _86_43_, key, val
+        var insert, v, _73_34_, keyval, val, vals, _89_51_, _89_43_, key
 
         if (!e)
         {
@@ -97,6 +97,18 @@ class Scoper
                         }
                     }
                 }
+                else if (e.operation.lhs.array)
+                {
+                    var list2 = (e.operation.lhs.array.items != null ? e.operation.lhs.array.items : [])
+                    for (var _81_28_ = 0; _81_28_ < list2.length; _81_28_++)
+                    {
+                        val = list2[_81_28_]
+                        if (val.type === 'var')
+                        {
+                            insert(val.text,'array')
+                        }
+                    }
+                }
             }
             if (e.for)
             {
@@ -106,11 +118,11 @@ class Scoper
                 }
                 else
                 {
-                    vals = ((_86_51_=(e.for.vals.array != null ? e.for.vals.array.items : undefined)) != null ? _86_51_ : e.for.vals)
-                    var list2 = (vals != null ? vals : [])
-                    for (var _87_26_ = 0; _87_26_ < list2.length; _87_26_++)
+                    vals = ((_89_51_=(e.for.vals.array != null ? e.for.vals.array.items : undefined)) != null ? _89_51_ : e.for.vals)
+                    var list3 = (vals != null ? vals : [])
+                    for (var _90_26_ = 0; _90_26_ < list3.length; _90_26_++)
                     {
-                        v = list2[_87_26_]
+                        v = list3[_90_26_]
                         if (v.text)
                         {
                             insert(v.text,'for')
