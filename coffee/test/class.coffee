@@ -18,7 +18,7 @@ describe 'class' ->
 
             class A
             {}
-            
+
             """
 
         cmp """
@@ -31,7 +31,7 @@ describe 'class' ->
                 constructor ()
                 {}
             }
-            
+
             """
 
         cmp """
@@ -39,34 +39,34 @@ describe 'class' ->
                 @a: ->
                 b: ->
             """ """
-            
+
             class C
             {
                 static a ()
                 {}
-            
+
                 b ()
                 {}
             }
-            
+
             """
-            
+
         cmp """
             class D
                 a: =>
             """ """
-            
+
             class D
             {
                 constructor ()
                 {
                     this.a = this.a.bind(this)
                 }
-            
+
                 a ()
                 {}
             }
-            
+
             """
 
         cmp """
@@ -74,16 +74,16 @@ describe 'class' ->
                 @f: ->
                 @g: ->
             """ """
-            
+
             class E
             {
                 static f ()
                 {}
-            
+
                 static g ()
                 {}
             }
-            
+
             """
 
         cmp """
@@ -92,64 +92,102 @@ describe 'class' ->
                 @g: ->
                 @h: ->
             """ """
-            
+
             class F
             {
                 static f ()
                 {}
-            
+
                 static g ()
                 {}
-            
+
                 static h ()
                 {}
             }
-            
+
             """
-            
+
         cmp """
             class X
-                @: -> 
+                @: ->
                     '@'
-                         
+
                 m: -> 'm'
             """ """
-            
+
             class X
             {
                 constructor ()
                 {
                     '@'
                 }
-            
+
                 m ()
                 {
                     return 'm'
                 }
             }
-            
+
             """
-             
+
         cmp """
             class Y
                 @: -> '@'
-                         
+
                 m: ->
                     'm'
             """ """
-            
+
             class Y
             {
                 constructor ()
                 {
                     '@'
                 }
-            
+
                 m ()
                 {
                     return 'm'
                 }
             }
-            
+
+            """
+
+    it 'bind' ->
+
+        cmp """
+            class A
+                @: -> @f()
+                b: => log 'hello'
+                f: ->
+                    g = => @b()
+                    g()
+            """ """
+
+            class A
+            {
+                constructor ()
+                {
+                    this.f()
+                    this.b = this.b.bind(this)
+                }
+
+                b ()
+                {
+                    console.log('hello')
+                }
+
+                f ()
+                {
+                    var g
+
+                    g = (function ()
+                    {
+                        return this.b()
+                    }).bind(this)
+                    return g()
+                }
+            }
+
             """
 

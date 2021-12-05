@@ -1,3 +1,5 @@
+// monsterkodi/kode 0.23.1
+
 var print
 
 empty = require('./utils').empty
@@ -180,7 +182,6 @@ class Stripol
                 }
             }
         }
-        console.log(chunks)
         return chunks
     }
 

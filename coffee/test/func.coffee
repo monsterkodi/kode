@@ -248,13 +248,13 @@ describe 'func' ->
     it 'return' ->
 
         cmp """
-            f = =>
-                if 2 then return
+            f = ->
+                if 232 then return
             """ """
 
             f = function ()
             {
-                if (2)
+                if (232)
                 {
                     return
                 }

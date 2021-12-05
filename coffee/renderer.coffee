@@ -335,6 +335,11 @@ class Renderer
         @varstack.pop()
 
         @ded()
+        
+        if n.arrow.text == '=>' and not n.name
+            log n
+            s = "(#{s}).bind(this)"
+        
         s
 
     #  0000000   00000000    0000000    0000000

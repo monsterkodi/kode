@@ -141,8 +141,6 @@ class Stripol
                         c += index+length
                         true
                 break if b
-            
-        log chunks
         chunks
                                 
     verb: -> if @verbose then console.log.apply console.log, arguments 

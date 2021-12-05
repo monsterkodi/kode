@@ -24,12 +24,12 @@ class Print
     #    000      0000000   000   000  00000000  000   000  0000000
 
     @tokens: (header, tokens) ->
-            log R3 y5 "\n #{header}"
-            log b6(kstr.pad '' 80 ' ')
-            s = ''
-            for tok,idx in tokens
-                s += @token tok, idx
-            log s
+        log R3 y5 "\n #{header}"
+        log b6(kstr.pad '' 80 ' ')
+        s = ''
+        for tok,idx in tokens
+            s += @token tok, idx
+        log s
 
     @token: (tok, idx='') ->
         
