@@ -486,23 +486,23 @@ class Parser extends Parse
         rhs = @exp tokens
         @pop "op#{op.text}"
         
-        if op.text == '='
+        # if op.text in ['=' '+=' '-=' '/=' '*=' '|=' '+' '-' '/' '*']
             
-            if rhs.switch
-                @verb 'rhs is switch'
-                rhs =
-                    call:
-                        callee:
-                            parens:
-                                exps:   [
-                                            func:
-                                                arrow:
-                                                    text: '->'
-                                                body:
-                                                    vars: []
-                                                    exps: [rhs]
-                                        ]
-        else if op.text == '?='
+        if rhs?.switch
+            @verb 'rhs is switch'
+            rhs =
+                call:
+                    callee:
+                        parens:
+                            exps:   [
+                                        func:
+                                            arrow:
+                                                text: '->'
+                                            body:
+                                                vars: []
+                                                exps: [rhs]
+                                    ]
+        if op.text == '?='
             
             op.text = '='
             

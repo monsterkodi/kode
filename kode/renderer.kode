@@ -152,9 +152,10 @@ class Renderer
             return
             
         return '' if not s? or s.length == 0
+        return s if s in ['▾' "'▾'" '"▾"']
 
-        while s[0] == '▾' then s = s[1..] 
-        if '▾' in s
+        while s[0] == '▾' then s = s[1..]
+        if /(?<!['"])▾/.test s
             i = s.indexOf '▾'
             return s[...i] + @fixAsserts s[i+1..]
             
