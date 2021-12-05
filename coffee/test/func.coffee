@@ -104,8 +104,6 @@ describe 'func' ->
 
             a = function (b, c)
             {
-                var b
-
                 b = function (e, f)
                 {
                     return g
@@ -121,8 +119,6 @@ describe 'func' ->
 
             a = function (b, c)
             {
-                var b
-
                 return b = function (e, f)
                 {
                     return h
