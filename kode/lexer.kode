@@ -184,8 +184,8 @@ class Lexer
     blockify: (tokens) ->
 
         tokens = @unslash   tokens
-        tokens = @mergeop   tokens
         tokens = @uncomment tokens
+        tokens = @mergeop   tokens
 
         blocks = []
 

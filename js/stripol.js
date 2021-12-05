@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.32.0
+// monsterkodi/kode 0.41.0
 
 var print
 
@@ -120,7 +120,7 @@ class Stripol
 
     dissect (s, line, col)
     {
-        var c, chunks, push, t, m, ic, rgs, matches, length, index, b
+        var c, chunks, push, t, m, ic, rgs, matches, k, r, length, index, b
 
         c = 0
         chunks = []
@@ -143,7 +143,7 @@ class Stripol
             {
                 t = s.slice(c)
                 rgs = {triple:/"""(?:.|\n)*?"""/,double:/"(?:\\["\\]|[^\n"])*"/,single:/'(?:\\['\\]|[^\n'])*'/,comment:/#/,open:/{/,close:/}/}
-                matches = (function () { var result = []; for (var k in rgs)  { var r = rgs[k];result.push([k,r.exec(t)])  } return result })()
+                matches = (function () { var result = []; for (var k in rgs)  { var r = rgs[k];result.push([k,r.exec(t)])  } return result }).bind(this)()
                 matches = matches.filter(function (m)
                 {
                     return (m[1] != null)
@@ -154,7 +154,7 @@ class Stripol
                 })
                 length = matches[0][1][0].length
                 index = matches[0][1].index
-                b = (function ()
+                b = ((function ()
                 {
                     switch (matches[0][0])
                     {
@@ -175,7 +175,7 @@ class Stripol
                             return true
                     }
 
-                })()
+                }).bind(this))()
                 if (b)
                 {
                     break

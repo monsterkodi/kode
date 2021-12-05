@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.33.0
+// monsterkodi/kode 0.41.0
 
 var noon, slash, kstr
 
@@ -183,8 +183,8 @@ class Lexer
         var tokens, blocks, block, outdentTo, idx, tok, nxt
 
         tokens = this.unslash(tokens)
-        tokens = this.mergeop(tokens)
         tokens = this.uncomment(tokens)
+        tokens = this.mergeop(tokens)
         blocks = []
         block = {type:'block',tokens:[],indent:'',line:1,col:0}
         blocks.push(block)
@@ -196,10 +196,8 @@ class Lexer
                 block = blocks.slice(-1)[0]
             }
         }
-        var list = ((function() { var r = []; for (var i = 0; i < tokens.length; i++){ r.push(i); } return r; }).apply(this) != null ? (function() { var r = []; for (var i = 0; i < tokens.length; i++){ r.push(i); } return r; }).apply(this) : [])
-        for (var _200_16_ = 0; _200_16_ < list.length; _200_16_++)
+        for (idx = 0; idx < tokens.length; idx++)
         {
-            idx = list[_200_16_]
             tok = tokens[idx]
             if (tok.type === 'nl')
             {

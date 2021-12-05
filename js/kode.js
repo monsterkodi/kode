@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.32.0
+// monsterkodi/kode 0.41.0
 
 var slash, kstr, klor, karg, childp, print, pkg, opt, args, kode
 

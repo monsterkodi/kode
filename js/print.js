@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.32.0
+// monsterkodi/kode 0.41.0
 
 var kstr, klor, noon, slash, childp, fs, idx, color, legend, ext
 
@@ -107,7 +107,7 @@ class Print
         }
         if (popped)
         {
-            c = (function ()
+            c = ((function ()
             {
                 switch (popped.type)
                 {
@@ -121,7 +121,7 @@ class Print
                         return W1
                 }
 
-            })()
+            }).bind(this))()
             s += black(c(popped.text) + ' ')
         }
         console.log(s)
@@ -251,7 +251,7 @@ class Print
 
     static astr (ast, scopes)
     {
-        var printNode, indent, visited, s
+        var printNode, indent, visited, s, node
 
         printNode = function (node, indent = '', visited = [])
         {
@@ -309,7 +309,7 @@ class Print
         }
         if (ast instanceof Array)
         {
-            s = (function () { var result = []; var list = (ast != null ? ast : []); for (var _193_41_ = 0; _193_41_ < list.length; _193_41_++)  { node = list[_193_41_];result.push(printNode(node))  } return result })().join('')
+            s = (function () { var result = []; var list = (ast != null ? ast : []); for (var _193_41_ = 0; _193_41_ < list.length; _193_41_++)  { node = list[_193_41_];result.push(printNode(node))  } return result }).bind(this)().join('')
         }
         else
         {
