@@ -339,6 +339,27 @@ describe 'func' ->
                 return
             }
             """
+            
+        cmp """
+            f = ->
+                try
+                    'return me!'
+                catch e
+                    error e
+            """ """
+            
+            f = function ()
+            {
+                try
+                {
+                    return 'return me!'
+                }
+                catch (e)
+                {
+                    console.error(e)
+                }
+            }
+            """
 
     #  0000000   0000000   000      000       0000000
     # 000       000   000  000      000      000

@@ -731,20 +731,22 @@ class Renderer
         s += 'try\n'
         s += gi+'{\n'
         s += @indent+@nodes n.exps, '\n'+@indent
-        s += gi+'\n'
-        s += gi+'}\n'
+        s += '\n'
+        s += gi+'}'
         if n.catch ? []
+            s += '\n'
             s += gi+"catch (#{@node n.catch.errr})\n" 
             s += gi+'{\n'
             s += @indent+@nodes n.catch.exps, '\n'+@indent
-            s += gi+'\n'
-            s += gi+'}\n'
+            s += '\n'
+            s += gi+'}'
         if n.finally
+            s += '\n'
             s += gi+'finally\n'
             s += gi+'{\n'
             s += @indent+@nodes n.finally, '\n'+@indent
-            s += gi+'\n'
-            s += gi+'}\n'
+            s += '\n'
+            s += gi+'}'
         @ded()
         s
         

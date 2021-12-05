@@ -72,6 +72,7 @@ class Returner
                 else if lst.while       then null
                 else if lst.for         then null
                 else if lst.if          then @if lst.if
+                else if lst.try         then @try lst.try
                 else if lst.switch      then @switch lst.switch
                 else
                     log 'todo: returner' Object.keys(lst)[0]
@@ -92,7 +93,19 @@ class Returner
             @insert ei.elif.then if ei.elif.then
         
         @insert e.else if e.else
+
+    # 000000000  00000000   000   000  
+    #    000     000   000   000 000   
+    #    000     0000000      00000    
+    #    000     000   000     000     
+    #    000     000   000     000     
     
+    try: (e) ->
+        
+        log 'returner try' e
+        @insert e.exps
+        @insert e.finally if e.finally
+        
     #  0000000  000   000  000  000000000   0000000  000   000  
     # 000       000 0 000  000     000     000       000   000  
     # 0000000   000000000  000     000     000       000000000  
