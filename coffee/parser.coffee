@@ -483,10 +483,10 @@ class Parser extends Parse
     operation: (lhs, op, tokens) ->
 
         @push "op#{op.text}"
+        rhs = @exp tokens
+        @pop "op#{op.text}"
         
         if op.text == '='
-            
-            rhs = @exp tokens
             
             if rhs.switch
                 @verb 'rhs is switch'
@@ -502,11 +502,20 @@ class Parser extends Parse
                                                     vars: []
                                                     exps: [rhs]
                                         ]
-        else
-            rhs = @exp tokens
-                
-        @pop "op#{op.text}"
-        
+        else if op.text == '?='
+            
+            op.text = '='
+            
+            rhs = 
+                qmrkop:
+                    lhs: lhs # should lhs be cloned here?
+                    qmrk: 
+                        type:'op' 
+                        text:'?'
+                        line: op.line
+                        col:  op.col
+                    rhs: rhs
+            
         e = operation: {}
         e.operation.lhs      = lhs if lhs
         e.operation.operator = op
