@@ -362,6 +362,8 @@ describe 'if' ->
             nextline
             """
             
+        cmp "h = if w then f g else '0'" "h = w ? f(g) : '0'"
+            
         cmp "a = if 1 then 2 else if 3 then 4 else if 5 then 6 else 7" "a = 1 ? 2 : 3 ? 4 : 5 ? 6 : 7"
         
         cmp """

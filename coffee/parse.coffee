@@ -75,7 +75,7 @@ class Parse # the base class of Parser
                 when '['                    then tokens[0].text == ']'  
                 when '{'                    then tokens[0].text in '}'
                 when '('                    then tokens[0].text == ')'
-                when '▸args'                then tokens[0].text in '];'
+                when '▸args'                then tokens[0].text in [']' ';' 'else' 'then']
                 when '▸return'              then tokens[0].text == 'if'
                 when 'call'                 then tokens[0].text in ';' # bail out for implicit calls
                                                                                    
