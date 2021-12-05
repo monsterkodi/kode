@@ -155,12 +155,13 @@ class Renderer
         return s if s in ['▾' "'▾'" '"▾"']
 
         while s[0] == '▾' then s = s[1..]
-        if /(?<!['"])▾/.test s
+        if /(?<!['"\[])[▾]/.test s
             i = s.indexOf '▾'
             return s[...i] + @fixAsserts s[i+1..]
             
         if '\n' in s
             i = s.indexOf '\n'
+            # log 'NEWLINE!' i, s.length, ">>>#{s[...i]}<<<", ">>>#{s[i..]}<<<", s[...i] == s, s[i..].length
             return @fixAsserts(s[...i]) + s[i..]
         
         splt = s.split /▸\d+_\d+◂/
@@ -893,6 +894,13 @@ class Renderer
                 s = ''
                 for keyval in op.lhs.object.keyvals
                     s += "#{keyval.text} = #{@atom(op.rhs)}.#{keyval.text}\n"
+                return s
+                
+            if op.lhs.array # lhs is aray, eg. [x,y] = require ''
+                s = ''
+                for val in op.lhs.array.items
+                    i = op.lhs.array.items.indexOf val
+                    s += "#{val.text} = #{@atom(op.rhs)}[#{i}]\n"
                 return s
                 
         else if o == '!'
