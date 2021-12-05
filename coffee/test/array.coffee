@@ -83,6 +83,8 @@ describe 'array' ->
         cmp "b[c.d...-1]"       "b.slice(c.d, -1)"
         cmp "b[c[0]...-1]"      "b.slice(c[0], -1)"
         cmp "b[c[0].d..-1]"     "b.slice(c[0].d)"
+        cmp "s[i+1..]"          "s.slice(i + 1)"
+        cmp "s[i+1...]"         "s.slice(i + 1, -1)"
         
         cmp "o[0..-1]"          "o.slice(0)"  
         cmp "q[..-1]"           "q.slice(0)" 
@@ -91,12 +93,14 @@ describe 'array' ->
         
         cmp "s[ic...c+index]"   "s.slice(ic, c + index)"
         
+        
+        cmp "s[...i] + s[i+1..]" "s.slice(0, typeof i === 'number' ? i : -1) + s.slice(i + 1)"
+        
         evl "'abc'[0..1]"       "ab"
         evl "'abc'[0..2]"       "abc"
         
         evl "'xyz'[0..]"        "xyz"
-        evl "'uvw'[0...]"       "uv"
-        
+        evl "'uvw'[0...]"       "uv"        
     
     #  0000000   00000000   00000000    0000000   000   000  
     # 000   000  000   000  000   000  000   000   000 000   
