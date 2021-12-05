@@ -8,7 +8,7 @@ Right now (end of 2021) it is a work in progress and not yet fully functional.
 
 # A list of things that work already:
 
-## ranges
+## Ranges
 
 ```coffeescript
 
@@ -84,7 +84,7 @@ on 'event' @myCallback
 log 'a:' a , 'd:' 3            # some commas still make sense :-)
 ```
 
-## list comprehension
+## List comprehension
 
 ```coffeescript
 l = [1,2,3]
@@ -151,8 +151,7 @@ obj each (v) -> v
 The `each` operator takes an object, array or string on the left hand side and 
 a function on the right hand side.
 The function is called for each key/value, index/item, index/character pair.
-A new object, array or string is build from the results and returned.
-For example:
+A new object, array or string is build from the results and returned:
 
 ```coffeescript
 'hello'   each (c) -> c+c            # -> 'hheelllloo'
@@ -204,7 +203,7 @@ Since I will most likely be the only person using **kode**, it's probably wise t
 - REPL
 - *cake* / *kake*
 - literal coffeescript / ▸doc macro
-- `unless`  `until`  `is`  `or=` ...
+- `unless`  `until`  `is`  `or=` `by` ...
 - `when` outside of `switch`
 - wrapper code
 - **koffee** macros in general

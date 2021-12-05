@@ -604,7 +604,7 @@ class Renderer
 
         obj = @node n.list
         s = ''
-        s += "for (#{key} in #{obj})"+nl
+        s += "for (#{varPrefix}#{key} in #{obj})"+nl
         s += gi+"{"+nl
         if val
             s += g2+"#{varPrefix}#{val} = #{obj}[#{key}]" + eb

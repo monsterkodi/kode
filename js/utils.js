@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.10.1
+// monsterkodi/kode 0.22.4
 
 var empty, valid, lastLineCol, firstLineCol
 
@@ -15,7 +15,7 @@ valid = function (a)
 
 lastLineCol = function (e)
 {
-    var _26_13_, _26_8_, _29_30_, _30_13_, cols
+    var _26_13_, _29_30_, cols
 
     if (((e != null ? e.col : undefined) != null))
     {
@@ -34,7 +34,14 @@ lastLineCol = function (e)
                 }
                 else if (a.line === b.line)
                 {
-                    return a.col > b.col ? a : b
+                    if (a.col > b.col)
+                    {
+                        return a
+                    }
+                    else
+                    {
+                        return b
+                    }
                 }
                 else
                 {
@@ -48,7 +55,7 @@ lastLineCol = function (e)
 
 firstLineCol = function (e)
 {
-    var _49_13_, _49_8_, _53_13_, cols
+    var _49_13_, cols
 
     if (((e != null ? e.col : undefined) != null))
     {
@@ -67,7 +74,14 @@ firstLineCol = function (e)
                 }
                 else if (a.line === b.line)
                 {
-                    return a.col < b.col ? a : b
+                    if (a.col < b.col)
+                    {
+                        return a
+                    }
+                    else
+                    {
+                        return b
+                    }
                 }
                 else
                 {

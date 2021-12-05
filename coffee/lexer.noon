@@ -17,8 +17,6 @@ keyword
     if
     then
     else
-    ei
-    do
     while
     for
     each
@@ -28,7 +26,6 @@ keyword
     when
     in
     of
-    by
     return
     require
     new
@@ -42,7 +39,10 @@ keyword
     no
     try
     catch
+    finally
     throw
+    empty
+    valid
     await
     typeof
 var         [▸a-zA-Z_$][a-zA-Z0-9_$]*

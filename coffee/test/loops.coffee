@@ -172,6 +172,12 @@ describe 'loops' ->
             }
             """
             
+        cmp """
+            matches = ([k, r.exec t] for k,r of rgs)
+            """ """
+            matches = (function () { var result = []; for (var k in rgs)  { var r = rgs[k];result.push([k,r.exec(t)])  } return result })()
+            """
+            
     # 00000000   0000000   00000000         000000000   0000000   000  000      
     # 000       000   000  000   000           000     000   000  000  000      
     # 000000    000   000  0000000             000     000000000  000  000      
@@ -201,7 +207,7 @@ describe 'loops' ->
         
         cmp "m = ([k, r.exec t] for k,r of rgs)",
             """
-            m = (function () { var result = []; for (k in rgs)  { var r = rgs[k];result.push([k,r.exec(t)])  } return result })()
+            m = (function () { var result = []; for (var k in rgs)  { var r = rgs[k];result.push([k,r.exec(t)])  } return result })()
             """
 
         cmp "m = ([i, k] for k,i in rgs)",
