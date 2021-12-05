@@ -96,8 +96,14 @@ class Parse # the base class of Parser
     
                 @verb "exps block start stop:#{stop} block:" block
 
+                # print.ast 'exps block start' es if @debug
+                
                 blocked = true
-                es = es.concat @exps 'block' block.tokens                    
+                blockExps = @exps 'block' block.tokens
+                
+                # print.ast 'exps block start' blockExps if @debug
+                
+                es = es.concat blockExps
 
                 if block.tokens.length
                     @verb 'exps block end remaining block tokens:' block.tokens.length
@@ -117,6 +123,7 @@ class Parse # the base class of Parser
                     continue
                     
                 @verb 'exps block end, break!'
+                # print.ast 'exps block end, break!' es if @debug
                 break
                 
             if tokens[0].type == 'block'                                then @verb 'exps break on block'   ; break
@@ -132,7 +139,7 @@ class Parse # the base class of Parser
                     
                 if stop
                     @verb 'exps nl with stop' stop
-                    if @stack[-1] in ['▸args' '▸body' 'then'] or stop != 'nl'
+                    if @stack[-1] in ['▸args' '▸body' '▸return' 'then'] or stop != 'nl'
                         @verb "exps nl with stop '#{stop}' in #{@stack[-1]} (break, but don't shift nl)"
                     else
                         @shiftNewline "exps nl with stop '#{stop}'" tokens 
@@ -602,7 +609,9 @@ class Parse # the base class of Parser
         else if tokens[0]?.type == 'block'
             
             block = tokens.shift()
+            @push 'then'
             thn = @exps id, block.tokens
+            @pop 'then'
             
             if block.tokens.length
                 print.tokens 'then: dangling block tokens' tokens if @debug

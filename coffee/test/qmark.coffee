@@ -70,8 +70,8 @@ describe 'qmark' ->
         cmp "e?()"                  ';(typeof e === "function" ? e() : undefined)'
         cmp "e?[1]"                 ";(e != null ? e[1] : undefined)"
         cmp "e?[1].f"               ";(e != null ? e[1].f : undefined)"
-        cmp "e?[1]?.g"              ";((_1_1_=e) != null ? (_1_5_=_1_1_[1]) != null ? _1_5_.g : undefined : undefined)"
-        cmp "e?.f?.d"               ";((_1_1_=e) != null ? (_1_4_=_1_1_.f) != null ? _1_4_.d : undefined : undefined)"
+        cmp "e?[1]?.g"              ";(e != null ? e[1] != null ? e[1].g : undefined : undefined)"
+        cmp "e?.f?.d"               ";(e != null ? (_1_4_=e.f) != null ? _1_4_.d : undefined : undefined)"
         
         evl "e=1;e?[1]?.g"          undefined
         
@@ -94,11 +94,36 @@ describe 'qmark' ->
         cmp """
             x = a[1]?.b()?.c?().d?.e
             """ """
-            x = ((_1_8_=a[1]) != null ? (_1_13_=_1_8_.b()) != null ? typeof (_1_16_=_1_13_.c) === "function" ? (_1_21_=_1_16_().d) != null ? _1_21_.e : undefined : undefined : undefined : undefined)
+            x = (a[1] != null ? (_1_13_=a[1].b()) != null ? typeof (_1_16_=_1_13_.c) === "function" ? (_1_21_=_1_16_().d) != null ? _1_21_.e : undefined : undefined : undefined : undefined)
             """ 
-        
+
+        cmp """
+            x = a.b?[222]?(333)?.e
+            """ """
+            x = ((_1_7_=a.b) != null ? typeof _1_7_[222] === "function" ? (_1_19_=_1_7_[222](333)) != null ? _1_19_.e : undefined : undefined : undefined)
+            """ 
+            
     it 'functions' ->
         
         cmp "f c ? '', 4"   "f((c != null ? c : ''),4)"
+        
+        cmp """
+            a = ->
+                if b?.e?.l
+                    hua
+                oga
+            """ """
+
+            a = function ()
+            {
+                var _2_11_
+            
+                if ((b != null ? (_2_11_=b.e) != null ? _2_11_.l : undefined : undefined))
+                {
+                    hua
+                }
+                return oga
+            }
+            """
     
                     

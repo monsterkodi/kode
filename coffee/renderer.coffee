@@ -116,10 +116,6 @@ class Renderer
     atom: (exp) ->
 
         @fixAsserts @node exp
-
-    assert: (p) ->
-
-        '▾' + @node(p.obj) + "▸#{p.qmrk.line}_#{p.qmrk.col}◂"
         
     qmrkop: (p) ->
         
@@ -140,6 +136,14 @@ class Renderer
     # 000       000   000 000   000   000       000       000  000       000   000     000          000
     # 000       000  000   000  000   000  0000000   0000000   00000000  000   000     000     0000000
 
+    assert: (p) ->
+
+        @verb 'fix' p
+        if p.obj.type != 'var' and not p.obj.index
+            '▾' + @node(p.obj) + "▸#{p.qmrk.line}_#{p.qmrk.col}◂"
+        else
+            '▾' + @node(p.obj) + "▸0_0◂" # hint fixAssert to not use generated var
+    
     fixAsserts: (s) ->
 
         @verb 'fixAsserts' s
@@ -184,8 +188,13 @@ class Renderer
 
             for i in 0...mtch.length
 
-                if mtch.length > 1
-                    l = "(#{mtch[i]}=#{(if i then mtch[i-1]+splt[i] else splt[0])})"
+                if mtch.length > 1 
+                    # rhs = if i then (if mtch[i-1] != "_0_0_" then mtch[i-1] else splt[0])+splt[i] else splt[0]
+                    rhs = if i then (if mtch[i-1] != "_0_0_" then mtch[i-1] else l)+splt[i] else splt[0]
+                    if mtch[i] != "_0_0_"
+                        l = "(#{mtch[i]}=#{rhs})"
+                    else
+                        l = rhs
                 else
                     l = splt[0]
 
@@ -195,7 +204,10 @@ class Renderer
                     s += "#{l} != null ? "
 
             if mtch.length > 1
-                s += mtch[-1]+splt[-1]
+                if mtch[-1] != "_0_0_"
+                    s += mtch[-1]+splt[-1]
+                else
+                    s += l+splt[-1]
             else
                 s += splt[0]+splt[1]
 

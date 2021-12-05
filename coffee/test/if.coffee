@@ -351,6 +351,17 @@ describe 'if' ->
             }
             """
             
+        cmp """
+            if c then return f a
+            nextline
+            """ """
+            if (c)
+            {
+                return f(a)
+            }
+            nextline
+            """
+            
         cmp "a = if 1 then 2 else if 3 then 4 else if 5 then 6 else 7" "a = 1 ? 2 : 3 ? 4 : 5 ? 6 : 7"
         
         cmp """
@@ -479,7 +490,23 @@ describe 'if' ->
                     return 3
                 }
             })
-            """            
+            """   
+            
+        cmp """
+            ->    
+                if a
+                    e.push
+                        key:
+                            key: val
+            """ """
+            (function ()
+            {
+                if (a)
+                {
+                    return e.push({key:{key:val}})
+                }
+            })
+            """
             
     # 000000000   0000000   000  000      
     #    000     000   000  000  000      
