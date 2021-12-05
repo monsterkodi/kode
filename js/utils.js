@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.26.0
+// monsterkodi/kode 0.29.0
 
 var empty, valid, lastLineCol, firstLineCol
 
@@ -10,7 +10,7 @@ empty = function (a)
 
 valid = function (a)
 {
-    return !(empty(a))
+    return !empty(a)
 }
 
 lastLineCol = function (e)

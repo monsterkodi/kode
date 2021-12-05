@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.26.0
+// monsterkodi/kode 0.29.0
 
 
 class Scoper
@@ -121,7 +121,7 @@ class Scoper
             if (e.assert)
             {
                 this.verb('assert',e)
-                if (e.assert.obj.type !== 'var' && !(e.assert.obj.index))
+                if (e.assert.obj.type !== 'var' && !e.assert.obj.index)
                 {
                     insert(`_${e.assert.qmrk.line}_${e.assert.qmrk.col}_`,'?.')
                 }

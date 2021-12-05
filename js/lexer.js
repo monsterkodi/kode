@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.26.1
+// monsterkodi/kode 0.29.0
 
 var noon, slash, kstr
 

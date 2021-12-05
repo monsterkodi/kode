@@ -102,7 +102,6 @@ class Returner
     
     try: (e) ->
         
-        log 'returner try' e
         @insert e.exps
         @insert e.finally if e.finally
         

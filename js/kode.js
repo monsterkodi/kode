@@ -1,194 +1,221 @@
-// koffee 1.20.0
+// monsterkodi/kode 0.29.0
 
-/*
-000   000   0000000   0000000    00000000
-000  000   000   000  000   000  000
-0000000    000   000  000   000  0000000
-000  000   000   000  000   000  000
-000   000   0000000   0000000    00000000
- */
-var Kode, args, childp, empty, karg, klor, kode, kstr, pkg, print, slash;
+var slash, kstr, klor, karg, childp, print, pkg, opt, args, kode
 
-slash = require('kslash');
+slash = require('kslash')
+kstr = require('kstr')
+klor = require('klor')
+karg = require('karg')
+childp = require('child_process')
+print = require('./print')
+pkg = require(`${__dirname}/../package`)
+empty = require('./utils').empty
 
-kstr = require('kstr');
+klor.kolor.globalize()
 
-klor = require('klor');
+class Kode
+{
+    constructor (args)
+    {
+        var _25_14_, Lexer, Parser, Scoper, Stripol, Returner, Renderer
 
-karg = require('karg');
-
-childp = require('child_process');
-
-print = require('./print');
-
-pkg = require(__dirname + "/../package");
-
-empty = require('./utils').empty;
-
-klor.kolor.globalize();
-
-Kode = (function() {
-    function Kode(args1) {
-        var Lexer, Parser, Renderer, Returner, Scoper, Stripol;
-        this.args = args1;
-        if (this.args != null) {
-            this.args;
-        } else {
-            this.args = {};
+        this.args = args
+        this.args = ((_25_14_=this.args) != null ? _25_14_ : {})
+        if (this.args.verbose)
+        {
+            this.args.debug = this.args.block = this.args.tokens = this.args.parse = true
         }
-        if (this.args.verbose) {
-            this.args.debug = this.args.block = this.args.tokens = this.args.parse = true;
-        }
-        Lexer = require('./lexer');
-        Parser = require('./parser');
-        Scoper = require('./scoper');
-        Stripol = require('./stripol');
-        Returner = require('./returner');
-        Renderer = require('./renderer');
-        this.lexer = new Lexer(this);
-        this.parser = new Parser(this);
-        this.scoper = new Scoper(this);
-        this.stripol = new Stripol(this);
-        this.returner = new Returner(this);
-        this.renderer = new Renderer(this);
+        Lexer = require('./lexer')
+        Parser = require('./parser')
+        Scoper = require('./scoper')
+        Stripol = require('./stripol')
+        Returner = require('./returner')
+        Renderer = require('./renderer')
+        this.lexer = new Lexer(this)
+        this.parser = new Parser(this)
+        this.scoper = new Scoper(this)
+        this.stripol = new Stripol(this)
+        this.returner = new Returner(this)
+        this.renderer = new Renderer(this)
     }
 
-    Kode.prototype.cli = function() {
-        var file, i, js, len, out, ref, results, text;
-        if (this.args.compile) {
-            console.log(this.compile(this.args.compile));
-            return;
+    cli ()
+    {
+        var file, text, js, out
+
+        if (this.args.compile)
+        {
+            console.log(this.compile(this.args.compile))
+            return
         }
-        if (this.args["eval"]) {
-            console.log(this["eval"](this.args["eval"]));
-            return;
+        if (this.args.eval)
+        {
+            console.log(this.eval(this.args.eval))
+            return
         }
-        if (!this.args.files.length) {
-            return;
+        if (!this.args.files.length)
+        {
+            return
         }
-        ref = this.args.files;
-        results = [];
-        for (i = 0, len = ref.length; i < len; i++) {
-            file = ref[i];
-            file = slash.resolve(file);
-            if (this.args.verbose) {
-                console.log(gray(file));
+        var list = (this.args.files != null ? this.args.files : [])
+        for (var _62_17_ = 0; _62_17_ < list.length; _62_17_++)
+        {
+            file = list[_62_17_]
+            file = slash.resolve(file)
+            if (this.args.verbose)
+            {
+                console.log(gray(file))
             }
-            text = slash.readText(file);
-            if (empty(text)) {
-                console.error(Y4(r2("can't read " + (R3(y5(file))))));
-                continue;
+            text = slash.readText(file)
+            if (empty(text))
+            {
+                console.error(Y4(r2(`can't read ${R3(y5(file))}`)))
+                continue
             }
-            js = this.compile(text);
-            if (this.args.outdir) {
-                out = slash.resolve(this.args.outdir, slash.file(file));
-                out = slash.swapExt(out, 'js');
-                js = ("// kode " + pkg.version + "\n\n") + js;
-                if (!slash.writeText(out, js)) {
-                    results.push(console.error(R2(y3("can't write " + (R3(y6(out)))))));
-                } else {
-                    results.push(void 0);
+            js = this.compile(text)
+            if (this.args.outdir)
+            {
+                out = slash.resolve(this.args.outdir,slash.file(file))
+                out = slash.swapExt(out,'js')
+                js = `// kode ${pkg.version}\n\n` + js
+                if (!slash.writeText(out,js))
+                {
+                    console.error(R2(y3(`can't write ${R3(y6(out))}`)))
                 }
-            } else {
-                if (!args.js) {
-                    results.push(console.log(js));
-                } else {
-                    results.push(void 0);
+            }
+            else
+            {
+                if (!args.js)
+                {
+                    console.log(js)
                 }
             }
         }
-        return results;
-    };
+    }
 
-    Kode.compile = function(text, opt) {
-        if (opt == null) {
-            opt = {};
-        }
-        return (new Kode(opt)).compile(text);
-    };
+    static compile (text, opt = {})
+    {
+        return (new Kode(opt)).compile(text)
+    }
 
-    Kode.prototype.compile = function(text) {
-        var ast, js;
-        if (empty(kstr.strip(text))) {
-            return '';
-        }
-        ast = this.ast(text);
-        if (this.args.parse) {
-            print.ast('ast', ast);
-        }
-        if (this.args.astr) {
-            console.log(print.astr(ast, this.args.scope));
-        }
-        js = this.renderer.render(ast);
-        if (this.args.header && kstr.strip(js).length) {
-            js = ("// monsterkodi/kode " + pkg.version + "\n\n") + js;
-        }
-        if (this.args.js || this.args.debug) {
-            print.code('js', js);
-        }
-        return js;
-    };
+    compile (text)
+    {
+        var ast, js
 
-    Kode.prototype.ast = function(text) {
-        var block, tokens;
-        if (!text.slice(-1)[0] === '\n') {
-            text += '\n';
+        if (empty(kstr.strip(text)))
+        {
+            return ''
         }
-        if (this.args.verbose || this.args.debug || this.args.kode) {
-            print.code('kode', text, 'coffee');
+        ast = this.ast(text)
+        if (this.args.parse)
+        {
+            print.ast('ast',ast)
         }
-        tokens = this.lexer.tokenize(text);
-        if (this.args.raw) {
-            print.noon('raw tokens', tokens);
+        if (this.args.astr)
+        {
+            console.log(print.astr(ast,this.args.scope))
         }
-        if (this.args.tokens) {
-            print.tokens('tokens', tokens);
+        js = this.renderer.render(ast)
+        if (this.args.header && kstr.strip(js).length)
+        {
+            js = `// monsterkodi/kode ${pkg.version}\n\n` + js
         }
-        block = this.lexer.blockify(tokens);
-        if (this.args.raw) {
-            print.noon('raw block', block);
+        if (this.args.js || this.args.debug)
+        {
+            print.code('js',js)
         }
-        if (this.args.block) {
-            print.block('tl block', block);
-        }
-        return this.returner.collect(this.scoper.collect(this.stripol.collect(this.parser.parse(block))));
-    };
+        return js
+    }
 
-    Kode.prototype.astr = function(text, scopes) {
-        return print.astr(this.ast(text), scopes);
-    };
+    ast (text)
+    {
+        var tokens, block
 
-    Kode.prototype["eval"] = function(text) {
-        var err, js, sandbox, vm;
-        if (empty(text)) {
-            return;
+        if (!text.slice(-1)[0] === '\n')
+        {
+            text += '\n'
         }
-        vm = require('vm');
-        sandbox = vm.createContext();
-        sandbox.__filename = 'eval';
-        sandbox.__dirname = slash.dir(sandbox.__filename);
-        sandbox.console = console;
-        try {
-            js = this.compile(text);
-            return vm.runInContext(js, sandbox);
-        } catch (error) {
-            err = error;
-            console.error(err, text);
-            throw err;
+        if (this.args.verbose || this.args.debug || this.args.kode)
+        {
+            print.code('kode',text,'coffee')
         }
-    };
+        tokens = this.lexer.tokenize(text)
+        if (this.args.raw)
+        {
+            print.noon('raw tokens',tokens)
+        }
+        if (this.args.tokens)
+        {
+            print.tokens('tokens',tokens)
+        }
+        block = this.lexer.blockify(tokens)
+        if (this.args.raw)
+        {
+            print.noon('raw block',block)
+        }
+        if (this.args.block)
+        {
+            print.block('tl block',block)
+        }
+        return this.returner.collect(this.scoper.collect(this.stripol.collect(this.parser.parse(block))))
+    }
 
-    return Kode;
+    astr (text, scopes)
+    {
+        return print.astr(this.ast(text),scopes)
+    }
 
-})();
+    eval (text)
+    {
+        var vm, sandbox, js
 
-module.exports = Kode;
-
-if (!module.parent || slash.resolve(module.parent.path).endsWith('/kode/bin')) {
-    args = karg("kode option\n    files       . **\n    eval        . ? evaluate a string and print the result\n    compile     . ? compile a string and print the result\n    outdir      . ? output directory for transpiled files\n    map         . ? generate inline source maps             . = true\n    kode        . ? pretty print input code                 . = false\n    js          . ? pretty print transpiled js code         . = false\n    run         . ? execute file                            . = false\n    header      . ? prepend output with version header      . = false  . - H\n    tokens      . ? print tokens                            . = false  . - T\n    block       . ? print block tree                        . = false  . - B\n    parse       . ? print parse tree                        . = false  . - P\n    astr        . ? print parse tree as string              . = false  . - A\n    scope       . ? print scopes                            . = false  . - S\n    verbose     . ? log more                                . = false\n    debug       . ? log debug                               . = false\n    raw         . ? log raw                                 . = false  . - R\n\nversion  " + pkg.version);
-    kode = new Kode(args);
-    kode.cli();
+        if (empty(text))
+        {
+            return
+        }
+        vm = require('vm')
+        sandbox = vm.createContext()
+        sandbox.__filename = 'eval'
+        sandbox.__dirname = slash.dir(sandbox.__filename)
+        sandbox.console = console
+        try
+        {
+            js = this.compile(text)
+            return vm.runInContext(js,sandbox)
+        }
+        catch (err)
+        {
+            console.error(err,text)
+            throw(err)
+        }
+    }
 }
 
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoia29kZS5qcyIsInNvdXJjZVJvb3QiOiIuLi9jb2ZmZWUiLCJzb3VyY2VzIjpbImtvZGUuY29mZmVlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUE7Ozs7Ozs7QUFBQSxJQUFBOztBQVFBLEtBQUEsR0FBUyxPQUFBLENBQVEsUUFBUjs7QUFDVCxJQUFBLEdBQVMsT0FBQSxDQUFRLE1BQVI7O0FBQ1QsSUFBQSxHQUFTLE9BQUEsQ0FBUSxNQUFSOztBQUNULElBQUEsR0FBUyxPQUFBLENBQVEsTUFBUjs7QUFDVCxNQUFBLEdBQVMsT0FBQSxDQUFRLGVBQVI7O0FBQ1QsS0FBQSxHQUFTLE9BQUEsQ0FBUSxTQUFSOztBQUNULEdBQUEsR0FBUyxPQUFBLENBQVcsU0FBRCxHQUFXLGFBQXJCOztBQUVQLFFBQVUsT0FBQSxDQUFRLFNBQVI7O0FBRVosSUFBSSxDQUFDLEtBQUssQ0FBQyxTQUFYLENBQUE7O0FBRU07SUFFQyxjQUFDLEtBQUQ7QUFFQyxZQUFBO1FBRkEsSUFBQyxDQUFBLE9BQUQ7O1lBRUEsSUFBQyxDQUFBOztZQUFELElBQUMsQ0FBQSxPQUFROztRQUVULElBQUcsSUFBQyxDQUFBLElBQUksQ0FBQyxPQUFUO1lBQXNCLElBQUMsQ0FBQSxJQUFJLENBQUMsS0FBTixHQUFjLElBQUMsQ0FBQSxJQUFJLENBQUMsS0FBTixHQUFjLElBQUMsQ0FBQSxJQUFJLENBQUMsTUFBTixHQUFlLElBQUMsQ0FBQSxJQUFJLENBQUMsS0FBTixHQUFjLEtBQS9FOztRQUVBLEtBQUEsR0FBWSxPQUFBLENBQVEsU0FBUjtRQUNaLE1BQUEsR0FBWSxPQUFBLENBQVEsVUFBUjtRQUNaLE1BQUEsR0FBWSxPQUFBLENBQVEsVUFBUjtRQUNaLE9BQUEsR0FBWSxPQUFBLENBQVEsV0FBUjtRQUNaLFFBQUEsR0FBWSxPQUFBLENBQVEsWUFBUjtRQUNaLFFBQUEsR0FBWSxPQUFBLENBQVEsWUFBUjtRQUVaLElBQUMsQ0FBQSxLQUFELEdBQVksSUFBSSxLQUFKLENBQWEsSUFBYjtR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Q0FBQyxPQUFSLEdBQXFCO0FBZXJCO1lBQ0ksRUFBQSxHQUFLLElBQUMsQ0FBQSxPQUFELENBQVMsSUFBVDttQkFDTCxFQUFFLENBQUMsWUFBSCxDQUFnQixFQUFoQixFQUFvQixPQUFwQixFQUZKO1NBQUEsYUFBQTtZQUdNO1lBQ0gsT0FBQSxDQUFDLEtBQUQsQ0FBTyxHQUFQLEVBQVksSUFBWjtBQUNDLGtCQUFNLElBTFY7O0lBMUJFOzs7Ozs7QUF1Q1YsTUFBTSxDQUFDLE9BQVAsR0FBaUI7O0FBRWpCLElBQUcsQ0FBSSxNQUFNLENBQUMsTUFBWCxJQUFxQixLQUFLLENBQUMsT0FBTixDQUFjLE1BQU0sQ0FBQyxNQUFNLENBQUMsSUFBNUIsQ0FBaUMsQ0FBQyxRQUFsQyxDQUEyQyxXQUEzQyxDQUF4QjtJQUVJLElBQUEsR0FBTyxJQUFBLENBQUssNnFDQUFBLEdBb0JHLEdBQUcsQ0FBQyxPQXBCWjtJQXVCUCxJQUFBLEdBQU8sSUFBSSxJQUFKLENBQVMsSUFBVDtJQUNQLElBQUksQ0FBQyxHQUFMLENBQUEsRUExQkoiLCJzb3VyY2VzQ29udGVudCI6WyIjIyNcbjAwMCAgIDAwMCAgIDAwMDAwMDAgICAwMDAwMDAwICAgIDAwMDAwMDAwXG4wMDAgIDAwMCAgIDAwMCAgIDAwMCAgMDAwICAgMDAwICAwMDBcbjAwMDAwMDAgICAgMDAwICAgMDAwICAwMDAgICAwMDAgIDAwMDAwMDBcbjAwMCAgMDAwICAgMDAwICAgMDAwICAwMDAgICAwMDAgIDAwMFxuMDAwICAgMDAwICAgMDAwMDAwMCAgIDAwMDAwMDAgICAgMDAwMDAwMDBcbiMjI1xuXG5zbGFzaCAgPSByZXF1aXJlICdrc2xhc2gnXG5rc3RyICAgPSByZXF1aXJlICdrc3RyJ1xua2xvciAgID0gcmVxdWlyZSAna2xvcidcbmthcmcgICA9IHJlcXVpcmUgJ2thcmcnXG5jaGlsZHAgPSByZXF1aXJlICdjaGlsZF9wcm9jZXNzJ1xucHJpbnQgID0gcmVxdWlyZSAnLi9wcmludCdcbnBrZyAgICA9IHJlcXVpcmUgXCIje19fZGlybmFtZX0vLi4vcGFja2FnZVwiXG5cbnsgZW1wdHkgfSA9IHJlcXVpcmUgJy4vdXRpbHMnXG5cbmtsb3Iua29sb3IuZ2xvYmFsaXplKClcblxuY2xhc3MgS29kZVxuXG4gICAgQDogKEBhcmdzKSAtPlxuXG4gICAgICAgIEBhcmdzID89IHt9XG5cbiAgICAgICAgaWYgQGFyZ3MudmVyYm9zZSB0aGVuIEBhcmdzLmRlYnVnID0gQGFyZ3MuYmxvY2sgPSBAYXJncy50b2tlbnMgPSBAYXJncy5wYXJzZSA9IHRydWVcblxuICAgICAgICBMZXhlciAgICAgPSByZXF1aXJlICcuL2xleGVyJ1xuICAgICAgICBQYXJzZXIgICAgPSByZXF1aXJlICcuL3BhcnNlcidcbiAgICAgICAgU2NvcGVyICAgID0gcmVxdWlyZSAnLi9zY29wZXInXG4gICAgICAgIFN0cmlwb2wgICA9IHJlcXVpcmUgJy4vc3RyaXBvbCdcbiAgICAgICAgUmV0dXJuZXIgID0gcmVxdWlyZSAnLi9yZXR1cm5lcidcbiAgICAgICAgUmVuZGVyZXIgID0gcmVxdWlyZSAnLi9yZW5kZXJlcidcblxuICAgICAgICBAbGV4ZXIgICAgPSBuZXcgTGV4ZXIgICAgQFxuICAgICAgICBAcGFyc2VyICAgPSBuZXcgUGFyc2VyICAgQFxuICAgICAgICBAc2NvcGVyICAgPSBuZXcgU2NvcGVyICAgQFxuICAgICAgICBAc3RyaXBvbCAgPSBuZXcgU3RyaXBvbCAgQFxuICAgICAgICBAcmV0dXJuZXIgPSBuZXcgUmV0dXJuZXIgQFxuICAgICAgICBAcmVuZGVyZXIgPSBuZXcgUmVuZGVyZXIgQFxuXG4gICAgIyAgMDAwMDAwMCAgMDAwICAgICAgMDAwXG4gICAgIyAwMDAgICAgICAgMDAwICAgICAgMDAwXG4gICAgIyAwMDAgICAgICAgMDAwICAgICAgMDAwXG4gICAgIyAwMDAgICAgICAgMDAwICAgICAgMDAwXG4gICAgIyAgMDAwMDAwMCAgMDAwMDAwMCAgMDAwXG5cbiAgICBjbGk6IC0+XG5cbiAgICAgICAgIyBpZiBAYXJncy5kZWJ1ZyB0aGVuIHByaW50Lm5vb24gJ2FyZ3MnIEBhcmdzXG5cbiAgICAgICAgaWYgQGFyZ3MuY29tcGlsZVxuICAgICAgICAgICAgbG9nIEBjb21waWxlIEBhcmdzLmNvbXBpbGVcbiAgICAgICAgICAgIHJldHVyblxuICAgICAgICBpZiBAYXJncy5ldmFsXG4gICAgICAgICAgICBsb2cgQGV2YWwgQGFyZ3MuZXZhbFxuICAgICAgICAgICAgcmV0dXJuXG5cbiAgICAgICAgcmV0dXJuIGlmIG5vdCBAYXJncy5maWxlcy5sZW5ndGhcblxuICAgICAgICBmb3IgZmlsZSBpbiBAYXJncy5maWxlc1xuXG4gICAgICAgICAgICBmaWxlID0gc2xhc2gucmVzb2x2ZSBmaWxlXG4gICAgICAgICAgICBsb2cgZ3JheSBmaWxlIGlmIEBhcmdzLnZlcmJvc2VcblxuICAgICAgICAgICAgdGV4dCA9IHNsYXNoLnJlYWRUZXh0IGZpbGVcblxuICAgICAgICAgICAgaWYgZW1wdHkgdGV4dCB0aGVuIGVycm9yIFk0IHIyIFwiY2FuJ3QgcmVhZCAje1IzIHk1IGZpbGV9XCI7IGNvbnRpbnVlXG5cbiAgICAgICAgICAgIGpzID0gQGNvbXBpbGUgdGV4dFxuXG4gICAgICAgICAgICBpZiBAYXJncy5vdXRkaXJcbiAgICAgICAgICAgICAgICBvdXQgPSBzbGFzaC5yZXNvbHZlIEBhcmdzLm91dGRpciwgc2xhc2guZmlsZSBmaWxlXG4gICAgICAgICAgICAgICAgb3V0ID0gc2xhc2guc3dhcEV4dCBvdXQsICdqcydcbiAgICAgICAgICAgICAgICBqcyAgPSBcIi8vIGtvZGUgI3twa2cudmVyc2lvbn1cXG5cXG5cIiArIGpzXG4gICAgICAgICAgICAgICAgaWYgbm90IHNsYXNoLndyaXRlVGV4dCBvdXQsIGpzXG4gICAgICAgICAgICAgICAgICAgIGVycm9yIFIyIHkzIFwiY2FuJ3Qgd3JpdGUgI3tSMyB5NiBvdXR9XCJcbiAgICAgICAgICAgIGVsc2VcbiAgICAgICAgICAgICAgICBpZiBub3QgYXJncy5qc1xuICAgICAgICAgICAgICAgICAgICBsb2cganNcblxuICAgICMgIDAwMDAwMDAgICAwMDAwMDAwICAgMDAgICAgIDAwICAwMDAwMDAwMCAgIDAwMCAgMDAwICAgICAgMDAwMDAwMDBcbiAgICAjIDAwMCAgICAgICAwMDAgICAwMDAgIDAwMCAgIDAwMCAgMDAwICAgMDAwICAwMDAgIDAwMCAgICAgIDAwMFxuICAgICMgMDAwICAgICAgIDAwMCAgIDAwMCAgMDAwMDAwMDAwICAwMDAwMDAwMCAgIDAwMCAgMDAwICAgICAgMDAwMDAwMFxuICAgICMgMDAwICAgICAgIDAwMCAgIDAwMCAgMDAwIDAgMDAwICAwMDAgICAgICAgIDAwMCAgMDAwICAgICAgMDAwXG4gICAgIyAgMDAwMDAwMCAgIDAwMDAwMDAgICAwMDAgICAwMDAgIDAwMCAgICAgICAgMDAwICAwMDAwMDAwICAwMDAwMDAwMFxuXG4gICAgQGNvbXBpbGU6ICh0ZXh0LCBvcHQ9e30pIC0+IChuZXcgS29kZSBvcHQpLmNvbXBpbGUgdGV4dFxuICAgIGNvbXBpbGU6ICh0ZXh0KSAtPlxuXG4gICAgICAgIHJldHVybiAnJyBpZiBlbXB0eSBrc3RyLnN0cmlwIHRleHRcblxuICAgICAgICBhc3QgPSBAYXN0IHRleHRcblxuICAgICAgICBpZiBAYXJncy5wYXJzZSB0aGVuIHByaW50LmFzdCAnYXN0JyBhc3RcbiAgICAgICAgaWYgQGFyZ3MuYXN0ciAgdGhlbiBsb2cgcHJpbnQuYXN0ciBhc3QsIEBhcmdzLnNjb3BlXG5cbiAgICAgICAganMgPSBAcmVuZGVyZXIucmVuZGVyIGFzdFxuXG4gICAgICAgIGlmIEBhcmdzLmhlYWRlciBhbmQga3N0ci5zdHJpcChqcykubGVuZ3RoXG4gICAgICAgICAgICBqcyA9IFwiLy8gbW9uc3RlcmtvZGkva29kZSAje3BrZy52ZXJzaW9ufVxcblxcblwiICsganNcblxuICAgICAgICBpZiBAYXJncy5qcyBvciBAYXJncy5kZWJ1Z1xuICAgICAgICAgICAgcHJpbnQuY29kZSAnanMnIGpzIFxuICAgICAgICBqc1xuXG4gICAgYXN0OiAodGV4dCkgLT5cblxuICAgICAgICB0ZXh0ICs9ICdcXG4nIGlmIG5vdCB0ZXh0Wy0xXSA9PSAnXFxuJ1xuXG4gICAgICAgIHByaW50LmNvZGUgJ2tvZGUnIHRleHQsICdjb2ZmZWUnIGlmIEBhcmdzLnZlcmJvc2Ugb3IgQGFyZ3MuZGVidWcgb3IgQGFyZ3Mua29kZVxuXG4gICAgICAgIHRva2VucyA9IEBsZXhlci50b2tlbml6ZSB0ZXh0XG5cbiAgICAgICAgaWYgQGFyZ3MucmF3ICAgIHRoZW4gcHJpbnQubm9vbiAncmF3IHRva2VucycgdG9rZW5zXG4gICAgICAgIGlmIEBhcmdzLnRva2VucyB0aGVuIHByaW50LnRva2VucyAndG9rZW5zJyB0b2tlbnNcblxuICAgICAgICBibG9jayA9IEBsZXhlci5ibG9ja2lmeSB0b2tlbnNcblxuICAgICAgICBpZiBAYXJncy5yYXcgICB0aGVuIHByaW50Lm5vb24gJ3JhdyBibG9jaycgYmxvY2tcbiAgICAgICAgaWYgQGFyZ3MuYmxvY2sgdGhlbiBwcmludC5ibG9jayAndGwgYmxvY2snIGJsb2NrXG5cbiAgICAgICAgQHJldHVybmVyLmNvbGxlY3QgQHNjb3Blci5jb2xsZWN0IEBzdHJpcG9sLmNvbGxlY3QgQHBhcnNlci5wYXJzZSBibG9ja1xuXG4gICAgYXN0cjogKHRleHQsIHNjb3BlcykgLT4gcHJpbnQuYXN0ciBAYXN0KHRleHQpLCBzY29wZXNcbiAgICAgICAgXG4gICAgIyAwMDAwMDAwMCAgMDAwICAgMDAwICAgMDAwMDAwMCAgIDAwMFxuICAgICMgMDAwICAgICAgIDAwMCAgIDAwMCAgMDAwICAgMDAwICAwMDBcbiAgICAjIDAwMDAwMDAgICAgMDAwIDAwMCAgIDAwMDAwMDAwMCAgMDAwXG4gICAgIyAwMDAgICAgICAgICAgMDAwICAgICAwMDAgICAwMDAgIDAwMFxuICAgICMgMDAwMDAwMDAgICAgICAwICAgICAgMDAwICAgMDAwICAwMDAwMDAwXG5cbiAgICBldmFsOiAodGV4dCkgLT5cblxuICAgICAgICByZXR1cm4gaWYgZW1wdHkgdGV4dFxuXG4gICAgICAgIHZtID0gcmVxdWlyZSAndm0nXG5cbiAgICAgICAgc2FuZGJveCA9IHZtLmNyZWF0ZUNvbnRleHQoKVxuICAgICAgICAjIHNhbmRib3guZ2xvYmFsID0gc2FuZGJveC5yb290ID0gc2FuZGJveC5HTE9CQUwgPSBzYW5kYm94XG5cbiAgICAgICAgc2FuZGJveC5fX2ZpbGVuYW1lID0gJ2V2YWwnXG4gICAgICAgIHNhbmRib3guX19kaXJuYW1lICA9IHNsYXNoLmRpciBzYW5kYm94Ll9fZmlsZW5hbWVcbiAgICAgICAgc2FuZGJveC5jb25zb2xlICAgID0gY29uc29sZVxuXG4gICAgICAgICMgZGVmaW5lIG1vZHVsZS9yZXF1aXJlIG9ubHkgaWYgdGhleSBjaG9zZSBub3QgdG8gc3BlY2lmeSB0aGVpciBvd25cbiAgICAgICAgIyBpZiBub3QgKHNhbmRib3ggIT0gZ2xvYmFsIG9yIHNhbmRib3gubW9kdWxlIG9yIHNhbmRib3gucmVxdWlyZSlcbiAgICAgICAgICAgICMgTW9kdWxlID0gcmVxdWlyZSAnbW9kdWxlJ1xuICAgICAgICAgICAgIyBzYW5kYm94Lm1vZHVsZSAgPSBfbW9kdWxlICA9IG5ldyBNb2R1bGUgJ2V2YWwnXG4gICAgICAgICAgICAjIHNhbmRib3gucmVxdWlyZSA9IF9yZXF1aXJlID0gKHBhdGgpIC0+ICBNb2R1bGUuX2xvYWQgcGF0aCwgX21vZHVsZSwgdHJ1ZVxuICAgICAgICAgICAgIyBfbW9kdWxlLmZpbGVuYW1lID0gc2FuZGJveC5fX2ZpbGVuYW1lXG4gICAgICAgICAgICAjIGZvciByIGluIE9iamVjdC5nZXRPd25Qcm9wZXJ0eU5hbWVzIHJlcXVpcmVcbiAgICAgICAgICAgICAgICAjIGlmIHIgbm90IGluIFsncGF0aHMnICdhcmd1bWVudHMnICdjYWxsZXInXVxuICAgICAgICAgICAgICAgICAgICAjIF9yZXF1aXJlW3JdID0gcmVxdWlyZVtyXVxuICAgICAgICAgICAgIyAjIHVzZSB0aGUgc2FtZSBoYWNrIG5vZGUgY3VycmVudGx5IHVzZXMgZm9yIHRoZWlyIG93biBSRVBMXG4gICAgICAgICAgICAjIF9yZXF1aXJlLnBhdGhzID0gX21vZHVsZS5wYXRocyA9IE1vZHVsZS5fbm9kZU1vZHVsZVBhdGhzIHByb2Nlc3MuY3dkKClcbiAgICAgICAgICAgICMgX3JlcXVpcmUucmVzb2x2ZSA9IChyZXF1ZXN0KSAtPiBNb2R1bGUuX3Jlc29sdmVGaWxlbmFtZSByZXF1ZXN0LCBfbW9kdWxlXG5cbiAgICAgICAgdHJ5XG4gICAgICAgICAgICBqcyA9IEBjb21waWxlIHRleHRcbiAgICAgICAgICAgIHZtLnJ1bkluQ29udGV4dCBqcywgc2FuZGJveFxuICAgICAgICBjYXRjaCBlcnJcbiAgICAgICAgICAgIGVycm9yIGVyciwgdGV4dFxuICAgICAgICAgICAgdGhyb3cgZXJyXG5cbiMgMDAgICAgIDAwICAgMDAwMDAwMCAgIDAwMCAgMDAwICAgMDAwXG4jIDAwMCAgIDAwMCAgMDAwICAgMDAwICAwMDAgIDAwMDAgIDAwMFxuIyAwMDAwMDAwMDAgIDAwMDAwMDAwMCAgMDAwICAwMDAgMCAwMDBcbiMgMDAwIDAgMDAwICAwMDAgICAwMDAgIDAwMCAgMDAwICAwMDAwXG4jIDAwMCAgIDAwMCAgMDAwICAgMDAwICAwMDAgIDAwMCAgIDAwMFxuXG5tb2R1bGUuZXhwb3J0cyA9IEtvZGVcblxuaWYgbm90IG1vZHVsZS5wYXJlbnQgb3Igc2xhc2gucmVzb2x2ZShtb2R1bGUucGFyZW50LnBhdGgpLmVuZHNXaXRoICcva29kZS9iaW4nXG5cbiAgICBhcmdzID0ga2FyZyBcIlwiXCJcbiAgICAgICAga29kZSBvcHRpb25cbiAgICAgICAgICAgIGZpbGVzICAgICAgIC4gKipcbiAgICAgICAgICAgIGV2YWwgICAgICAgIC4gPyBldmFsdWF0ZSBhIHN0cmluZyBhbmQgcHJpbnQgdGhlIHJlc3VsdFxuICAgICAgICAgICAgY29tcGlsZSAgICAgLiA/IGNvbXBpbGUgYSBzdHJpbmcgYW5kIHByaW50IHRoZSByZXN1bHRcbiAgICAgICAgICAgIG91dGRpciAgICAgIC4gPyBvdXRwdXQgZGlyZWN0b3J5IGZvciB0cmFuc3BpbGVkIGZpbGVzXG4gICAgICAgICAgICBtYXAgICAgICAgICAuID8gZ2VuZXJhdGUgaW5saW5lIHNvdXJjZSBtYXBzICAgICAgICAgICAgIC4gPSB0cnVlXG4gICAgICAgICAgICBrb2RlICAgICAgICAuID8gcHJldHR5IHByaW50IGlucHV0IGNvZGUgICAgICAgICAgICAgICAgIC4gPSBmYWxzZVxuICAgICAgICAgICAganMgICAgICAgICAgLiA/IHByZXR0eSBwcmludCB0cmFuc3BpbGVkIGpzIGNvZGUgICAgICAgICAuID0gZmFsc2VcbiAgICAgICAgICAgIHJ1biAgICAgICAgIC4gPyBleGVjdXRlIGZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgICAgLiA9IGZhbHNlXG4gICAgICAgICAgICBoZWFkZXIgICAgICAuID8gcHJlcGVuZCBvdXRwdXQgd2l0aCB2ZXJzaW9uIGhlYWRlciAgICAgIC4gPSBmYWxzZSAgLiAtIEhcbiAgICAgICAgICAgIHRva2VucyAgICAgIC4gPyBwcmludCB0b2tlbnMgICAgICAgICAgICAgICAgICAgICAgICAgICAgLiA9IGZhbHNlICAuIC0gVFxuICAgICAgICAgICAgYmxvY2sgICAgICAgLiA/IHByaW50IGJsb2NrIHRyZWUgICAgICAgICAgICAgICAgICAgICAgICAuID0gZmFsc2UgIC4gLSBCXG4gICAgICAgICAgICBwYXJzZSAgICAgICAuID8gcHJpbnQgcGFyc2UgdHJlZSAgICAgICAgICAgICAgICAgICAgICAgIC4gPSBmYWxzZSAgLiAtIFBcbiAgICAgICAgICAgIGFzdHIgICAgICAgIC4gPyBwcmludCBwYXJzZSB0cmVlIGFzIHN0cmluZyAgICAgICAgICAgICAgLiA9IGZhbHNlICAuIC0gQVxuICAgICAgICAgICAgc2NvcGUgICAgICAgLiA/IHByaW50IHNjb3BlcyAgICAgICAgICAgICAgICAgICAgICAgICAgICAuID0gZmFsc2UgIC4gLSBTXG4gICAgICAgICAgICB2ZXJib3NlICAgICAuID8gbG9nIG1vcmUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC4gPSBmYWxzZVxuICAgICAgICAgICAgZGVidWcgICAgICAgLiA/IGxvZyBkZWJ1ZyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAuID0gZmFsc2VcbiAgICAgICAgICAgIHJhdyAgICAgICAgIC4gPyBsb2cgcmF3ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLiA9IGZhbHNlICAuIC0gUlxuXG4gICAgICAgIHZlcnNpb24gICN7cGtnLnZlcnNpb259XG4gICAgICAgIFwiXCJcIlxuXG4gICAga29kZSA9IG5ldyBLb2RlIGFyZ3NcbiAgICBrb2RlLmNsaSgpXG4iXX0=
-//# sourceURL=../coffee/kode.coffee
+module.exports = Kode
+if (!module.parent || slash.resolve(module.parent.path).endsWith('/kode/bin'))
+{
+    args = karg(`
+        kode option
+            files       . **
+            eval        . ? evaluate a string and print the result
+            compile     . ? compile a string and print the result
+            outdir      . ? output directory for transpiled files
+            map         . ? generate inline source maps             . = true
+            kode        . ? pretty print input code                 . = false
+            js          . ? pretty print transpiled js code         . = false
+            run         . ? execute file                            . = false
+            header      . ? prepend output with version header      . = false  . - H
+            tokens      . ? print tokens                            . = false  . - T
+            block       . ? print block tree                        . = false  . - B
+            parse       . ? print parse tree                        . = false  . - P
+            astr        . ? print parse tree as string              . = false  . - A
+            scope       . ? print scopes                            . = false  . - S
+            verbose     . ? log more                                . = false
+            debug       . ? log debug                               . = false
+            raw         . ? log raw                                 . = false  . - R
+
+        version  ${pkg.version}
+        `)
+    kode = new Kode(args)
+    kode.cli()
+}
