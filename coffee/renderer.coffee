@@ -336,7 +336,6 @@ class Renderer
         @ded()
         
         if n.arrow.text == '=>' and not n.name
-            log n
             s = "(#{s}).bind(this)"
         
         s

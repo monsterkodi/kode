@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.25.0
+// monsterkodi/kode 0.26.0
 
 var empty, valid, lastLineCol, firstLineCol
 

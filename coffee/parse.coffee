@@ -76,6 +76,7 @@ class Parse # the base class of Parser
                 when '{'                    then tokens[0].text in '}'
                 when '('                    then tokens[0].text == ')'
                 when '▸args'                then tokens[0].text in '];'
+                when '▸return'              then tokens[0].text == 'if'
                 when 'call'                 then tokens[0].text in ';' # bail out for implicit calls
                                                                                    
                 when rule                   then tokens[0].text == stop                    
@@ -152,6 +153,7 @@ class Parse # the base class of Parser
             while   (
                     tokens[0]?.text in ['if' 'for' 'while'] and 
                     @stack[-1] not in ['▸args' '▸return'] and
+                    # @stack[-1] not in ['▸args'] and
                     last.line == tokens[0].line
                     )
                 @verb "exps #{tokens[0].text }Tail" e, @stack
@@ -227,7 +229,7 @@ class Parse # the base class of Parser
                         when 'try'      then return @try    tok, tokens
                         when 'for'      then return @for    tok, tokens
                         when 'if' 
-                            if @stack[-1] not in ['▸args']
+                            if @stack[-1] not in ['▸args' '▸return']
                                 @verb 'if' @stack if @stack.length
                                 return @if tok, tokens
             else
@@ -611,7 +613,7 @@ class Parse # the base class of Parser
                 print.tokens 'then after unshifting dangling block tokens' tokens
                 
         else
-            @verb 'no then and no block after #{id}!'
+            @verb "no then and no block after #{id}!"
             # warn "'#{id}' expected then or block"
         
         thn

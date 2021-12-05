@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.25.0
+// monsterkodi/kode 0.26.0
 
 var kstr, klor, noon, slash, childp, fs, idx, color, legend, ext
 
