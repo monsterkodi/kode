@@ -232,13 +232,13 @@ class Renderer
 
         if mthds?.length
             
-            [constructor, bind] = @prepareMethods mthds
+            [con, bind] = @prepareMethods mthds
             
             if bind.length
                 for b in bind
                     bn = b.keyval.val.func.name.text
-                    constructor.keyval.val.func.body.exps ?= []
-                    constructor.keyval.val.func.body.exps.unshift
+                    con.keyval.val.func.body.exps ?= []
+                    con.keyval.val.func.body.exps.unshift
                         type: 'code'
                         text: "this.#{bn} = this.#{bn}.bind(this)"
             
@@ -283,13 +283,13 @@ class Renderer
 
         if mthds?.length
             
-            [constructor, bind] = @prepareMethods mthds
+            [con, bind] = @prepareMethods mthds
             
             if bind.length
                 for b in bind
                     bn = b.keyval.val.func.name.text
-                    constructor.keyval.val.func.body.exps ?= []
-                    constructor.keyval.val.func.body.exps.unshift
+                    con.keyval.val.func.body.exps ?= []
+                    con.keyval.val.func.body.exps.unshift
                         type: 'code'
                         text: "this[\"#{bn}\"] = this[\"#{bn}\"].bind(this)"
             
@@ -344,21 +344,21 @@ class Renderer
 
             name = m.keyval.val.func.name.text
             if name in ['@' 'constructor']
-                if constructor then error 'more than one constructor?'
+                if con then error 'more than one constructor?'
                 m.keyval.val.func.name.text = 'constructor'
-                constructor = m
+                con = m
             else if name.startsWith '@'
                 m.keyval.val.func.name.text = 'static ' + name[1..]
             else if m.keyval.val.func?.arrow.text == '=>'
                 bind.push m
 
-        if bind.length and not constructor # found some methods to bind, but no constructor
+        if bind.length and not con            # found some methods to bind, but no constructor
             ast = @kode.ast "constructor: ->" # create one from scratch
-            constructor = ast.exps[0].object.keyvals[0]
-            constructor.keyval.val.func.name = type:'name' text:'constructor'
-            mthds.unshift constructor
+            con = ast.exps[0].object.keyvals[0]
+            con.keyval.val.func.name = type:'name' text:'constructor'
+            mthds.unshift con
 
-        [constructor, bind]
+        [con, bind]
         
     # 00000000  000   000  000   000   0000000
     # 000       000   000  0000  000  000
@@ -435,7 +435,7 @@ class Renderer
                     for i in [1..100]
                         if not used[thisVar.text+i]
                             ths.push "this.#{thisVar.text} = #{thisVar.text+i}"
-                            thisVar.text = thisVar.text+i
+                            thisVar.text += i
                             used[thisVar.text] = thisVar.text
                             break
                 else
@@ -961,7 +961,7 @@ class Renderer
                 s = ''
                 for val in op.lhs.array.items
                     i = op.lhs.array.items.indexOf val
-                    s += (i and @indent || '') + "#{val.text} = #{@atom(op.rhs)}[#{i}]\n"
+                    s += (i and @indent or '') + "#{val.text} = #{@atom(op.rhs)}[#{i}]\n"
                 return s
                 
         else if o == '!'
