@@ -825,7 +825,7 @@ class Renderer
                 
         else if o == '!'
 
-            if op.rhs?.incond
+            if op.rhs?.incond or op.rhs?.operation?.operator?.text == '='
                     open = '('
                     close = ')'
                             
