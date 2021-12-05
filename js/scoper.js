@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.32.0
+// monsterkodi/kode 0.36.0
 
 
 class Scoper
@@ -38,7 +38,7 @@ class Scoper
 
     exp (e)
     {
-        var insert, v, _71_34_, keyval, vals, _83_51_, _83_43_, key, val, k
+        var insert, v, _73_34_, keyval, vals, _86_51_, _86_43_, key, val
 
         if (!e)
         {
@@ -50,9 +50,9 @@ class Scoper
 
             this.verb(yellow(v),red(t))
             var list = (this.maps != null ? this.maps : [])
-            for (var _60_20_ = 0; _60_20_ < list.length; _60_20_++)
+            for (var _62_20_ = 0; _62_20_ < list.length; _62_20_++)
             {
-                map = list[_60_20_]
+                map = list[_62_20_]
                 if (map[v])
                 {
                     return
@@ -70,9 +70,9 @@ class Scoper
             if (e.length)
             {
                 var list = (e != null ? e : [])
-                for (var _67_54_ = 0; _67_54_ < list.length; _67_54_++)
+                for (var _69_54_ = 0; _69_54_ < list.length; _69_54_++)
                 {
-                    v = list[_67_54_]
+                    v = list[_69_54_]
                     this.exp(v)
                 }
             }
@@ -88,9 +88,9 @@ class Scoper
                 else if (e.operation.lhs.object)
                 {
                     var list1 = (e.operation.lhs.object.keyvals != null ? e.operation.lhs.object.keyvals : [])
-                    for (var _75_31_ = 0; _75_31_ < list1.length; _75_31_++)
+                    for (var _77_31_ = 0; _77_31_ < list1.length; _77_31_++)
                     {
-                        keyval = list1[_75_31_]
+                        keyval = list1[_77_31_]
                         if (keyval.type === 'var')
                         {
                             insert(keyval.text,'curly')
@@ -106,11 +106,11 @@ class Scoper
                 }
                 else
                 {
-                    vals = ((_83_51_=(e.for.vals.array != null ? e.for.vals.array.items : undefined)) != null ? _83_51_ : e.for.vals)
+                    vals = ((_86_51_=(e.for.vals.array != null ? e.for.vals.array.items : undefined)) != null ? _86_51_ : e.for.vals)
                     var list2 = (vals != null ? vals : [])
-                    for (var _84_26_ = 0; _84_26_ < list2.length; _84_26_++)
+                    for (var _87_26_ = 0; _87_26_ < list2.length; _87_26_++)
                     {
-                        v = list2[_84_26_]
+                        v = list2[_87_26_]
                         if (v.text)
                         {
                             insert(v.text,'for')
@@ -150,36 +150,7 @@ class Scoper
                 for (key in e)
                 {
                     val = e[key]
-                    if (val)
-                    {
-                        if (val.type)
-                        {
-                            this.exp(val)
-                        }
-                        else
-                        {
-                            if (val instanceof Array)
-                            {
-                                if (val.length)
-                                {
-                                    var list3 = (val != null ? val : [])
-                                    for (var _107_49_ = 0; _107_49_ < list3.length; _107_49_++)
-                                    {
-                                        v = list3[_107_49_]
-                                        this.exp(v)
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                for (k in val)
-                                {
-                                    v = val[k]
-                                    this.exp(v)
-                                }
-                            }
-                        }
-                    }
+                    this.exp(val)
                 }
             }
         }

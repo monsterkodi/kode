@@ -52,6 +52,8 @@ class Scoper
     
     exp: (e) ->
 
+        # @verb 'scoper.exp' e
+        
         if not e then return
             
         insert = (v,t) => 
@@ -77,6 +79,7 @@ class Scoper
                             insert keyval.text, 'curly'
                     
             if e.for
+                
                 if e.for.vals.text
                     insert e.for.vals.text, 'for'
                 else 
@@ -98,15 +101,7 @@ class Scoper
                 @exp   e.func.args if e.func.args
                 @scope e.func.body if e.func.body
             else
-                for key,val of e
-                    if val
-                        if val.type then @exp val
-                        else
-                            if val instanceof Array
-                                if val.length
-                                    @exp v for v in val
-                            else
-                                @exp v for k,v of val
+                @exp val for key,val of e
         return
         
     verb: -> if @verbose then console.log.apply console.log, arguments 
