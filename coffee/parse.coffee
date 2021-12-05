@@ -487,6 +487,7 @@ class Parse # the base class of Parser
                     not e.keyval and
                     not e.operation and
                     not e.incond and
+                    not e.qmrkop and
                     e.call?.callee?.text not in ['delete''new''typeof'] and
                     '▸arg' not in @stack
                     )

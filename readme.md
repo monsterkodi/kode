@@ -94,20 +94,6 @@ a = (x for x in l)      # -> [1,2,3]
 
 **kode** doesn't distuinguish between round and square brackets around list comprehensions
 
-## Constructor shortcut
-
-```coffeescript
-class C
-    @: ->
-```
-
-... is an *optional* shortcut for ...
-
-```coffeescript
-class C
-    constructor: ->
-```
-
 ## If shortcut
 
 ```coffeescript
@@ -157,6 +143,31 @@ A new object, array or string is build from the results and returned:
 'hello'   each (c) -> c+c            # -> 'hheelllloo'
 [1,3]     each (i,v) -> [1-i,v*v]    # -> [9,1]
 {a:1,b:3} each (k,v) -> ['▸'+k, k+v] # -> { '▸a': 'a1', '▸b': 'b3' }
+```
+
+## For
+
+```coffeescript
+l = null
+for a in l
+    log 'hello'
+```
+
+The above code would throw an exception at runtime in CoffeeScript.
+**kode** generates code that doesn't fail in these kind of situations.
+
+## Constructor shortcut
+
+```coffeescript
+class C
+    @: ->
+```
+
+... is an *optional* shortcut for ...
+
+```coffeescript
+class C
+    constructor: ->
 ```
 
 # Planned stuff that does not work yet:

@@ -88,7 +88,8 @@ class Scoper
                 
             if e.qmrkop
                 @verb 'qmrkop' e
-                insert "_#{e.qmrkop.qmrk.line}_#{e.qmrkop.qmrk.col}_" ' ? '
+                if e.qmrkop.lhs.type != 'var'
+                    insert "_#{e.qmrkop.qmrk.line}_#{e.qmrkop.qmrk.col}_" ' ? '
 
             if e.func
                 @exp   e.func.args if e.func.args

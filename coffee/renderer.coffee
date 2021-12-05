@@ -123,8 +123,12 @@ class Renderer
         
     qmrkop: (p) ->
         
-        vn = "_#{p.qmrk.line}_#{p.qmrk.col}_"
-        "((#{vn}=#{@atom p.lhs}) != null ? #{vn} : #{@atom p.rhs})"
+        if p.lhs.type == 'var' or not p.qmrk
+            lhs = @atom p.lhs
+            "(#{lhs} != null ? #{lhs} : #{@atom p.rhs})"
+        else
+            vn = "_#{p.qmrk.line}_#{p.qmrk.col}_"
+            "((#{vn}=#{@atom p.lhs}) != null ? #{vn} : #{@atom p.rhs})"
 
     qmrkcolon: (p) ->
         
@@ -556,8 +560,15 @@ class Renderer
         eb = lineBreak and ';' or '\n'
         
         g2 = if lineBreak then '' else @indent
-        
-        list = @node n.list
+ 
+        if not n.list.qmrkop and not n.list.array
+            list = @node qmrkop:
+                            lhs: n.list
+                            rhs: 
+                                type: 'array'
+                                text: '[]'
+        else
+            list = @node n.list
 
         if not list or list == 'undefined'
             print.noon 'no list for' n.list

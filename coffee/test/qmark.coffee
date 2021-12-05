@@ -61,7 +61,6 @@ describe 'qmark' ->
         cmp "e?[1]?.g"              ";((_1_1_=e) != null ? (_1_5_=_1_1_[1]) != null ? _1_5_.g : undefined : undefined)"
         cmp "e?.f?.d"               ";((_1_1_=e) != null ? (_1_4_=_1_1_.f) != null ? _1_4_.d : undefined : undefined)"
         
-        
         evl "e=1;e?[1]?.g"          undefined
         
     #  0000000   0000000   00     00  0000000    000  000   000  00000000  0000000    
@@ -86,4 +85,8 @@ describe 'qmark' ->
             x = ((_1_8_=a[1]) != null ? (_1_13_=_1_8_.b()) != null ? typeof (_1_16_=_1_13_.c) === "function" ? (_1_21_=_1_16_().d) != null ? _1_21_.e : undefined : undefined : undefined : undefined)
             """ 
         
+    it 'functions' ->
+        
+        cmp "f c ? '', 4"   "f((c != null ? c : ''),4)"
+    
                     

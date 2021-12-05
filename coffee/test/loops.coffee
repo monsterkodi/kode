@@ -22,7 +22,7 @@ describe 'loops' ->
             for t in l
                 t
             """ """
-            var list = l
+            var list = (l != null ? l : [])
             for (var _1_6_ = 0; _1_6_ < list.length; _1_6_++)
             {
                 t = list[_1_6_]
@@ -74,7 +74,7 @@ describe 'loops' ->
             for v,i in @regs
                 log i,v
             """ """
-            var list = this.regs
+            var list = (this.regs != null ? this.regs : [])
             for (i = 0; i < list.length; i++)
             {
                 v = list[i]
@@ -86,7 +86,7 @@ describe 'loops' ->
             for [a,b] in @regs
                 log a,b
             """ """
-            var list = this.regs
+            var list = (this.regs != null ? this.regs : [])
             for (var _1_10_ = 0; _1_10_ < list.length; _1_10_++)
             {
                 a = list[_1_10_][0]
@@ -145,7 +145,7 @@ describe 'loops' ->
         cmp """
             @exp body.exps,k,e for e,k in body.exps
             """ """
-            var list = body.exps
+            var list = (body.exps != null ? body.exps : [])
             for (k = 0; k < list.length; k++)
             {
                 e = list[k]
@@ -189,7 +189,7 @@ describe 'loops' ->
         cmp """
             f e for e in l ? []
             """ """
-            var list = ((_1_15_=l) != null ? _1_15_ : [])
+            var list = (l != null ? l : [])
             for (var _1_10_ = 0; _1_10_ < list.length; _1_10_++)
             {
                 e = list[_1_10_]
@@ -212,7 +212,7 @@ describe 'loops' ->
 
         cmp "m = ([i, k] for k,i in rgs)",
             """
-            m = (function () { var result = []; var list = rgs; for (i = 0; i < list.length; i++)  { var k = list[i];result.push([i,k])  } return result })()
+            m = (function () { var result = []; var list = (rgs != null ? rgs : []); for (i = 0; i < list.length; i++)  { var k = list[i];result.push([i,k])  } return result })()
             """
             
         evl "1"                                 1
