@@ -160,7 +160,7 @@ describe 'switch' ->
                 when 'd'
                     false
             """ """
-            b = (function ()
+            b = ((function ()
             {
                 switch (c)
                 {
@@ -172,7 +172,7 @@ describe 'switch' ->
             
                 }
             
-            })()
+            }).bind(this))()
             """
 
         cmp """
@@ -188,7 +188,7 @@ describe 'switch' ->
                     c += index+length
                     true
             """ """
-            b = (function ()
+            b = ((function ()
             {
                 switch (matches[0][0])
                 {
@@ -208,7 +208,7 @@ describe 'switch' ->
                         return true
                 }
             
-            })()
+            }).bind(this))()
             """
             
     # 000   000  000   0000000  00000000  00000000   

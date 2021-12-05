@@ -497,7 +497,7 @@ class Parser extends Parse
                             exps:   [
                                         func:
                                             arrow:
-                                                text: '->'
+                                                text: '=>'
                                             body:
                                                 vars: []
                                                 exps: [rhs]
