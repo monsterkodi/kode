@@ -38,7 +38,7 @@ class Stripol
     
     scope: (body) ->
 
-        @exp body.exps,k,e for e,k in body.exps ? []
+        @exp body.exps,k,e for e,k in body.exps #? []
         
     # 00000000  000   000  00000000   
     # 000        000 000   000   000  
@@ -123,12 +123,6 @@ class Stripol
                 matches = ([k, r.exec t] for k,r of rgs)
                 matches = matches.filter (m) -> m[1]?
                 
-                # if empty matches
-                    # log 'INNER MIDL'
-                    # push 'midl' s[c..]
-                    # c = s.length
-                    # break
-                
                 matches.sort (a,b) -> a[1].index - b[1].index
                 
                 length = matches[0][1][0].length
@@ -148,6 +142,7 @@ class Stripol
                         true
                 break if b
             
+        log chunks
         chunks
                                 
     verb: -> if @verbose then console.log.apply console.log, arguments 

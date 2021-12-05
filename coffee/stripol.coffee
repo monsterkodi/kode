@@ -103,7 +103,7 @@ class Stripol
                 push 'close' t
                 break
 
-            push empty(chunks) and 'open' or 'midl', t[...m.index] 
+            push empty(chunks) and 'open' or 'midl', t[...m.index]
             
             c += m.index+2
             ic = c
@@ -122,12 +122,6 @@ class Stripol
                 
                 matches = ([k, r.exec t] for k,r of rgs)
                 matches = matches.filter (m) -> m[1]?
-                
-                # if empty matches
-                    # log 'INNER MIDL'
-                    # push 'midl' s[c..]
-                    # c = s.length
-                    # break
                 
                 matches.sort (a,b) -> a[1].index - b[1].index
                 

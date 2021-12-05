@@ -907,8 +907,8 @@ class Renderer
                 else
                     upper = ", #{upto}"
             else
-                if addOne then if upto then upper = ", typeof #{upto} === 'number' && #{upto}+1 || Infinity"
-                else                        upper = ", typeof #{upto} === 'number' && #{upto} || -1"
+                if addOne then if upto then upper = ", typeof #{upto} === 'number' ? #{upto}+1 : Infinity"
+                else                        upper = ", typeof #{upto} === 'number' ? #{upto} : -1"
 
             "#{@atom(p.idxee)}.slice(#{from}#{upper ? ''})"
         else

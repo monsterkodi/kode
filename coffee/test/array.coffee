@@ -73,11 +73,11 @@ describe 'array' ->
             
         cmp "a[1..4]"           "a.slice(1, 5)"
         cmp "a[1...4]"          "a.slice(1, 4)"
-        cmp "a[1...a]"          "a.slice(1, typeof a === 'number' && a || -1)"
-        cmp "a[1..a]"           "a.slice(1, typeof a === 'number' && a+1 || Infinity)"
-        cmp "a[1..a.b]"         "a.slice(1, typeof a.b === 'number' && a.b+1 || Infinity)"
-        cmp "a[1..a[2]]"        "a.slice(1, typeof a[2] === 'number' && a[2]+1 || Infinity)"
-        cmp "a[1..a[3].b]"      "a.slice(1, typeof a[3].b === 'number' && a[3].b+1 || Infinity)"
+        cmp "a[1...a]"          "a.slice(1, typeof a === 'number' ? a : -1)"
+        cmp "a[1..a]"           "a.slice(1, typeof a === 'number' ? a+1 : Infinity)"
+        cmp "a[1..a.b]"         "a.slice(1, typeof a.b === 'number' ? a.b+1 : Infinity)"
+        cmp "a[1..a[2]]"        "a.slice(1, typeof a[2] === 'number' ? a[2]+1 : Infinity)"
+        cmp "a[1..a[3].b]"      "a.slice(1, typeof a[3].b === 'number' ? a[3].b+1 : Infinity)"
         
         cmp "b[c...-1]"         "b.slice(c, -1)"
         cmp "b[c.d...-1]"       "b.slice(c.d, -1)"
