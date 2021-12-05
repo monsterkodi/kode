@@ -560,34 +560,42 @@ class Renderer
 
     for: (n) ->
 
-        if not n.then then error 'for expected then' n
+        if not n.then then @verb 'for expected then' n
 
         switch n.inof.text
             when 'in' then @for_in n
             when 'of' then @for_of n
             else error 'for expected in/of'
 
+    # 00000000   0000000   00000000           000  000   000  
+    # 000       000   000  000   000          000  0000  000  
+    # 000000    000   000  0000000            000  000 0 000  
+    # 000       000   000  000   000          000  000  0000  
+    # 000        0000000   000   000  000000  000  000   000  
+    
     for_in: (n, varPrefix='', lastPrefix='', lastPostfix='', lineBreak) ->
 
-        gi = lineBreak or @ind()
-        nl = lineBreak or '\n'
-        eb = lineBreak and ';' or '\n'
-        
-        g2 = if lineBreak then '' else @indent
- 
-        if not n.list.qmrkop and not n.list.array
+        if not n.list.qmrkop and not n.list.array and not n.list.slice
             list = @node qmrkop:
                             lhs: n.list
                             rhs: 
                                 type: 'array'
                                 text: '[]'
         else
+            if n.list.array?.items[0]?.slice or n.list.slice
+                return @for_in_range n, varPrefix, lastPrefix, lastPostfix, lineBreak
             list = @node n.list
 
         if not list or list == 'undefined'
             print.noon 'no list for' n.list
             print.ast 'no list for' n.list
 
+        gi = lineBreak or @ind()
+        nl = lineBreak or '\n'
+        eb = lineBreak and ';' or '\n'
+        
+        g2 = if lineBreak then '' else @indent
+        
         listVar = @freshVar 'list'
         iterVar = "_#{n.inof.line}_#{n.inof.col}_"
         s = ''
@@ -617,6 +625,58 @@ class Renderer
         @ded() if not lineBreak
         s
 
+    # 00000000   0000000   00000000           000  000   000          00000000    0000000   000   000   0000000   00000000  
+    # 000       000   000  000   000          000  0000  000          000   000  000   000  0000  000  000        000       
+    # 000000    000   000  0000000            000  000 0 000          0000000    000000000  000 0 000  000  0000  0000000   
+    # 000       000   000  000   000          000  000  0000          000   000  000   000  000  0000  000   000  000       
+    # 000        0000000   000   000  000000  000  000   000  000000  000   000  000   000  000   000   0000000   00000000  
+    
+    for_in_range: (n, varPrefix, lastPrefix, lastPostfix, lineBreak) ->
+        
+        slice = n.list.array?.items[0]?.slice ? n.list.slice
+
+        # log 'for_in_range' slice
+        
+        gi = lineBreak or @ind()
+        nl = lineBreak or '\n'
+        eb = lineBreak and ';' or '\n'
+        
+        g2 = if lineBreak then '' else @indent
+        
+        iterVar   = n.vals.text ? n.vals[0].text
+        
+        iterStart = @node slice.from
+        iterEnd   = @node slice.upto
+        
+        start = parseInt iterStart
+        end   = parseInt iterEnd
+        
+        iterCmp = if slice.dots.text == '...' then '<' else '<='
+        iterDir = '++'
+        
+        if Number.isFinite(start) and Number.isFinite(end)
+            if start > end
+                iterCmp = if slice.dots.text == '...' then '>' else '>='
+                iterDir = '--'
+            
+        s = ''
+        s += "for (#{iterVar} = #{iterStart}; #{iterVar} #{iterCmp} #{iterEnd}; #{iterVar}#{iterDir})" + nl
+        s += gi+"{"+nl
+        for e in n.then ? []
+            prefix = if lastPrefix and e == n.then[-1] then lastPrefix else ''
+            postfix = if lastPostfix and e == n.then[-1] then lastPostfix else ''
+            s += g2 + prefix+@node(e)+postfix + nl
+        s += gi+"}"
+            
+        @ded() if not lineBreak
+        s
+        
+    # 00000000   0000000   00000000            0000000   00000000  
+    # 000       000   000  000   000          000   000  000       
+    # 000000    000   000  0000000            000   000  000000    
+    # 000       000   000  000   000          000   000  000       
+    # 000        0000000   000   000  000000   0000000   000       
+    
     for_of: (n, varPrefix='', lastPrefix='', lastPostfix='', lineBreak) ->
 
         gi = lineBreak or @ind()
@@ -656,7 +716,7 @@ class Renderer
                 when 'in' then @for_in f, 'var ' 'result.push(' ')' ' '
                 when 'of' then @for_of f, 'var ' 'result.push(' ')' ' '
 
-        "(function () { var result = []; #{comp n.for} return result })()"
+        "(function () { var result = []; #{comp n.for} return result }).bind(this)()"
 
     # 000   000  000   000  000  000      00000000
     # 000 0 000  000   000  000  000      000

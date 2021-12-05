@@ -17,7 +17,42 @@ describe 'loops' ->
     # 000        0000000   000   000        000  000   000
 
     it 'for in' ->
+        
+        cmp "for x in [3...4]",
+            """
+            for (x = 3; x < 4; x++)
+            {
+            }
+            """
 
+        cmp "for x in [3..4]",
+            """
+            for (x = 3; x <= 4; x++)
+            {
+            }
+            """
+
+        cmp "for x in 5..6",
+            """
+            for (x = 5; x <= 6; x++)
+            {
+            }
+            """
+
+        cmp "for x in 5..6",
+            """
+            for (x = 5; x <= 6; x++)
+            {
+            }
+            """
+
+        cmp "for x in 15..4",
+            """
+            for (x = 15; x >= 4; x--)
+            {
+            }
+            """
+            
         cmp """
             for t in l
                 t
@@ -98,14 +133,10 @@ describe 'loops' ->
         cmp """
             for a in [1..2] then for b in [1..3] then c = 1; d = 1
             """ """
-            var list = [1,2]
-            for (var _1_6_ = 0; _1_6_ < list.length; _1_6_++)
+            for (a = 1; a <= 2; a++)
             {
-                a = list[_1_6_]
-                var list1 = [1,2,3]
-                for (var _1_27_ = 0; _1_27_ < list1.length; _1_27_++)
+                for (b = 1; b <= 3; b++)
                 {
-                    b = list1[_1_27_]
                     c = 1
                     d = 1
                 }
@@ -118,14 +149,10 @@ describe 'loops' ->
                 d:
                     e: 1
             """ """
-            var list = [1,2,3,4,5,6,7,8,9]
-            for (var _1_6_ = 0; _1_6_ < list.length; _1_6_++)
+            for (a = 1; a <= 9; a++)
             {
-                a = list[_1_6_]
-                var list1 = [1,2,3,4,5,6,7,8,9]
-                for (var _1_27_ = 0; _1_27_ < list1.length; _1_27_++)
+                for (b = 1; b <= 9; b++)
                 {
-                    b = list1[_1_27_]
                     c = 3
                     {d:{e:1}}
                 }
@@ -175,7 +202,7 @@ describe 'loops' ->
         cmp """
             matches = ([k, r.exec t] for k,r of rgs)
             """ """
-            matches = (function () { var result = []; for (var k in rgs)  { var r = rgs[k];result.push([k,r.exec(t)])  } return result })()
+            matches = (function () { var result = []; for (var k in rgs)  { var r = rgs[k];result.push([k,r.exec(t)])  } return result }).bind(this)()
             """
             
     # 00000000   0000000   00000000         000000000   0000000   000  000      
@@ -207,12 +234,12 @@ describe 'loops' ->
         
         cmp "m = ([k, r.exec t] for k,r of rgs)",
             """
-            m = (function () { var result = []; for (var k in rgs)  { var r = rgs[k];result.push([k,r.exec(t)])  } return result })()
+            m = (function () { var result = []; for (var k in rgs)  { var r = rgs[k];result.push([k,r.exec(t)])  } return result }).bind(this)()
             """
 
         cmp "m = ([i, k] for k,i in rgs)",
             """
-            m = (function () { var result = []; var list = (rgs != null ? rgs : []); for (i = 0; i < list.length; i++)  { var k = list[i];result.push([i,k])  } return result })()
+            m = (function () { var result = []; var list = (rgs != null ? rgs : []); for (i = 0; i < list.length; i++)  { var k = list[i];result.push([i,k])  } return result }).bind(this)()
             """
             
         evl "1"                                 1

@@ -560,7 +560,7 @@ class Renderer
 
     for: (n) ->
 
-        if not n.then then error 'for expected then' n
+        if not n.then then @verb 'for expected then' n
 
         switch n.inof.text
             when 'in' then @for_in n
@@ -656,7 +656,7 @@ class Renderer
                 when 'in' then @for_in f, 'var ' 'result.push(' ')' ' '
                 when 'of' then @for_of f, 'var ' 'result.push(' ')' ' '
 
-        "(function () { var result = []; #{comp n.for} return result })()"
+        "(function () { var result = []; #{comp n.for} return result }).bind(this)()"
 
     # 000   000  000   000  000  000      00000000
     # 000 0 000  000   000  000  000      000
