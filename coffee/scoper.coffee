@@ -60,10 +60,12 @@ class Scoper
         @vars.push f.body.vars
         
         for arg in f.args?.parens.exps ? []
-            if arg.text
-                @args[-1][arg.text] = arg.text
+            if t = arg.text
+                @args[-1][t] = t
+            else if t = arg.operation?.lhs?.text
+                @args[-1][t] = t
             else
-                log 'todo: scoper handle complex args'
+                log 'todo: scoper handle complex args' arg if arg.prop?.obj?.text != '@'
 
         @exp e for e in f.body?.exps ? []
         @maps.pop()

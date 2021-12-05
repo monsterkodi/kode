@@ -25,6 +25,7 @@ class Scoper
     collect: (tl) ->
         
         @maps = []
+        @args = []
         @vars = []
         @scope tl
         tl
@@ -38,11 +39,37 @@ class Scoper
     scope: (body) ->
 
         @maps.push {}
+        @args.push {}
         @vars.push body.vars
         @exp e for e in body.exps ? []
         @maps.pop()
+        @args.pop()
         @vars.pop()
         body
+        
+    # 00000000  000   000  000   000   0000000  
+    # 000       000   000  0000  000  000       
+    # 000000    000   000  000 0 000  000       
+    # 000       000   000  000  0000  000       
+    # 000        0000000   000   000   0000000  
+    
+    func: (f) ->
+
+        @maps.push {}
+        @args.push {}
+        @vars.push f.body.vars
+        
+        for arg in f.args?.parens.exps ? []
+            if arg.text
+                @args[-1][arg.text] = arg.text
+            else
+                log 'todo: scoper handle complex args'
+
+        @exp e for e in f.body?.exps ? []
+        @maps.pop()
+        @args.pop()
+        @vars.pop()
+        f
         
     # 00000000  000   000  00000000   
     # 000        000 000   000   000  
@@ -54,11 +81,12 @@ class Scoper
 
         if not e then return
             
-        insert = (v,t) => 
-            @verb yellow(v), red(t)
+        insert = (v,t) =>
             
-            for map in @maps 
-                if map[v] then return
+            for map in @maps then if map[v] then return
+            for arg in @args then if arg[v] then return
+                
+            @verb yellow(v), red(t)
             
             @vars[-1].push text:v, type:t
             @maps[-1][v] = t
@@ -101,8 +129,7 @@ class Scoper
                     insert "_#{e.qmrkop.qmrk.line}_#{e.qmrkop.qmrk.col}_" ' ? '
                     
             if e.func
-                @exp   e.func.args if e.func.args
-                @scope e.func.body if e.func.body
+                @func e.func
             else
                 @exp val for key,val of e
         return
