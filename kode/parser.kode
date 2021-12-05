@@ -23,7 +23,7 @@ Parse = require './parse'
 
 { firstLineCol, lastLineCol, empty } = require './utils'
 
-class Parser extends Parse
+function Parser #extends Parse
 
     scope: (exps) ->
         

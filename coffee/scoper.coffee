@@ -52,8 +52,6 @@ class Scoper
     
     exp: (e) ->
 
-        # @verb 'scoper.exp' e
-        
         if not e then return
             
         insert = (v,t) => 
@@ -65,7 +63,10 @@ class Scoper
             @vars[-1].push text:v, type:t
             @maps[-1][v] = t
         
-        if e.type then null
+        if e.type 
+            if e.type == 'code'
+                @exp e.exps
+            return
         else if e instanceof Array  then @exp v for v in e if e.length
         else if e instanceof Object
             
@@ -73,7 +74,6 @@ class Scoper
                 if e.operation.lhs?.text
                     insert e.operation.lhs.text, e.operation.operator.text
                 else if e.operation.lhs.object
-                    # log 'scoper curly lhs' e.operation.lhs.object.keyvals
                     for keyval in e.operation.lhs.object.keyvals
                         if keyval.type == 'var'
                             insert keyval.text, 'curly'
@@ -99,7 +99,7 @@ class Scoper
                 @verb 'qmrkop' e
                 if e.qmrkop.lhs.type != 'var'
                     insert "_#{e.qmrkop.qmrk.line}_#{e.qmrkop.qmrk.col}_" ' ? '
-
+                    
             if e.func
                 @exp   e.func.args if e.func.args
                 @scope e.func.body if e.func.body

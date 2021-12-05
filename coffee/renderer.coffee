@@ -26,11 +26,11 @@ class Renderer
         @debug   = @kode.args?.debug
         @verbose = @kode.args?.verbose
 
-    compile: (code) -> 
-    
-        Kode = require './kode'
-        @subKode ?= new Kode 
-        @subKode.compile code
+    # compile: (code) -> 
+#     
+        # Kode = require './kode'
+        # @subKode ?= new Kode 
+        # @subKode.compile code
         
     render: (ast) ->
 
@@ -1154,7 +1154,8 @@ class Renderer
                when 'close' then s+= '}'+t
                when 'midl'  then s+= '}'+t+'${'
                when 'code'  
-                   c = @compile t
+                   # c = @compile t
+                   c = @nodes chunk.exps
                    if c[0] == ';' then c = c[1..]
                    s+= c
        s += '`'

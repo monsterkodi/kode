@@ -93,7 +93,12 @@ class Stripol
 
         c = 0; chunks = []
             
-        push = (type,text) -> chunks.push type:type, text:text, line:line, col:col+c
+        push = (type,text) => 
+            if type == 'code'
+                exps = @kode.ast(text).exps
+                chunks.push type:type, exps:exps, line:line, col:col+c
+            else
+                chunks.push type:type, text:text, line:line, col:col+c
         
         while c < s.length
             
