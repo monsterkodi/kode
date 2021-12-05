@@ -117,7 +117,7 @@ describe 'if' ->
             if not op in ['--''++']
                 decr
             """ """
-            if (!['--','++'].indexOf(op) >= 0)
+            if (!(['--','++'].indexOf(op) >= 0))
             {
                 decr
             }
@@ -127,7 +127,7 @@ describe 'if' ->
             if op not in ['--''++']
                 incr
             """ """
-            if (!['--','++'].indexOf(op) >= 0)
+            if (!(['--','++'].indexOf(op) >= 0))
             {
                 incr
             }

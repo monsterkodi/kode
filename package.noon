@@ -1,5 +1,5 @@
 name            kode
-version         0.24.0
+version         0.25.0
 description     programming language
 main            js/kode.js
 scripts

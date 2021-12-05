@@ -824,7 +824,7 @@ class Renderer
                     s += "#{keyval.text} = #{@atom(op.rhs)}.#{keyval.text}\n"
                 return s
                             
-        else if op.rhs?.operation?.operator.text == '='
+        else if op.rhs?.operation?.operator.text == '=' or o == '!' and op.rhs?.type not in ['var''keyword']
             open = '('
             close = ')'
 
