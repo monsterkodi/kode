@@ -26,12 +26,6 @@ class Renderer
         @debug   = @kode.args?.debug
         @verbose = @kode.args?.verbose
 
-    # compile: (code) -> 
-#     
-        # Kode = require './kode'
-        # @subKode ?= new Kode 
-        # @subKode.compile code
-        
     render: (ast) ->
 
         @varstack = [ast.vars]
@@ -967,7 +961,7 @@ class Renderer
                 s = ''
                 for val in op.lhs.array.items
                     i = op.lhs.array.items.indexOf val
-                    s += "#{val.text} = #{@atom(op.rhs)}[#{i}]\n"
+                    s += (i and @indent || '') + "#{val.text} = #{@atom(op.rhs)}[#{i}]\n"
                 return s
                 
         else if o == '!'

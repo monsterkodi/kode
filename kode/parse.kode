@@ -139,7 +139,7 @@ class Parse # the base class of Parser
                     
                 if stop
                     @verb 'exps nl with stop' stop
-                    if @stack[-1] in ['▸args' '▸body' '▸return' 'then'] or stop != 'nl'
+                    if @stack[-1] in ['▸args' '▸body' '▸return' 'then' '▸else'] or stop != 'nl'
                         @verb "exps nl with stop '#{stop}' in #{@stack[-1]} (break, but don't shift nl)"
                     else
                         @shiftNewline "exps nl with stop '#{stop}'" tokens 
@@ -174,6 +174,7 @@ class Parse # the base class of Parser
 
             if  (
                     tokens[0]?.text in ['if''then''for''while'] and 
+                    tokens[0].col > last.col and
                     es.length and 
                     not blocked and
                     last.line == tokens[0].line
@@ -228,13 +229,14 @@ class Parse # the base class of Parser
                 
                 if tokens[0]?.text not in ':' # allow keywords as keys
                     switch tok.text 
-                        when 'return'   then return @return tok, tokens
-                        when 'switch'   then return @switch tok, tokens
-                        when 'class'    then return @class  tok, tokens
-                        when 'while'    then return @while  tok, tokens
-                        when 'when'     then return @when   tok, tokens
-                        when 'try'      then return @try    tok, tokens
-                        when 'for'      then return @for    tok, tokens
+                        when 'return'   then return @return   tok, tokens
+                        when 'switch'   then return @switch   tok, tokens
+                        when 'class'    then return @class    tok, tokens
+                        when 'function' then return @function tok, tokens
+                        when 'while'    then return @while    tok, tokens
+                        when 'when'     then return @when     tok, tokens
+                        when 'try'      then return @try      tok, tokens
+                        when 'for'      then return @for      tok, tokens
                         when 'if' 
                             if @stack[-1] not in ['▸args' '▸return']
                                 @verb 'if' @stack if @stack.length
@@ -420,7 +422,7 @@ class Parse # the base class of Parser
             break if b
             
             if e.text == '@' 
-                if nxt.type == 'block' and @stack[-1] == 'if' or nxt.text == 'then' or nxt.type == 'nl'
+                if nxt.type == 'block' and @stack[-1] == 'if' or (spaced and nxt.text == 'then') or nxt.type == 'nl'
                     break
                 else
                     e = @this e, tokens

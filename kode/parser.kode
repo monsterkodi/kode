@@ -12,10 +12,10 @@
 # representation and then converting that back into dynamic code again,
 # i decided to go the direct route.
 #
-# it might be less formal and sligthly less concise, but it's definitely 
+# it might be less formal and slightly less concise, but it's definitely 
 # more customizable and easier to debug.
 #
-# but the biggest advantage is that the main features are seperated from
+# the biggest advantage is that the main features are seperated from
 # the nasty details and corner cases, which are handled in the base class
 
 print = require './print'
@@ -23,7 +23,7 @@ Parse = require './parse'
 
 { firstLineCol, lastLineCol, empty } = require './utils'
 
-function Parser #extends Parse
+class Parser extends Parse
 
     scope: (exps) ->
         
@@ -366,14 +366,14 @@ function Parser #extends Parse
     # 000       000      000   000       000       000
     #  0000000  0000000  000   000  0000000   0000000
 
-    class: (tok, tokens) ->
+    class: (tok, tokens, type='class') ->
 
         @push 'class'
 
         name = tokens.shift()
 
-        e = class:
-            name:name
+        e = {}
+        e[type] = name:name
 
         if tokens[0]?.text == 'extends'
             tokens.shift()
@@ -382,13 +382,17 @@ function Parser #extends Parse
         if tokens[0]?.type == 'block'
             tokens = tokens.shift().tokens
 
-            e.class.body = @exps 'class body' tokens
-            @nameMethods e.class.body
+            e[type].body = @exps 'class body' tokens
+            @nameMethods e[type].body
                 
         @pop 'class'
 
         e
 
+    function: (tok, tokens) ->
+
+        @class tok, tokens, 'function'
+        
     # 00000000  000   000  000   000   0000000
     # 000       000   000  0000  000  000
     # 000000    000   000  000 0 000  000
