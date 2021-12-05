@@ -1018,7 +1018,10 @@ class Renderer
                when 'open'  then s+= t+'${'
                when 'close' then s+= '}'+t
                when 'midl'  then s+= '}'+t+'${'
-               when 'code'  then s+= @compile t
+               when 'code'  
+                   c = @compile t
+                   if c[0] == ';' then c = c[1..]
+                   s+= c
        s += '`'
        s
 

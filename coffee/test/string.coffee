@@ -41,4 +41,5 @@ describe 'string' ->
         cmp '"""tri#{triple}ple""" ; "dou#{double}ble"'  '`tri${triple}ple`\n`dou${double}ble`'
         cmp '"#{\'a\'}"'                                "`${'a'}`"
         cmp '"""#{"a"}"""'                              '`${"a"}`'
+        cmp '"nullcheck in #{stripol ? 123}"'           "`nullcheck in ${(stripol != null ? stripol : 123)}`"
         cmp '"""{ok#} #{"well" + "1+\'2\' #{\'omg\'}" + is kinda fukked}"""'  "`{ok#} ${\"well\" + `1+'2' ${'omg'}` + is(kinda(fukked))}`"
