@@ -916,9 +916,9 @@ class Renderer
 
             addOne = slice.dots.text == '..'
 
-            if slice.upto? then upto = @node slice.upto
+            upto = if slice.upto? then @node slice.upto else '-1'
 
-            if slice.upto?.type == 'num' or slice.upto?.operation
+            if slice.upto?.type == 'num' or slice.upto?.operation or upto == '-1'
                 u = parseInt upto
                 if Number.isFinite u
                     if u == -1 and addOne
