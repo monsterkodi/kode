@@ -56,9 +56,12 @@ class Scoper
             
         insert = (v,t) => 
             @verb yellow(v), red(t)
-            if not @maps[-1][v]
-                @vars[-1].push text:v, type:t
-                @maps[-1][v] = t
+            
+            for map in @maps 
+                if map[v] then return
+            
+            @vars[-1].push text:v, type:t
+            @maps[-1][v] = t
         
         if e.type then null
         else if e instanceof Array  then @exp v for v in e if e.length

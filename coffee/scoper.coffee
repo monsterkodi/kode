@@ -56,9 +56,12 @@ class Scoper
             
         insert = (v,t) => 
             @verb yellow(v), red(t)
-            if not @maps[-1][v]
-                @vars[-1].push text:v, type:t
-                @maps[-1][v] = t
+            
+            for map in @maps 
+                if map[v] then return
+            
+            @vars[-1].push text:v, type:t
+            @maps[-1][v] = t
         
         if e.type then null
         else if e instanceof Array  then @exp v for v in e if e.length
@@ -83,7 +86,7 @@ class Scoper
                         
             if e.assert
                 @verb 'assert' e
-                if e.assert.obj.type not in ['var'] and not e.assert.obj.index
+                if e.assert.obj.type != 'var' and not e.assert.obj.index
                     insert "_#{e.assert.qmrk.line}_#{e.assert.qmrk.col}_" '?.'
                 
             if e.qmrkop
@@ -104,6 +107,7 @@ class Scoper
                                     @exp v for v in val
                             else
                                 @exp v for k,v of val
+        return
         
     verb: -> if @verbose then console.log.apply console.log, arguments 
 

@@ -328,6 +328,29 @@ describe 'if' ->
             }
             """
             
+        cmp """
+            j = ->
+                for m in ms then if bla then blub
+                nextline
+            """ """
+            
+            j = function ()
+            {
+                var m
+            
+                var list = (ms != null ? ms : [])
+                for (var _2_10_ = 0; _2_10_ < list.length; _2_10_++)
+                {
+                    m = list[_2_10_]
+                    if (bla)
+                    {
+                        blub
+                    }
+                }
+                return nextline
+            }
+            """
+            
         cmp "a = if 1 then 2 else if 3 then 4 else if 5 then 6 else 7" "a = 1 ? 2 : 3 ? 4 : 5 ? 6 : 7"
         
         cmp """

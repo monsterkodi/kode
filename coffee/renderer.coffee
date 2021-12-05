@@ -220,7 +220,6 @@ class Renderer
 
         s += '\n{'
 
-        # mthds = n.body?.object?.keyvals ? n.body?[0]?.object?.keyvals
         mthds = n.body
 
         if mthds?.length
@@ -501,7 +500,7 @@ class Renderer
                         r[k] = m
                     }
                 }
-                return o instanceof Array ? r.filter((f) => { return f !== undefined }) : typeof o == 'string' ? r.join('') : r
+                return typeof o == 'string' ? r.join('') : r
             })(#{@node n.lhs})
             """
         else if numArgs
@@ -516,10 +515,9 @@ class Renderer
                         r[m[0]] = m[1]
                     }
                 }
-                return o instanceof Array ? r : typeof o == 'string' ? r.join('') : r
+                return typeof o == 'string' ? r.join('') : r
             })(#{@node n.lhs})
             """
-            # return o instanceof Array ? r.filter((f) => { return f !== undefined }) : typeof o == 'string' ? r.join('') : r
             
         else # no args
             if n.fnc.func.body.exps?.length > 0 # some func but no args
@@ -534,7 +532,7 @@ class Renderer
                             r[k] = m
                         }
                     }
-                    return o instanceof Array ? r.filter((f) => { return f !== undefined }) : typeof o == 'string' ? r.join('') : r
+                    return typeof o == 'string' ? r.join('') : r
                 })(#{@node n.lhs})
                     
                 """
