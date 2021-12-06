@@ -989,7 +989,8 @@ class Renderer
 
     incond: (p) ->
 
-        "#{@node p.rhs}.indexOf(#{@atom p.lhs}) >= 0"
+        # "#{@node p.rhs}.indexOf(#{@atom p.lhs}) >= 0"
+        "[].indexOf.call(#{@node p.rhs}, #{@atom p.lhs}) >= 0"
 
     # 00000000    0000000   00000000   00000000  000   000   0000000
     # 000   000  000   000  000   000  000       0000  000  000

@@ -155,16 +155,16 @@ describe 'misc' ->
 
     it 'in condition' ->
 
-        cmp "a in l"          "l.indexOf(a) >= 0"
-        cmp "a in 'xyz'"      "'xyz'.indexOf(a) >= 0"
-        cmp "a in [1,2,3]"    ";[1,2,3].indexOf(a) >= 0"
-        cmp "a not in b"      "!(b.indexOf(a) >= 0)"
-        cmp "a not in [3,4]"  "!([3,4].indexOf(a) >= 0)"
+        cmp "a in l"          ";[].indexOf.call(l, a) >= 0"
+        cmp "a in 'xyz'"      ";[].indexOf.call('xyz', a) >= 0"
+        cmp "a in [1,2,3]"    ";[].indexOf.call([1,2,3], a) >= 0"
+        cmp "a not in b"      "!([].indexOf.call(b, a) >= 0)"
+        cmp "a not in [3,4]"  "!([].indexOf.call([3,4], a) >= 0)"
 
         cmp """
             if a in l then 1
             """ """
-            if (l.indexOf(a) >= 0)
+            if ([].indexOf.call(l, a) >= 0)
             {
                 1
             }
@@ -173,7 +173,7 @@ describe 'misc' ->
         cmp """
             if not a in l then 2
             """ """
-            if (!(l.indexOf(a) >= 0))
+            if (!([].indexOf.call(l, a) >= 0))
             {
                 2
             }
@@ -183,7 +183,7 @@ describe 'misc' ->
             if a in l
                 2
             """ """
-            if (l.indexOf(a) >= 0)
+            if ([].indexOf.call(l, a) >= 0)
             {
                 2
             }

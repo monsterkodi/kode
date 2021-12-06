@@ -149,6 +149,7 @@ describe 'array' ->
     it 'objects' ->
         
         cmp '[a:b]'             ';[{a:b}]'
+        
         cmp """
             a = [{
                     a:1

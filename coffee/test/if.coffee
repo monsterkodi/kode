@@ -117,7 +117,7 @@ describe 'if' ->
             if not op in ['--''++']
                 decr
             """ """
-            if (!(['--','++'].indexOf(op) >= 0))
+            if (!([].indexOf.call(['--','++'], op) >= 0))
             {
                 decr
             }
@@ -127,7 +127,7 @@ describe 'if' ->
             if op not in ['--''++']
                 incr
             """ """
-            if (!(['--','++'].indexOf(op) >= 0))
+            if (!([].indexOf.call(['--','++'], op) >= 0))
             {
                 incr
             }
@@ -196,7 +196,7 @@ describe 'if' ->
                 }
                 if (1)
                 {
-                    if (a.indexOf(2) >= 0)
+                    if ([].indexOf.call(a, 2) >= 0)
                     {
                         3
                     }
@@ -447,7 +447,7 @@ describe 'if' ->
                 log 'no3'
             log 'END'
             """ """
-            if (l.indexOf(a) >= 0)
+            if ([].indexOf.call(l, a) >= 0)
             {
                 console.log('yes3')
             }

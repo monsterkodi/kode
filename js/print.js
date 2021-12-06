@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.44.0
+// monsterkodi/kode 0.50.0
 
-var kstr, klor, noon, slash, childp, fs, idx, color, legend, ext
+var kstr, klor, noon, slash, childp, fs
 
 kstr = require('kstr')
 klor = require('klor')
@@ -176,7 +176,7 @@ class Print
 
     static ast (header, ast)
     {
-        var lpad, printNode, indent, visited, node
+        var lpad, printNode, node
 
         console.log(G1(g6(`\n ${header}`)))
         lpad = kstr.lpad('',19)
@@ -251,7 +251,7 @@ class Print
 
     static astr (ast, scopes)
     {
-        var printNode, indent, visited, s, node
+        var printNode, s, node
 
         printNode = function (node, indent = '', visited = [])
         {
@@ -332,8 +332,6 @@ class Print
 
     static noon (msg, arg)
     {
-        var arg, msg
-
         if (!arg)
         {
             arg = msg

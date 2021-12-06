@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.49.0
+// monsterkodi/kode 0.50.0
 
 var kstr, print, firstLineCol, lastLineCol
 
@@ -1234,7 +1234,7 @@ class Renderer
 
     incond (p)
     {
-        return `${this.node(p.rhs)}.indexOf(${this.atom(p.lhs)}) >= 0`
+        return `[].indexOf.call(${this.node(p.rhs)}, ${this.atom(p.lhs)}) >= 0`
     }
 
     parens (p)
@@ -1283,7 +1283,7 @@ class Renderer
 
     index (p)
     {
-        var slice, from, _1046_32_, addOne, upto, _1050_32_, _1052_25_, _1052_54_, u, upper, _1068_27_, ni
+        var slice, from, _1047_32_, addOne, upto, _1051_32_, _1053_25_, _1053_54_, u, upper, _1069_27_, ni
 
         if (slice = p.slidx.slice)
         {
@@ -1361,7 +1361,7 @@ class Renderer
 
     slice (p)
     {
-        var _1098_41_, from, upto, x, o
+        var _1099_41_, from, upto, x, o
 
         if ((p.from.type === 'num' && 'num' === (p.upto != null ? p.upto.type : undefined)))
         {
@@ -1393,13 +1393,13 @@ class Renderer
         var vars, v
 
         var list = (this.varstack != null ? this.varstack : [])
-        for (var _1119_17_ = 0; _1119_17_ < list.length; _1119_17_++)
+        for (var _1120_17_ = 0; _1120_17_ < list.length; _1120_17_++)
         {
-            vars = list[_1119_17_]
+            vars = list[_1120_17_]
             var list1 = (vars != null ? vars : [])
-            for (var _1120_18_ = 0; _1120_18_ < list1.length; _1120_18_++)
+            for (var _1121_18_ = 0; _1121_18_ < list1.length; _1121_18_++)
             {
-                v = list1[_1120_18_]
+                v = list1[_1121_18_]
                 if (v.text === name + (suffix || ''))
                 {
                     return this.freshVar(name,suffix + 1)
@@ -1438,9 +1438,9 @@ class Renderer
 
         s = '`'
         var list = (chunks != null ? chunks : [])
-        for (var _1146_17_ = 0; _1146_17_ < list.length; _1146_17_++)
+        for (var _1147_17_ = 0; _1147_17_ < list.length; _1147_17_++)
         {
-            chunk = list[_1146_17_]
+            chunk = list[_1147_17_]
             t = chunk.text
             switch (chunk.type)
             {

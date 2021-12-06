@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.44.0
+// monsterkodi/kode 0.50.0
 
 var print
 
@@ -36,7 +36,7 @@ class Stripol
 
     exp (p, k, e)
     {
-        var v, k, key, val
+        var v, key, val
 
         if (!e)
         {

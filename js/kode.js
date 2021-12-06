@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.44.0
+// monsterkodi/kode 0.50.0
 
-var slash, kstr, klor, karg, childp, print, pkg, opt, args, kode
+var slash, kstr, klor, karg, childp, print, pkg, args, kode
 
 slash = require('kslash')
 kstr = require('kstr')

@@ -11,7 +11,7 @@ print = require './print'
 
 { empty, valid, firstLineCol, lastLineCol } = require './utils'
 
-class Parse # the base class of Parser
+function Parse # the base class of Parser
 
     @: (@kode) ->
 
@@ -79,12 +79,14 @@ class Parse # the base class of Parser
                 when '▸return'              then tokens[0].text == 'if'
                 when 'call'                 then tokens[0].text in ';' # bail out for implicit calls
                                                                                    
-                when rule                   then tokens[0].text == stop                    
+                when rule                   then tokens[0].text == stop and tokens[0].type != 'var'
                 else false
 
             if b then @verb "exps break for #{tokens[0].text} and stack top" @stack ; break 
                 
-            if stop and tokens[0].text == stop then @verb "exps break for #{tokens[0].text} and stop" stop ; break 
+            if stop and tokens[0].text == stop and tokens[0].type != 'var'
+                @verb "exps break for #{tokens[0].text} and stop" stop 
+                break 
                     
             if tokens[0].type == 'block'
     
@@ -157,14 +159,11 @@ class Parse # the base class of Parser
             e = @exp tokens
             last = lastLineCol e
 
-            while   (
-                    tokens[0]?.text in ['if' 'for' 'while'] and 
+            while ( tokens[0]?.text in ['if' 'for' 'while'] and 
                     @stack[-1] not in ['▸args' '▸return'] and
-                    # @stack[-1] not in ['▸args'] and
-                    last.line == tokens[0].line
-                    )
+                    last.line == tokens[0].line)
+                    
                 @verb "exps #{tokens[0].text }Tail" e, @stack
-                # print.tokens 'tail' tokens
                 switch tokens[0].text 
                     when 'if'    then e = @ifTail    e, tokens.shift(), tokens
                     when 'for'   then e = @forTail   e, tokens.shift(), tokens
@@ -172,13 +171,12 @@ class Parse # the base class of Parser
             
             es.push e
 
-            if  (
-                    tokens[0]?.text in ['if''then''for''while'] and 
+            if  (   tokens[0]?.text in ['if''then''for''while'] and 
                     tokens[0].col > last.col and
                     es.length and 
                     not blocked and
-                    last.line == tokens[0].line
-                )
+                    last.line == tokens[0].line)
+                    
                 @verb 'exps break on if|then|for|while' ; break 
             
             if tokens[0]?.text == ';' 
@@ -373,17 +371,7 @@ class Parse # the base class of Parser
             if numTokens == tokens.length
                 @verb 'rhs no token consumed, break!'
                 break
-        
-        # if nxt = tokens[0]
-#             
-            # if empty @stack
-#                 
-                # @verb 'rhs empty stack nxt' nxt
-#             
-                # if nxt.text == '[' and tokens[1]?.text != ']'
-                    # @verb 'rhs is last minute index of lhs' e
-                    # e = @index e, tokens                
-                    
+                            
         @sheapPop 'rhs' 'rhs'
         e
         
@@ -445,12 +433,10 @@ class Parse # the base class of Parser
                 
                 e = @qmrkcolon e.qmrkop, tokens
                 
-            else if (
-                    nxt.type == 'op' and 
-                    nxt.text not in ['++' '--' '+' '-' 'not'] and 
-                    e.text not in ['[' '('] and                     
-                    '▸arg' not in @stack
-                    )
+            else if (   nxt.type == 'op' and 
+                        nxt.text not in ['++' '--' '+' '-' 'not'] and 
+                        e.text not in ['[' '('] and                     
+                        '▸arg' not in @stack)
                 if @stack[-1]?.startsWith 'op' and @stack[-1] != 'op='
                     @verb 'lhs stop on operation' e, nxt
                     break
@@ -461,11 +447,9 @@ class Parse # the base class of Parser
                     @verb 'lhs is lhs of op' e, nxt
                     e = @operation e, tokens.shift(), tokens
                 
-            else if (
-                    nxt.text in ['+' '-'] and 
-                    e.text not in ['[' '('] and
-                    spaced and tokens[1]?.col > nxt.col+nxt.text.length
-                    )
+            else if (   nxt.text in ['+' '-'] and 
+                        e.text not in ['[' '('] and
+                        spaced and tokens[1]?.col > nxt.col+nxt.text.length)
                 @verb 'lhs is lhs of +-\s' e, nxt
                 e = @operation e, tokens.shift(), tokens
             
@@ -487,21 +471,19 @@ class Parse # the base class of Parser
                     operator:tokens.shift()
                     rhs:@incond e, tokens
                     
-            else if (
-                    spaced and (nxt.line == last.line or (nxt.col > first.col and @stack[-1] not in ['if'])) and
-                    nxt.text not in ['if' 'then' 'else' 'break' 'continue' 'in' 'of' 'for' 'while'] and 
-                    nxt.type not in ['nl'] and
-                    (e.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and 
-                    (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no' 'if' 'then' 'else' 'for' 'while']) and 
-                    not e.array and
-                    not e.object and
-                    not e.keyval and
-                    not e.operation and
-                    not e.incond and
-                    not e.qmrkop and
-                    e.call?.callee?.text not in ['delete''new''typeof'] and
-                    '▸arg' not in @stack
-                    )
+            else if (   spaced and (nxt.line == last.line or (nxt.col > first.col and @stack[-1] not in ['if'])) and
+                        nxt.text not in ['if' 'then' 'else' 'break' 'continue' 'in' 'of' 'for' 'while'] and 
+                        nxt.type not in ['nl'] and
+                        (e.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and 
+                        (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no' 'if' 'then' 'else' 'for' 'while']) and 
+                        not e.array and
+                        not e.object and
+                        not e.keyval and
+                        not e.operation and
+                        not e.incond and
+                        not e.qmrkop and
+                        e.call?.callee?.text not in ['delete''new''typeof'] and
+                        '▸arg' not in @stack)
                 @verb 'lhs is lhs of implicit call! e' e, @stack[-1]
                 @verb '    is lhs of implicit call! nxt' nxt
                 @verb '    is lhs first' first 
@@ -523,7 +505,7 @@ class Parse # the base class of Parser
                 error 'lhs no token consumed?'
                 break
                 
-        @sheapPop 'lhs' 'lhs'       
+        @sheapPop 'lhs' 'lhs'     
         e
 
     #  0000000  000   000  000  00000000  000000000   0000000  000       0000000    0000000  00000000  
