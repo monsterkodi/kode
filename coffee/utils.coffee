@@ -6,6 +6,9 @@
  0000000      000     000  0000000  0000000     
 ###
 
+childp = require 'child_process'
+slash  = require 'kslash'
+
 # 00000000  00     00  00000000   000000000  000   000  
 # 000       000   000  000   000     000      000 000   
 # 0000000   000000000  00000000      000       00000    
@@ -14,6 +17,59 @@
 
 empty = (a) -> a in ['' null undefined] or (typeof(a) == 'object' and Object.keys(a).length == 0)
 valid = (a) -> not empty a
+
+###
+00000000   00000000   0000000   000   0000000  000000000  00000000  00000000   
+000   000  000       000        000  000          000     000       000   000  
+0000000    0000000   000  0000  000  0000000      000     0000000   0000000    
+000   000  000       000   000  000       000     000     000       000   000  
+000   000  00000000   0000000   000  0000000      000     00000000  000   000  
+###
+
+register = ->
+    
+    loadFile = (module, file) ->
+        
+        try
+            Kode   = require './kode'
+            kode   = new Kode header:true, files:[file]
+            code   = slash.readText file
+            result = kode.compile code
+            module._compile result, file
+        catch err
+            error "error loading #{file}:" code
+            throw err
+    
+    if require.extensions
+        
+        require.extensions['.kode']   = loadFile
+        require.extensions['.coffee'] = loadFile
+    
+        Module = require 'module'
+    
+        Module::load = (file) ->
+            @filename = file
+            @paths = Module._nodeModulePaths slash.dir file
+            ext = '.' + slash.ext file
+            Module._extensions[ext](@, file)
+            @loaded = true
+    
+    if childp
+    
+        { fork } = childp
+        binary = require.resolve '../bin/kode'
+        
+        childp.fork = (path, args, options) ->
+            
+            if slash.ext(path) in ['kode''coffee']
+                
+                if not Array.isArray args
+                    options = args or {}
+                    args = []
+                args = [path].concat args
+                path = binary
+                
+            fork path, args, options
 
 # 000       0000000    0000000  000000000  000      000  000   000  00000000   0000000   0000000   000      
 # 000      000   000  000          000     000      000  0000  000  000       000       000   000  000      
@@ -60,5 +116,5 @@ firstLineCol = (e) ->
                 else b
     line:Infinity
     col: Infinity
-        
-module.exports = { firstLineCol, lastLineCol, empty, valid }
+            
+module.exports = { register, firstLineCol, lastLineCol, empty, valid }

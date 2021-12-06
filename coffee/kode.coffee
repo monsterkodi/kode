@@ -14,8 +14,9 @@ childp = require 'child_process'
 print  = require './print'
 pkg    = require "#{__dirname}/../package"
 
-{ empty } = require './utils'
+{ empty, register } = require './utils'
 
+register()
 klor.kolor.globalize()
 
 class Kode
@@ -39,46 +40,6 @@ class Kode
         @stripol  = new Stripol  @
         @returner = new Returner @
         @renderer = new Renderer @
-
-    #  0000000  000      000
-    # 000       000      000
-    # 000       000      000
-    # 000       000      000
-    #  0000000  0000000  000
-
-    cli: ->
-
-        # if @args.debug then print.noon 'args' @args
-
-        if @args.compile
-            log @compile @args.compile
-            return
-        if @args.eval
-            log @eval @args.eval
-            return
-
-        return if not @args.files.length
-
-        for file in @args.files
-
-            file = slash.resolve file
-            log gray file if @args.verbose
-
-            text = slash.readText file
-
-            if empty text then error Y4 r2 "can't read #{R3 y5 file}"; continue
-
-            js = @compile text
-
-            if @args.outdir
-                out = slash.resolve @args.outdir, slash.file file
-                out = slash.swapExt out, 'js'
-                js  = "// kode #{pkg.version}\n\n" + js
-                if not slash.writeText out, js
-                    error R2 y3 "can't write #{R3 y6 out}"
-            else
-                if not args.js
-                    log js
 
     #  0000000   0000000   00     00  00000000   000  000      00000000
     # 000       000   000  000   000  000   000  000  000      000
@@ -131,7 +92,7 @@ class Kode
     # 000          000     000   000  000
     # 00000000      0      000   000  0000000
 
-    eval: (text) ->
+    eval: (text, filename) ->
 
         return if empty text
 
@@ -139,23 +100,22 @@ class Kode
 
         sandbox = vm.createContext()
         # sandbox.global = sandbox.root = sandbox.GLOBAL = sandbox
+        sandbox.global = global
 
-        sandbox.__filename = 'eval'
+        sandbox.__filename = filename ? 'eval'
         sandbox.__dirname  = slash.dir sandbox.__filename
         sandbox.console    = console
 
-        # define module/require only if they chose not to specify their own
-        # if not (sandbox != global or sandbox.module or sandbox.require)
-            # Module = require 'module'
-            # sandbox.module  = _module  = new Module 'eval'
-            # sandbox.require = _require = (path) ->  Module._load path, _module, true
-            # _module.filename = sandbox.__filename
-            # for r in Object.getOwnPropertyNames require
-                # if r not in ['paths' 'arguments' 'caller']
-                    # _require[r] = require[r]
-            # # use the same hack node currently uses for their own REPL
-            # _require.paths = _module.paths = Module._nodeModulePaths process.cwd()
-            # _require.resolve = (request) -> Module._resolveFilename request, _module
+        Module = require 'module'
+        sandbox.module  = _module  = new Module 'eval'
+        sandbox.require = _require = (path) -> Module._load path, _module, true
+        _module.filename = sandbox.__filename
+        for r in Object.getOwnPropertyNames require
+            if r not in ['paths' 'arguments' 'caller']
+                _require[r] = require[r]
+
+        _require.paths = _module.paths = Module._nodeModulePaths process.cwd()
+        _require.resolve = (request) -> Module._resolveFilename request, _module
 
         try
             js = @compile text
@@ -164,6 +124,47 @@ class Kode
             error err, text
             throw err
 
+    #  0000000  000      000
+    # 000       000      000
+    # 000       000      000
+    # 000       000      000
+    #  0000000  0000000  000
+
+    cli: ->
+
+        # if @args.debug then print.noon 'args' @args
+
+        if @args.compile
+            log @compile @args.compile
+            return
+        if @args.eval
+            log @eval @args.eval
+            return
+
+        return if not @args.files.length
+
+        for file in @args.files
+
+            file = slash.resolve file
+            log gray file if @args.verbose
+
+            text = slash.readText file
+
+            if empty text then error Y4 r2 "can't read #{R3 y5 file}"; continue
+
+            if @args.outdir
+                js = @compile text
+                out = slash.resolve @args.outdir, slash.file file
+                out = slash.swapExt out, 'js'
+                js  = "// kode #{pkg.version}\n\n" + js
+                if not slash.writeText out, js
+                    error R2 y3 "can't write #{R3 y6 out}"
+            else if @args.run
+                @eval text, file
+            else
+                if not args.js
+                    log @compile text
+            
 # 00     00   0000000   000  000   000
 # 000   000  000   000  000  0000  000
 # 000000000  000000000  000  000 0 000
@@ -180,10 +181,10 @@ if not module.parent or slash.resolve(module.parent.path).endsWith '/kode/bin'
             eval        . ? evaluate a string and print the result
             compile     . ? compile a string and print the result
             outdir      . ? output directory for transpiled files
+            run         . ? execute file                            . = true
             map         . ? generate inline source maps             . = true
             kode        . ? pretty print input code                 . = false
             js          . ? pretty print transpiled js code         . = false
-            run         . ? execute file                            . = false
             header      . ? prepend output with version header      . = false  . - H
             tokens      . ? print tokens                            . = false  . - T
             block       . ? print block tree                        . = false  . - B
