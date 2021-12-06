@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.50.0
+// monsterkodi/kode 0.51.0
 
 var print
 
@@ -46,20 +46,20 @@ class Returner
         }
         if (((_51_17_=f.body) != null ? (_51_23_=_51_17_.exps) != null ? _51_23_.length : undefined : undefined))
         {
-            if (!(['@','constructor'].indexOf((f.name != null ? f.name.text : undefined)) >= 0))
+            if (!([].indexOf.call(['@','constructor'], (f.name != null ? f.name.text : undefined)) >= 0))
             {
                 lst = f.body.exps.slice(-1)[0]
                 insert = function ()
                 {
                     return f.body.exps.push({return:{ret:{type:'keyword',text:'return'},val:f.body.exps.pop()}})
                 }
-                if (['var','num','single','double','triple'].indexOf(lst.type) >= 0)
+                if ([].indexOf.call(['var','num','single','double','triple'], lst.type) >= 0)
                 {
                     insert()
                 }
                 else if (lst.call)
                 {
-                    if (!(['log','warn','error'].indexOf(lst.call.callee.text) >= 0))
+                    if (!([].indexOf.call(['log','warn','error'], lst.call.callee.text) >= 0))
                     {
                         insert()
                     }

@@ -6,8 +6,10 @@
 000   000  00000000  000   000  0000000    00000000  000   000  00000000  000   000
 ###
 
-kstr  = require 'kstr'
-print = require './print'
+kstr   = require 'kstr'
+slash  = require 'kslash'
+print  = require './print'
+SrcMap = require './srcmap'
 
 { valid, empty, firstLineCol, lastLineCol } = require './utils'
 
@@ -26,31 +28,54 @@ class Renderer
         @debug   = @kode.args?.debug
         @verbose = @kode.args?.verbose
 
-    render: (ast) ->
+    render: (ast, source) ->
 
+        if @kode.args.map and source
+            @srcmap = new SrcMap source
+        
         @varstack = [ast.vars]
         @indent = ''
-        s = ''
 
+        s = ''
         if valid ast.vars
             vs = (v.text for v in ast.vars).join ', '
-            s += @indent + "var #{vs}\n\n"
+            s += @js "var #{vs}\n" true
+            s += '\n'
 
-        s += @nodes ast.exps, '\n'
+        s += @nodes ast.exps, '\n' true
+        
+        if @srcmap
+            log @srcmap.generate source:source, target:slash.swapExt source, 'js'
+            @js """
+                //# sourceMappingURL=data:application/json;base64,
+                //# sourceURL=#{source}
+                """ true
+        
+        @srcmap?.done s
         s
 
-    nodes: (nodes, sep=',') ->
-
-        sl = nodes.map (s) => @atom s
+    js: (s, tl) => 
+    
+        @srcmap?.commit s, tl
+        s
         
-        if sep == '\n'
-            sl = sl.map (s) =>
+    nodes: (nodes, sep=',' tl) ->
+
+        s = ''
+        sl = nodes.map (n) =>
+        
+            s = @atom n
+        
+            if sep == '\n'
+                
                 stripped = kstr.lstrip s
-                if stripped[0] in '([' then ';'+s 
-                else if stripped.startsWith 'function' then "(#{s})"
-                else s
+                if stripped[0] in '([' then s = ';'+s 
+                else if stripped.startsWith 'function' then s = "(#{s})"
+
+            @js s, tl
+            s
             
-        ss = sl.join sep
+        sl.join sep
 
     # 000   000   0000000   0000000    00000000
     # 0000  000  000   000  000   000  000
@@ -99,7 +124,7 @@ class Renderer
                 when 'try'       then @try v
                 else
                     log R4("renderer.node unhandled key #{k} in exp"), exp # if @debug or @verbose
-                    ''
+                    ''        
         s
 
     #  0000000   000000000   0000000   00     00

@@ -16,7 +16,6 @@ pkg    = require "#{__dirname}/../package"
 
 { empty, register } = require './utils'
 
-register()
 klor.kolor.globalize()
 
 class Kode
@@ -48,7 +47,7 @@ class Kode
     #  0000000   0000000   000   000  000        000  0000000  00000000
 
     @compile: (text, opt={}) -> (new Kode opt).compile text
-    compile: (text) ->
+    compile: (text, file) ->
 
         return '' if empty kstr.strip text
 
@@ -57,7 +56,7 @@ class Kode
         if @args.parse then print.ast 'ast' ast
         if @args.astr  then log print.astr ast, @args.scope
 
-        js = @renderer.render ast
+        js = @renderer.render ast, file
 
         if @args.header and kstr.strip(js).length
             js = "// monsterkodi/kode #{pkg.version}\n\n" + js
@@ -92,33 +91,33 @@ class Kode
     # 000          000     000   000  000
     # 00000000      0      000   000  0000000
 
-    eval: (text, filename) ->
+    eval: (text, file) ->
 
         return if empty text
 
         vm = require 'vm'
 
         sandbox = vm.createContext()
-        # sandbox.global = sandbox.root = sandbox.GLOBAL = sandbox
         sandbox.global = global
 
-        sandbox.__filename = filename ? 'eval'
+        sandbox.__filename = file ? 'eval'
         sandbox.__dirname  = slash.dir sandbox.__filename
         sandbox.console    = console
 
-        Module = require 'module'
-        sandbox.module  = _module  = new Module 'eval'
-        sandbox.require = _require = (path) -> Module._load path, _module, true
-        _module.filename = sandbox.__filename
-        for r in Object.getOwnPropertyNames require
-            if r not in ['paths' 'arguments' 'caller']
-                _require[r] = require[r]
+        if not (sandbox.module or sandbox.require) or file
+            Module = require 'module'
+            sandbox.module  = _module  = new Module 'eval'
+            sandbox.require = _require = (file) -> Module._load file, _module, true
+            _module.filename = sandbox.__filename
+            for r in Object.getOwnPropertyNames require
+                if r not in ['paths' 'arguments' 'caller']
+                    _require[r] = require[r]
 
-        _require.paths = _module.paths = Module._nodeModulePaths process.cwd()
-        _require.resolve = (request) -> Module._resolveFilename request, _module
+            _require.paths = _module.paths = Module._nodeModulePaths process.cwd()
+            _require.resolve = (request) -> Module._resolveFilename request, _module
 
         try
-            js = @compile text
+            js = @compile text, file
             vm.runInContext js, sandbox
         catch err
             error err, text
@@ -137,6 +136,7 @@ class Kode
         if @args.compile
             log @compile @args.compile
             return
+            
         if @args.eval
             log @eval @args.eval
             return
@@ -159,11 +159,12 @@ class Kode
                 js  = "// kode #{pkg.version}\n\n" + js
                 if not slash.writeText out, js
                     error R2 y3 "can't write #{R3 y6 out}"
+            else if @args.js
+                @compile text
             else if @args.run
                 @eval text, file
             else
-                if not args.js
-                    log @compile text
+                log @compile text
             
 # 00     00   0000000   000  000   000
 # 000   000  000   000  000  0000  000
@@ -198,5 +199,6 @@ if not module.parent or slash.resolve(module.parent.path).endsWith '/kode/bin'
         version  #{pkg.version}
         """
 
+    register()
     kode = new Kode args
     kode.cli()

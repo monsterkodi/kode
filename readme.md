@@ -172,10 +172,6 @@ class C
 
 # Planned stuff that does not work yet:
 
-- error messages
-- sourcemaps
-- super
-
 ## BigInt
 
 ```coffeescript
@@ -209,12 +205,19 @@ I don't intend to do the same with **kode**, but converting coffee to kode shoul
 
 ## Future plans
 
+Fix 
+
+- error messages
+- ? operator : precedence 
+- sourcemaps
+- super
+
 Since I will most likely be the only person using **kode**, it's probably wise to ditch the stuff I don't need:
 
 - REPL
 - *cake* / *kake*
 - literal coffeescript / ▸doc macro
-- `unless`  `until`  `is`  `or=` `by` ...
+- `unless`  `until` `or=` `by` ...
 - `when` outside of `switch`
 - wrapper code
 - **koffee** macros in general
@@ -230,7 +233,6 @@ This is what I would like to add instead:
 - `include` keyword to merge source files
 - native `dbg`  `assert`  `profile` instead of macros
 - `profile` in same scope
-- option to use both: new `class` and old school `function` style classes?
+- option to use both: new `class` and old school `function` style classes
 - `await`?
-
 

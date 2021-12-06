@@ -9,15 +9,15 @@
 Kode = require '../../'
 chai = require 'chai'
 chai.should()
-kode = new Kode()
+kode = -> new Kode()
 
 module.exports = 
     
-    evl: (c,p) -> chai.assert.deepEqual kode.eval(c), p
-    sme: (c,p) -> kode.compile(c).should.eql kode.compile(p)
-    ast: (c,p) -> kode.astr(c, no).should.eql p
+    evl: (c,p) -> chai.assert.deepEqual kode().eval(c), p
+    sme: (c,p) -> kode().compile(c).should.eql kode().compile(p)
+    ast: (c,p) -> kode().astr(c, no).should.eql p
     cmp: (c,p) -> 
-        k = kode.compile c
+        k = kode().compile c
         if k.startsWith '// monsterkodi/kode'
             k = k[k.indexOf('\n')+2..]
         if k.startsWith 'var '

@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.50.0
+// monsterkodi/kode 0.51.0
 
 var kstr, klor, noon, slash, childp, fs
 
@@ -37,7 +37,7 @@ class Print
         {
             return red('◂\n')
         }
-        if (['ws','nl'].indexOf(tok.type) >= 0)
+        if ([].indexOf.call(['ws','nl'], tok.type) >= 0)
         {
             return ''
         }
@@ -142,7 +142,7 @@ class Print
                 s += '\n' + b.indent
             }
             s = b.indent
-            if (['{}','()','[]'].indexOf(b.type) >= 0)
+            if ([].indexOf.call(['{}','()','[]'], b.type) >= 0)
             {
                 s += b.type[0] + ' '
             }
@@ -165,7 +165,7 @@ class Print
                     s += global[cn]((((_103_44_=c.text) != null ? _103_44_ : '')) + ' ')
                 }
             }
-            if (['{}','()','[]'].indexOf(b.type) >= 0)
+            if ([].indexOf.call(['{}','()','[]'], b.type) >= 0)
             {
                 s += b.type[1]
             }
@@ -195,7 +195,7 @@ class Print
             }
             else if (node instanceof Array)
             {
-                if (visited.indexOf(node) >= 0)
+                if ([].indexOf.call(visited, node) >= 0)
                 {
                     return s
                 }
@@ -219,7 +219,7 @@ class Print
             }
             else
             {
-                if (visited.indexOf(node) >= 0)
+                if ([].indexOf.call(visited, node) >= 0)
                 {
                     return s
                 }
@@ -268,7 +268,7 @@ class Print
             }
             else if (node instanceof Array)
             {
-                if (visited.indexOf(node) >= 0)
+                if ([].indexOf.call(visited, node) >= 0)
                 {
                     return s
                 }
@@ -285,7 +285,7 @@ class Print
             }
             else
             {
-                if (visited.indexOf(node) >= 0)
+                if ([].indexOf.call(visited, node) >= 0)
                 {
                     return s
                 }

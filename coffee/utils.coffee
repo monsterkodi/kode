@@ -32,7 +32,7 @@ register = ->
         
         try
             Kode   = require './kode'
-            kode   = new Kode header:true, files:[file]
+            kode   = new Kode header:true, files:[file], map:false
             code   = slash.readText file
             result = kode.compile code
             module._compile result, file

@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.50.0
+// monsterkodi/kode 0.51.0
 
 var print
 
@@ -44,7 +44,7 @@ class Stripol
         }
         if (e.type)
         {
-            if (['double','triple'].indexOf(e.type) >= 0)
+            if ([].indexOf.call(['double','triple'], e.type) >= 0)
             {
                 p[k] = this.string(e)
             }
