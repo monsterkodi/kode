@@ -490,8 +490,6 @@ class Parser extends Parse
         rhs = @exp tokens
         @pop "op#{op.text}"
         
-        # if op.text in ['=' '+=' '-=' '/=' '*=' '|=' '+' '-' '/' '*']
-            
         if rhs?.switch
             @verb 'rhs is switch'
             rhs =

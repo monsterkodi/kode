@@ -430,18 +430,20 @@ class Renderer
 
         args = args.map (a) ->
             if a.prop and a.prop.obj.type == 'this'
-                thisVar = a.prop.prop
-                if used[thisVar.text]
+                txt = a.prop.prop.text
+                if used[txt]
                     for i in [1..100]
-                        if not used[thisVar.text+i]
-                            ths.push "this.#{thisVar.text} = #{thisVar.text+i}"
-                            thisVar.text += i
-                            used[thisVar.text] = thisVar.text
+                        if not used[txt+i]
+                            ths.push "this.#{txt} = #{txt+i}"
+                            txt += i
+                            used[txt] = txt
                             break
                 else
-                    ths.push "this.#{thisVar.text} = #{thisVar.text}"
+                    ths.push "this.#{txt} = #{txt}"
 
-                thisVar
+                return
+                    type:'@arg'
+                    text:txt
             else
                 a
 
