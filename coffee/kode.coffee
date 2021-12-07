@@ -131,8 +131,6 @@ class Kode
 
     cli: ->
 
-        # if @args.debug then print.noon 'args' @args
-
         if @args.compile
             log @compile @args.compile
             return
@@ -153,14 +151,14 @@ class Kode
             if empty text then error Y4 r2 "can't read #{R3 y5 file}"; continue
 
             if @args.outdir
-                js = @compile text
+                js  = @compile text, file
                 out = slash.resolve @args.outdir, slash.file file
                 out = slash.swapExt out, 'js'
                 js  = "// kode #{pkg.version}\n\n" + js
                 if not slash.writeText out, js
                     error R2 y3 "can't write #{R3 y6 out}"
             else if @args.js
-                @compile text
+                @compile text, file
             else if @args.run
                 @eval text, file
             else

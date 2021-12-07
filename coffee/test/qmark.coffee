@@ -22,6 +22,7 @@ describe 'qmark' ->
         cmp "a.b.c?"                ";(a.b.c != null)"
         cmp "a.b().c?"              ";(a.b().c != null)"
         cmp "if a.b().c?"           "if ((a.b().c != null))\n{\n}"
+        cmp "@m?"                   ";(this.m != null)"
         
         cmp "-> m?",
             """
@@ -72,6 +73,22 @@ describe 'qmark' ->
         cmp "e?[1].f"               ";(e != null ? e[1].f : undefined)"
         cmp "e?[1]?.g"              ";(e != null ? e[1] != null ? e[1].g : undefined : undefined)"
         cmp "e?.f?.d"               ";(e != null ? (_1_4_=e.f) != null ? _1_4_.d : undefined : undefined)"
+        
+        cmp "@m?.n"                 ";(this.m != null ? this.m.n : undefined)"
+        cmp "@m? a"                 ';(typeof this.m === "function" ? this.m(a) : undefined)'
+        cmp "@m?.f a"               ";(this.m != null ? this.m.f(a) : undefined)"
+        
+        cmp """
+            ->
+                s?.c
+                r?.d
+            """ """
+            (function ()
+            {
+                (s != null ? s.c : undefined)
+                return (r != null ? r.d : undefined)
+            })
+            """
         
         evl "e=1;e?[1]?.g"          undefined
         

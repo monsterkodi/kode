@@ -46,6 +46,12 @@ describe 'misc' ->
             }
             """
             
+        cmp """
+            a @, file
+            """ """
+            a(this,file)
+            """
+            
     it 'try' ->
         
         cmp """
@@ -85,6 +91,33 @@ describe 'misc' ->
                 cleanup
             }
             """
+            
+    # 000000000  000   000  00000000    0000000   000   000  
+    #    000     000   000  000   000  000   000  000 0 000  
+    #    000     000000000  0000000    000   000  000000000  
+    #    000     000   000  000   000  000   000  000   000  
+    #    000     000   000  000   000   0000000   00     00  
+    
+    it 'throw' ->
+        
+        cmp "throw 'msg'" "throw 'msg'"
+        
+    # 0000000    00000000  000      00000000  000000000  00000000  
+    # 000   000  000       000      000          000     000       
+    # 000   000  0000000   000      0000000      000     0000000   
+    # 000   000  000       000      000          000     000       
+    # 0000000    00000000  0000000  00000000     000     00000000  
+    
+    it 'delete' ->
+        
+        cmp "delete a"              "delete a"
+        cmp "delete @a"             "delete this.a"
+        cmp "delete a.b"            "delete a.b"
+        
+        cmp '[delete a, b]'         ';[delete a,b]'
+        cmp 'delete a.b.c'          'delete a.b.c'
+        cmp '[delete a.b, a:b]'     ';[delete a.b,{a:b}]'
+        cmp 'delete a.b == false'   'delete a.b === false'
             
     # 00000000   00000000   0000000   000   000  000  00000000   00000000
     # 000   000  000       000   000  000   000  000  000   000  000
@@ -131,21 +164,6 @@ describe 'misc' ->
 
         cmp 'a instanceof b'  'a instanceof b'
         cmp 'a instanceof b == true'  'a instanceof b === true'
-
-    # 0000000    00000000  000      00000000  000000000  00000000
-    # 000   000  000       000      000          000     000
-    # 000   000  0000000   000      0000000      000     0000000
-    # 000   000  000       000      000          000     000
-    # 0000000    00000000  0000000  00000000     000     00000000
-
-    it 'delete' ->
-
-        cmp 'delete a'              'delete(a)'
-        cmp '[delete a, b]'         ';[delete(a),b]'
-
-        cmp 'delete a.b.c'          'delete(a.b.c)'
-        cmp '[delete a.b, a:b]'     ';[delete(a.b),{a:b}]'
-        cmp 'delete a.b == false'   'delete(a.b) === false'
 
     # 000  000   000         0000000   0000000   000   000  0000000    000  000000000  000   0000000   000   000
     # 000  0000  000        000       000   000  0000  000  000   000  000     000     000  000   000  0000  000

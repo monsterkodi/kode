@@ -1,27 +1,3 @@
-
-# 000      000  000   000  00000000  00     00   0000000   00000000   
-# 000      000  0000  000  000       000   000  000   000  000   000  
-# 000      000  000 0 000  0000000   000000000  000000000  00000000   
-# 000      000  000  0000  000       000 0 000  000   000  000        
-# 0000000  000  000   000  00000000  000   000  000   000  000        
-
-# keeps track of source positions for a single line of js code
-
-class LineMap
-    
-    @: (@line) -> @columns = []
-
-    add: (column, [sourceLine, sourceColumn]) ->
-        if @columns[column] 
-            log "LineMap has column #{column}" sourceLine, sourceColumn, options
-            return
-        @columns[column] = {line: @line, column, sourceLine, sourceColumn}
-
-    sourceLocation: (column) ->
-        
-        column-- while not ((mapping = @columns[column]) or (column <= 0))
-        mapping and [mapping.sourceLine, mapping.sourceColumn]
-
 ###
  0000000   0000000   000   000  00000000    0000000  00000000  00     00   0000000   00000000   
 000       000   000  000   000  000   000  000       000       000   000  000   000  000   000  
@@ -59,8 +35,9 @@ class SourceMap
         @lines[line] ?= new LineMap line
         @lines[line].add column, source
 
-    sourceLocation: ([line, column]) ->
+    sourceLocation: (srcloc) ->
         
+        [line, column] = srcloc
         line-- until (lineMap = @lines[line]) or (line <= 0)
         lineMap and lineMap.sourceLocation column
 
@@ -79,8 +56,10 @@ class SourceMap
         needComma        = no
         buffer           = ""
 
-        for lineMap, lineNumber in @lines when lineMap
-            for mapping in lineMap.columns when mapping
+        for lineMap, lineNumber in @lines 
+            continue if not lineMap
+            for mapping in lineMap.columns 
+                continue if not mapping
                 while writingline < mapping.line
                     lastColumn = 0
                     needComma = no
@@ -159,8 +138,32 @@ class SourceMap
     encodeBase64: (value) -> 
     
         BASE64_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-        BASE64_CHARS[value] or throw new Error "Cannot Base64 encode value: #{value}"
+        BASE64_CHARS[value]
 
+# 000      000  000   000  00000000  00     00   0000000   00000000   
+# 000      000  0000  000  000       000   000  000   000  000   000  
+# 000      000  000 0 000  0000000   000000000  000000000  00000000   
+# 000      000  000  0000  000       000 0 000  000   000  000        
+# 0000000  000  000   000  00000000  000   000  000   000  000        
+
+# keeps track of source positions for a single line of js code
+
+class LineMap
+    
+    @: (@line) -> @columns = []
+
+    add: (column, srcloc) ->
+        [sourceLine, sourceColumn] = srcloc
+        if @columns[column] 
+            log "LineMap has column #{column}" sourceLine, sourceColumn, options
+            return
+        @columns[column] = {line: @line, column, sourceLine, sourceColumn}
+
+    sourceLocation: (column) ->
+        
+        column-- while not ((mapping = @columns[column]) or (column <= 0))
+        mapping and [mapping.sourceLine, mapping.sourceColumn]
+        
 module.exports = SourceMap
 
 

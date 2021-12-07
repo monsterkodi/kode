@@ -158,7 +158,7 @@ class Renderer
 
     assert: (p) ->
 
-        @verb 'fix' p
+        # @verb 'fix' p
         if p.obj.type != 'var' and not p.obj.index
             '▾' + @node(p.obj) + "▸#{p.qmrk.line}_#{p.qmrk.col}◂"
         else
@@ -168,21 +168,19 @@ class Renderer
 
         @verb 'fixAsserts' s
         
-        if not s?
-            return
-            
         return '' if not s? or s.length == 0
         return s if s in ['▾' "'▾'" '"▾"']
-
-        while s[0] == '▾' then s = s[1..]
+        
+        while s[0] == '▾' then s = s[1..] # remove any leading ▾
+        
         if /(?<!['"\[])[▾]/.test s
             i = s.indexOf '▾'
-            return s[...i] + @fixAsserts s[i+1..]
-            
-        if '\n' in s
-            i = s.indexOf '\n'
-            # log 'NEWLINE!' i, s.length, ">>>#{s[...i]}<<<", ">>>#{s[i..]}<<<", s[...i] == s, s[i..].length
-            return @fixAsserts(s[...i]) + s[i..]
+            if (n = s.indexOf '\n' i) > i
+                # log b3('n!'), w3(s[...i]), m6(s[i+1...n]), green(s[n..])
+                return s[...i] + @fixAsserts(s[i+1...n]) + @fixAsserts(s[n..])
+            else
+                # log b3('▾!'), w3(s[...i]), m6(s[i+1..])
+                return s[...i] + @fixAsserts s[i+1..]
         
         splt = s.split /▸\d+_\d+◂/
         mtch = s.match /▸\d+_\d+◂/g
@@ -502,7 +500,7 @@ class Renderer
         callee = @node p.callee
         
         if p.args
-            if callee == 'new'
+            if callee in ['new' 'throw' 'delete']
                 "#{callee} #{@nodes p.args, ','}"
             else
                 "#{callee}(#{@nodes p.args, ','})"
