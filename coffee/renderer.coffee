@@ -45,11 +45,12 @@ class Renderer
         s += @nodes ast.exps, '\n' true
         
         if @srcmap
-            log @srcmap.generate source:source, target:slash.swapExt source, 'js'
-            @js """
-                //# sourceMappingURL=data:application/json;base64,
+            # log @srcmap.generate source:source, target:slash.swapExt source, 'js'
+            s+= """
+                
+                //# sourceMappingURL=data:application/json;base64,xx
                 //# sourceURL=#{source}
-                """ true
+                """
         
         @srcmap?.done s
         s
@@ -72,7 +73,7 @@ class Renderer
                 if stripped[0] in '([' then s = ';'+s 
                 else if stripped.startsWith 'function' then s = "(#{s})"
 
-            @js s, tl
+            @js s, tl if tl
             s
             
         sl.join sep
@@ -917,18 +918,22 @@ class Renderer
 
     token: (tok) ->
 
-        if tok.type == 'comment'
-            @comment tok
-        else if tok.type == 'this'
-            'this'
-        else if tok.type == 'triple'
-            '`' + tok.text[3..-4] + '`'
-        else if tok.type == 'keyword' and tok.text == 'yes'
-            'true'
-        else if tok.type == 'keyword' and tok.text == 'no'
-            'false'
-        else
-            tok.text
+        s = 
+            if tok.type == 'comment'
+                @comment tok
+            else if tok.type == 'this'
+                'this'
+            else if tok.type == 'triple'
+                '`' + tok.text[3..-4] + '`'
+            else if tok.type == 'keyword' and tok.text == 'yes'
+                'true'
+            else if tok.type == 'keyword' and tok.text == 'no'
+                'false'
+            else
+                tok.text
+                
+        @js s, tok
+        s
 
     #  0000000   0000000   00     00  00     00  00000000  000   000  000000000
     # 000       000   000  000   000  000   000  000       0000  000     000

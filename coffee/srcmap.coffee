@@ -6,29 +6,89 @@
 0000000    0000000    0000000   000   000   0000000  00000000  000   000  000   000  000        
 ###
 
+kstr = require 'kstr'
+
 # maps locations in a single generated js file back to locations in the original source file
 
 class SourceMap
     
     @: (@source) -> 
         
-        @jscode = ''
         @jsline = 0
         @lines  = []
+        @cache  = []
 
+    #  0000000   0000000   00     00  00     00  000  000000000  
+    # 000       000   000  000   000  000   000  000     000     
+    # 000       000   000  000000000  000000000  000     000     
+    # 000       000   000  000 0 000  000 0 000  000     000     
+    #  0000000   0000000   000   000  000   000  000     000     
+    
     commit: (s, tl) ->
         
-        if tl
-            log b7('c'), ++@jsline, s
+        if tl == true
+            
+            while s[0] == '\n'
+                s = s[1..]
+                @jsline++
+            
+            @jsline++
+                
+            @solve s
+            
+            log b7('c'), g4(kstr.lpad(@jsline, 4)), s
+            
             @jsline += s.split('\n').length-1
-            @jscode += s + '\n'
+            
+            @cache  = []
+            
+        else if tl?.type
+            
+            log b4('t'), r2(kstr.lpad(tl.line ? '?', 4)), s
+            @cache.push [s, tl]
+            
         else
-            log b4('.'), @jsline, s
+            
+            log b4('.'), b2(kstr.lpad(@jsline, 4)), w2(s)
+            
+    #  0000000   0000000   000      000   000  00000000  
+    # 000       000   000  000      000   000  000       
+    # 0000000   000   000  000       000 000   0000000   
+    #      000  000   000  000         000     000       
+    # 0000000    0000000   0000000      0      00000000  
+    
+    solve: (s) ->
+
+        p = 0
         
+        for ci in 0...@cache.length
+            
+            [cs, tok] = @cache[ci]
+            
+            i = s.indexOf cs, p
+            
+            if i >= 0
+                log w3(i), r4(tok.line), r2(tok.col), cs
+                p = i    
+            else
+                log "srcmap.solve cant locate tok #{tok.text} in #{s}"
+        
+    # 0000000     0000000   000   000  00000000  
+    # 000   000  000   000  0000  000  000       
+    # 000   000  000   000  000 0 000  0000000   
+    # 000   000  000   000  000  0000  000       
+    # 0000000     0000000   000   000  00000000  
+    
     done: (s) ->
         
-        log b5('d'), @jsline, s.length
+        log b5('d'), @jsline, s.split('\n').length
         
+    #  0000000   0000000    0000000    
+    # 000   000  000   000  000   000  
+    # 000000000  000   000  000   000  
+    # 000   000  000   000  000   000  
+    # 000   000  0000000    0000000    
+    
     add: (source, target) -> # source and target: [line, column]
         
         [line, column] = target
@@ -38,7 +98,7 @@ class SourceMap
     sourceLocation: (srcloc) ->
         
         [line, column] = srcloc
-        line-- until (lineMap = @lines[line]) or (line <= 0)
+        line-- while not ((lineMap = @lines[line]) or (line <= 0))
         lineMap and lineMap.sourceLocation column
 
     #  0000000   00000000  000   000  00000000  00000000    0000000   000000000  00000000  

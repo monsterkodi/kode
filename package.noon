@@ -1,5 +1,5 @@
 name            kode
-version         0.55.0
+version         0.56.0
 description     programming language
 main            js/kode.js
 scripts
@@ -8,17 +8,17 @@ scripts
 author          monsterkodi
 license         Unlicense
 dependencies
-                colorcat        ^2.13.0
+                colorcat        monsterkodi/colorcat
+                karg            monsterkodi/karg
+                klor            monsterkodi/klor
+                kslash          monsterkodi/kslash
+                kstr            monsterkodi/kstr
+                noon            monsterkodi/noon
                 fs-extra        ^10.0.0
-                karg            ^1.26.0
-                klor            ^2.16.1
-                kslash          ^2.7.0
-                kstr            ^0.13.0
                 lodash.clone    ^4.5.0
                 lodash.isfunction  ^3.0.9
-                noon            ^3.5.0
 devDependencies
+                koffee        monsterkodi/koffee
                 chai          ^4.3.4
                 coffeescript  ^2.6.1
-                koffee        ^1.20.0
                 mocha         ^9.1.3
