@@ -18,9 +18,8 @@ module.exports =
     ast: (c,p) -> kode().astr(c, no).should.eql p
     cmp: (c,p) -> 
         k = kode().compile c
-        if k.startsWith '// monsterkodi/kode'
-            k = k[k.indexOf('\n')+2..]
-        if k.startsWith 'var '
-            k = k[k.indexOf('\n')+2..]
+        if k.startsWith '// monsterkodi/kode'   then k = k[k.indexOf('\n')+2..]
+        if k.startsWith 'var _k_'               then k = k[k.indexOf('\n')+2..]
+        if k.startsWith 'var '                  then k = k[k.indexOf('\n')+2..]
         k.should.eql p
         

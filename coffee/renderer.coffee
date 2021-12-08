@@ -17,16 +17,26 @@ class Renderer
 
     @: (@kode) ->
 
-        @header = """
-            const _k_ = {
-                list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])}
-                length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},
-                in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}
-                }
-            """
-        
         @debug   = @kode.args?.debug
         @verbose = @kode.args?.verbose
+        
+    # 000   000  00000000   0000000   0000000    00000000  00000000   
+    # 000   000  000       000   000  000   000  000       000   000  
+    # 000000000  0000000   000000000  000   000  0000000   0000000    
+    # 000   000  000       000   000  000   000  000       000   000  
+    # 000   000  00000000  000   000  0000000    00000000  000   000  
+    
+    header: ->
+        
+        h = """
+            list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])}
+            length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}
+            in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}
+            extend: function (c,p) {for (var k in p) { if (hasProp(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}
+            """
+        fs = h.split('\n').join ', '        
+            
+        "var _k_ = {#{fs}}\n\n"
 
     # 00000000   00000000  000   000  0000000    00000000  00000000   
     # 000   000  000       0000  000  000   000  000       000   000  
@@ -46,6 +56,8 @@ class Renderer
         
         if @kode.args.header
             s += @js "// monsterkodi/kode #{@kode.version}\n\n" true
+            
+        s += @js @header(), true
         
         if valid ast.vars
             vs = (v.text for v in ast.vars).join ', '
@@ -268,7 +280,6 @@ class Renderer
         mthds = n.body
 
         if mthds?.length
-            
             [con, bind] = @prepareMethods mthds
             
             if bind.length
@@ -288,6 +299,19 @@ class Renderer
         s += '}\n'
         s
         
+    #  0000000  000   000  00000000   00000000  00000000   
+    # 000       000   000  000   000  000       000   000  
+    # 0000000   000   000  00000000   0000000   0000000    
+    #      000  000   000  000        000       000   000  
+    # 0000000    0000000   000        00000000  000   000  
+    
+    super: (p) ->
+        
+        if @mthdName # new style class
+            "#{p.callee.text}.#{@mthdName}(#{@nodes p.args, ','})"
+        else if @fncnName and @fncsName # old style function
+            "#{@fncnName}.__super__.#{@fncnName}.call(this, #{@nodes p.args, ','})"
+        
     # 00     00  000000000  000   000  0000000
     # 000   000     000     000   000  000   000
     # 000000000     000     000000000  000   000
@@ -296,9 +320,13 @@ class Renderer
 
     mthd: (n) ->
 
+        # insert super(...arguments) in constructors?
+        
         if n.keyval
             s  = '\n'
+            @mthdName = n.keyval.val.func.name.text
             s += @indent + @func n.keyval.val.func
+            delete @mthdName
         s
 
     # 00000000  000   000  000   000   0000000  000000000  000   0000000   000   000  
@@ -309,12 +337,16 @@ class Renderer
     
     function: (n) ->
 
+        @fncnName = n.name.text
+        
         s = '\n'
-        s += "#{n.name.text} = (function ()\n"
+        s += "#{@fncnName} = (function ()\n"
         s += '{\n'
 
-        # if n.extends
-            # s += " extends " + n.extends.map((e) -> e.text).join ', '
+        if n.extends
+            for e in n.extends
+                s += "    _k_.extend(#{n.name.text}, #{e.text});"
+            s += '\n'
 
         mthds = n.body
 
@@ -336,6 +368,8 @@ class Renderer
                 s += '\n'
             @indent = ''
             
+        delete @fncnName
+            
         s += "    return #{n.name.text}\n"
         s += '})()\n'
         s
@@ -352,14 +386,18 @@ class Renderer
         if n.keyval
             f = n.keyval.val.func
             if f.name.text == 'constructor'
+                @fncsName = 'constructor'
                 s = @indent + @func f, 'function ' + className
                 s += '\n'
             else if f.name.text.startsWith 'static'
-                s = @indent + @func f, "#{className}[\"#{f.name.text[7..]}\"] = function"
+                @fncsName = f.name.text[7..]
+                s = @indent + @func f, "#{className}[\"#{@fncsName}\"] = function"
                 s += '\n'
             else
-                s = @indent + @func f, "#{className}.prototype[\"#{f.name.text}\"] = function"
+                @fncsName = f.name.text
+                s = @indent + @func f, "#{className}.prototype[\"#{@fncsName}\"] = function"
                 s += '\n'
+            delete @fncsName
         s
         
     # 00000000   00000000   00000000  00000000   00     00  00000000  000000000  000   000
@@ -516,6 +554,8 @@ class Renderer
         if p.args
             if callee in ['new' 'throw' 'delete']
                 "#{callee} #{@nodes p.args, ','}"
+            else if callee == 'super'
+                @super p
             else
                 "#{callee}(#{@nodes p.args, ','})"
         else

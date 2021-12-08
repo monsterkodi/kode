@@ -228,7 +228,6 @@ This is what I would like to add instead:
 
 - native tests
 - keywords `empty` and `valid`
-- for a in l ~~? []~~
 - use `is` for `instanceof`/`typeof`
 - `include` keyword to merge source files
 - native `dbg`  `assert`  `profile` instead of macros

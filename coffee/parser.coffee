@@ -16,7 +16,7 @@
 # more customizable and easier to debug.
 #
 # the biggest advantage is that the main features are seperated from
-# the nasty details and corner cases, which are handled in the base class
+# the nasty details and corner cases, which are handled in the base class.
 
 print = require './print'
 Parse = require './parse'
@@ -377,7 +377,7 @@ class Parser extends Parse
 
         if tokens[0]?.text == 'extends'
             tokens.shift()
-            e.class.extends = @exps 'class extends' tokens, 'nl'
+            e[type].extends = @exps 'class extends' tokens, 'nl'
 
         if tokens[0]?.type == 'block'
             tokens = tokens.shift().tokens
