@@ -54,22 +54,19 @@ class Returner
                 
                 lst = f.body.exps[-1]
                 
-                insert = -> 
-                    f.body.exps.push return:
-                        ret: type:'keyword' text:'return'
-                        val: f.body.exps.pop()
+                ins = => @insert f.body.exps
                 
-                if lst.type in ['var' 'num' 'single' 'double' 'triple'] then insert()
-                else if lst.call        then if lst.call.callee.text not in ['log' 'warn' 'error'] then insert()
-                else if lst.operation   then insert()
-                else if lst.func        then insert()
-                else if lst.array       then insert()
-                else if lst.prop        then insert()
-                else if lst.index       then insert()
-                else if lst.object      then insert()
-                else if lst.assert      then insert()
-                else if lst.stripol     then insert()
-                else if lst.qmrkop      then insert()
+                if lst.type in ['var' 'num' 'single' 'double' 'triple'] then ins()
+                else if lst.call        then if lst.call.callee.text not in ['log' 'warn' 'error'] then ins()
+                else if lst.operation   then ins()
+                else if lst.func        then ins()
+                else if lst.array       then ins()
+                else if lst.prop        then ins()
+                else if lst.index       then ins()
+                else if lst.object      then ins()
+                else if lst.assert      then ins()
+                else if lst.stripol     then ins()
+                else if lst.qmrkop      then ins()
                 else if lst.return      then null
                 else if lst.while       then null
                 else if lst.for         then null
@@ -135,7 +132,7 @@ class Returner
             if lst.while    then return
             if lst.for      then return
             
-            if not (lst.return or lst.call?.callee?.text == 'log')
+            if not (lst.return or lst.call?.callee?.text in ['log' 'throw'])
                 e.push
                     return:
                         ret: type:'keyword' text:'return'

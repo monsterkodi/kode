@@ -28,31 +28,38 @@ class Renderer
         @debug   = @kode.args?.debug
         @verbose = @kode.args?.verbose
 
+    # 00000000   00000000  000   000  0000000    00000000  00000000   
+    # 000   000  000       0000  000  000   000  000       000   000  
+    # 0000000    0000000   000 0 000  000   000  0000000   0000000    
+    # 000   000  000       000  0000  000   000  000       000   000  
+    # 000   000  00000000  000   000  0000000    00000000  000   000  
+    
     render: (ast, source) ->
 
-        if @kode.args.map and source
-            @srcmap = new SrcMap source
+        # if @kode.args.map and source
+            # @srcmap = new SrcMap source
         
         @varstack = [ast.vars]
         @indent = ''
 
         s = ''
+        
+        if @kode.args.header
+            s += @js "// monsterkodi/kode #{@kode.version}\n\n" true
+        
         if valid ast.vars
             vs = (v.text for v in ast.vars).join ', '
-            s += @js "var #{vs}\n" true
-            s += '\n'
+            s += @js "var #{vs}\n\n" true
 
         s += @nodes ast.exps, '\n' true
         
         if @srcmap
-            # log @srcmap.generate source:source, target:slash.swapExt source, 'js'
-            s+= """
-                
-                //# sourceMappingURL=data:application/json;base64,xx
-                //# sourceURL=#{source}
-                """
-        
-        @srcmap?.done s
+            @srcmap.done s
+            sm = @srcmap.generate s
+            # print.noon @srcmap.decodejs("eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGVzdC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbInRlc3QuY29mZmVlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUV1QixJQUFBOztBQUFBLENBQUEsR0FBeUMiLCJzb3VyY2VzQ29udGVudCI6WyJcblxuICAgICAgICAgICAgICAgICAgICAgICBhICAgICAgICAgICAgICAgICAgPSAgICAgICAgICAgICAgICAgICAgIDAiXX0=")
+            print.noon sm
+            s += @srcmap.jscode sm
+            
         s
 
     js: (s, tl) => 
@@ -60,23 +67,29 @@ class Renderer
         @srcmap?.commit s, tl
         s
         
+    # 000   000   0000000   0000000    00000000   0000000  
+    # 0000  000  000   000  000   000  000       000       
+    # 000 0 000  000   000  000   000  0000000   0000000   
+    # 000  0000  000   000  000   000  000            000  
+    # 000   000   0000000   0000000    00000000  0000000   
+    
     nodes: (nodes, sep=',' tl) ->
 
         s = ''
-        sl = nodes.map (n) =>
-        
-            s = @atom n
+        for i in 0...nodes.length
+            
+            a = @atom nodes[i]
         
             if sep == '\n'
                 
-                stripped = kstr.lstrip s
-                if stripped[0] in '([' then s = ';'+s 
-                else if stripped.startsWith 'function' then s = "(#{s})"
-
-            @js s, tl if tl
-            s
+                stripped = kstr.lstrip a
+                if stripped[0] in '([' then a = ';'+a
+                else if stripped.startsWith 'function' then a = "(#{a})"
             
-        sl.join sep
+            a += if i<nodes.length-1 then sep else ''
+            @js a, tl if tl
+            s += a
+        s
 
     # 000   000   0000000   0000000    00000000
     # 0000  000  000   000  000   000  000
@@ -244,7 +257,7 @@ class Renderer
 
     class: (n) ->
 
-        s = '\n'
+        s = ''
         s += "class #{n.name.text}"
 
         if n.extends

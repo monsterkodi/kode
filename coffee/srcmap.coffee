@@ -7,6 +7,8 @@
 ###
 
 kstr = require 'kstr'
+slash = require 'kslash'
+print = require './print'
 
 # maps locations in a single generated js file back to locations in the original source file
 
@@ -31,14 +33,10 @@ class SourceMap
             while s[0] == '\n'
                 s = s[1..]
                 @jsline++
-            
-            @jsline++
-                
-            @solve s
-            
+                            
             log b7('c'), g4(kstr.lpad(@jsline, 4)), s
             
-            @jsline += s.split('\n').length-1
+            @jsline += @solve s
             
             @cache  = []
             
@@ -59,19 +57,38 @@ class SourceMap
     
     solve: (s) ->
 
+        return 0 if empty s
+        
         p = 0
+        slcs = []
+        
+        jsidx = 0
+        jslns = s.split '\n'
+        
+        ln = jslns[jsidx]
+        
+        log y5('solve'), @jsline
         
         for ci in 0...@cache.length
             
             [cs, tok] = @cache[ci]
             
-            i = s.indexOf cs, p
+            while (i = ln.indexOf cs, p) <= 0
+                break if jsidx >= jslns.length-1
+                ln = jslns[++jsidx]
+                p = 0
             
-            if i >= 0
-                log w3(i), r4(tok.line), r2(tok.col), cs
-                p = i    
+            if i >= 0 and jsidx < jslns.length
+                ji = @jsline+jsidx
+                slcs.push [ln[i...i+cs.length], [ji, tok.line, tok.col]]
+                @add [tok.line-1, tok.col], [ji, i], ln[i...i+cs.length]
+                log b6(ji), w3(i), r4(tok.line), r2(tok.col), cs+r2 '◂'
+                p = i+cs.length    
             else
-                log "srcmap.solve cant locate tok #{tok.text} in #{s}"
+                log "srcmap.solve can't locate tok #{tok.text} in #{s}"
+                
+        log @jsline, s, slcs
+        jslns.length-1
         
     # 0000000     0000000   000   000  00000000  
     # 000   000  000   000  0000  000  000       
@@ -81,25 +98,40 @@ class SourceMap
     
     done: (s) ->
         
-        log b5('d'), @jsline, s.split('\n').length
+        ls = s.split '\n'
         
+        log b5('d'), @jsline, ls.length, @lines.length
+        
+        log ls
+                
+        for li in 0...ls.length
+            
+            ln = ls[li]
+            
+            log "#{b3 kstr.lstrip li, 4} #{ln}#{r2 '◂'}" 
+            
+            if lm = @lines[li]
+                for c in lm.columns
+                    continue if not c
+                    log "#{red c.jsstr} #{c.sourceLine} #{c.sourceColumn}"
+            
     #  0000000   0000000    0000000    
     # 000   000  000   000  000   000  
     # 000000000  000   000  000   000  
     # 000   000  000   000  000   000  
     # 000   000  0000000    0000000    
     
-    add: (source, target) -> # source and target: [line, column]
+    add: (source, target, jsstr) -> # source and target: [line, column]
         
         [line, column] = target
         @lines[line] ?= new LineMap line
-        @lines[line].add column, source
+        @lines[line].add column, source, jsstr
 
-    sourceLocation: (srcloc) ->
-        
-        [line, column] = srcloc
-        line-- while not ((lineMap = @lines[line]) or (line <= 0))
-        lineMap and lineMap.sourceLocation column
+    # sourceLocation: (srcloc) ->
+    #         
+        # [line, column] = srcloc
+        # line-- while not ((lineMap = @lines[line]) or (line <= 0))
+        # lineMap and lineMap.sourceLocation column
 
     #  0000000   00000000  000   000  00000000  00000000    0000000   000000000  00000000  
     # 000        000       0000  000  000       000   000  000   000     000     000       
@@ -107,7 +139,7 @@ class SourceMap
     # 000   000  000       000  0000  000       000   000  000   000     000     000       
     #  0000000   00000000  000   000  00000000  000   000  000   000     000     00000000  
     
-    generate: (opt = {}, code) ->
+    generate: (code) ->
         
         writingline      = 0
         lastColumn       = 0
@@ -156,14 +188,34 @@ class SourceMap
                 lastSourceColumn = mapping.sourceColumn
                 needComma = yes
 
+        file = slash.file slash.swapExt(@source, 'js'), @source
+                
         version:        3
-        file:           opt.target or ''
-        sourceRoot:     opt.root or ''
-        sources:        [opt.source or '']
-        names:          []
+        file:           file
+        # sourceRoot:     ''
+        sources:        [slash.file(@source) or '']
+        # names:          []
         mappings:       buffer
-        sourcesContent: [code]
+        # sourcesContent: [code]
 
+    #       000   0000000   0000000   0000000   0000000    00000000  
+    #       000  000       000       000   000  000   000  000       
+    #       000  0000000   000       000   000  000   000  0000000   
+    # 000   000       000  000       000   000  000   000  000       
+    #  0000000   0000000    0000000   0000000   0000000    00000000  
+    
+    jscode: (v3Map) ->
+        
+        encoded = @base64encode JSON.stringify v3Map
+        dataURL = "//# sourceMappingURL=data:application/json;base64,#{encoded}"
+        sourceURL = "//# sourceURL=#{@source}"
+        "\n\n#{dataURL}\n#{sourceURL}\n"
+        
+        
+    decodejs: (encoded) ->
+        
+        JSON.parse @base64decode encoded
+        
     # 00000000  000   000   0000000   0000000   0000000    00000000  
     # 000       0000  000  000       000   000  000   000  000       
     # 0000000   000 0 000  000       000   000  000   000  0000000   
@@ -195,6 +247,23 @@ class SourceMap
             answer += @encodeBase64 nextChunk
         answer
 
+    base64decode: (src) -> Buffer.from(src, 'base64').toString()
+        
+    base64encode: (src) ->
+        
+        # if typeof Buffer is 'function'
+        Buffer.from(src).toString('base64')
+        # else if typeof btoa is 'function'
+            # # The contents of a `<script>` block are encoded via UTF-16, so if any extended
+            # # characters are used in the block, btoa will fail as it maxes out at UTF-8.
+            # # See https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/Base64_encoding_and_decoding#The_Unicode_Problem
+            # # for the gory details, and for the solution implemented here.
+            # btoa encodeURIComponent(src).replace /%([0-9A-F]{2})/g, (match, p1) ->
+                # String.fromCharCode '0x' + p1
+        # else
+            # throw new Error 'Unable to base64 encode inline sourcemap.'
+            
+        
     encodeBase64: (value) -> 
     
         BASE64_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
@@ -212,17 +281,17 @@ class LineMap
     
     @: (@line) -> @columns = []
 
-    add: (column, srcloc) ->
+    add: (column, srcloc, jsstr) ->
         [sourceLine, sourceColumn] = srcloc
         if @columns[column] 
             log "LineMap has column #{column}" sourceLine, sourceColumn, options
             return
-        @columns[column] = {line: @line, column, sourceLine, sourceColumn}
+        @columns[column] = {line: @line, column, sourceLine, sourceColumn, jsstr}
 
-    sourceLocation: (column) ->
-        
-        column-- while not ((mapping = @columns[column]) or (column <= 0))
-        mapping and [mapping.sourceLine, mapping.sourceColumn]
+    # sourceLocation: (column) ->
+#         
+        # column-- while not ((mapping = @columns[column]) or (column <= 0))
+        # mapping and [mapping.sourceLine, mapping.sourceColumn]
         
 module.exports = SourceMap
 

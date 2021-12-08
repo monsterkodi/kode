@@ -15,7 +15,6 @@ describe 'class' ->
         cmp """
             class A
             """ """
-
             class A
             {}
 
@@ -25,7 +24,6 @@ describe 'class' ->
             class B
                 @: ->
             """ """
-
             class B
             {
                 constructor ()
@@ -39,7 +37,6 @@ describe 'class' ->
                 @a: ->
                 b: ->
             """ """
-
             class C
             {
                 static a ()
@@ -55,7 +52,6 @@ describe 'class' ->
             class D
                 a: =>
             """ """
-
             class D
             {
                 constructor ()
@@ -74,7 +70,6 @@ describe 'class' ->
                 @f: ->
                 @g: ->
             """ """
-
             class E
             {
                 static f ()
@@ -92,7 +87,6 @@ describe 'class' ->
                 @g: ->
                 @h: ->
             """ """
-
             class F
             {
                 static f ()
@@ -114,7 +108,6 @@ describe 'class' ->
 
                 m: -> 'm'
             """ """
-
             class X
             {
                 constructor ()
@@ -137,7 +130,6 @@ describe 'class' ->
                 m: ->
                     'm'
             """ """
-
             class Y
             {
                 constructor ()
@@ -169,7 +161,6 @@ describe 'class' ->
                     g = => @b()
                     g()
             """ """
-
             class A
             {
                 constructor ()

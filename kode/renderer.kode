@@ -45,13 +45,13 @@ class Renderer
         s += @nodes ast.exps, '\n' true
         
         if @srcmap
+            @srcmap.done s
             log @srcmap.generate source:source, target:slash.swapExt source, 'js'
-            @js """
+            s += """
                 //# sourceMappingURL=data:application/json;base64,
                 //# sourceURL=#{source}
-                """ true
+                """
         
-        @srcmap?.done s
         s
 
     js: (s, tl) => 

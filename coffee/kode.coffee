@@ -22,6 +22,8 @@ class Kode
 
     @: (@args) ->
 
+        @version = pkg.version
+        
         @args ?= {}
 
         if @args.verbose then @args.debug = @args.block = @args.tokens = @args.parse = true
@@ -57,9 +59,6 @@ class Kode
         if @args.astr  then log print.astr ast, @args.scope
 
         js = @renderer.render ast, file
-
-        if @args.header and kstr.strip(js).length
-            js = "// monsterkodi/kode #{pkg.version}\n\n" + js
 
         if @args.js or @args.debug
             print.code 'js' js 
@@ -154,7 +153,6 @@ class Kode
                 js  = @compile text, file
                 out = slash.resolve @args.outdir, slash.file file
                 out = slash.swapExt out, 'js'
-                js  = "// kode #{pkg.version}\n\n" + js
                 if not slash.writeText out, js
                     error R2 y3 "can't write #{R3 y6 out}"
             else if @args.js

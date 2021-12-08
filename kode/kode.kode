@@ -58,8 +58,8 @@ class Kode
 
         js = @renderer.render ast, file
 
-        if @args.header and kstr.strip(js).length
-            js = "// monsterkodi/kode #{pkg.version}\n\n" + js
+        # if @args.header and kstr.strip(js).length
+            # js = "// monsterkodi/kode #{pkg.version}\n\n" + js
 
         if @args.js or @args.debug
             print.code 'js' js 
