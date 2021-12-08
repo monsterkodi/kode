@@ -170,6 +170,15 @@ class C
     constructor: ->
 ```
 
+## Old school classes
+
+**kode** gives you the option to use the old school `function` style classes of CoffeeScript v1
+
+```coffeescript
+function C
+    @: ->
+```
+
 # Planned stuff that does not work yet:
 
 ## BigInt
@@ -210,7 +219,6 @@ Fix
 - error messages
 - ? operator : precedence 
 - sourcemaps
-- super
 
 Since I will most likely be the only person using **kode**, it's probably wise to ditch the stuff I don't need:
 
@@ -232,6 +240,5 @@ This is what I would like to add instead:
 - `include` keyword to merge source files
 - native `dbg`  `assert`  `profile` instead of macros
 - `profile` in same scope
-- option to use both: new `class` and old school `function` style classes
 - `await`?
 

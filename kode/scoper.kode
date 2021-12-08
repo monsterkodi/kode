@@ -129,6 +129,9 @@ class Scoper
                 @verb 'qmrkop' e
                 if e.qmrkop.lhs.type != 'var'
                     insert "_#{e.qmrkop.qmrk.line}_#{e.qmrkop.qmrk.col}_" ' ? '
+
+            if e.function
+                insert e.function.name.text
                     
             if e.func
                 @func e.func
