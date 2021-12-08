@@ -310,7 +310,7 @@ class Renderer
         if @mthdName # new style class
             "#{p.callee.text}.#{@mthdName}(#{@nodes p.args, ','})"
         else if @fncnName and @fncsName # old style function
-            "#{@fncnName}.__super__.#{@fncnName}.call(this, #{@nodes p.args, ','})"
+            "#{@fncnName}.__super__.#{@fncsName}.call(this, #{@nodes p.args, ','})"
         
     # 00     00  000000000  000   000  0000000
     # 000   000     000     000   000  000   000
@@ -361,7 +361,13 @@ class Renderer
                     con.keyval.val.func.body.exps.unshift
                         type: 'code'
                         text: "this[\"#{bn}\"] = this[\"#{bn}\"].bind(this)"
-            
+                        
+            if n.extends
+                con.keyval.val.func.body.exps ?= []
+                con.keyval.val.func.body.exps.push
+                    type: 'code'
+                    text: "return #{@fncnName}.__super__.constructor.apply(this, arguments)"
+                        
             @indent = '    '
             for mi in 0...mthds.length
                 s += @funcs mthds[mi], n.name.text
@@ -427,7 +433,7 @@ class Renderer
             else if m.keyval.val.func?.arrow.text == '=>'
                 bind.push m
 
-        if bind.length and not con            # found some methods to bind, but no constructor
+        if (bind.length or @fncnName) and not con  # found some methods to bind or old school class, but no constructor
             ast = @kode.ast "constructor: ->" # create one from scratch
             con = ast.exps[0].object.keyvals[0]
             con.keyval.val.func.name = type:'name' text:'constructor'
