@@ -504,6 +504,9 @@ class Parser extends Parse
                                                 vars: []
                                                 exps: [rhs]
                                     ]
+                                    
+        if rhs?.if then rhs.if.inline = true
+        
         if op.text == '?='
             
             op.text = '='

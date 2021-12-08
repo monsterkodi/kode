@@ -362,6 +362,26 @@ describe 'if' ->
             nextline
             """
             
+        cmp """
+            s = if 1
+                    2
+                else if 3
+                    4
+                else
+                    5
+            """ """
+            s = 1 ? 2 : 3 ? 4 : 5
+            """
+
+        cmp """
+            s = if 1
+                    2
+                else if 3
+                    4
+            """ """
+            s = 1 ? 2 : 3 ? 4 : undefined
+            """
+            
         cmp "h = if w then f g else '0'" "h = w ? f(g) : '0'"
             
         cmp "a = if 1 then 2 else if 3 then 4 else if 5 then 6 else 7" "a = 1 ? 2 : 3 ? 4 : 5 ? 6 : 7"

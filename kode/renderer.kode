@@ -28,30 +28,38 @@ class Renderer
         @debug   = @kode.args?.debug
         @verbose = @kode.args?.verbose
 
+    # 00000000   00000000  000   000  0000000    00000000  00000000   
+    # 000   000  000       0000  000  000   000  000       000   000  
+    # 0000000    0000000   000 0 000  000   000  0000000   0000000    
+    # 000   000  000       000  0000  000   000  000       000   000  
+    # 000   000  00000000  000   000  0000000    00000000  000   000  
+    
     render: (ast, source) ->
 
-        if @kode.args.map and source
-            @srcmap = new SrcMap source
+        # if @kode.args.map and source
+            # @srcmap = new SrcMap source
         
         @varstack = [ast.vars]
         @indent = ''
 
         s = ''
+        
+        if @kode.args.header
+            s += @js "// monsterkodi/kode #{@kode.version}\n\n" true
+        
         if valid ast.vars
             vs = (v.text for v in ast.vars).join ', '
-            s += @js "var #{vs}\n" true
-            s += '\n'
+            s += @js "var #{vs}\n\n" true
 
         s += @nodes ast.exps, '\n' true
         
         if @srcmap
             @srcmap.done s
-            log @srcmap.generate source:source, target:slash.swapExt source, 'js'
-            s += """
-                //# sourceMappingURL=data:application/json;base64,
-                //# sourceURL=#{source}
-                """
-        
+            sm = @srcmap.generate s
+            # print.noon @srcmap.decodejs("eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGVzdC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbInRlc3QuY29mZmVlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUV1QixJQUFBOztBQUFBLENBQUEsR0FBeUMiLCJzb3VyY2VzQ29udGVudCI6WyJcblxuICAgICAgICAgICAgICAgICAgICAgICBhICAgICAgICAgICAgICAgICAgPSAgICAgICAgICAgICAgICAgICAgIDAiXX0=")
+            print.noon sm
+            s += @srcmap.jscode sm
+            
         s
 
     js: (s, tl) => 
@@ -59,23 +67,29 @@ class Renderer
         @srcmap?.commit s, tl
         s
         
+    # 000   000   0000000   0000000    00000000   0000000  
+    # 0000  000  000   000  000   000  000       000       
+    # 000 0 000  000   000  000   000  0000000   0000000   
+    # 000  0000  000   000  000   000  000            000  
+    # 000   000   0000000   0000000    00000000  0000000   
+    
     nodes: (nodes, sep=',' tl) ->
 
         s = ''
-        sl = nodes.map (n) =>
-        
-            s = @atom n
+        for i in 0...nodes.length
+            
+            a = @atom nodes[i]
         
             if sep == '\n'
                 
-                stripped = kstr.lstrip s
-                if stripped[0] in '([' then s = ';'+s 
-                else if stripped.startsWith 'function' then s = "(#{s})"
-
-            @js s, tl
-            s
+                stripped = kstr.lstrip a
+                if stripped[0] in '([' then a = ';'+a
+                else if stripped.startsWith 'function' then a = "(#{a})"
             
-        sl.join sep
+            a += if i<nodes.length-1 then sep else ''
+            @js a, tl if tl
+            s += a
+        s
 
     # 000   000   0000000   0000000    00000000
     # 0000  000  000   000  000   000  000
@@ -158,7 +172,7 @@ class Renderer
 
     assert: (p) ->
 
-        @verb 'fix' p
+        # @verb 'fix' p
         if p.obj.type != 'var' and not p.obj.index
             '▾' + @node(p.obj) + "▸#{p.qmrk.line}_#{p.qmrk.col}◂"
         else
@@ -168,21 +182,19 @@ class Renderer
 
         @verb 'fixAsserts' s
         
-        if not s?
-            return
-            
         return '' if not s? or s.length == 0
         return s if s in ['▾' "'▾'" '"▾"']
-
-        while s[0] == '▾' then s = s[1..]
+        
+        while s[0] == '▾' then s = s[1..] # remove any leading ▾
+        
         if /(?<!['"\[])[▾]/.test s
             i = s.indexOf '▾'
-            return s[...i] + @fixAsserts s[i+1..]
-            
-        if '\n' in s
-            i = s.indexOf '\n'
-            # log 'NEWLINE!' i, s.length, ">>>#{s[...i]}<<<", ">>>#{s[i..]}<<<", s[...i] == s, s[i..].length
-            return @fixAsserts(s[...i]) + s[i..]
+            if (n = s.indexOf '\n' i) > i
+                # log b3('n!'), w3(s[...i]), m6(s[i+1...n]), green(s[n..])
+                return s[...i] + @fixAsserts(s[i+1...n]) + @fixAsserts(s[n..])
+            else
+                # log b3('▾!'), w3(s[...i]), m6(s[i+1..])
+                return s[...i] + @fixAsserts s[i+1..]
         
         splt = s.split /▸\d+_\d+◂/
         mtch = s.match /▸\d+_\d+◂/g
@@ -245,7 +257,7 @@ class Renderer
 
     class: (n) ->
 
-        s = '\n'
+        s = ''
         s += "class #{n.name.text}"
 
         if n.extends
@@ -502,7 +514,7 @@ class Renderer
         callee = @node p.callee
         
         if p.args
-            if callee == 'new'
+            if callee in ['new' 'throw' 'delete']
                 "#{callee} #{@nodes p.args, ','}"
             else
                 "#{callee}(#{@nodes p.args, ','})"
@@ -919,18 +931,22 @@ class Renderer
 
     token: (tok) ->
 
-        if tok.type == 'comment'
-            @comment tok
-        else if tok.type == 'this'
-            'this'
-        else if tok.type == 'triple'
-            '`' + tok.text[3..-4] + '`'
-        else if tok.type == 'keyword' and tok.text == 'yes'
-            'true'
-        else if tok.type == 'keyword' and tok.text == 'no'
-            'false'
-        else
-            tok.text
+        s = 
+            if tok.type == 'comment'
+                @comment tok
+            else if tok.type == 'this'
+                'this'
+            else if tok.type == 'triple'
+                '`' + tok.text[3..-4] + '`'
+            else if tok.type == 'keyword' and tok.text == 'yes'
+                'true'
+            else if tok.type == 'keyword' and tok.text == 'no'
+                'false'
+            else
+                tok.text
+                
+        @js s, tok
+        s
 
     #  0000000   0000000   00     00  00     00  00000000  000   000  000000000
     # 000       000   000  000   000  000   000  000       0000  000     000

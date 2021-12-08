@@ -410,8 +410,11 @@ class Parse # the base class of Parser
             break if b
             
             if e.text == '@' 
-                if nxt.type == 'block' and @stack[-1] == 'if' or (spaced and nxt.text == 'then') or nxt.type == 'nl'
-                    break
+                if (nxt.type == 'block' and @stack[-1] == 'if' or 
+                    (spaced and nxt.text == 'then') or 
+                    nxt.type == 'nl' or
+                    nxt.text == ',' )
+                        break
                 else
                     e = @this e, tokens
                     break

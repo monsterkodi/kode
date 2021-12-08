@@ -47,7 +47,7 @@ register = ->
     
         Module = require 'module'
     
-        Module::load = (file) ->
+        Module.prototype.load = (file) ->
             @filename = file
             @paths = Module._nodeModulePaths slash.dir file
             ext = '.' + slash.ext file

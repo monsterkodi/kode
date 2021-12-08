@@ -532,7 +532,7 @@ class Renderer
         first = firstLineCol n
         last  = lastLineCol n
 
-        if first.line == last.line and n.else and not n.returns
+        if (first.line == last.line and n.else and not n.returns) or n.inline
             return @ifInline n
 
         gi = @ind()
@@ -569,7 +569,7 @@ class Renderer
     # 000  000       000  000  0000  000      000  000  0000  000
     # 000  000       000  000   000  0000000  000  000   000  00000000
 
-    ifInline: (n) ->
+    ifInline: (n, dontClose) ->
 
         s = ''
 
@@ -580,7 +580,7 @@ class Renderer
         if n.elifs
             for e in n.elifs
                 s += ' : '
-                s += @ifInline e.elif
+                s += @ifInline e.elif, true
 
         if n.else
             s += ' : '
@@ -588,6 +588,8 @@ class Renderer
                 s += @atom n.else[0]
             else
                 s += '(' + (@atom e for e in n.else).join(', ') + ')'
+        else if not dontClose
+            s += ' : undefined'
         s
 
     # 00000000   0000000    0000000  000   000  
