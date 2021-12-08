@@ -6,7 +6,7 @@
  0000000  0000000  000   000  0000000   0000000
 ###
 
-{cmp} = require './utils'
+{ cmp, evl } = require './utils'
 
 describe 'class' ->
 
@@ -187,4 +187,17 @@ describe 'class' ->
             }
 
             """
-
+            
+    it 'old school' ->
+        
+        evl """
+            function T1
+                
+                f: (a) -> 1 + a
+            
+            function T2 extends T1
+            
+                f: (a) -> super(a) + 40
+                
+            (new T2).f 1
+            """ 42
