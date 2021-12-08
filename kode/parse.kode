@@ -11,7 +11,7 @@ print = require './print'
 
 { empty, valid, firstLineCol, lastLineCol } = require './utils'
 
-class Parse # the base class of Parser
+function Parse # the base class of Parser
 
     @: (@kode) ->
 
