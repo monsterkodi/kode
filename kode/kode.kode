@@ -109,7 +109,7 @@ class Kode
             sandbox.require = _require = (file) -> Module._load file, _module, true
             _module.filename = sandbox.__filename
             for r in Object.getOwnPropertyNames require
-                if r not in ['paths' 'arguments' 'caller']
+                if r not in ['paths' 'arguments' 'caller' 'length' 'name']
                     _require[r] = require[r]
 
             _require.paths = _module.paths = Module._nodeModulePaths process.cwd()
