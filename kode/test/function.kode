@@ -15,12 +15,12 @@ describe 'function' ->
         cmp """
             function A
             """ """
-
+            
             A = (function ()
             {
                 return A
             })()
-
+            
             """
 
         # cmp """

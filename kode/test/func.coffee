@@ -244,11 +244,11 @@ describe 'func' ->
     it 'return' ->
 
         cmp """
-            f = ->
+            ff = ->
                 if 232 then return
             """ """
-
-            f = function ()
+            
+            ff = function ()
             {
                 if (232)
                 {
@@ -258,12 +258,12 @@ describe 'func' ->
             """
 
         cmp """
-            f = ->
+            fff = ->
                 if 3
                     log '42'
             """ """
 
-            f = function ()
+            fff = function ()
             {
                 if (3)
                 {
@@ -273,12 +273,12 @@ describe 'func' ->
             """
 
         cmp """
-            f = ->
+            ffff = ->
                 if 4
                     '42'
             """ """
 
-            f = function ()
+            ffff = function ()
             {
                 if (4)
                 {
@@ -337,14 +337,14 @@ describe 'func' ->
             """
             
         cmp """
-            f = ->
+            fffff = ->
                 try
                     'return me!'
                 catch e
                     error e
             """ """
             
-            f = function ()
+            fffff = function ()
             {
                 try
                 {
