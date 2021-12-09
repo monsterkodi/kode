@@ -41,8 +41,14 @@ world
         evl(`a =\"\"\"heLlo world\"\"\"`,`heLlo world`)
         evl(`a =\"\"\" helLo world\"\"\"`,` helLo world`)
         evl(`a =\"\"\"   hellO world   \"\"\"`,`   hellO world   `)
-        return evl(`a =\"\"\"   hello World
+        evl(`a =\"\"\"   hello World
 \"\"\"`,`   hello World`)
+        return evl(`a =\"\"\"
+    
+    hullo
+    wurld
+    
+    \"\"\"`,'\nhello\nworld\n')
     })
     return it('interpolation',function ()
     {
