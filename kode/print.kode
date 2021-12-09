@@ -208,7 +208,7 @@ class Print
         tmp = slash.swapExt tmp, ext
         slash.writeText tmp, code
         log childp.execSync "#{__dirname}/../node_modules/.bin/colorcat --lineNumbers #{tmp}" encoding:'utf8'
-        slash.remove tmp
+        slash.remove tmp, ->
 
     @noon: (msg, arg) ->
         if not arg

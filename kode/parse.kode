@@ -128,7 +128,7 @@ function Parse # the base class of Parser
                 # print.ast 'exps block end, break!' es if @debug
                 break
                 
-            if tokens[0].type == 'block'                                then @verb 'exps break on block'   ; break
+            # if tokens[0].type == 'block'                                then @verb 'exps break on block'   ; break
             if tokens[0].text == ')'                                    then @verb 'exps break on )'       ; break
             if tokens[0].text in ['in''of']   and rule == 'for vals'    then @verb 'exps break on in|of'   ; break
             if tokens[0].type == 'nl' 
@@ -155,6 +155,15 @@ function Parse # the base class of Parser
                     
                 @verb 'exps nl continue...'
                 continue
+                
+            if tokens[0].text == ',' 
+                if @stack[-1] in ['▸args']
+                    @verb 'exps comma continues args ...'
+                    tokens.shift()
+                    if tokens[0]?.type == 'block'
+                        @verb 'exps comma followed by block ...'
+                        tokens = tokens.shift().tokens
+                    continue
                 
             e = @exp tokens
             last = lastLineCol e
@@ -267,6 +276,9 @@ function Parse # the base class of Parser
             if numTokens == tokens.length    
                 
                 if tokens[0]?.text in ','
+                    if @stack[-1] in ['▸args']
+                        @verb 'comma in args, break without shifting'
+                        break
                     @verb 'exp shift comma'
                     tokens.shift()
                     

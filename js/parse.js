@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.63.0
+// monsterkodi/kode 0.65.0
 
 var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
@@ -142,11 +142,6 @@ Parse = (function ()
                 this.verb('exps block end, break!')
                 break
             }
-            if (tokens[0].type === 'block')
-            {
-                this.verb('exps break on block')
-                break
-            }
             if (tokens[0].text === ')')
             {
                 this.verb('exps break on )')
@@ -186,6 +181,20 @@ Parse = (function ()
                 }
                 this.verb('exps nl continue...')
                 continue
+            }
+            if (tokens[0].text === ',')
+            {
+                if ([].indexOf.call(['▸args'], this.stack.slice(-1)[0]) >= 0)
+                {
+                    this.verb('exps comma continues args ...')
+                    tokens.shift()
+                    if ((tokens[0] != null ? tokens[0].type : undefined) === 'block')
+                    {
+                        this.verb('exps comma followed by block ...')
+                        tokens = tokens.shift().tokens
+                    }
+                    continue
+                }
             }
             e = this.exp(tokens)
             last = lastLineCol(e)
@@ -237,7 +246,7 @@ Parse = (function ()
 
     Parse.prototype["exp"] = function (tokens)
     {
-        var tok, _248_34_, e, numTokens, _278_33_
+        var tok, _257_34_, e, numTokens, _290_33_
 
         if (empty(tokens))
         {
@@ -313,7 +322,7 @@ Parse = (function ()
 
         }
 
-        this.sheapPush('exp',((_248_34_=tok.text) != null ? _248_34_ : tok.type))
+        this.sheapPush('exp',((_257_34_=tok.text) != null ? _257_34_ : tok.type))
         e = tok
         while (tokens.length)
         {
@@ -337,6 +346,11 @@ Parse = (function ()
             {
                 if ([].indexOf.call(',', (tokens[0] != null ? tokens[0].text : undefined)) >= 0)
                 {
+                    if ([].indexOf.call(['▸args'], this.stack.slice(-1)[0]) >= 0)
+                    {
+                        this.verb('comma in args, break without shifting')
+                        break
+                    }
                     this.verb('exp shift comma')
                     tokens.shift()
                 }
@@ -348,13 +362,13 @@ Parse = (function ()
         {
             print.ast(`exp ${empty(this.stack) ? 'DONE' : ''}`,e)
         }
-        this.sheapPop('exp',((_278_33_=tok.text) != null ? _278_33_ : tok.type))
+        this.sheapPop('exp',((_290_33_=tok.text) != null ? _290_33_ : tok.type))
         return e
     }
 
     Parse.prototype["rhs"] = function (e, tokens)
     {
-        var nxt, numTokens, unspaced, llc, spaced, _332_26_
+        var nxt, numTokens, unspaced, llc, spaced, _344_26_
 
         this.sheapPush('rhs','rhs')
         while (nxt = tokens[0])
@@ -513,7 +527,7 @@ Parse = (function ()
 
     Parse.prototype["lhs"] = function (e, tokens)
     {
-        var nxt, numTokens, last, first, unspaced, spaced, b, _488_38_, _488_30_
+        var nxt, numTokens, last, first, unspaced, spaced, b, _500_38_, _500_30_
 
         this.sheapPush('lhs','lhs')
         while (nxt = tokens[0])
@@ -625,7 +639,7 @@ Parse = (function ()
             {
                 e = {operation:{operator:tokens.shift(),rhs:this.incond(e,tokens)}}
             }
-            else if ((spaced && (nxt.line === last.line || (nxt.col > first.col && !([].indexOf.call(['if'], this.stack.slice(-1)[0]) >= 0))) && !([].indexOf.call(['if','then','else','break','continue','in','of','for','while'], nxt.text) >= 0) && !([].indexOf.call(['nl'], nxt.type) >= 0) && (!([].indexOf.call(['num','single','double','triple','regex','punct','comment','op'], e.type) >= 0)) && (!([].indexOf.call(['null','undefined','Infinity','NaN','true','false','yes','no','if','then','else','for','while'], e.text) >= 0)) && !e.array && !e.object && !e.keyval && !e.operation && !e.incond && !e.qmrkop && !([].indexOf.call(['delete','new','typeof'], ((_488_30_=e.call) != null ? (_488_38_=_488_30_.callee) != null ? _488_38_.text : undefined : undefined)) >= 0) && !([].indexOf.call(this.stack, '▸arg') >= 0)))
+            else if ((spaced && (nxt.line === last.line || (nxt.col > first.col && !([].indexOf.call(['if'], this.stack.slice(-1)[0]) >= 0))) && !([].indexOf.call(['if','then','else','break','continue','in','of','for','while'], nxt.text) >= 0) && !([].indexOf.call(['nl'], nxt.type) >= 0) && (!([].indexOf.call(['num','single','double','triple','regex','punct','comment','op'], e.type) >= 0)) && (!([].indexOf.call(['null','undefined','Infinity','NaN','true','false','yes','no','if','then','else','for','while'], e.text) >= 0)) && !e.array && !e.object && !e.keyval && !e.operation && !e.incond && !e.qmrkop && !([].indexOf.call(['delete','new','typeof'], ((_500_30_=e.call) != null ? (_500_38_=_500_30_.callee) != null ? _500_38_.text : undefined : undefined)) >= 0) && !([].indexOf.call(this.stack, '▸arg') >= 0)))
             {
                 this.verb('lhs is lhs of implicit call! e',e,this.stack.slice(-1)[0])
                 this.verb('    is lhs of implicit call! nxt',nxt)
@@ -698,15 +712,15 @@ Parse = (function ()
 
     Parse.prototype["nameMethods"] = function (mthds)
     {
-        var m, name, _567_39_, _567_34_, _568_41_, _568_35_
+        var m, name, _579_39_, _579_34_, _580_41_, _580_35_
 
         if ((mthds != null ? mthds.length : undefined))
         {
             var list = (mthds != null ? mthds : [])
-            for (var _566_18_ = 0; _566_18_ < list.length; _566_18_++)
+            for (var _578_18_ = 0; _578_18_ < list.length; _578_18_++)
             {
-                m = list[_566_18_]
-                if (name = ((_567_34_=m.keyval) != null ? (_567_39_=_567_34_.key) != null ? _567_39_.text : undefined : undefined))
+                m = list[_578_18_]
+                if (name = ((_579_34_=m.keyval) != null ? (_579_39_=_579_34_.key) != null ? _579_39_.text : undefined : undefined))
                 {
                     if (((m.keyval.val != null ? m.keyval.val.func : undefined) != null))
                     {
