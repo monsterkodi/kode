@@ -1,13 +1,14 @@
+// monsterkodi/kode 0.63.0
+
 var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
-var kstr, klor, noon, slash, childp, fs
+var kstr, klor, noon, slash, childp
 
 kstr = require('kstr')
 klor = require('klor')
 noon = require('noon')
 slash = require('kslash')
 childp = require('child_process')
-fs = require('fs-extra')
 klor.kolor.globalize()
 class Print
 {
@@ -56,9 +57,9 @@ class Print
             {
                 s = ''
                 var list = (tok.tokens != null ? tok.tokens : [])
-                for (var _45_22_ = 0; _45_22_ < list.length; _45_22_++)
+                for (var _44_22_ = 0; _44_22_ < list.length; _44_22_++)
                 {
-                    t = list[_45_22_]
+                    t = list[_44_22_]
                     s += this.token(t)
                 }
                 return '\n' + s
@@ -82,9 +83,9 @@ class Print
 
         s = B2('   ')
         var list = (sheap != null ? sheap : [])
-        for (var _65_14_ = 0; _65_14_ < list.length; _65_14_++)
+        for (var _64_14_ = 0; _64_14_ < list.length; _64_14_++)
         {
-            r = list[_65_14_]
+            r = list[_64_14_]
             switch (r.type)
             {
                 case 'exps':
@@ -133,7 +134,7 @@ class Print
         console.log(R3(y5(`\n ${header}`)))
         printBlock = function (b)
         {
-            var s, c, _96_27_, ci, cn, _103_44_
+            var s, c, _95_27_, ci, cn, _102_44_
 
             if (legend)
             {
@@ -146,9 +147,9 @@ class Print
                 s += b.type[0] + ' '
             }
             var list = (b.tokens != null ? b.tokens : [])
-            for (var _95_18_ = 0; _95_18_ < list.length; _95_18_++)
+            for (var _94_18_ = 0; _94_18_ < list.length; _94_18_++)
             {
-                c = list[_95_18_]
+                c = list[_94_18_]
                 if ((c.tokens != null))
                 {
                     s += '\n' + printBlock(c) + b.indent
@@ -161,7 +162,7 @@ class Print
                 {
                     ci = parseInt(b.indent.length / 4)
                     cn = ['g5','r5','m5','g3','r3','m3','g1','r1','m1'][ci % 8]
-                    s += global[cn]((((_103_44_=c.text) != null ? _103_44_ : '')) + ' ')
+                    s += global[cn]((((_102_44_=c.text) != null ? _102_44_ : '')) + ' ')
                 }
             }
             if ([].indexOf.call(['{}','()','[]'], b.type) >= 0)
@@ -181,7 +182,7 @@ class Print
         lpad = kstr.lpad('',19)
         printNode = function (node, indent = '', visited = [])
         {
-            var s, _127_44_, _127_85_, value, name
+            var s, _126_44_, _126_85_, value, name
 
             s = ''
             if (!node)
@@ -190,7 +191,7 @@ class Print
             }
             if (node.type)
             {
-                s += b6(kstr.lpad(((_127_44_=node.line) != null ? _127_44_ : ''),4)) + ' ' + blue(kstr.lpad(((_127_85_=node.col) != null ? _127_85_ : ''),3)) + ' ' + gray(kstr.pad(node.type,10)) + ' ' + bold(yellow(indent + node.text) + '\n')
+                s += b6(kstr.lpad(((_126_44_=node.line) != null ? _126_44_ : ''),4)) + ' ' + blue(kstr.lpad(((_126_85_=node.col) != null ? _126_85_ : ''),3)) + ' ' + gray(kstr.pad(node.type,10)) + ' ' + bold(yellow(indent + node.text) + '\n')
             }
             else if (node instanceof Array)
             {
@@ -203,9 +204,9 @@ class Print
                 {
                     s += lpad + ' ' + indent + bold(w3('['))
                     var list = (node != null ? node : [])
-                    for (var _135_30_ = 0; _135_30_ < list.length; _135_30_++)
+                    for (var _134_30_ = 0; _134_30_ < list.length; _134_30_++)
                     {
-                        value = list[_135_30_]
+                        value = list[_134_30_]
                         s += '\n'
                         s += printNode(value,indent,visited)
                     }
@@ -236,9 +237,9 @@ class Print
         if (ast instanceof Array)
         {
             var list = (ast != null ? ast : [])
-            for (var _152_40_ = 0; _152_40_ < list.length; _152_40_++)
+            for (var _151_40_ = 0; _151_40_ < list.length; _151_40_++)
             {
-                node = list[_152_40_]
+                node = list[_151_40_]
                 console.log(printNode(node))
             }
         }
@@ -254,7 +255,7 @@ class Print
 
         printNode = function (node, indent = '', visited = [])
         {
-            var s, value, _184_28_, _184_43_, name
+            var s, value, _183_28_, _183_43_, name
 
             s = ''
             if (!node)
@@ -275,9 +276,9 @@ class Print
                 if (node.length)
                 {
                     var list = (node != null ? node : [])
-                    for (var _178_30_ = 0; _178_30_ < list.length; _178_30_++)
+                    for (var _177_30_ = 0; _177_30_ < list.length; _177_30_++)
                     {
-                        value = list[_178_30_]
+                        value = list[_177_30_]
                         s += printNode(value,indent,visited)
                     }
                 }
@@ -308,7 +309,7 @@ class Print
         }
         if (ast instanceof Array)
         {
-            s = (function () { var result = []; var list = (ast != null ? ast : []); for (var _194_41_ = 0; _194_41_ < list.length; _194_41_++)  { node = list[_194_41_];result.push(printNode(node))  } return result }).bind(this)().join('')
+            s = (function () { var result = []; var list = (ast != null ? ast : []); for (var _193_41_ = 0; _193_41_ < list.length; _193_41_++)  { node = list[_193_41_];result.push(printNode(node))  } return result }).bind(this)().join('')
         }
         else
         {
@@ -326,7 +327,7 @@ class Print
         tmp = slash.swapExt(tmp,ext)
         slash.writeText(tmp,code)
         console.log(childp.execSync(`${__dirname}/../node_modules/.bin/colorcat --lineNumbers ${tmp}`,{encoding:'utf8'}))
-        return fs.unlink(tmp)
+        return slash.remove(tmp)
     }
 
     static noon (msg, arg)

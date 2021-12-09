@@ -53,13 +53,13 @@ describe 'array' ->
         cmp 'r = [1..10]'     'r = [1,2,3,4,5,6,7,8,9,10]'
         cmp 'r = [1...10]'    'r = [1,2,3,4,5,6,7,8,9]'
 
-        cmp '[1..100]' "
+        cmp '[1..100]' """
             ;(function() { var r = []; for (var i = 1; i <= 100; i++){ r.push(i); } return r; }).apply(this)
-            "
+            """
 
-        cmp '[1...100]' "
+        cmp '[1...100]' """
             ;(function() { var r = []; for (var i = 1; i < 100; i++){ r.push(i); } return r; }).apply(this)
-            "
+            """
             
         cmp '[-3..3]' ';[-3,-2,-1,0,1,2,3]'
 

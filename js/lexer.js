@@ -1,3 +1,5 @@
+// monsterkodi/kode 0.63.0
+
 var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var noon, slash, kstr
@@ -15,7 +17,7 @@ class Lexer
         this.debug = this.kode.args.debug
         this.verbose = this.kode.args.verbose
         this.raw = this.kode.args.raw
-        this.patterns = noon.load(slash.join(__dirname,'../coffee/lexer.noon'))
+        this.patterns = noon.load(slash.join(__dirname,'../kode/lexer.noon'))
         this.regs = []
         for (key in this.patterns)
         {
@@ -47,10 +49,10 @@ class Lexer
         {
             before = text.length
             var list = (this.regs != null ? this.regs : [])
-            for (var _54_26_ = 0; _54_26_ < list.length; _54_26_++)
+            for (var _60_26_ = 0; _60_26_ < list.length; _60_26_++)
             {
-                key = list[_54_26_][0]
-                reg = list[_54_26_][1]
+                key = list[_60_26_][0]
+                reg = list[_60_26_][1]
                 match = text.match(reg)
                 if ((match != null ? match.index : undefined) === 0)
                 {
@@ -99,6 +101,41 @@ class Lexer
                 console.log(`stray character ${text[0]} in line ${line} col ${col}`)
                 tokens.push({type:'stray',text:text[0],line:line,col:col})
                 text = text.slice(1)
+            }
+        }
+        return tokens
+    }
+
+    tripdent (tokens)
+    {
+        var tok, splt
+
+        var list = (tokens != null ? tokens : [])
+        for (var _106_16_ = 0; _106_16_ < list.length; _106_16_++)
+        {
+            tok = list[_106_16_]
+            if (tok.type === 'triple')
+            {
+                splt = tok.text.slice(3, -3).split('\n')
+                if (splt.length > 1)
+                {
+                    if (kstr.strip(splt[0]) === '')
+                    {
+                        splt.shift()
+                    }
+                    if (kstr.strip(splt.slice(-1)[0]) === '')
+                    {
+                        splt.pop()
+                    }
+                    if (splt.length === 1)
+                    {
+                        tok.text = '"""' + kstr.lstrip(splt[0]) + '"""'
+                    }
+                    else
+                    {
+                        console.log('tripdent',tok.text,splt)
+                    }
+                }
             }
         }
         return tokens
@@ -181,6 +218,7 @@ class Lexer
     {
         var blocks, block, outdentTo, idx, tok, nxt
 
+        tokens = this.tripdent(tokens)
         tokens = this.unslash(tokens)
         tokens = this.uncomment(tokens)
         tokens = this.mergeop(tokens)

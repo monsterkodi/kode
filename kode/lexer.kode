@@ -18,16 +18,22 @@ class Lexer
         @verbose  = @kode.args.verbose
         @raw      = @kode.args.raw
 
-        @patterns = noon.load slash.join __dirname, '../coffee/lexer.noon'
+        @patterns = noon.load slash.join __dirname, '../kode/lexer.noon'
 
         @regs = []
+        
         for key,pat of @patterns
-            if typeof pat == 'string'
-                @regs.push [key, new RegExp pat]
-            else if pat instanceof Array
-                pat = pat.map (p) -> kstr.escapeRegexp "#{p}"
-                reg = '\\b(' + pat.join('|') + ')\\b'
-                @regs.push [key, new RegExp reg]
+            
+            if 
+                typeof pat == 'string'
+                    
+                    @regs.push [key, new RegExp pat]
+                    
+                pat instanceof Array
+                    
+                    pat = pat.map (p) -> kstr.escapeRegexp "#{p}"
+                    reg = '\\b(' + pat.join('|') + ')\\b'
+                    @regs.push [key, new RegExp reg]
 
     # 000000000   0000000   000   000  00000000  000   000  000  0000000  00000000
     #    000     000   000  000  000   000       0000  000  000     000   000
@@ -56,25 +62,26 @@ class Lexer
                 if match?.index == 0
 
                     value = if key == 'nl' then '' else match[0]
-                    if key == 'then' then value = 'then'; key = 'keyword'
+                    if key == 'then' ➜ value = 'then'; key = 'keyword'
                     if value == 'then' and tokens[-2]?.text == 'else' 
                         # skip then after else
                     else
-
                         tokens.push type:key, text:value, line:line, col:col
 
-                    if key == 'nl'
-                        col = 0
-                        line++
-                    else if key in ['comment''triple']
-                        lines = value.split '\n'
-                        line += lines.length-1
-                        if lines.length > 1
-                            col = lines[-1].length
-                        else
+                    if  
+                        key == 'nl'
+                            
+                            col = 0
+                            line++
+                            
+                        key in ['comment''triple']
+                            
+                            lines = value.split '\n'
+                            line += lines.length-1
+                            if lines.length > 1 ➜ col = lines[-1].length
+                                                ➜ col += value.length
+                        ➜  
                             col += value.length
-                    else
-                        col += value.length
 
                     text = text[match[0].length..-1]
                     break
@@ -84,6 +91,27 @@ class Lexer
                 log "stray character #{text[0]} in line #{line} col #{col}"
                 tokens.push type:'stray' text:text[0], line:line, col:col
                 text = text[1..-1]
+        tokens
+        
+    # 000000000  00000000   000  00000000   0000000    00000000  000   000  000000000  
+    #    000     000   000  000  000   000  000   000  000       0000  000     000     
+    #    000     0000000    000  00000000   000   000  0000000   000 0 000     000     
+    #    000     000   000  000  000        000   000  000       000  0000     000     
+    #    000     000   000  000  000        0000000    00000000  000   000     000     
+    
+    # walks through tokens and left trims triple strings
+    
+    tripdent: (tokens) ->
+        
+        for tok in tokens
+            if tok.type == 'triple'
+                splt = tok.text[3...-3].split '\n'
+                if splt.length > 1
+                    splt.shift() if kstr.strip(splt[0]) == ''
+                    splt.pop()   if kstr.strip(splt[-1]) == ''
+                    if splt.length == 1 then tok.text = '"""' + kstr.lstrip(splt[0]) + '"""'
+                    else
+                        log 'tripdent' tok.text, splt
         tokens
 
     # 000   000  000   000   0000000  000       0000000    0000000  000   000
@@ -183,6 +211,7 @@ class Lexer
 
     blockify: (tokens) ->
 
+        tokens = @tripdent  tokens
         tokens = @unslash   tokens
         tokens = @uncomment tokens
         tokens = @mergeop   tokens
@@ -193,39 +222,44 @@ class Lexer
         blocks.push block
 
         outdentTo = (depth, line) ->
+            
             while depth < block.indent.length
                 blocks.pop()
                 block = blocks[-1]
 
         for idx in 0...tokens.length
+            
             tok = tokens[idx]
-            if tok.type == 'nl'
+            
+            if 
+                tok.type == 'nl'
 
-                nxt = tokens[idx+1]
-                if nxt?.type in ['nl']
+                    nxt = tokens[idx+1]
+                    
+                    if nxt?.type in ['nl'] ➜ continue
+    
+                    if  
+                        nxt?.type == 'ws'
+    
+                            if tokens[idx+2]?.type == 'nl' or idx+1 >= tokens.length-1 ➜ continue
+        
+                            if 
+                                nxt.text.length > block.indent.length
+        
+                                    block = type:'block' tokens:[] line:nxt.line, indent:nxt.text, col:nxt.text.length
+                                    blocks[-1].tokens.push block
+                                    blocks.push block
+                                    continue
+        
+                                nxt.text.length < block.indent.length
+                                    
+                                    outdentTo nxt.text.length, nxt.line
+                            
+                        nxt
+                            if block.indent.length ➜ outdentTo 0, nxt.line
+
+                tok.type == 'ws'
                     continue
-
-                if nxt?.type == 'ws'
-
-                    if tokens[idx+2]?.type == 'nl' or idx+1 >= tokens.length-1
-                        continue
-
-                    if nxt.text.length > block.indent.length
-
-                        block = type:'block' tokens:[] line:nxt.line, indent:nxt.text, col:nxt.text.length
-                        blocks[-1].tokens.push block
-                        blocks.push block
-                        continue
-
-                    else if nxt.text.length < block.indent.length
-                        outdentTo nxt.text.length, nxt.line
-                        
-                else if nxt
-                    if block.indent.length
-                        outdentTo 0, nxt.line
-
-            else if tok.type == 'ws'
-                continue
 
             block.tokens.push tok
 
