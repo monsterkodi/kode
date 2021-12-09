@@ -6,7 +6,7 @@
    000     00000000  0000000      000            0000000      000     000  0000000  0000000   
 ###
 
-Kode = require '../'
+Kode = require '../../'
 chai = require 'chai'
 chai.should()
 kode = -> new Kode()

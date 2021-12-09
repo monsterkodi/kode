@@ -4,8 +4,8 @@
   "description": "programming language",
   "main": "js/kode.js",
   "scripts": {
-    "test": "mocha -c test/*.js",
-    "watch": "mocha -w -c test/*.js"
+    "test": "mocha -c js/test/*.js",
+    "watch": "mocha -w -c js/test/*.js"
   },
   "author": "monsterkodi",
   "license": "Unlicense",

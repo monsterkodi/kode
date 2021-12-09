@@ -1,3 +1,5 @@
+// monsterkodi/kode 0.66.0
+
 var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var cmp, evl
@@ -84,9 +86,9 @@ blocks.push(block)`)
         cmp('[[[1]], 1]',';[[[1]],1]')
         cmp('[b(c)]',';[b(c)]')
         cmp('[b c]',';[b(c)]')
-        cmp("['1' , a, true, false, null, undefined]")(";['1',a,true,false,null,undefined]")
-        cmp("a = [1 2 - 3 x 4 + 5 'a' b 'c']")("a = [1,2 - 3,x(4 + 5,'a',b('c'))]")
-        return cmp(`['1' "2" 3 4.5 [] {} true false null undefined NaN Infinity yes no]`)(`;['1',"2",3,4.5,[],{},true,false,null,undefined,NaN,Infinity,true,false]`)
+        cmp("['1' , a, true, false, null, undefined]",";['1',a,true,false,null,undefined]")
+        cmp("a = [1 2 - 3 x 4 + 5 'a' b 'c']","a = [1,2 - 3,x(4 + 5,'a',b('c'))]")
+        return cmp(`['1' "2" 3 4.5 [] {} true false null undefined NaN Infinity yes no]`,`;['1',"2",3,4.5,[],{},true,false,null,undefined,NaN,Infinity,true,false]`)
     })
     it('objects',function ()
     {
