@@ -117,8 +117,8 @@ class Lexer
                         splt.pop()   if kstr.strip(splt[-1]) == ''
                         if splt.length == 1 then tok.text = '"""' + kstr.lstrip(splt[0]) + '"""'
                         else
-                            minind = Math.min.apply 0 splt.map (s) -> kstr.lcnt s, ' '
-                            if minind > 0 then splt = splt.map (s) -> s[minind..]
+                            minind = Math.min.apply 0 splt.map (s) -> if empty(kstr.strip(s)) then Infinity else kstr.lcnt s, ' '
+                            if Infinity > minind > 0 then splt = splt.map (s) -> s[minind..]
                             tok.text = '"""' + splt.join('\n') + '"""'
         tokens
 

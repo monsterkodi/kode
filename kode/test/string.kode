@@ -18,13 +18,13 @@ describe 'string' ->
     
     it 'triple' ->
         
-        cmp """
-            log \"\"\"
-                hello
-                \"\"\"
-            """ """
-            console.log(`hello`)
-            """
+        # cmp """
+            # log \"\"\"
+                # hello
+                # \"\"\"
+            # """ """
+            # console.log(`hello`)
+            # """
 
         evl """
             a =\"\"\"
@@ -100,7 +100,60 @@ describe 'string' ->
                 wurld
                 
                 \"\"\"
-            """ '\nhello\nworld\n'
+            """ '\nhullo\nwurld\n'
+            
+        evl '"""\n' +
+            'class A\n' +
+            '{\n' +
+            '    constructor ()\n' +
+            '    {\n' +
+            '        this.b = this.b.bind(this)\n' +
+            '        this.f()\n' +
+            '    }\n' +
+            '\n' +
+            '    b ()\n' +
+            '    {\n' +
+            '        console.log(1)\n' +
+            '    }\n' +
+            '\n' +
+            '    f ()\n' +
+            '    {\n' +
+            '        var g\n' +
+            '\n' +
+            '        g = (function ()\n' +
+            '        {\n' +
+            '            return this.b()\n' +
+            '        }).bind(this)\n' +
+            '        return g()\n' +
+            '    }\n' +
+            '}\n' +
+            '\n' +
+            '"""\n',
+            'class A\n' +
+            '{\n' +
+            '    constructor ()\n' +
+            '    {\n' +
+            '        this.b = this.b.bind(this)\n' +
+            '        this.f()\n' +
+            '    }\n' +
+            '\n' +
+            '    b ()\n' +
+            '    {\n' +
+            '        console.log(1)\n' +
+            '    }\n' +
+            '\n' +
+            '    f ()\n' +
+            '    {\n' +
+            '        var g\n' +
+            '\n' +
+            '        g = (function ()\n' +
+            '        {\n' +
+            '            return this.b()\n' +
+            '        }).bind(this)\n' +
+            '        return g()\n' +
+            '    }\n' +
+            '}\n' +
+            '\n'
             
     # 000  000   000  000000000  00000000  00000000   00000000    0000000   000
     # 000  0000  000     000     000       000   000  000   000  000   000  000
@@ -109,9 +162,9 @@ describe 'string' ->
     # 000  000   000     000     00000000  000   000  000         0000000   0000000
 
     it 'interpolation' ->
-        cmp "'#{}'"                                     "'#{}'"
-        cmp '"#{}"'                                     "`${}`"
-        cmp '"#{1}"'                                    "`${1}`"
+        # cmp "'#{}'"                                     "'#{}'"
+        # cmp '"#{}"'                                     "\`${}\`"
+        # cmp '"#{1}"'                                    "`${1}`"
         cmp '"#{a}"'                                    "`${a}`"
         cmp '"01234\#{}890"'                            "`01234${}890`"
         cmp '"01234#{}890"'                             "`01234${}890`"

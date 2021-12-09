@@ -17,7 +17,7 @@ describe 'class' ->
             """ """
             class A
             {}
-
+            
             """
 
         cmp """
@@ -160,7 +160,8 @@ describe 'class' ->
                 f: ->
                     g = => @b()
                     g()
-            """ """
+            """,
+            """
             class A
             {
                 constructor ()
@@ -168,12 +169,12 @@ describe 'class' ->
                     this.b = this.b.bind(this)
                     this.f()
                 }
-
+            
                 b ()
                 {
                     console.log('hello')
                 }
-
+            
                 f ()
                 {
                     var g
@@ -185,7 +186,7 @@ describe 'class' ->
                     return g()
                 }
             }
-
+            
             """
             
     #  0000000   000      0000000           0000000   0000000  000   000   0000000    0000000   000      
