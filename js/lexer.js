@@ -108,7 +108,7 @@ class Lexer
 
     tripdent (tokens)
     {
-        var tok, splt
+        var tok, splt, minind
 
         var list = (tokens != null ? tokens : [])
         for (var _106_16_ = 0; _106_16_ < list.length; _106_16_++)
@@ -119,21 +119,46 @@ class Lexer
                 splt = tok.text.slice(3, -3).split('\n')
                 if (splt.length > 1)
                 {
-                    if (kstr.strip(splt[0]) === '')
+                    if (splt.length === 2)
                     {
-                        splt.shift()
-                    }
-                    if (kstr.strip(splt.slice(-1)[0]) === '')
-                    {
-                        splt.pop()
-                    }
-                    if (splt.length === 1)
-                    {
-                        tok.text = '"""' + kstr.lstrip(splt[0]) + '"""'
+                        if (kstr.strip(splt[1]) === '')
+                        {
+                            tok.text = '"""' + splt[0] + '"""'
+                        }
+                        else
+                        {
+                            tok.text = '"""' + splt[0] + '\n' + kstr.lstrip(splt[1]) + '"""'
+                        }
                     }
                     else
                     {
-                        console.log('tripdent',tok.text,splt)
+                        if (kstr.strip(splt[0]) === '' && splt.length > 2)
+                        {
+                            splt.shift()
+                        }
+                        if (kstr.strip(splt.slice(-1)[0]) === '')
+                        {
+                            splt.pop()
+                        }
+                        if (splt.length === 1)
+                        {
+                            tok.text = '"""' + kstr.lstrip(splt[0]) + '"""'
+                        }
+                        else
+                        {
+                            minind = Math.min.apply(0,splt.map(function (s)
+                            {
+                                return kstr.lcnt(s,' ')
+                            }))
+                            if (minind > 0)
+                            {
+                                splt = splt.map(function (s)
+                                {
+                                    return s.slice(minind)
+                                })
+                            }
+                            tok.text = '"""' + splt.join('\n') + '"""'
+                        }
                     }
                 }
             }

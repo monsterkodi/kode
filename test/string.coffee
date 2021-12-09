@@ -51,6 +51,42 @@ describe 'string' ->
                 \"\"\"
             """ '    hello\nworld'
             
+        evl """
+            a =\"\"\"
+                    hello
+                world
+                \"\"\"
+            """ '    hello\nworld'
+            
+        evl """
+            a =\"\"\"
+                    hello
+                world
+                        ugga
+                \"\"\"
+            """ """
+                    hello
+                world
+                        ugga
+            """
+
+        evl """
+            a =\"\"\"heLlo world\"\"\"
+            """ """heLlo world"""
+
+        evl """
+            a =\"\"\" helLo world\"\"\"
+            """ """ helLo world"""
+            
+        evl """
+            a =\"\"\"   hellO world   \"\"\"
+            """ """   hellO world   """
+
+        evl """
+            a =\"\"\"   hello World
+            \"\"\"
+            """ """   hello World"""
+            
     # 000  000   000  000000000  00000000  00000000   00000000    0000000   000
     # 000  0000  000     000     000       000   000  000   000  000   000  000
     # 000  000 0 000     000     0000000   0000000    00000000   000   000  000
