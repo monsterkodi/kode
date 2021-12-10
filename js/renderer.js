@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.74.0
+// monsterkodi/kode 0.73.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
@@ -84,7 +84,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             if (sep === '\n')
             {
                 stripped = kstr.lstrip(a)
-                if (_k_.in(stripped[0], '(['))
+                if ([].indexOf.call('([', stripped[0]) >= 0)
                 {
                     a = ';' + a
                 }
@@ -262,7 +262,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         {
             return ''
         }
-        if (_k_.in(s, ['▾',"'▾'",'"▾"']))
+        if ([].indexOf.call(['▾',"'▾'",'"▾"'], s) >= 0)
         {
             return s
         }
@@ -540,7 +540,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
                 continue
             }
             name = m.keyval.val.func.name.text
-            if (_k_.in(name, ['@','constructor']))
+            if ([].indexOf.call(['@','constructor'], name) >= 0)
             {
                 if (con)
                 {
@@ -693,14 +693,14 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
     {
         var callee
 
-        if (_k_.in(p.callee.text, ['log','warn','error']))
+        if ([].indexOf.call(['log','warn','error'], p.callee.text) >= 0)
         {
             p.callee.text = `console.${p.callee.text}`
         }
         callee = this.node(p.callee)
         if (p.args)
         {
-            if (_k_.in(callee, ['new','throw','delete']))
+            if ([].indexOf.call(['new','throw','delete'], callee) >= 0)
             {
                 return `${callee} ${this.nodes(p.args,',')}`
             }
@@ -1219,10 +1219,10 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         {
             sep = ''
         }
-        if (_k_.in(o, ['<','<=','===','!==','>=','>']))
+        if ([].indexOf.call(['<','<=','===','!==','>=','>'], o) >= 0)
         {
             ro = opmap(((_1039_29_=op.rhs) != null ? (_1039_40_=_1039_29_.operation) != null ? _1039_40_.operator.text : undefined : undefined))
-            if (_k_.in(ro, ['<','<=','===','!==','>=','>']))
+            if ([].indexOf.call(['<','<=','===','!==','>=','>'], ro) >= 0)
             {
                 return '(' + this.atom(op.lhs) + sep + o + sep + this.atom(op.rhs.operation.lhs) + ' && ' + kstr.lstrip(this.atom(op.rhs)) + ')'
             }
@@ -1292,7 +1292,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         }).bind(this))
         nodes = nodes.map(function (n)
         {
-            if (_k_.in(':', n))
+            if ([].indexOf.call(n, ':') >= 0)
             {
                 return n
             }
@@ -1309,7 +1309,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         var key
 
         key = this.node(p.key)
-        if (!(_k_.in(key[0], "'\"")) && /[\.\,\;\*\+\-\/\=\|]/.test(key))
+        if (!([].indexOf.call("'\"", key[0]) >= 0) && /[\.\,\;\*\+\-\/\=\|]/.test(key))
         {
             key = `'${key}'`
         }

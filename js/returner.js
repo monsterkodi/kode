@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.74.0
+// monsterkodi/kode 0.72.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
@@ -27,7 +27,7 @@ class Returner
 
         if ((body != null ? (_37_21_=body.exps) != null ? _37_21_.length : undefined : undefined))
         {
-            var list = _k_.list(body.exps)
+            var list = (body.exps != null ? body.exps : [])
             for (var _38_25_ = 0; _38_25_ < list.length; _38_25_++)
             {
                 e = list[_38_25_]
@@ -47,20 +47,20 @@ class Returner
         }
         if (((_51_17_=f.body) != null ? (_51_23_=_51_17_.exps) != null ? _51_23_.length : undefined : undefined))
         {
-            if (!(_k_.in((f.name != null ? f.name.text : undefined), ['@','constructor'])))
+            if (!([].indexOf.call(['@','constructor'], (f.name != null ? f.name.text : undefined)) >= 0))
             {
                 lst = f.body.exps.slice(-1)[0]
                 ins = (function ()
                 {
                     return this.insert(f.body.exps)
                 }).bind(this)
-                if (_k_.in(lst.type, ['var','num','single','double','triple']))
+                if ([].indexOf.call(['var','num','single','double','triple'], lst.type) >= 0)
                 {
                     ins()
                 }
                 else if (lst.call)
                 {
-                    if (!(_k_.in(lst.call.callee.text, ['log','warn','error'])))
+                    if (!([].indexOf.call(['log','warn','error'], lst.call.callee.text) >= 0))
                     {
                         ins()
                     }
@@ -127,7 +127,7 @@ class Returner
                 }
                 else
                 {
-                    console.log('toDo: returner',Object.keys(lst)[0],lst)
+                    console.log('todo: returner',Object.keys(lst)[0])
                 }
             }
             return this.scope(f.body)
@@ -168,7 +168,7 @@ class Returner
     {
         var w
 
-        var list = _k_.list(e.whens)
+        var list = (e.whens != null ? e.whens : [])
         for (var _115_14_ = 0; _115_14_ < list.length; _115_14_++)
         {
             w = list[_115_14_]
@@ -206,7 +206,7 @@ class Returner
             {
                 return
             }
-            if (!(lst.return || _k_.in(((_135_42_=lst.call) != null ? (_135_50_=_135_42_.callee) != null ? _135_50_.text : undefined : undefined), ['log','throw'])))
+            if (!(lst.return || [].indexOf.call(['log','throw'], ((_135_42_=lst.call) != null ? (_135_50_=_135_42_.callee) != null ? _135_50_.text : undefined : undefined)) >= 0))
             {
                 return e.push({return:{ret:{type:'keyword',text:'return'},val:e.pop()}})
             }
@@ -229,7 +229,7 @@ class Returner
         {
             if (e.length)
             {
-                var list = _k_.list(e)
+                var list = (e != null ? e : [])
                 for (var _152_54_ = 0; _152_54_ < list.length; _152_54_++)
                 {
                     v = list[_152_54_]
@@ -260,7 +260,7 @@ class Returner
                             {
                                 if (val.length)
                                 {
-                                    var list1 = _k_.list(val)
+                                    var list1 = (val != null ? val : [])
                                     for (var _164_49_ = 0; _164_49_ < list1.length; _164_49_++)
                                     {
                                         v = list1[_164_49_]

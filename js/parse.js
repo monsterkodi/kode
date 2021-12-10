@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.74.0
+// monsterkodi/kode 0.68.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var kstr, print, firstLineCol, lastLineCol, Parse
 
@@ -67,19 +67,19 @@ Parse = (function ()
                         return tokens[0].text === ']'
 
                     case '{':
-                        return _k_.in(tokens[0].text, '}')
+                        return [].indexOf.call('}', tokens[0].text) >= 0
 
                     case '(':
                         return tokens[0].text === ')'
 
                     case '▸args':
-                        return _k_.in(tokens[0].text, [']',';','else','then'])
+                        return [].indexOf.call([']',';','else','then'], tokens[0].text) >= 0
 
                     case '▸return':
                         return tokens[0].text === 'if'
 
                     case 'call':
-                        return _k_.in(tokens[0].text, ';')
+                        return [].indexOf.call(';', tokens[0].text) >= 0
 
                     case rule:
                         return tokens[0].text === stop && tokens[0].type !== 'var'
@@ -101,7 +101,7 @@ Parse = (function ()
             }
             if (tokens[0].type === 'block')
             {
-                if (_k_.in(stop, ['nl']))
+                if ([].indexOf.call(['nl'], stop) >= 0)
                 {
                     this.verb(`exps block start with stop ${stop} break!`)
                     break
@@ -147,7 +147,7 @@ Parse = (function ()
                 this.verb('exps break on )')
                 break
             }
-            if (_k_.in(tokens[0].text, ['in','of']) && rule === 'for vals')
+            if ([].indexOf.call(['in','of'], tokens[0].text) >= 0 && rule === 'for vals')
             {
                 this.verb('exps break on in|of')
                 break
@@ -163,7 +163,7 @@ Parse = (function ()
                 if (stop)
                 {
                     this.verb('exps nl with stop',stop)
-                    if (_k_.in(this.stack.slice(-1)[0], ['▸args','▸body','▸return','then','▸else']) || stop !== 'nl')
+                    if ([].indexOf.call(['▸args','▸body','▸return','then','▸else'], this.stack.slice(-1)[0]) >= 0 || stop !== 'nl')
                     {
                         this.verb(`exps nl with stop '${stop}' in ${this.stack.slice(-1)[0]} (break, but don't shift nl)`)
                     }
@@ -184,7 +184,7 @@ Parse = (function ()
             }
             if (tokens[0].text === ',')
             {
-                if (_k_.in(this.stack.slice(-1)[0], ['▸args']))
+                if ([].indexOf.call(['▸args'], this.stack.slice(-1)[0]) >= 0)
                 {
                     this.verb('exps comma continues args ...')
                     tokens.shift()
@@ -198,7 +198,7 @@ Parse = (function ()
             }
             e = this.exp(tokens)
             last = lastLineCol(e)
-            while ((_k_.in((tokens[0] != null ? tokens[0].text : undefined), ['if','for','while']) && !(_k_.in(this.stack.slice(-1)[0], ['▸args','▸return'])) && last.line === tokens[0].line))
+            while (([].indexOf.call(['if','for','while'], (tokens[0] != null ? tokens[0].text : undefined)) >= 0 && !([].indexOf.call(['▸args','▸return'], this.stack.slice(-1)[0]) >= 0) && last.line === tokens[0].line))
             {
                 this.verb(`exps ${tokens[0].text}Tail`,e,this.stack)
                 switch (tokens[0].text)
@@ -216,14 +216,14 @@ Parse = (function ()
 
             }
             es.push(e)
-            if ((_k_.in((tokens[0] != null ? tokens[0].text : undefined), ['if','then','for','while']) && tokens[0].col > last.col && es.length && !blocked && last.line === tokens[0].line))
+            if (([].indexOf.call(['if','then','for','while'], (tokens[0] != null ? tokens[0].text : undefined)) >= 0 && tokens[0].col > last.col && es.length && !blocked && last.line === tokens[0].line))
             {
                 this.verb('exps break on if|then|for|while')
                 break
             }
             if ((tokens[0] != null ? tokens[0].text : undefined) === ';')
             {
-                if (!(_k_.in(this.stack.slice(-1)[0], ['▸args','when','{'])))
+                if (!([].indexOf.call(['▸args','when','{'], this.stack.slice(-1)[0]) >= 0))
                 {
                     this.verb('exps shift colon',this.stack)
                     colon = tokens.shift()
@@ -269,7 +269,7 @@ Parse = (function ()
                 return console.error("INTERNAL ERROR: unexpected ; token in exp!")
 
             case 'keyword':
-                if (!(_k_.in((tokens[0] != null ? tokens[0].text : undefined), ':')))
+                if (!([].indexOf.call(':', (tokens[0] != null ? tokens[0].text : undefined)) >= 0))
                 {
                     switch (tok.text)
                     {
@@ -298,7 +298,7 @@ Parse = (function ()
                             return this.for(tok,tokens)
 
                         case 'if':
-                            if (!(_k_.in(this.stack.slice(-1)[0], ['▸args','▸return'])))
+                            if (!([].indexOf.call(['▸args','▸return'], this.stack.slice(-1)[0]) >= 0))
                             {
                                 if (this.stack.length)
                                 {
@@ -337,16 +337,16 @@ Parse = (function ()
             {
                 print.ast("lhs",e)
             }
-            if (_k_.in((tokens[0] != null ? tokens[0].text : undefined), ';'))
+            if ([].indexOf.call(';', (tokens[0] != null ? tokens[0].text : undefined)) >= 0)
             {
                 this.verb('exp break on ;')
                 break
             }
             if (numTokens === tokens.length)
             {
-                if (_k_.in((tokens[0] != null ? tokens[0].text : undefined), ','))
+                if ([].indexOf.call(',', (tokens[0] != null ? tokens[0].text : undefined)) >= 0)
                 {
-                    if (_k_.in(this.stack.slice(-1)[0], ['▸args']))
+                    if ([].indexOf.call(['▸args'], this.stack.slice(-1)[0]) >= 0)
                     {
                         this.verb('comma in args, break without shifting')
                         break
@@ -380,7 +380,7 @@ Parse = (function ()
             }
             unspaced = (llc = lastLineCol(e)).col === nxt.col && llc.line === nxt.line
             spaced = !unspaced
-            if (_k_.in(nxt.text, '({') && _k_.in(e.type, ['single','double','triple','num','regex']))
+            if ([].indexOf.call('({', nxt.text) >= 0 && [].indexOf.call(['single','double','triple','num','regex'], e.type) >= 0)
             {
                 break
             }
@@ -389,7 +389,7 @@ Parse = (function ()
                 this.verb('rhs break for ▸arg')
                 break
             }
-            else if (nxt.text === ':' && _k_.in(this.stack.slice(-1)[0], ['class']))
+            else if (nxt.text === ':' && [].indexOf.call(['class'], this.stack.slice(-1)[0]) >= 0)
             {
                 if (this.debug)
                 {
@@ -398,7 +398,7 @@ Parse = (function ()
                 e = this.keyval(e,tokens)
                 break
             }
-            else if (nxt.text === ':' && (unspaced || !(_k_.in('?', this.stack))))
+            else if (nxt.text === ':' && (unspaced || !([].indexOf.call(this.stack, '?') >= 0)))
             {
                 if (this.stack.slice(-1)[0] !== '{')
                 {
@@ -438,12 +438,12 @@ Parse = (function ()
                 {
                     e = this.operation(null,e,tokens)
                 }
-                else if (_k_.in(e.text, ['++','--']) && unspaced)
+                else if ([].indexOf.call(['++','--'], e.text) >= 0 && unspaced)
                 {
                     this.verb('rhs increment')
                     e = this.operation(null,e,tokens)
                 }
-                else if (_k_.in(e.text, ['+','-']) && unspaced)
+                else if ([].indexOf.call(['+','-'], e.text) >= 0 && unspaced)
                 {
                     if (nxt.type === 'num')
                     {
@@ -461,9 +461,9 @@ Parse = (function ()
                         e = this.operation(null,e,tokens)
                     }
                 }
-                else if (_k_.in(nxt.text, ['++','--']) && unspaced)
+                else if ([].indexOf.call(['++','--'], nxt.text) >= 0 && unspaced)
                 {
-                    if (!(_k_.in(e.type, ['var'])))
+                    if (!([].indexOf.call(['var'], e.type) >= 0))
                     {
                         return console.error('wrong rhs increment')
                     }
@@ -480,7 +480,7 @@ Parse = (function ()
             }
             else
             {
-                if (_k_.in(nxt.text, ['++','--']) && unspaced)
+                if ([].indexOf.call(['++','--'], nxt.text) >= 0 && unspaced)
                 {
                     e = this.operation(e,tokens.shift())
                     break
@@ -597,7 +597,7 @@ Parse = (function ()
             {
                 e = this.qmrkcolon(e.qmrkop,tokens)
             }
-            else if ((nxt.type === 'op' && !(_k_.in(nxt.text, ['++','--','+','-','not'])) && !(_k_.in(e.text, ['[','('])) && !(_k_.in('▸arg', this.stack))))
+            else if ((nxt.type === 'op' && !([].indexOf.call(['++','--','+','-','not'], nxt.text) >= 0) && !([].indexOf.call(['[','('], e.text) >= 0) && !([].indexOf.call(this.stack, '▸arg') >= 0)))
             {
                 if ((this.stack.slice(-1)[0] != null ? this.stack.slice(-1)[0].startsWith('op' && this.stack.slice(-1)[0] !== 'op=') : undefined))
                 {
@@ -615,7 +615,7 @@ Parse = (function ()
                     e = this.operation(e,tokens.shift(),tokens)
                 }
             }
-            else if ((_k_.in(nxt.text, ['+','-']) && !(_k_.in(e.text, ['[','('])) && spaced && (tokens[1] != null ? tokens[1].col : undefined) > nxt.col + nxt.text.length))
+            else if (([].indexOf.call(['+','-'], nxt.text) >= 0 && !([].indexOf.call(['[','('], e.text) >= 0) && spaced && (tokens[1] != null ? tokens[1].col : undefined) > nxt.col + nxt.text.length))
             {
                 this.verb('lhs is lhs of +-\s',e,nxt)
                 e = this.operation(e,tokens.shift(),tokens)
@@ -639,7 +639,7 @@ Parse = (function ()
             {
                 e = {operation:{operator:tokens.shift(),rhs:this.incond(e,tokens)}}
             }
-            else if ((spaced && (nxt.line === last.line || (nxt.col > first.col && !(_k_.in(this.stack.slice(-1)[0], ['if'])))) && !(_k_.in(nxt.text, ['if','then','else','break','continue','in','of','for','while'])) && !(_k_.in(nxt.type, ['nl'])) && (!(_k_.in(e.type, ['num','single','double','triple','regex','punct','comment','op']))) && (!(_k_.in(e.text, ['null','undefined','Infinity','NaN','true','false','yes','no','if','then','else','for','while']))) && !e.array && !e.object && !e.keyval && !e.operation && !e.incond && !e.qmrkop && !(_k_.in(((_500_30_=e.call) != null ? (_500_38_=_500_30_.callee) != null ? _500_38_.text : undefined : undefined), ['delete','new','typeof'])) && !(_k_.in('▸arg', this.stack))))
+            else if ((spaced && (nxt.line === last.line || (nxt.col > first.col && !([].indexOf.call(['if'], this.stack.slice(-1)[0]) >= 0))) && !([].indexOf.call(['if','then','else','break','continue','in','of','for','while'], nxt.text) >= 0) && !([].indexOf.call(['nl'], nxt.type) >= 0) && (!([].indexOf.call(['num','single','double','triple','regex','punct','comment','op'], e.type) >= 0)) && (!([].indexOf.call(['null','undefined','Infinity','NaN','true','false','yes','no','if','then','else','for','while'], e.text) >= 0)) && !e.array && !e.object && !e.keyval && !e.operation && !e.incond && !e.qmrkop && !([].indexOf.call(['delete','new','typeof'], ((_500_30_=e.call) != null ? (_500_38_=_500_30_.callee) != null ? _500_38_.text : undefined : undefined)) >= 0) && !([].indexOf.call(this.stack, '▸arg') >= 0)))
             {
                 this.verb('lhs is lhs of implicit call! e',e,this.stack.slice(-1)[0])
                 this.verb('    is lhs of implicit call! nxt',nxt)
@@ -647,7 +647,7 @@ Parse = (function ()
                 e = this.call(e,tokens)
                 break
             }
-            else if (_k_.in(nxt.text, ['+','-']) && !(_k_.in(e.text, ['[','('])))
+            else if ([].indexOf.call(['+','-'], nxt.text) >= 0 && !([].indexOf.call(['[','('], e.text) >= 0))
             {
                 if (spaced && (tokens[1] != null ? tokens[1].col : undefined) === nxt.col + nxt.text.length)
                 {
@@ -716,7 +716,7 @@ Parse = (function ()
 
         if ((mthds != null ? mthds.length : undefined))
         {
-            var list = _k_.list(mthds)
+            var list = (mthds != null ? mthds : [])
             for (var _578_18_ = 0; _578_18_ < list.length; _578_18_++)
             {
                 m = list[_578_18_]
@@ -743,7 +743,7 @@ Parse = (function ()
         if ((tokens[0] != null ? tokens[0].text : undefined) === 'then')
         {
             tokens.shift()
-            if (_k_.in((tokens[0] != null ? tokens[0].type : undefined), ['block','nl']))
+            if ([].indexOf.call(['block','nl'], (tokens[0] != null ? tokens[0].type : undefined)) >= 0)
             {
                 this.verb('empty then!')
                 thn = []

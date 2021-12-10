@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.74.0
+// monsterkodi/kode 0.68.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var print, Parse, firstLineCol, lastLineCol, Parser
 
@@ -196,7 +196,7 @@ Parser = (function ()
             {
                 lastWhen = tokens[0]
                 whens.push(this.exp(tokens))
-                this.shiftNewlineTok('switch after when',tokens,lastWhen,_k_.in((tokens[1] != null ? tokens[1].text : undefined), ['when','else']))
+                this.shiftNewlineTok('switch after when',tokens,lastWhen,[].indexOf.call(['when','else'], (tokens[1] != null ? tokens[1].text : undefined)) >= 0)
             }
             if ((tokens[0] != null ? tokens[0].text : undefined) === 'else')
             {
@@ -214,7 +214,7 @@ Parser = (function ()
 
         this.push('when')
         vals = []
-        while (((tokens[0] != null) && (!(_k_.in(tokens[0].type, ['block','nl']))) && tokens[0].text !== 'then'))
+        while (((tokens[0] != null) && (!([].indexOf.call(['block','nl'], tokens[0].type) >= 0)) && tokens[0].text !== 'then'))
         {
             vals.push(this.exp(tokens))
         }
@@ -230,7 +230,7 @@ Parser = (function ()
 
         this.push('try')
         exps = this.block('body',tokens)
-        this.shiftNewlineTok('try body end',tokens,tok,_k_.in(tokens[1].text, ['catch','finally']))
+        this.shiftNewlineTok('try body end',tokens,tok,[].indexOf.call(['catch','finally'], tokens[1].text) >= 0)
         if ((tokens[0] != null ? tokens[0].text : undefined) === 'catch')
         {
             this.push('catch')
@@ -340,7 +340,7 @@ Parser = (function ()
         }
         else
         {
-            if (tok.type === 'keyword' && _k_.in(tok.text, ['typeof','delete']))
+            if (tok.type === 'keyword' && [].indexOf.call(['typeof','delete'], tok.text) >= 0)
             {
                 name = 'arg'
             }
@@ -539,15 +539,15 @@ Parser = (function ()
         {
             if ((tokens[0] != null ? tokens[0].type : undefined) === 'nl')
             {
-                if (!(_k_.in((tokens[1] != null ? tokens[1].type : undefined), ['single','double','triple','var','keyword','num'])))
+                if (!([].indexOf.call(['single','double','triple','var','keyword','num'], (tokens[1] != null ? tokens[1].type : undefined)) >= 0))
                 {
                     break
                 }
-                if (!(_k_.in((tokens[2] != null ? tokens[2].text : undefined), ': ')))
+                if (!([].indexOf.call(': ', (tokens[2] != null ? tokens[2].text : undefined)) >= 0))
                 {
                     break
                 }
-                if ((tokens[1] != null ? tokens[1].col : undefined) >= first.col && !(_k_.in(tokens[1].text, '])')))
+                if ((tokens[1] != null ? tokens[1].col : undefined) >= first.col && !([].indexOf.call('])', tokens[1].text) >= 0))
                 {
                     this.shiftNewline('continue implicit object on nl...',tokens)
                     exps.push(this.exp(tokens))
@@ -562,18 +562,18 @@ Parser = (function ()
                 exps = exps.concat(this.exps('object',block.tokens))
                 break
             }
-            else if ((tokens[0] != null ? tokens[0].line : undefined) === first.line && !(_k_.in(tokens[0].text, '])};')))
+            else if ((tokens[0] != null ? tokens[0].line : undefined) === first.line && !([].indexOf.call('])};', tokens[0].text) >= 0))
             {
                 exps = exps.concat(this.exps('object',tokens,';'))
                 break
             }
             else
             {
-                if (_k_.in(tokens[0].text, '])};'))
+                if ([].indexOf.call('])};', tokens[0].text) >= 0)
                 {
                     break
                 }
-                if (!(_k_.in(tokens[0].type, ['single','double','triple','var','keyword','num'])))
+                if (!([].indexOf.call(['single','double','triple','var','keyword','num'], tokens[0].type) >= 0))
                 {
                     break
                 }
@@ -602,7 +602,7 @@ Parser = (function ()
         k = {type:'key'}
         if (key.type)
         {
-            if (!(_k_.in(key.type, ['keyword','op','punct','var','this','num','single','double','triple'])))
+            if (!([].indexOf.call(['keyword','op','punct','var','this','num','single','double','triple'], key.type) >= 0))
             {
                 console.log('what could that be?',key)
             }

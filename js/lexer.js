@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.74.0
+// monsterkodi/kode 0.68.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var noon, slash, kstr
 
@@ -48,7 +48,7 @@ class Lexer
         while (text.length)
         {
             before = text.length
-            var list = _k_.list(this.regs)
+            var list = (this.regs != null ? this.regs : [])
             for (var _60_26_ = 0; _60_26_ < list.length; _60_26_++)
             {
                 key = list[_60_26_][0]
@@ -74,7 +74,7 @@ class Lexer
                         col = 0
                         line++
                     }
-                    else if (_k_.in(key, ['comment','triple']))
+                    else if ([].indexOf.call(['comment','triple'], key) >= 0)
                     {
                         lines = value.split('\n')
                         line += lines.length - 1
@@ -110,7 +110,7 @@ class Lexer
     {
         var tok, splt, minind
 
-        var list = _k_.list(tokens)
+        var list = (tokens != null ? tokens : [])
         for (var _106_16_ = 0; _106_16_ < list.length; _106_16_++)
         {
             tok = list[_106_16_]
@@ -185,7 +185,7 @@ class Lexer
             if (tok.text === '\\')
             {
                 idx += 1
-                while (_k_.in(tokens[idx].type, ['nl','ws']))
+                while ([].indexOf.call(['nl','ws'], tokens[idx].type) >= 0)
                 {
                     idx += 1
                 }
@@ -208,11 +208,11 @@ class Lexer
         while (idx < tokens.length)
         {
             tok = tokens[idx]
-            if (tok.type === 'op' && !(_k_.in(tok.text, ['--','++'])))
+            if (tok.type === 'op' && !([].indexOf.call(['--','++'], tok.text) >= 0))
             {
                 newTokens.push(tok)
                 idx += 1
-                while (_k_.in(tokens[idx].type, ['nl','ws']))
+                while ([].indexOf.call(['nl','ws'], tokens[idx].type) >= 0)
                 {
                     idx += 1
                 }
@@ -271,7 +271,7 @@ class Lexer
             if (tok.type === 'nl')
             {
                 nxt = tokens[idx + 1]
-                if (_k_.in((nxt != null ? nxt.type : undefined), ['nl']))
+                if ([].indexOf.call(['nl'], (nxt != null ? nxt.type : undefined)) >= 0)
                 {
                     continue
                 }
