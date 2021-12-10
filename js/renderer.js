@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.63.0
+// monsterkodi/kode 0.68.0
 
 var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
@@ -818,63 +818,55 @@ class Renderer
         numArgs = (n.fnc.func.args != null ? n.fnc.func.args.parens.exps.length : undefined)
         if (numArgs === 1)
         {
-            return `
-            (function (o) {
-                r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
-                for (k in o)
-                {   
-                    var m = (${this.node(n.fnc)})(o[k])
-                    if (m != null)
-                    {
-                        r[k] = m
-                    }
-                }
-                return typeof o == 'string' ? r.join('') : r
-            })(${this.node(n.lhs)})
-            `
+            return `(function (o) {
+    r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
+    for (k in o)
+    {   
+        var m = (${this.node(n.fnc)})(o[k])
+        if (m != null)
+        {
+            r[k] = m
+        }
+    }
+    return typeof o == 'string' ? r.join('') : r
+})(${this.node(n.lhs)})`
         }
         else if (numArgs)
         {
-            return `
-            (function (o) {
-                r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
-                for (k in o)
-                {   
-                    var m = (${this.node(n.fnc)})(k, o[k])
-                    if (m != null && m[0] != null)
-                    {
-                        r[m[0]] = m[1]
-                    }
-                }
-                return typeof o == 'string' ? r.join('') : r
-            })(${this.node(n.lhs)})
-            `
+            return `(function (o) {
+    r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
+    for (k in o)
+    {   
+        var m = (${this.node(n.fnc)})(k, o[k])
+        if (m != null && m[0] != null)
+        {
+            r[m[0]] = m[1]
+        }
+    }
+    return typeof o == 'string' ? r.join('') : r
+})(${this.node(n.lhs)})`
         }
         else
         {
             if ((n.fnc.func.body.exps != null ? n.fnc.func.body.exps.length : undefined) > 0)
             {
-                return `
-                (function (o) {
-                    r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
-                    for (k in o)
-                    {   
-                        var m = (${this.node(n.fnc)})(o[k])
-                        if (m != null)
-                        {
-                            r[k] = m
-                        }
-                    }
-                    return typeof o == 'string' ? r.join('') : r
-                })(${this.node(n.lhs)})
-                    
-                `
+                return `(function (o) {
+    r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
+    for (k in o)
+    {   
+        var m = (${this.node(n.fnc)})(o[k])
+        if (m != null)
+        {
+            r[k] = m
+        }
+    }
+    return typeof o == 'string' ? r.join('') : r
+})(${this.node(n.lhs)})
+    `
             }
             else
             {
-                return `
-                (function (o) { return o instanceof Array ? [] : typeof o == 'string' ? '' : {} })(${this.node(n.lhs)})
-                `
+                return `(function (o) { return o instanceof Array ? [] : typeof o == 'string' ? '' : {} })(${this.node(n.lhs)})`
             }
         }
     }

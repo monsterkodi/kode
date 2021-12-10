@@ -1,4 +1,3 @@
 ignore
-    coffee/.*\.noon
+    kode/.*\.noon
     konrad.json
-    # ./test*.coffee

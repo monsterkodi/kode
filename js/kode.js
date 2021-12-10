@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.66.0
+// monsterkodi/kode 0.68.0
 
 var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
@@ -222,26 +222,26 @@ class Kode
 module.exports = Kode
 if (!module.parent || slash.resolve(module.parent.path).endsWith('/kode/bin'))
 {
-    args = karg(`        kode option
-            files       . **
-            eval        . ? evaluate a string and print the result
-            compile     . ? compile a string and print the result
-            outdir      . ? output directory for transpiled files
-            run         . ? execute file                            . = true
-            map         . ? generate inline source maps             . = true
-            kode        . ? pretty print input code                 . = false
-            js          . ? pretty print transpiled js code         . = false
-            header      . ? prepend output with version header      . = false  . - H
-            tokens      . ? print tokens                            . = false  . - T
-            block       . ? print block tree                        . = false  . - B
-            parse       . ? print parse tree                        . = false  . - P
-            astr        . ? print parse tree as string              . = false  . - A
-            scope       . ? print scopes                            . = false  . - S
-            verbose     . ? log more                                . = false
-            debug       . ? log debug                               . = false
-            raw         . ? log raw                                 . = false  . - R
+    args = karg(`kode option
+    files       . **
+    eval        . ? evaluate a string and print the result
+    compile     . ? compile a string and print the result
+    outdir      . ? output directory for transpiled files
+    run         . ? execute file                            . = true
+    map         . ? generate inline source maps             . = true
+    kode        . ? pretty print input code                 . = false
+    js          . ? pretty print transpiled js code         . = false
+    header      . ? prepend output with version header      . = false  . - H
+    tokens      . ? print tokens                            . = false  . - T
+    block       . ? print block tree                        . = false  . - B
+    parse       . ? print parse tree                        . = false  . - P
+    astr        . ? print parse tree as string              . = false  . - A
+    scope       . ? print scopes                            . = false  . - S
+    verbose     . ? log more                                . = false
+    debug       . ? log debug                               . = false
+    raw         . ? log raw                                 . = false  . - R
 
-        version  ${pkg.version}`)
+version  ${pkg.version}`)
     register()
     kode = new Kode(args)
     kode.cli()
