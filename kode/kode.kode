@@ -28,6 +28,9 @@ class Kode
 
         if @args.verbose then @args.debug = @args.block = @args.tokens = @args.parse = true
 
+        @literals = ['bool''num''regex''single''double''triple']
+        @atoms    = @literals.concat ['var']
+        
         Lexer     = require './lexer'
         Parser    = require './parser'
         Scoper    = require './scoper'

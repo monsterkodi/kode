@@ -41,7 +41,7 @@ class Scoper
         @maps.push {}
         @args.push {}
         @vars.push body.vars
-        @exp e for e in body.exps ? []
+        @exp e for e in body.exps
         @maps.pop()
         @args.pop()
         @vars.pop()
@@ -59,7 +59,7 @@ class Scoper
         @args.push {}
         @vars.push f.body.vars
         
-        for arg in f.args?.parens.exps ? []
+        for arg in f.args?.parens.exps
             if t = arg.text
                 @args[-1][t] = t
             else if t = arg.operation?.lhs?.text
@@ -67,7 +67,7 @@ class Scoper
             else
                 log 'todo: scoper handle complex arg' arg if arg.prop?.obj?.text != '@'
 
-        @exp e for e in f.body?.exps ? []
+        @exp e for e in f.body?.exps
         @maps.pop()
         @args.pop()
         @vars.pop()
@@ -117,7 +117,7 @@ class Scoper
                     insert e.for.vals.text, 'for'
                 else 
                     vals = e.for.vals.array?.items ? e.for.vals
-                    for v in vals ? []
+                    for v in vals
                         insert v.text, 'for' if v.text
                         
             if e.assert

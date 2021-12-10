@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.78.0
+// monsterkodi/kode 0.80.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
@@ -23,12 +23,12 @@ class Scoper
 
     scope (body)
     {
-        var e, _44_34_
+        var e
 
         this.maps.push({})
         this.args.push({})
         this.vars.push(body.vars)
-        var list = ((_44_34_=body.exps) != null ? _44_34_ : [])
+        var list = _k_.list(body.exps)
         for (var _44_21_ = 0; _44_21_ < list.length; _44_21_++)
         {
             e = list[_44_21_]
@@ -42,12 +42,12 @@ class Scoper
 
     func (f)
     {
-        var arg, _62_39_, _62_25_, t, _65_42_, _65_37_, _68_74_, _68_69_, e, _70_37_, _70_30_
+        var arg, _62_25_, t, _65_42_, _65_37_, _68_74_, _68_69_, e, _70_30_
 
         this.maps.push({})
         this.args.push({})
         this.vars.push(f.body.vars)
-        var list = ((_62_39_=(f.args != null ? f.args.parens.exps : undefined)) != null ? _62_39_ : [])
+        var list = _k_.list((f.args != null ? f.args.parens.exps : undefined))
         for (var _62_16_ = 0; _62_16_ < list.length; _62_16_++)
         {
             arg = list[_62_16_]
@@ -67,7 +67,7 @@ class Scoper
                 }
             }
         }
-        var list1 = ((_70_37_=(f.body != null ? f.body.exps : undefined)) != null ? _70_37_ : [])
+        var list1 = _k_.list((f.body != null ? f.body.exps : undefined))
         for (var _70_21_ = 0; _70_21_ < list1.length; _70_21_++)
         {
             e = list1[_70_21_]
@@ -175,7 +175,7 @@ class Scoper
                 else
                 {
                     vals = ((_119_51_=(e.for.vals.array != null ? e.for.vals.array.items : undefined)) != null ? _119_51_ : e.for.vals)
-                    var list3 = (vals != null ? vals : [])
+                    var list3 = _k_.list(vals)
                     for (var _120_26_ = 0; _120_26_ < list3.length; _120_26_++)
                     {
                         v = list3[_120_26_]

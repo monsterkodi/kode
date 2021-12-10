@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.78.0
+// monsterkodi/kode 0.80.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
@@ -25,9 +25,9 @@ class Stripol
 
     scope (body)
     {
-        var e, k, _41_48_
+        var e, k
 
-        var list = ((_41_48_=body.exps) != null ? _41_48_ : [])
+        var list = _k_.list(body.exps)
         for (k = 0; k < list.length; k++)
         {
             e = list[k]

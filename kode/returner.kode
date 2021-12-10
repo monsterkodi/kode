@@ -56,25 +56,24 @@ class Returner
                 
                 ins = => @insert f.body.exps
                 
-                if lst.type in ['var' 'num' 'single' 'double' 'triple'] then ins()
-                else if lst.call        then if lst.call.callee.text not in ['log' 'warn' 'error'] then ins()
-                else if lst.operation   then ins()
-                else if lst.func        then ins()
-                else if lst.array       then ins()
-                else if lst.prop        then ins()
-                else if lst.index       then ins()
-                else if lst.object      then ins()
-                else if lst.assert      then ins()
-                else if lst.stripol     then ins()
-                else if lst.qmrkop      then ins()
-                else if lst.return      then null
-                else if lst.while       then null
-                else if lst.for         then null
-                else if lst.if          then @if lst.if
-                else if lst.try         then @try lst.try
-                else if lst.switch      then @switch lst.switch
-                else
-                    log 'todo: returner' Object.keys(lst)[0]
+                if  lst.type in @kode.atoms ➜ ins()
+                    lst.call                ➜ if lst.call.callee.text not in ['log' 'warn' 'error'] then ins()
+                    lst.operation           ➜ ins()
+                    lst.func                ➜ ins()
+                    lst.array               ➜ ins()
+                    lst.prop                ➜ ins()
+                    lst.index               ➜ ins()
+                    lst.object              ➜ ins()
+                    lst.assert              ➜ ins()
+                    lst.stripol             ➜ ins()
+                    lst.qmrkop              ➜ ins()
+                    lst.return              ➜ null
+                    lst.while               ➜ null
+                    lst.for                 ➜ null
+                    lst.if                  ➜ @if lst.if
+                    lst.try                 ➜ @try lst.try
+                    lst.switch              ➜ @switch lst.switch
+                                            ➜ log 'todo: returner' Object.keys(lst)[0]
             
             @scope f.body 
         
@@ -88,7 +87,7 @@ class Returner
         
         e.returns = true
         @insert e.then
-        for ei in e.elifs ? []
+        for ei in e.elifs
             @insert ei.elif.then if ei.elif.then
         
         @insert e.else if e.else
@@ -127,10 +126,10 @@ class Returner
 
         if e instanceof Array
             lst = e[-1]
-            if lst.if       then return @if lst.if
-            if lst.return   then return
-            if lst.while    then return
-            if lst.for      then return
+            if lst.if     ➜ return @if lst.if
+            if lst.return ➜ return
+            if lst.while  ➜ return
+            if lst.for    ➜ return
             
             if not (lst.return or lst.call?.callee?.text in ['log' 'throw'])
                 e.push
@@ -148,22 +147,22 @@ class Returner
 
         if not e then return
             
-        if e.type                   then return
-        else if e instanceof Array  then @exp v for v in e if e.length
-        else if e instanceof Object
+        if  
+            e.type              ➜ return
+            e instanceof Array  ➜ @exp v for v in e if e.length
+            e instanceof Object
             
-            if e.func
-                @func e.func
-            else
-                for key,val of e
-                    if val
-                        if val.type then @exp val
-                        else
-                            if val instanceof Array
-                                if val.length
-                                    @exp v for v in val
+                if e.func
+                    @func e.func
+                else
+                    for key,val of e
+                        if val
+                            if val.type then @exp val
                             else
-                                @exp v for k,v of val
+                                if val instanceof Array
+                                    @exp v for v in val
+                                else
+                                    @exp v for k,v of val
         
     verb: -> if @verbose then console.log.apply console.log, arguments 
 

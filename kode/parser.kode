@@ -706,7 +706,7 @@ function Parser extends Parse
         
         exps = [@keyval key, tokens]
         
-        literals = ['single''double''triple''var''keyword''num''bool']
+        literals = @kode.atoms.concat ['keyword'] #['single''double''triple''var''keyword''num''bool''regex']
         
         while tokens.length
             if tokens[0]?.type == 'nl'

@@ -38,7 +38,7 @@ class Stripol
     
     scope: (body) ->
 
-        @exp body.exps,k,e for e,k in body.exps ? []
+        @exp body.exps,k,e for e,k in body.exps
         
     # 00000000  000   000  00000000   
     # 000        000 000   000   000  

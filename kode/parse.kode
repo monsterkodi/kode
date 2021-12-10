@@ -319,7 +319,7 @@ function Parse # the base class of Parser
             unspaced = (llc = lastLineCol(e)).col == nxt.col and llc.line == nxt.line
             spaced = not unspaced
 
-            if nxt.text in '({' and e.type in ['single' 'double' 'triple' 'num' 'regex']
+            if nxt.text in '({' and e.type in @kode.literals
                 break
             
             if @stack[-1] == '▸arg' and nxt.type == 'op' then @verb 'rhs break for ▸arg'; break
@@ -489,8 +489,9 @@ function Parse # the base class of Parser
             else if (   spaced and (nxt.line == last.line or (nxt.col > first.col and @stack[-1] not in ['if'])) and
                         nxt.text not in ['if' 'then' 'else' 'break' 'continue' 'in' 'of' 'for' 'while'] and 
                         nxt.type not in ['nl'] and
-                        (e.type not in ['num' 'single' 'double' 'triple' 'regex' 'punct' 'comment' 'op']) and 
-                        (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'true' 'false' 'yes' 'no' 'if' 'then' 'else' 'for' 'while']) and 
+                        (e.type not in @kode.literals) and
+                        (e.type not in ['punct' 'comment' 'op']) and 
+                        (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'if' 'then' 'else' 'for' 'while']) and 
                         not e.array and
                         not e.object and
                         not e.keyval and
