@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.72.0
+// monsterkodi/kode 0.73.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
@@ -95,7 +95,7 @@ for (var _1_10_ = 0; _1_10_ < list.length; _1_10_++)
         cmp(`empty = (a) -> a in ['' null undefined] or b`,`
 empty = function (a)
 {
-    return [].indexOf.call(['',null,undefined], a) >= 0 || b
+    return _k_.in(a, ['',null,undefined]) || b
 }`)
         return cmp(`@exp body.exps,k,e for e,k in body.exps`,`var list = _k_.list(body.exps)
 for (k = 0; k < list.length; k++)

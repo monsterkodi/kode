@@ -117,7 +117,7 @@ describe 'if' ->
             if not op in ['--''++']
                 decr
             """ """
-            if (!([].indexOf.call(['--','++'], op) >= 0))
+            if (!(_k_.in(op, ['--','++'])))
             {
                 decr
             }
@@ -127,7 +127,7 @@ describe 'if' ->
             if op not in ['--''++']
                 incr
             """ """
-            if (!([].indexOf.call(['--','++'], op) >= 0))
+            if (!(_k_.in(op, ['--','++'])))
             {
                 incr
             }
@@ -196,7 +196,7 @@ describe 'if' ->
                 }
                 if (1)
                 {
-                    if ([].indexOf.call(a, 2) >= 0)
+                    if (_k_.in(2, a))
                     {
                         3
                     }
@@ -467,7 +467,7 @@ describe 'if' ->
                 log 'no3'
             log 'END'
             """ """
-            if ([].indexOf.call(l, a) >= 0)
+            if (_k_.in(a, l))
             {
                 console.log('yes3')
             }
