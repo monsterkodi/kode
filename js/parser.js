@@ -539,7 +539,7 @@ Parser = (function ()
         {
             if ((tokens[0] != null ? tokens[0].type : undefined) === 'nl')
             {
-                if (!(_k_.in((tokens[1] != null ? tokens[1].type : undefined),['single','double','triple','var','keyword','num'])))
+                if (!(_k_.in((tokens[1] != null ? tokens[1].type : undefined),['single','double','triple','var','keyword','num','bool'])))
                 {
                     break
                 }
@@ -573,7 +573,7 @@ Parser = (function ()
                 {
                     break
                 }
-                if (!(_k_.in(tokens[0].type,['single','double','triple','var','keyword','num'])))
+                if (!(_k_.in(tokens[0].type,['single','double','triple','var','keyword','num','bool'])))
                 {
                     break
                 }
@@ -602,7 +602,7 @@ Parser = (function ()
         k = {type:'key'}
         if (key.type)
         {
-            if (!(_k_.in(key.type,['keyword','op','punct','var','this','num','single','double','triple'])))
+            if (!(_k_.in(key.type,['keyword','op','punct','var','this','num','single','double','triple','bool'])))
             {
                 console.log('what could that be?',key)
             }

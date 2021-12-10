@@ -1180,7 +1180,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
     {
         var s
 
-        s = tok.type === 'comment' ? this.comment(tok) : tok.type === 'this' ? 'this' : tok.type === 'triple' ? '`' + tok.text.slice(3, -3) + '`' : tok.type === 'keyword' && tok.text === 'yes' ? 'true' : tok.type === 'keyword' && tok.text === 'no' ? 'false' : tok.text
+        s = tok.type === 'comment' ? this.comment(tok) : tok.type === 'this' ? 'this' : tok.type === 'triple' ? '`' + tok.text.slice(3, -3) + '`' : _k_.in(tok.type,['keyword','bool']) && tok.text === 'yes' ? 'true' : _k_.in(tok.type,['keyword','bool']) && tok.text === 'no' ? 'false' : tok.text
         this.js(s,tok)
         return s
     }
