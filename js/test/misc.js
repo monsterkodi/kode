@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.73.0
+// monsterkodi/kode 0.68.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var cmp
 
@@ -95,21 +95,21 @@ kstr = require('kstr')`)
     })
     return it('in condition',function ()
     {
-        cmp("a in l","_k_.in(a, l)")
-        cmp("a in 'xyz'","_k_.in(a, 'xyz')")
-        cmp("a in [1,2,3]","_k_.in(a, [1,2,3])")
-        cmp("a not in b","!(_k_.in(a, b))")
-        cmp("a not in [3,4]","!(_k_.in(a, [3,4]))")
-        cmp(`if a in l then 1`,`if (_k_.in(a, l))
+        cmp("a in l",";[].indexOf.call(l, a) >= 0")
+        cmp("a in 'xyz'",";[].indexOf.call('xyz', a) >= 0")
+        cmp("a in [1,2,3]",";[].indexOf.call([1,2,3], a) >= 0")
+        cmp("a not in b","!([].indexOf.call(b, a) >= 0)")
+        cmp("a not in [3,4]","!([].indexOf.call([3,4], a) >= 0)")
+        cmp(`if a in l then 1`,`if ([].indexOf.call(l, a) >= 0)
 {
     1
 }`)
-        cmp(`if not a in l then 2`,`if (!(_k_.in(a, l)))
+        cmp(`if not a in l then 2`,`if (!([].indexOf.call(l, a) >= 0))
 {
     2
 }`)
         return cmp(`if a in l
-    2`,`if (_k_.in(a, l))
+    2`,`if ([].indexOf.call(l, a) >= 0)
 {
     2
 }`)

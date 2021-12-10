@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.73.0
+// monsterkodi/kode 0.72.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
@@ -64,12 +64,12 @@ console.log(2)`)
     a.b(c)
 }`)
         cmp(`if not op in ['--''++']
-    decr`,`if (!(_k_.in(op, ['--','++'])))
+    decr`,`if (!([].indexOf.call(['--','++'], op) >= 0))
 {
     decr
 }`)
         cmp(`if op not in ['--''++']
-    incr`,`if (!(_k_.in(op, ['--','++'])))
+    incr`,`if (!([].indexOf.call(['--','++'], op) >= 0))
 {
     incr
 }`)
@@ -123,7 +123,7 @@ if (2)
     }
     if (1)
     {
-        if (_k_.in(2, a))
+        if ([].indexOf.call(a, 2) >= 0)
         {
             3
         }
@@ -262,7 +262,7 @@ console.log('end')`)
     log 'yes3'
 else
     log 'no3'
-log 'END'`,`if (_k_.in(a, l))
+log 'END'`,`if ([].indexOf.call(l, a) >= 0)
 {
     console.log('yes3')
 }
