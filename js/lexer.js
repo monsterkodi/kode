@@ -1,6 +1,4 @@
-// monsterkodi/kode 0.68.0
-
-var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var noon, slash, kstr
 
@@ -48,7 +46,7 @@ class Lexer
         while (text.length)
         {
             before = text.length
-            var list = (this.regs != null ? this.regs : [])
+            var list = _k_.list(this.regs)
             for (var _60_26_ = 0; _60_26_ < list.length; _60_26_++)
             {
                 key = list[_60_26_][0]
@@ -110,7 +108,7 @@ class Lexer
     {
         var tok, splt, minind
 
-        var list = (tokens != null ? tokens : [])
+        var list = _k_.list(tokens)
         for (var _106_16_ = 0; _106_16_ < list.length; _106_16_++)
         {
             tok = list[_106_16_]
