@@ -9,7 +9,7 @@
 kstr  = require 'kstr'
 print = require './print'
 
-{ empty, valid, firstLineCol, lastLineCol } = require './utils'
+{ firstLineCol, lastLineCol } = require './utils'
 
 function Parse # the base class of Parser
 
@@ -345,7 +345,8 @@ function Parse # the base class of Parser
                 if      e.text == '['   then e = @array           e, tokens
                 else if e.text == '('   then e = @parens          e, tokens
                 else if e.text == '{'   then e = @curly           e, tokens                
-                else if e.text == 'not' then e = @operation null, e, tokens
+                else if e.text in ['not''empty''valid'] and 
+                    (nxt.type not in ['op'] or nxt.text in ['++' '--' '+' '-' '!']) then e = @operation null, e, tokens
                 else if e.text in ['++''--'] and unspaced
                     @verb 'rhs increment'
                     e = @operation null, e, tokens
@@ -455,8 +456,8 @@ function Parse # the base class of Parser
                 if @stack[-1]?.startsWith 'op' and @stack[-1] != 'op='
                     @verb 'lhs stop on operation' e, nxt
                     break
-                else if @stack[-1] == 'in?'
-                    @verb 'lhs stop on in?' e, nxt
+                else if @stack[-1] in ['in?' 'opempty' 'opvalid']
+                    @verb "lhs stop on #{@stack[-1]}" e, nxt
                     break
                 else
                     @verb 'lhs is lhs of op' e, nxt

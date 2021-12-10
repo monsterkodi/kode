@@ -14,7 +14,7 @@ childp = require 'child_process'
 print  = require './print'
 pkg    = require "#{__dirname}/../package"
 
-{ empty, register } = require './utils'
+{ register } = require './utils'
 
 klor.kolor.globalize()
 

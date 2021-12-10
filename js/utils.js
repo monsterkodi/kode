@@ -1,21 +1,11 @@
-// monsterkodi/kode 0.80.0
+// monsterkodi/kode 0.82.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
-var childp, slash, empty, valid, register, lastLineCol, firstLineCol
+var childp, slash, register, lastLineCol, firstLineCol
 
 childp = require('child_process')
 slash = require('kslash')
-
-empty = function (a)
-{
-    return _k_.in(a,['',null,undefined]) || (typeof(a) === 'object' && Object.keys(a).length === 0)
-}
-
-valid = function (a)
-{
-    return !empty(a)
-}
 
 register = function ()
 {
@@ -79,7 +69,7 @@ register = function ()
 
 lastLineCol = function (e)
 {
-    var _82_13_, _85_30_, cols
+    var _79_13_, _82_30_, cols
 
     if (((e != null ? e.col : undefined) != null))
     {
@@ -88,7 +78,7 @@ lastLineCol = function (e)
     else if ((e != null) && e instanceof Object)
     {
         cols = Object.values(e).map(lastLineCol)
-        if (valid(cols))
+        if (!_k_.empty(cols))
         {
             return cols.reduce(function (a, b)
             {
@@ -119,7 +109,7 @@ lastLineCol = function (e)
 
 firstLineCol = function (e)
 {
-    var _105_13_, cols
+    var _102_13_, cols
 
     if (((e != null ? e.col : undefined) != null))
     {
@@ -128,7 +118,7 @@ firstLineCol = function (e)
     else if ((e != null) && e instanceof Object)
     {
         cols = Object.values(e).map(firstLineCol)
-        if (valid(cols))
+        if (!_k_.empty(cols))
         {
             return cols.reduce(function (a, b)
             {
@@ -156,4 +146,4 @@ firstLineCol = function (e)
     }
     return {line:Infinity,col:Infinity}
 }
-module.exports = {register:register,firstLineCol:firstLineCol,lastLineCol:lastLineCol,empty:empty,valid:valid}
+module.exports = {register:register,firstLineCol:firstLineCol,lastLineCol:lastLineCol}

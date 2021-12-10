@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.80.0
+// monsterkodi/kode 0.82.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var kstr, slash, print, SrcMap, firstLineCol, lastLineCol
 
@@ -8,8 +8,6 @@ kstr = require('kstr')
 slash = require('kslash')
 print = require('./print')
 SrcMap = require('./srcmap')
-valid = require('./utils').valid
-empty = require('./utils').empty
 firstLineCol = require('./utils').firstLineCol
 lastLineCol = require('./utils').lastLineCol
 
@@ -27,14 +25,14 @@ class Renderer
 
     header ()
     {
-        var h, fs
+        var k, ks
 
-        h = `list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}
-length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}
+        k = `list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}
+empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}
 in: function (a,l) {return [].indexOf.call(l,a) >= 0}
 extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}`
-        fs = h.split('\n').join(', ')
-        return `var _k_ = {${fs}}\n\n`
+        ks = k.split('\n').join(', ')
+        return `var _k_ = {${ks}}\n\n`
     }
 
     render (ast, source)
@@ -49,7 +47,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             s += this.js(`// monsterkodi/kode ${this.kode.version}\n\n`,true)
         }
         s += this.js(this.header(),true)
-        if (valid(ast.vars))
+        if (!_k_.empty(ast.vars))
         {
             vs = (function () { var result = []; var list = _k_.list(ast.vars); for (var _64_31_ = 0; _64_31_ < list.length; _64_31_++)  { v = list[_64_31_];result.push(v.text)  } return result }).bind(this)().join(', ')
             s += this.js(`var ${vs}\n\n`,true)
@@ -591,7 +589,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         s += ')\n'
         s += gi + '{'
         this.varstack.push(n.body.vars)
-        if (valid(n.body.vars))
+        if (!_k_.empty(n.body.vars))
         {
             s += '\n'
             vs = (function () { var result = []; var list = _k_.list(n.body.vars); for (var _474_31_ = 0; _474_31_ < list.length; _474_31_++)  { v = list[_474_31_];result.push(v.text)  } return result }).bind(this)().join(', ')
@@ -603,7 +601,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             t = list1[_477_14_]
             s += '\n' + this.indent + ths
         }
-        if (valid(n.body.exps))
+        if (!_k_.empty(n.body.exps))
         {
             s += '\n'
             ss = n.body.exps.map((function (s)
@@ -1097,7 +1095,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             e = list[_904_14_]
             s += gi + this.node(e) + '\n'
         }
-        if (valid(n.else))
+        if (!_k_.empty(n.else))
         {
             s += this.indent + 'default:\n'
             var list1 = _k_.list(n.else)
@@ -1204,14 +1202,14 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     operation (op)
     {
-        var opmap, o, sep, ro, _1034_40_, _1034_29_, open, close, s, keyval, val, i, _1057_21_, _1057_60_, _1057_50_, _1057_39_, _1061_33_, _1061_22_, first, prfx, _1066_43_
+        var opmap, o, sep, ro, _1036_40_, _1036_29_, open, close, s, keyval, val, i, _1059_21_, _1059_60_, _1059_50_, _1059_39_, _1067_33_, _1067_22_, first, prfx, _1072_43_
 
         opmap = function (o)
         {
-            var omp, _1027_19_
+            var omp, _1029_19_
 
-            omp = {and:'&&',or:'||',not:'!','==':'===','!=':'!=='}
-            return ((_1027_19_=omp[o]) != null ? _1027_19_ : o)
+            omp = {and:'&&',or:'||',not:'!',empty:'_k_.empty',valid:'!_k_.empty','==':'===','!=':'!=='}
+            return ((_1029_19_=omp[o]) != null ? _1029_19_ : o)
         }
         o = opmap(op.operator.text)
         sep = ' '
@@ -1221,7 +1219,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         }
         if (_k_.in(o,['<','<=','===','!==','>=','>']))
         {
-            ro = opmap(((_1034_29_=op.rhs) != null ? (_1034_40_=_1034_29_.operation) != null ? _1034_40_.operator.text : undefined : undefined))
+            ro = opmap(((_1036_29_=op.rhs) != null ? (_1036_40_=_1036_29_.operation) != null ? _1036_40_.operator.text : undefined : undefined))
             if (_k_.in(ro,['<','<=','===','!==','>=','>']))
             {
                 return '(' + this.atom(op.lhs) + sep + o + sep + this.atom(op.rhs.operation.lhs) + ' && ' + kstr.lstrip(this.atom(op.rhs)) + ')'
@@ -1234,9 +1232,9 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             {
                 s = ''
                 var list = _k_.list(op.lhs.object.keyvals)
-                for (var _1044_27_ = 0; _1044_27_ < list.length; _1044_27_++)
+                for (var _1046_27_ = 0; _1046_27_ < list.length; _1046_27_++)
                 {
-                    keyval = list[_1044_27_]
+                    keyval = list[_1046_27_]
                     s += `${keyval.text} = ${this.atom(op.rhs)}.${keyval.text}\n`
                 }
                 return s
@@ -1245,9 +1243,9 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             {
                 s = ''
                 var list1 = _k_.list(op.lhs.array.items)
-                for (var _1050_24_ = 0; _1050_24_ < list1.length; _1050_24_++)
+                for (var _1052_24_ = 0; _1052_24_ < list1.length; _1052_24_++)
                 {
-                    val = list1[_1050_24_]
+                    val = list1[_1052_24_]
                     i = op.lhs.array.items.indexOf(val)
                     s += (i && this.indent || '') + `${val.text} = ${this.atom(op.rhs)}[${i}]\n`
                 }
@@ -1256,13 +1254,18 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         }
         else if (o === '!')
         {
-            if ((op.rhs != null ? op.rhs.incond : undefined) || ((_1057_39_=op.rhs) != null ? (_1057_50_=_1057_39_.operation) != null ? (_1057_60_=_1057_50_.operator) != null ? _1057_60_.text : undefined : undefined : undefined) === '=')
+            if ((op.rhs != null ? op.rhs.incond : undefined) || ((_1059_39_=op.rhs) != null ? (_1059_50_=_1059_39_.operation) != null ? (_1059_60_=_1059_50_.operator) != null ? _1059_60_.text : undefined : undefined : undefined) === '=')
             {
                 open = '('
                 close = ')'
             }
         }
-        else if (((_1061_22_=op.rhs) != null ? (_1061_33_=_1061_22_.operation) != null ? _1061_33_.operator.text : undefined : undefined) === '=')
+        else if (_k_.in(op.operator.text,['empty','valid']))
+        {
+            open = '('
+            close = ')'
+        }
+        else if (((_1067_22_=op.rhs) != null ? (_1067_33_=_1067_22_.operation) != null ? _1067_33_.operator.text : undefined : undefined) === '=')
         {
             open = '('
             close = ')'
@@ -1323,7 +1326,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     index (p)
     {
-        var slice, from, _1132_32_, addOne, upto, _1136_32_, _1138_25_, _1138_54_, u, upper, _1154_27_, ni
+        var slice, from, _1138_32_, addOne, upto, _1142_32_, _1144_25_, _1144_54_, u, upper, _1160_27_, ni
 
         if (slice = p.slidx.slice)
         {
@@ -1401,7 +1404,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     slice (p)
     {
-        var _1184_41_, from, upto, x, o
+        var _1190_41_, from, upto, x, o
 
         if ((p.from.type === 'num' && 'num' === (p.upto != null ? p.upto.type : undefined)))
         {
@@ -1433,13 +1436,13 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         var vars, v
 
         var list = _k_.list(this.varstack)
-        for (var _1205_17_ = 0; _1205_17_ < list.length; _1205_17_++)
+        for (var _1211_17_ = 0; _1211_17_ < list.length; _1211_17_++)
         {
-            vars = list[_1205_17_]
+            vars = list[_1211_17_]
             var list1 = _k_.list(vars)
-            for (var _1206_18_ = 0; _1206_18_ < list1.length; _1206_18_++)
+            for (var _1212_18_ = 0; _1212_18_ < list1.length; _1212_18_++)
             {
-                v = list1[_1206_18_]
+                v = list1[_1212_18_]
                 if (v.text === name + (suffix || ''))
                 {
                     return this.freshVar(name,suffix + 1)
@@ -1478,9 +1481,9 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
         s = '`'
         var list = _k_.list(chunks)
-        for (var _1232_17_ = 0; _1232_17_ < list.length; _1232_17_++)
+        for (var _1238_17_ = 0; _1238_17_ < list.length; _1238_17_++)
         {
-            chunk = list[_1232_17_]
+            chunk = list[_1238_17_]
             t = chunk.text
             switch (chunk.type)
             {

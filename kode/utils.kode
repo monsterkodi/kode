@@ -15,9 +15,6 @@ slash  = require 'kslash'
 # 000       000 0 000  000           000        000     
 # 00000000  000   000  000           000        000     
 
-empty = (a) -> a in ['' null undefined] or (typeof(a) == 'object' and Object.keys(a).length == 0)
-valid = (a) -> not empty a
-
 ###
 00000000   00000000   0000000   000   0000000  000000000  00000000  00000000   
 000   000  000       000        000  000          000     000       000   000  
@@ -117,4 +114,4 @@ firstLineCol = (e) ->
     line:Infinity
     col: Infinity
             
-module.exports = { register, firstLineCol, lastLineCol, empty, valid }
+module.exports = { register, firstLineCol, lastLineCol }

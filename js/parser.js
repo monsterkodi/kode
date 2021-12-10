@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.80.0
+// monsterkodi/kode 0.82.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var print, Parse, firstLineCol, lastLineCol, Parser
 
@@ -8,7 +8,6 @@ print = require('./print')
 Parse = require('./parse')
 firstLineCol = require('./utils').firstLineCol
 lastLineCol = require('./utils').lastLineCol
-empty = require('./utils').empty
 
 
 Parser = (function ()
@@ -183,7 +182,7 @@ Parser = (function ()
                     break
                 }
                 whens.push(this.when(null,tokens))
-                if ((whens.slice(-2,-1)[0] != null) && empty(whens.slice(-2,-1)[0].when.then))
+                if ((whens.slice(-2,-1)[0] != null) && _k_.empty(whens.slice(-2,-1)[0].when.then))
                 {
                     whens.slice(-1)[0].when.vals = whens.slice(-2,-1)[0].when.vals.concat(whens.slice(-1)[0].when.vals)
                     whens.splice(-2,1)
@@ -219,7 +218,7 @@ Parser = (function ()
             vals.push(this.exp(tokens))
         }
         thn = this.then('when',tokens)
-        this.shiftNewlineTok('when with empty then',tokens,tok,empty(thn))
+        this.shiftNewlineTok('when with empty then',tokens,tok,_k_.empty(thn))
         this.pop('when')
         return {when:{vals:vals,then:thn}}
     }

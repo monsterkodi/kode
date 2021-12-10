@@ -7,7 +7,6 @@
 ###
 
 print = require './print'
-{ valid } = require './utils'
 
 # inserts implicit return statements
 

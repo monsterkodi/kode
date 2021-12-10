@@ -6,7 +6,7 @@
 000   000  000  0000000    0000000
 ###
 
-{cmp} = require './utils'
+{ cmp, evl } = require './utils'
 
 describe 'misc' ->
 
@@ -136,12 +136,67 @@ describe 'misc' ->
             kstr = require('kstr')
             """
 
-    # 000000000  000   000  00000000   00000000   0000000   00000000
-    #    000      000 000   000   000  000       000   000  000
-    #    000       00000    00000000   0000000   000   000  000000
-    #    000        000     000        000       000   000  000
-    #    000        000     000        00000000   0000000   000
+    # 00000000  00     00  00000000   000000000  000   000  
+    # 000       000   000  000   000     000      000 000   
+    # 0000000   000000000  00000000      000       00000    
+    # 000       000 0 000  000           000        000     
+    # 00000000  000   000  000           000        000     
+    
+    it 'empty' ->
 
+        cmp """
+            if empty [] == false
+                1234
+            """ """
+            if (_k_.empty([]) === false)
+            {
+                1234
+            }
+            """
+            
+        evl "a = []; empty a"           true
+        evl "a = {}; empty a"           true
+        evl "a = ''; empty a"           true
+        evl "a = null; empty a"         true
+        evl "a = undefined; empty a"    true
+        evl "a = NaN; empty a"          true
+        evl "a = Infinity; empty a"     false
+        evl "a = 0; empty a"            false
+        evl "a = 'a'; empty a"          false
+        evl "a = Infinity; empty a"     false
+        evl "a = [null]; empty a"       false
+        evl "a = {a:null}; empty a"     false
+        evl "a = [[]]; empty a"         false
+        
+        evl "valid []"                  false
+        evl "valid {}"                  false
+        evl "valid ''"                  false
+        evl "valid null"                false
+        evl "valid undefined"           false
+        evl "valid NaN"                 false
+        evl "valid Infinity"            true
+        evl "valid 0"                   true
+        evl "valid 'a'"                 true
+        evl "valid [null]"              true
+        evl "valid {a:null}"            true
+        evl "valid [[]]"                true
+        
+        evl 'empty 1 or empty {}'       true
+        evl 'empty {} or empty 1'       true
+        evl 'valid {} or valid 1'       true
+        evl "valid 'a' or valid ''"     true
+        evl "valid 'a' and empty ''"    true
+
+        evl 'empty "x" or valid {}'     false
+        evl 'empty {} and valid []'     false
+        evl 'valid {} and valid 0'      false
+        
+    # 000000000  000   000  00000000   00000000   0000000   00000000  
+    #    000      000 000   000   000  000       000   000  000       
+    #    000       00000    00000000   0000000   000   000  000000    
+    #    000        000     000        000       000   000  000       
+    #    000        000     000        00000000   0000000   000       
+    
     it 'typeof' ->
 
         cmp """

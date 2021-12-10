@@ -76,7 +76,7 @@ a =   b:1 c:2 d:3
 a =   b:[ c:2 'd' 3 ]
 a = [ [1 2] [d:3] ]
 
-describe 'something' ->
+test 'something' ->
     it 'should' ->
 
 on 'event' @myCallback
@@ -126,6 +126,19 @@ switch x
     when 'abc' then Y
     else            Z
 ```
+
+## Empty
+
+```coffeescript
+empty [] and empty {} and empty '' and empty null and empty NaN  # -> true
+empty 0 or empty 'a' or empty [null] or empty or empty Infinity  # -> false
+```
+
+Returns `true` for null, undefined, NaN and empty array, object or string.
+
+## Valid
+
+Just the negation of `empty`.
 
 ## Each
 
@@ -235,7 +248,6 @@ Since I will most likely be the only person using **kode**, it's probably wise t
 This is what I would like to add instead:
 
 - native tests
-- keywords `empty` and `valid`
 - use `is` for `instanceof`/`typeof`
 - `include` keyword to merge source files
 - native `dbg`  `assert`  `profile` instead of macros

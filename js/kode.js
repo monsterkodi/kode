@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.80.0
+// monsterkodi/kode 0.82.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var slash, kstr, klor, karg, childp, print, pkg, register, args, kode
 
@@ -11,7 +11,6 @@ karg = require('karg')
 childp = require('child_process')
 print = require('./print')
 pkg = require(`${__dirname}/../package`)
-empty = require('./utils').empty
 register = require('./utils').register
 
 klor.kolor.globalize()
@@ -53,7 +52,7 @@ class Kode
     {
         var ast, js
 
-        if (empty(kstr.strip(text)))
+        if (_k_.empty(kstr.strip(text)))
         {
             return ''
         }
@@ -116,7 +115,7 @@ class Kode
     {
         var vm, sandbox, Module, _module, _require, r, js
 
-        if (empty(text))
+        if (_k_.empty(text))
         {
             return
         }
@@ -190,7 +189,7 @@ class Kode
                 console.log(gray(file))
             }
             text = slash.readText(file)
-            if (empty(text))
+            if (_k_.empty(text))
             {
                 console.error(Y4(r2(`can't read ${R3(y5(file))}`)))
                 continue

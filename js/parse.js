@@ -1,13 +1,11 @@
-// monsterkodi/kode 0.80.0
+// monsterkodi/kode 0.82.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var kstr, print, firstLineCol, lastLineCol, Parse
 
 kstr = require('kstr')
 print = require('./print')
-empty = require('./utils').empty
-valid = require('./utils').valid
 firstLineCol = require('./utils').firstLineCol
 lastLineCol = require('./utils').lastLineCol
 
@@ -41,7 +39,7 @@ Parse = (function ()
     {
         var es, numTokens, b, block, blocked, blockExps, nl, e, last, colon
 
-        if (empty(tokens))
+        if (_k_.empty(tokens))
         {
             return
         }
@@ -248,7 +246,7 @@ Parse = (function ()
     {
         var tok, _257_34_, e, numTokens, _290_33_
 
-        if (empty(tokens))
+        if (_k_.empty(tokens))
         {
             return
         }
@@ -360,7 +358,7 @@ Parse = (function ()
         }
         if (this.verbose)
         {
-            print.ast(`exp ${empty(this.stack) ? 'DONE' : ''}`,e)
+            print.ast(`exp ${_k_.empty((this.stack)) ? 'DONE' : ''}`,e)
         }
         this.sheapPop('exp',((_290_33_=tok.text) != null ? _290_33_ : tok.type))
         return e
@@ -434,7 +432,7 @@ Parse = (function ()
                 {
                     e = this.curly(e,tokens)
                 }
-                else if (e.text === 'not')
+                else if (_k_.in(e.text,['not','empty','valid']) && (!(_k_.in(nxt.type,['op'])) || _k_.in(nxt.text,['++','--','+','-','!'])))
                 {
                     e = this.operation(null,e,tokens)
                 }
@@ -527,7 +525,7 @@ Parse = (function ()
 
     Parse.prototype["lhs"] = function (e, tokens)
     {
-        var nxt, numTokens, last, first, unspaced, spaced, b, _501_38_, _501_30_
+        var nxt, numTokens, last, first, unspaced, spaced, b, _502_38_, _502_30_
 
         this.sheapPush('lhs','lhs')
         while (nxt = tokens[0])
@@ -604,9 +602,9 @@ Parse = (function ()
                     this.verb('lhs stop on operation',e,nxt)
                     break
                 }
-                else if (this.stack.slice(-1)[0] === 'in?')
+                else if (_k_.in(this.stack.slice(-1)[0],['in?','opempty','opvalid']))
                 {
-                    this.verb('lhs stop on in?',e,nxt)
+                    this.verb(`lhs stop on ${this.stack.slice(-1)[0]}`,e,nxt)
                     break
                 }
                 else
@@ -639,7 +637,7 @@ Parse = (function ()
             {
                 e = {operation:{operator:tokens.shift(),rhs:this.incond(e,tokens)}}
             }
-            else if ((spaced && (nxt.line === last.line || (nxt.col > first.col && !(_k_.in(this.stack.slice(-1)[0],['if'])))) && !(_k_.in(nxt.text,['if','then','else','break','continue','in','of','for','while'])) && !(_k_.in(nxt.type,['nl'])) && (!(_k_.in(e.type,this.kode.literals))) && (!(_k_.in(e.type,['punct','comment','op']))) && (!(_k_.in(e.text,['null','undefined','Infinity','NaN','if','then','else','for','while']))) && !e.array && !e.object && !e.keyval && !e.operation && !e.incond && !e.qmrkop && !(_k_.in(((_501_30_=e.call) != null ? (_501_38_=_501_30_.callee) != null ? _501_38_.text : undefined : undefined),['delete','new','typeof'])) && !(_k_.in('▸arg',this.stack))))
+            else if ((spaced && (nxt.line === last.line || (nxt.col > first.col && !(_k_.in(this.stack.slice(-1)[0],['if'])))) && !(_k_.in(nxt.text,['if','then','else','break','continue','in','of','for','while'])) && !(_k_.in(nxt.type,['nl'])) && (!(_k_.in(e.type,this.kode.literals))) && (!(_k_.in(e.type,['punct','comment','op']))) && (!(_k_.in(e.text,['null','undefined','Infinity','NaN','if','then','else','for','while']))) && !e.array && !e.object && !e.keyval && !e.operation && !e.incond && !e.qmrkop && !(_k_.in(((_502_30_=e.call) != null ? (_502_38_=_502_30_.callee) != null ? _502_38_.text : undefined : undefined),['delete','new','typeof'])) && !(_k_.in('▸arg',this.stack))))
             {
                 this.verb('lhs is lhs of implicit call! e',e,this.stack.slice(-1)[0])
                 this.verb('    is lhs of implicit call! nxt',nxt)
@@ -712,15 +710,15 @@ Parse = (function ()
 
     Parse.prototype["nameMethods"] = function (mthds)
     {
-        var m, name, _580_39_, _580_34_, _581_41_, _581_35_
+        var m, name, _581_39_, _581_34_, _582_41_, _582_35_
 
         if ((mthds != null ? mthds.length : undefined))
         {
             var list = _k_.list(mthds)
-            for (var _579_18_ = 0; _579_18_ < list.length; _579_18_++)
+            for (var _580_18_ = 0; _580_18_ < list.length; _580_18_++)
             {
-                m = list[_579_18_]
-                if (name = ((_580_34_=m.keyval) != null ? (_580_39_=_580_34_.key) != null ? _580_39_.text : undefined : undefined))
+                m = list[_580_18_]
+                if (name = ((_581_34_=m.keyval) != null ? (_581_39_=_581_34_.key) != null ? _581_39_.text : undefined : undefined))
                 {
                     if (((m.keyval.val != null ? m.keyval.val.func : undefined) != null))
                     {
@@ -835,7 +833,7 @@ Parse = (function ()
             tokens[0].text = 'else'
             return [tokens]
         }
-        while (valid(tokens))
+        while (!_k_.empty(tokens))
         {
             t = tokens.shift()
             if (t.type === 'nl')

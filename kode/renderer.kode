@@ -11,7 +11,7 @@ slash  = require 'kslash'
 print  = require './print'
 SrcMap = require './srcmap'
 
-{ valid, empty, firstLineCol, lastLineCol } = require './utils'
+{ firstLineCol, lastLineCol } = require './utils'
 
 class Renderer
 
@@ -28,16 +28,16 @@ class Renderer
     
     header: ->
         
-        h = """
+        k = """
             list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}
-            length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}
+            empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}
             in: function (a,l) {return [].indexOf.call(l,a) >= 0}
             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}
             """
         
-        fs = h.split('\n').join ', '        
+        ks = k.split('\n').join ', '      
             
-        "var _k_ = {#{fs}}\n\n"
+        "var _k_ = {#{ks}}\n\n"
 
     # 00000000   00000000  000   000  0000000    00000000  00000000   
     # 000   000  000       0000  000  000   000  000       000   000  
@@ -1022,6 +1022,8 @@ class Renderer
                 and:    '&&'
                 or:     '||'
                 not:    '!'
+                empty:  '_k_.empty'
+                valid:  '!_k_.empty'
                 '==':   '==='
                 '!=':   '!=='
             omp[o] ? o
@@ -1057,6 +1059,10 @@ class Renderer
             if op.rhs?.incond or op.rhs?.operation?.operator?.text == '='
                     open = '('
                     close = ')'
+                    
+        else if op.operator.text in ['empty' 'valid']
+            open = '('
+            close = ')'
                             
         else if op.rhs?.operation?.operator.text == '='
             open = '('

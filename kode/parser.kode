@@ -21,7 +21,7 @@
 print = require './print'
 Parse = require './parse'
 
-{ firstLineCol, lastLineCol, empty } = require './utils'
+{ firstLineCol, lastLineCol } = require './utils'
 
 function Parser extends Parse
 
@@ -278,7 +278,7 @@ function Parser extends Parse
                     
                 if whens[-2]? and empty whens[-2].when.then 
                     whens[-1].when.vals = whens[-2].when.vals.concat whens[-1].when.vals
-                    whens.splice -2 1 
+                    whens.splice -2 1
         else
             
             while tokens[0]?.text == 'when'
