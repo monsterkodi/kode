@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.68.0
+// monsterkodi/kode 0.74.0
 
-var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var kstr, klor, noon, slash, childp
 
@@ -19,7 +19,7 @@ class Print
         console.log(R3(y5(`\n ${header}`)))
         console.log(b6(kstr.pad('',80,' ')))
         s = ''
-        var list = (tokens != null ? tokens : [])
+        var list = _k_.list(tokens)
         for (idx = 0; idx < list.length; idx++)
         {
             tok = list[idx]
@@ -37,7 +37,7 @@ class Print
         {
             return red('◂\n')
         }
-        if ([].indexOf.call(['ws','nl'], tok.type) >= 0)
+        if (_k_.in(tok.type, ['ws','nl']))
         {
             return ''
         }
@@ -56,7 +56,7 @@ class Print
             else if (tok.tokens)
             {
                 s = ''
-                var list = (tok.tokens != null ? tok.tokens : [])
+                var list = _k_.list(tok.tokens)
                 for (var _44_22_ = 0; _44_22_ < list.length; _44_22_++)
                 {
                     t = list[_44_22_]
@@ -82,7 +82,7 @@ class Print
         var s, r, c
 
         s = B2('   ')
-        var list = (sheap != null ? sheap : [])
+        var list = _k_.list(sheap)
         for (var _64_14_ = 0; _64_14_ < list.length; _64_14_++)
         {
             r = list[_64_14_]
@@ -142,11 +142,11 @@ class Print
                 s += '\n' + b.indent
             }
             s = b.indent
-            if ([].indexOf.call(['{}','()','[]'], b.type) >= 0)
+            if (_k_.in(b.type, ['{}','()','[]']))
             {
                 s += b.type[0] + ' '
             }
-            var list = (b.tokens != null ? b.tokens : [])
+            var list = _k_.list(b.tokens)
             for (var _94_18_ = 0; _94_18_ < list.length; _94_18_++)
             {
                 c = list[_94_18_]
@@ -165,7 +165,7 @@ class Print
                     s += global[cn]((((_102_44_=c.text) != null ? _102_44_ : '')) + ' ')
                 }
             }
-            if ([].indexOf.call(['{}','()','[]'], b.type) >= 0)
+            if (_k_.in(b.type, ['{}','()','[]']))
             {
                 s += b.type[1]
             }
@@ -195,7 +195,7 @@ class Print
             }
             else if (node instanceof Array)
             {
-                if ([].indexOf.call(visited, node) >= 0)
+                if (_k_.in(node, visited))
                 {
                     return s
                 }
@@ -203,7 +203,7 @@ class Print
                 if (node.length)
                 {
                     s += lpad + ' ' + indent + bold(w3('['))
-                    var list = (node != null ? node : [])
+                    var list = _k_.list(node)
                     for (var _134_30_ = 0; _134_30_ < list.length; _134_30_++)
                     {
                         value = list[_134_30_]
@@ -219,7 +219,7 @@ class Print
             }
             else
             {
-                if ([].indexOf.call(visited, node) >= 0)
+                if (_k_.in(node, visited))
                 {
                     return s
                 }
@@ -236,7 +236,7 @@ class Print
         }
         if (ast instanceof Array)
         {
-            var list = (ast != null ? ast : [])
+            var list = _k_.list(ast)
             for (var _151_40_ = 0; _151_40_ < list.length; _151_40_++)
             {
                 node = list[_151_40_]
@@ -268,14 +268,14 @@ class Print
             }
             else if (node instanceof Array)
             {
-                if ([].indexOf.call(visited, node) >= 0)
+                if (_k_.in(node, visited))
                 {
                     return s
                 }
                 visited.push(node)
                 if (node.length)
                 {
-                    var list = (node != null ? node : [])
+                    var list = _k_.list(node)
                     for (var _177_30_ = 0; _177_30_ < list.length; _177_30_++)
                     {
                         value = list[_177_30_]
@@ -285,7 +285,7 @@ class Print
             }
             else
             {
-                if ([].indexOf.call(visited, node) >= 0)
+                if (_k_.in(node, visited))
                 {
                     return s
                 }
@@ -309,7 +309,7 @@ class Print
         }
         if (ast instanceof Array)
         {
-            s = (function () { var result = []; var list = (ast != null ? ast : []); for (var _193_41_ = 0; _193_41_ < list.length; _193_41_++)  { node = list[_193_41_];result.push(printNode(node))  } return result }).bind(this)().join('')
+            s = (function () { var result = []; var list = _k_.list(ast); for (var _193_41_ = 0; _193_41_ < list.length; _193_41_++)  { node = list[_193_41_];result.push(printNode(node))  } return result }).bind(this)().join('')
         }
         else
         {

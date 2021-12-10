@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.68.0
+// monsterkodi/kode 0.74.0
 
-var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var kstr, slash, print
 
@@ -101,7 +101,7 @@ class SourceMap
             console.log(`${b3(kstr.lstrip(li,4))} ${ln}${r2('◂')}`)
             if (lm = this.lines[li])
             {
-                var list = (lm.columns != null ? lm.columns : [])
+                var list = _k_.list(lm.columns)
                 for (var _114_22_ = 0; _114_22_ < list.length; _114_22_++)
                 {
                     c = list[_114_22_]
@@ -136,7 +136,7 @@ class SourceMap
         lastSourceColumn = 0
         needComma = false
         buffer = ""
-        var list = (this.lines != null ? this.lines : [])
+        var list = _k_.list(this.lines)
         for (lineNumber = 0; lineNumber < list.length; lineNumber++)
         {
             lineMap = list[lineNumber]
@@ -144,7 +144,7 @@ class SourceMap
             {
                 continue
             }
-            var list1 = (lineMap.columns != null ? lineMap.columns : [])
+            var list1 = _k_.list(lineMap.columns)
             for (var _153_24_ = 0; _153_24_ < list1.length; _153_24_++)
             {
                 mapping = list1[_153_24_]

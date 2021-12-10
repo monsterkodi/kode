@@ -74,7 +74,7 @@ class Returner
                 else if lst.try         then @try lst.try
                 else if lst.switch      then @switch lst.switch
                 else
-                    log 'todo: returner' Object.keys(lst)[0]
+                    log 'toDo: returner' Object.keys(lst)[0], lst
             
             @scope f.body 
         

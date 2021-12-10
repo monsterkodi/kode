@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.68.0
+// monsterkodi/kode 0.74.0
 
-var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 class Scoper
 {
@@ -91,7 +91,7 @@ class Scoper
         {
             var map, arg
 
-            var list = (this.maps != null ? this.maps : [])
+            var list = _k_.list(this.maps)
             for (var _88_20_ = 0; _88_20_ < list.length; _88_20_++)
             {
                 map = list[_88_20_]
@@ -100,7 +100,7 @@ class Scoper
                     return
                 }
             }
-            var list1 = (this.args != null ? this.args : [])
+            var list1 = _k_.list(this.args)
             for (var _89_20_ = 0; _89_20_ < list1.length; _89_20_++)
             {
                 arg = list1[_89_20_]
@@ -125,7 +125,7 @@ class Scoper
         {
             if (e.length)
             {
-                var list = (e != null ? e : [])
+                var list = _k_.list(e)
                 for (var _100_54_ = 0; _100_54_ < list.length; _100_54_++)
                 {
                     v = list[_100_54_]
@@ -143,7 +143,7 @@ class Scoper
                 }
                 else if (e.operation.lhs.object)
                 {
-                    var list1 = (e.operation.lhs.object.keyvals != null ? e.operation.lhs.object.keyvals : [])
+                    var list1 = _k_.list(e.operation.lhs.object.keyvals)
                     for (var _107_31_ = 0; _107_31_ < list1.length; _107_31_++)
                     {
                         keyval = list1[_107_31_]
@@ -155,7 +155,7 @@ class Scoper
                 }
                 else if (e.operation.lhs.array)
                 {
-                    var list2 = (e.operation.lhs.array.items != null ? e.operation.lhs.array.items : [])
+                    var list2 = _k_.list(e.operation.lhs.array.items)
                     for (var _111_28_ = 0; _111_28_ < list2.length; _111_28_++)
                     {
                         val = list2[_111_28_]
