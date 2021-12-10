@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.68.0
+// monsterkodi/kode 0.72.0
 
-var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var cmp, evl
 
@@ -27,7 +27,7 @@ describe('loops',function ()
 {
 }`)
         cmp(`for t in l
-    t`,`var list = (l != null ? l : [])
+    t`,`var list = _k_.list(l)
 for (var _1_6_ = 0; _1_6_ < list.length; _1_6_++)
 {
     t = list[_1_6_]
@@ -59,14 +59,14 @@ for (var _1_6_ = 0; _1_6_ < list.length; _1_6_++)
 }
 console.log('3',a)`)
         cmp(`for v,i in @regs
-    log i,v`,`var list = (this.regs != null ? this.regs : [])
+    log i,v`,`var list = _k_.list(this.regs)
 for (i = 0; i < list.length; i++)
 {
     v = list[i]
     console.log(i,v)
 }`)
         cmp(`for [a,b] in @regs
-    log a,b`,`var list = (this.regs != null ? this.regs : [])
+    log a,b`,`var list = _k_.list(this.regs)
 for (var _1_10_ = 0; _1_10_ < list.length; _1_10_++)
 {
     a = list[_1_10_][0]
@@ -97,7 +97,7 @@ empty = function (a)
 {
     return [].indexOf.call(['',null,undefined], a) >= 0 || b
 }`)
-        return cmp(`@exp body.exps,k,e for e,k in body.exps`,`var list = (body.exps != null ? body.exps : [])
+        return cmp(`@exp body.exps,k,e for e,k in body.exps`,`var list = _k_.list(body.exps)
 for (k = 0; k < list.length; k++)
 {
     e = list[k]
@@ -126,7 +126,7 @@ for (var _1_10_ = 0; _1_10_ < list.length; _1_10_++)
     it('list comprehension',function ()
     {
         cmp("m = ([k, r.exec t] for k,r of rgs)",`m = (function () { var result = []; for (var k in rgs)  { var r = rgs[k];result.push([k,r.exec(t)])  } return result }).bind(this)()`)
-        cmp("m = ([i, k] for k,i in rgs)",`m = (function () { var result = []; var list = (rgs != null ? rgs : []); for (i = 0; i < list.length; i++)  { var k = list[i];result.push([i,k])  } return result }).bind(this)()`)
+        cmp("m = ([i, k] for k,i in rgs)",`m = (function () { var result = []; var list = _k_.list(rgs); for (i = 0; i < list.length; i++)  { var k = list[i];result.push([i,k])  } return result }).bind(this)()`)
         evl("1",1)
         evl("'abc'",'abc')
         evl("[1,2,3]",[1,2,3])

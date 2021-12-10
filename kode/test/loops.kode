@@ -57,7 +57,7 @@ describe 'loops' ->
             for t in l
                 t
             """ """
-            var list = (l != null ? l : [])
+            var list = _k_.list(l)
             for (var _1_6_ = 0; _1_6_ < list.length; _1_6_++)
             {
                 t = list[_1_6_]
@@ -109,7 +109,7 @@ describe 'loops' ->
             for v,i in @regs
                 log i,v
             """ """
-            var list = (this.regs != null ? this.regs : [])
+            var list = _k_.list(this.regs)
             for (i = 0; i < list.length; i++)
             {
                 v = list[i]
@@ -121,7 +121,7 @@ describe 'loops' ->
             for [a,b] in @regs
                 log a,b
             """ """
-            var list = (this.regs != null ? this.regs : [])
+            var list = _k_.list(this.regs)
             for (var _1_10_ = 0; _1_10_ < list.length; _1_10_++)
             {
                 a = list[_1_10_][0]
@@ -172,7 +172,7 @@ describe 'loops' ->
         cmp """
             @exp body.exps,k,e for e,k in body.exps
             """ """
-            var list = (body.exps != null ? body.exps : [])
+            var list = _k_.list(body.exps)
             for (k = 0; k < list.length; k++)
             {
                 e = list[k]
@@ -239,7 +239,7 @@ describe 'loops' ->
 
         cmp "m = ([i, k] for k,i in rgs)",
             """
-            m = (function () { var result = []; var list = (rgs != null ? rgs : []); for (i = 0; i < list.length; i++)  { var k = list[i];result.push([i,k])  } return result }).bind(this)()
+            m = (function () { var result = []; var list = _k_.list(rgs); for (i = 0; i < list.length; i++)  { var k = list[i];result.push([i,k])  } return result }).bind(this)()
             """
             
         evl "1"                                 1

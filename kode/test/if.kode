@@ -338,7 +338,7 @@ describe 'if' ->
             {
                 var m
             
-                var list = (ms != null ? ms : [])
+                var list = _k_.list(ms)
                 for (var _2_10_ = 0; _2_10_ < list.length; _2_10_++)
                 {
                     m = list[_2_10_]

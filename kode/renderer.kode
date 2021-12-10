@@ -726,11 +726,12 @@ class Renderer
     for_in: (n, varPrefix='', lastPrefix='', lastPostfix='', lineBreak) ->
 
         if not n.list.qmrkop and not n.list.array and not n.list.slice
-            list = @node qmrkop:
-                            lhs: n.list
-                            rhs: 
-                                type: 'array'
-                                text: '[]'
+            # list = @node qmrkop:
+                            # lhs: n.list
+                            # rhs: 
+                                # type: 'array'
+                                # text: '[]'
+            list = "_k_.list(#{@node n.list})"
         else
             if n.list.array?.items[0]?.slice or n.list.slice
                 return @for_in_range n, varPrefix, lastPrefix, lastPostfix, lineBreak
