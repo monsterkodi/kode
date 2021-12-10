@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.76.0
+// monsterkodi/kode 0.77.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
@@ -530,16 +530,17 @@ Parser = (function ()
 
     Parser.prototype["object"] = function (key, tokens)
     {
-        var first, exps, block
+        var first, exps, literals, block
 
         this.push('{')
         first = firstLineCol(key)
         exps = [this.keyval(key,tokens)]
+        literals = ['single','double','triple','var','keyword','num','bool']
         while (tokens.length)
         {
             if ((tokens[0] != null ? tokens[0].type : undefined) === 'nl')
             {
-                if (!(_k_.in((tokens[1] != null ? tokens[1].type : undefined),['single','double','triple','var','keyword','num','bool'])))
+                if (!(_k_.in((tokens[1] != null ? tokens[1].type : undefined),literals)))
                 {
                     break
                 }
@@ -573,7 +574,7 @@ Parser = (function ()
                 {
                     break
                 }
-                if (!(_k_.in(tokens[0].type,['single','double','triple','var','keyword','num','bool'])))
+                if (!(_k_.in(tokens[0].type,literals)))
                 {
                     break
                 }

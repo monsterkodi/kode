@@ -988,9 +988,9 @@ class Renderer
                 'this'
             else if tok.type == 'triple'
                 '`' + tok.text[3..-4] + '`'
-            else if tok.type in ['keyword' 'bool'] and tok.text == 'yes'
+            else if tok.type == 'bool' and tok.text == 'yes'
                 'true'
-            else if tok.type in ['keyword' 'bool'] and tok.text == 'no'
+            else if tok.type == 'bool' and tok.text == 'no'
                 'false'
             else
                 tok.text

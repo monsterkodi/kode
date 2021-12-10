@@ -706,9 +706,11 @@ function Parser extends Parse
         
         exps = [@keyval key, tokens]
         
+        literals = ['single''double''triple''var''keyword''num''bool']
+        
         while tokens.length
             if tokens[0]?.type == 'nl'
-                break if tokens[1]?.type not in ['single''double''triple''var''keyword''num''bool']
+                break if tokens[1]?.type not in literals
                 break if tokens[2]?.text not in ': ' # space checks for newline!
                 
                 if tokens[1]?.col >= first.col and tokens[1].text not in '])'
@@ -726,7 +728,7 @@ function Parser extends Parse
                 break
             else
                 break if tokens[0].text in '])};'
-                break if tokens[0].type not in ['single''double''triple''var''keyword''num''bool']
+                break if tokens[0].type not in literals
                 
         @pop '{'
 
@@ -756,10 +758,7 @@ function Parser extends Parse
         k = type:'key'
         
         if key.type 
-            
-            if key.type not in ['keyword' 'op' 'punct' 'var' 'this' 'num' 'single' 'double' 'triple' 'bool']
-                log 'what could that be?' key
-            
+                        
             k.text = key.text
             k.line = key.line
             k.col  = key.col
