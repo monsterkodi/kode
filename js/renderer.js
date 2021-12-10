@@ -1,4 +1,6 @@
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+// monsterkodi/kode 0.74.0
+
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var kstr, slash, print, SrcMap, firstLineCol, lastLineCol
 
@@ -29,7 +31,7 @@ class Renderer
 
         h = `list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}
 length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}
-in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}
+in: function (a,l) {return [].indexOf.call(l,a) >= 0}
 extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}`
         fs = h.split('\n').join(', ')
         return `var _k_ = {${fs}}\n\n`
@@ -82,7 +84,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             if (sep === '\n')
             {
                 stripped = kstr.lstrip(a)
-                if ([].indexOf.call('([', stripped[0]) >= 0)
+                if (_k_.in(stripped[0],'(['))
                 {
                     a = ';' + a
                 }
@@ -260,7 +262,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         {
             return ''
         }
-        if ([].indexOf.call(['▾',"'▾'",'"▾"'], s) >= 0)
+        if (_k_.in(s,['▾',"'▾'",'"▾"']))
         {
             return s
         }
@@ -538,7 +540,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
                 continue
             }
             name = m.keyval.val.func.name.text
-            if ([].indexOf.call(['@','constructor'], name) >= 0)
+            if (_k_.in(name,['@','constructor']))
             {
                 if (con)
                 {
@@ -691,14 +693,14 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
     {
         var callee
 
-        if ([].indexOf.call(['log','warn','error'], p.callee.text) >= 0)
+        if (_k_.in(p.callee.text,['log','warn','error']))
         {
             p.callee.text = `console.${p.callee.text}`
         }
         callee = this.node(p.callee)
         if (p.args)
         {
-            if ([].indexOf.call(['new','throw','delete'], callee) >= 0)
+            if (_k_.in(callee,['new','throw','delete']))
             {
                 return `${callee} ${this.nodes(p.args,',')}`
             }
@@ -1217,10 +1219,10 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         {
             sep = ''
         }
-        if ([].indexOf.call(['<','<=','===','!==','>=','>'], o) >= 0)
+        if (_k_.in(o,['<','<=','===','!==','>=','>']))
         {
             ro = opmap(((_1039_29_=op.rhs) != null ? (_1039_40_=_1039_29_.operation) != null ? _1039_40_.operator.text : undefined : undefined))
-            if ([].indexOf.call(['<','<=','===','!==','>=','>'], ro) >= 0)
+            if (_k_.in(ro,['<','<=','===','!==','>=','>']))
             {
                 return '(' + this.atom(op.lhs) + sep + o + sep + this.atom(op.rhs.operation.lhs) + ' && ' + kstr.lstrip(this.atom(op.rhs)) + ')'
             }
@@ -1272,7 +1274,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     incond (p)
     {
-        return `[].indexOf.call(${this.node(p.rhs)}, ${this.atom(p.lhs)}) >= 0`
+        return `_k_.in(${this.atom(p.lhs)},${this.node(p.rhs)})`
     }
 
     parens (p)
@@ -1290,7 +1292,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         }).bind(this))
         nodes = nodes.map(function (n)
         {
-            if ([].indexOf.call(n, ':') >= 0)
+            if (_k_.in(':',n))
             {
                 return n
             }
@@ -1307,7 +1309,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         var key
 
         key = this.node(p.key)
-        if (!([].indexOf.call("'\"", key[0]) >= 0) && /[\.\,\;\*\+\-\/\=\|]/.test(key))
+        if (!(_k_.in(key[0],"'\"")) && /[\.\,\;\*\+\-\/\=\|]/.test(key))
         {
             key = `'${key}'`
         }

@@ -1,4 +1,6 @@
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+// monsterkodi/kode 0.74.0
+
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var childp, slash, empty, valid, register, lastLineCol, firstLineCol
 
@@ -7,7 +9,7 @@ slash = require('kslash')
 
 empty = function (a)
 {
-    return [].indexOf.call(['',null,undefined], a) >= 0 || (typeof(a) === 'object' && Object.keys(a).length === 0)
+    return _k_.in(a,['',null,undefined]) || (typeof(a) === 'object' && Object.keys(a).length === 0)
 }
 
 valid = function (a)
@@ -60,7 +62,7 @@ register = function ()
         binary = require.resolve('../bin/kode')
         return childp.fork = function (path, args, options)
         {
-            if ([].indexOf.call(['kode','coffee'], slash.ext(path)) >= 0)
+            if (_k_.in(slash.ext(path),['kode','coffee']))
             {
                 if (!Array.isArray(args))
                 {

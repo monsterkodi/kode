@@ -165,7 +165,7 @@ describe 'loops' ->
             
             empty = function (a)
             {
-                return [].indexOf.call(['',null,undefined], a) >= 0 || b
+                return _k_.in(a,['',null,undefined]) || b
             }
             """
             
