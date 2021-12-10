@@ -13,6 +13,7 @@ then        ➜
 op          (\band\b|\bor\b|\bnot\b|\+\+|--|==|!=|>=|<=|\+=|-=|\*=|\/=|\|=|\?=|<<|>>|=|\*|\/|\+|-|%|\^|\&|<|>|\binstanceof\b)
 punct       [,:;!&~\|\.\?\\]
 this        @
+bool        (\byes\b|\bno\b|\btrue\b|\bfalse\b)
 keyword
     if
     then
@@ -33,10 +34,6 @@ keyword
     super
     delete
     extends
-    false
-    true
-    yes
-    no
     try
     catch
     throw
