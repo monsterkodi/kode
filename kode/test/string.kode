@@ -102,7 +102,9 @@ describe 'string' ->
                 \"\"\"
             """ '\nhullo\nwurld\n'
             
-        evl '"""\n' +
+        evl '("""\nclass A\n{\n\n}\n""")' "class A\n{\n\n}"
+            
+        evl '("""\n' +
             'class A\n' +
             '{\n' +
             '    constructor ()\n' +
@@ -128,8 +130,7 @@ describe 'string' ->
             '    }\n' +
             '}\n' +
             '\n' +
-            '"""\n',
-            'class A\n' +
+            '""")' , 'class A\n' +
             '{\n' +
             '    constructor ()\n' +
             '    {\n' +
@@ -152,8 +153,8 @@ describe 'string' ->
             '        }).bind(this)\n' +
             '        return g()\n' +
             '    }\n' +
-            '}\n' +
-            '\n'
+            '}\n'
+        true
             
     # 000  000   000  000000000  00000000  00000000   00000000    0000000   000
     # 000  0000  000     000     000       000   000  000   000  000   000  000

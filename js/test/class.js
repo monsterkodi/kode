@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.67.0
+// monsterkodi/kode 0.68.0
 
 var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
@@ -15,94 +15,94 @@ describe('class',function ()
 {}
 `)
         cmp(`class B
-    @: ->`,`            class B
-            {
-                constructor ()
-                {}
-            }
+    @: ->`,`class B
+{
+    constructor ()
+    {}
+}
 `)
         cmp(`class C
     @a: ->
-    b: ->`,`            class C
-            {
-                static a ()
-                {}
+    b: ->`,`class C
+{
+    static a ()
+    {}
 
-                b ()
-                {}
-            }
+    b ()
+    {}
+}
 `)
         cmp(`class D
-    a: =>`,`            class D
-            {
-                constructor ()
-                {
-                    this.a = this.a.bind(this)
-                }
+    a: =>`,`class D
+{
+    constructor ()
+    {
+        this.a = this.a.bind(this)
+    }
 
-                a ()
-                {}
-            }
+    a ()
+    {}
+}
 `)
         cmp(`class E
     @f: ->
-    @g: ->`,`            class E
-            {
-                static f ()
-                {}
+    @g: ->`,`class E
+{
+    static f ()
+    {}
 
-                static g ()
-                {}
-            }
+    static g ()
+    {}
+}
 `)
         cmp(`class F
     @f: ->
     @g: ->
-    @h: ->`,`            class F
-            {
-                static f ()
-                {}
+    @h: ->`,`class F
+{
+    static f ()
+    {}
 
-                static g ()
-                {}
+    static g ()
+    {}
 
-                static h ()
-                {}
-            }
+    static h ()
+    {}
+}
 `)
-        cmp(`            class X
-                @: ->
-                    '@'
+        cmp(`class X
+    @: ->
+        '@'
 
-                m: -> 'm'`,`            class X
-            {
-                constructor ()
-                {
-                    '@'
-                }
+    m: -> 'm'`,`class X
+{
+    constructor ()
+    {
+        '@'
+    }
 
-                m ()
-                {
-                    return 'm'
-                }
-            }
+    m ()
+    {
+        return 'm'
+    }
+}
 `)
-        return cmp(`            class Y
-                @: -> '@'
+        return cmp(`class Y
+    @: -> '@'
 
-                m: ->
-                    'm'`,`            class Y
-            {
-                constructor ()
-                {
-                    '@'
-                }
+    m: ->
+        'm'`,`class Y
+{
+    constructor ()
+    {
+        '@'
+    }
 
-                m ()
-                {
-                    return 'm'
-                }
-            }
+    m ()
+    {
+        return 'm'
+    }
+}
 `)
     })
     it('bind',function ()
@@ -112,31 +112,31 @@ describe('class',function ()
     b: => log 'hello'
     f: ->
         g = => @b()
-        g()`,`            class A
-            {
-                constructor ()
-                {
-                    this.b = this.b.bind(this)
-                    this.f()
-                }
-            
-                b ()
-                {
-                    console.log('hello')
-                }
-            
-                f ()
-                {
-                    var g
+        g()`,`class A
+{
+    constructor ()
+    {
+        this.b = this.b.bind(this)
+        this.f()
+    }
 
-                    g = (function ()
-                    {
-                        return this.b()
-                    }).bind(this)
-                    return g()
-                }
-            }
-            `)
+    b ()
+    {
+        console.log('hello')
+    }
+
+    f ()
+    {
+        var g
+
+        g = (function ()
+        {
+            return this.b()
+        }).bind(this)
+        return g()
+    }
+}
+`)
     })
     return it('old school',function ()
     {

@@ -1,52 +1,230 @@
-// koffee 1.20.0
+// monsterkodi/kode 0.68.0
 
-/*
-00000000  000   000  000   000   0000000
-000       000   000  0000  000  000
-000000    000   000  000 0 000  000
-000       000   000  000  0000  000
-000        0000000   000   000   0000000
- */
-var cmp;
+var _k_ = {list:   function (l)   {return (l != null ? typeof l.length === 'number' ? l : [] : [])},             length: function (l)   {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)},             in:     function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)},             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
-cmp = require('./utils').cmp;
+var cmp
 
-describe('func', function() {
-    it('func', function() {
-        cmp('->', '(function ()\n{})');
-        cmp('(a) ->', '(function (a)\n{})');
-        cmp('(a,b,c) ->', '(function (a, b, c)\n{})');
-        cmp('a = (a,b) ->', '\na = function (a, b)\n{}');
-        cmp("-> return 1", "(function ()\n{\n    return 1\n})");
-        cmp("->\n    1\n    2", "(function ()\n{\n    1\n    return 2\n})");
-        cmp("->\n    return 1\n    2", "(function ()\n{\n    return 1\n    return 2\n})");
-        cmp("->\n    1\n    return 2", "(function ()\n{\n    1\n    return 2\n})");
-        cmp("a = (a,b,c) -> d", "\na = function (a, b, c)\n{\n    return d\n}");
-        cmp("a.x = (y,z) -> q", "\na.x = function (y, z)\n{\n    return q\n}");
-        cmp("a = ->\n    b = ->", "\na = function ()\n{\n    var b\n\n    return b = function ()\n    {}\n}");
-        cmp("a = (b,c) ->\n    b = (e, f) -> g\n    b", "\na = function (b, c)\n{\n    b = function (e, f)\n    {\n        return g\n    }\n    return b\n}");
-        cmp("a = (b,c) ->\n    b = (e, f) -> h", "\na = function (b, c)\n{\n    return b = function (e, f)\n    {\n        return h\n    }\n}");
-        cmp("a = (b,c) ->\n    (e, f) -> j", "\na = function (b, c)\n{\n    return function (e, f)\n    {\n        return j\n    }\n}");
-        cmp("f = ->\n    (a) -> 1", "\nf = function ()\n{\n    return function (a)\n    {\n        return 1\n    }\n}");
-        cmp("a = ->\n    'a'\n1\n", "\na = function ()\n{\n    return 'a'\n}\n1");
-        cmp("a = ->\n    log 'a'\n\nb = ->\n    log 'b'", "\na = function ()\n{\n    console.log('a')\n}\n\nb = function ()\n{\n    console.log('b')\n}");
-        cmp("a = ( a, b=1 c=2 ) ->", "\na = function (a, b = 1, c = 2)\n{}");
-        cmp("if 1 then return", "if (1)\n{\n    return\n}");
-        cmp("if x then return\na", "if (x)\n{\n    return\n}\na");
-        cmp("-> @a", "(function ()\n{\n    return this.a\n})");
-        cmp("(@a) -> @a", "(function (a)\n{\n    this.a = a\n    return this.a\n})");
-        return cmp("(@a,a) -> log @a", "(function (a1, a)\n{\n    this.a = a1\n    console.log(this.a)\n})");
-    });
-    return it('return', function() {
-        cmp("ff = ->\n    if 232 then return", "\nff = function ()\n{\n    if (232)\n    {\n        return\n    }\n}");
-        cmp("fff = ->\n    if 3\n        log '42'", "\nfff = function ()\n{\n    if (3)\n    {\n        console.log('42')\n    }\n}");
-        cmp("ffff = ->\n    if 4\n        '42'", "\nffff = function ()\n{\n    if (4)\n    {\n        return '42'\n    }\n}");
-        cmp("->\n    if 1 then h\n    else if 2\n        if 3 then j else k\n    else l", "(function ()\n{\n    if (1)\n    {\n        return h\n    }\n    else if (2)\n    {\n        if (3)\n        {\n            return j\n        }\n        else\n        {\n            return k\n        }\n    }\n    else\n    {\n        return l\n    }\n})");
-        cmp("return 'Q' if t == 'W'", "if (t === 'W')\n{\n    return 'Q'\n}");
-        cmp("return if not XXX", "if (!XXX)\n{\n    return\n}");
-        return cmp("fffff = ->\n    try\n        'return me!'\n    catch e\n        error e", "\nfffff = function ()\n{\n    try\n    {\n        return 'return me!'\n    }\n    catch (e)\n    {\n        console.error(e)\n    }\n}");
-    });
-});
+cmp = require('./utils').cmp
 
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZnVuYy5qcyIsInNvdXJjZVJvb3QiOiIuIiwic291cmNlcyI6WyJmdW5jLmNvZmZlZSJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOztBQUFBOzs7Ozs7O0FBQUEsSUFBQTs7QUFRQyxNQUFPLE9BQUEsQ0FBUSxTQUFSOztBQUVSLFFBQUEsQ0FBUyxNQUFULEVBQWdCLFNBQUE7SUFFWixFQUFBLENBQUcsTUFBSCxFQUFVLFNBQUE7UUFFTixHQUFBLENBQUksSUFBSixFQUF1QixtQkFBdkI7UUFDQSxHQUFBLENBQUksUUFBSixFQUF1QixvQkFBdkI7UUFDQSxHQUFBLENBQUksWUFBSixFQUF1QiwwQkFBdkI7UUFDQSxHQUFBLENBQUksY0FBSixFQUF1QiwyQkFBdkI7UUFFQSxHQUFBLENBQUksYUFBSixFQUVRLG1DQUZSO1FBU0EsR0FBQSxDQUFJLGtCQUFKLEVBSVEsMENBSlI7UUFZQSxHQUFBLENBQUkseUJBQUosRUFJUSxpREFKUjtRQVlBLEdBQUEsQ0FBSSx5QkFBSixFQUlRLDBDQUpSO1FBWUEsR0FBQSxDQUFJLGtCQUFKLEVBRVEsOENBRlI7UUFVQSxHQUFBLENBQUksa0JBQUosRUFFUSw2Q0FGUjtRQVVBLEdBQUEsQ0FBSSxvQkFBSixFQUdRLDBFQUhSO1FBY0EsR0FBQSxDQUFJLDBDQUFKLEVBSVEsb0dBSlI7UUFnQkEsR0FBQSxDQUFJLG1DQUFKLEVBR1EsNkZBSFI7UUFjQSxHQUFBLENBQUksK0JBQUosRUFHUSx5RkFIUjtRQWNBLEdBQUEsQ0FBSSxzQkFBSixFQUdRLGtGQUhSO1FBY0EsR0FBQSxDQUFJLHNCQUFKLEVBS1EsNENBTFI7UUFjQSxHQUFBLENBQUksNENBQUosRUFNUSw4RkFOUjtRQW1CQSxHQUFBLENBQUksdUJBQUosRUFBOEIsc0NBQTlCO1FBRUEsR0FBQSxDQUFJLGtCQUFKLEVBRVEsMEJBRlI7UUFTQSxHQUFBLENBQUkscUJBQUosRUFHUSw2QkFIUjtRQVdBLEdBQUEsQ0FBSSxPQUFKLEVBQ0ksd0NBREo7UUFRQSxHQUFBLENBQUksWUFBSixFQUNJLHlEQURKO2VBU0EsR0FBQSxDQUFJLGtCQUFKLEVBQ0ksb0VBREo7SUF4Tk0sQ0FBVjtXQXVPQSxFQUFBLENBQUcsUUFBSCxFQUFZLFNBQUE7UUFFUixHQUFBLENBQUksaUNBQUosRUFHUSxzRUFIUjtRQWNBLEdBQUEsQ0FBSSxzQ0FBSixFQUlRLGdGQUpSO1FBZUEsR0FBQSxDQUFJLG1DQUFKLEVBSVEsMkVBSlI7UUFlQSxHQUFBLENBQUksNEVBQUosRUFNUSxnUUFOUjtRQStCQSxHQUFBLENBQUksd0JBQUosRUFFUSxzQ0FGUjtRQVNBLEdBQUEsQ0FBSSxtQkFBSixFQUVRLDZCQUZSO2VBU0EsR0FBQSxDQUFJLHlFQUFKLEVBTVEsd0lBTlI7SUEvRlEsQ0FBWjtBQXpPWSxDQUFoQiIsInNvdXJjZXNDb250ZW50IjpbIiMjI1xuMDAwMDAwMDAgIDAwMCAgIDAwMCAgMDAwICAgMDAwICAgMDAwMDAwMFxuMDAwICAgICAgIDAwMCAgIDAwMCAgMDAwMCAgMDAwICAwMDBcbjAwMDAwMCAgICAwMDAgICAwMDAgIDAwMCAwIDAwMCAgMDAwXG4wMDAgICAgICAgMDAwICAgMDAwICAwMDAgIDAwMDAgIDAwMFxuMDAwICAgICAgICAwMDAwMDAwICAgMDAwICAgMDAwICAgMDAwMDAwMFxuIyMjXG5cbntjbXB9ID0gcmVxdWlyZSAnLi91dGlscydcblxuZGVzY3JpYmUgJ2Z1bmMnIC0+XG5cbiAgICBpdCAnZnVuYycgLT5cblxuICAgICAgICBjbXAgJy0+JyAgICAgICAgICAgICAgICcoZnVuY3Rpb24gKClcXG57fSknXG4gICAgICAgIGNtcCAnKGEpIC0+JyAgICAgICAgICAgJyhmdW5jdGlvbiAoYSlcXG57fSknXG4gICAgICAgIGNtcCAnKGEsYixjKSAtPicgICAgICAgJyhmdW5jdGlvbiAoYSwgYiwgYylcXG57fSknXG4gICAgICAgIGNtcCAnYSA9IChhLGIpIC0+JyAgICAgJ1xcbmEgPSBmdW5jdGlvbiAoYSwgYilcXG57fSdcblxuICAgICAgICBjbXAgXCJcIlwiXG4gICAgICAgICAgICAtPiByZXR1cm4gMVxuICAgICAgICAgICAgXCJcIlwiIFwiXCJcIlxuICAgICAgICAgICAgKGZ1bmN0aW9uICgpXG4gICAgICAgICAgICB7XG4gICAgICAgICAgICAgICAgcmV0dXJuIDFcbiAgICAgICAgICAgIH0pXG4gICAgICAgICAgICBcIlwiXCJcblxuICAgICAgICBjbXAgXCJcIlwiXG4gICAgICAgICAgICAtPlxuICAgICAgICAgICAgICAgIDFcbiAgICAgICAgICAgICAgICAyXG4gICAgICAgICAgICBcIlwiXCIgXCJcIlwiXG4gICAgICAgICAgICAoZnVuY3Rpb24gKClcbiAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICAxXG4gICAgICAgICAgICAgICAgcmV0dXJuIDJcbiAgICAgICAgICAgIH0pXG4gICAgICAgICAgICBcIlwiXCJcblxuICAgICAgICBjbXAgXCJcIlwiXG4gICAgICAgICAgICAtPlxuICAgICAgICAgICAgICAgIHJldHVybiAxXG4gICAgICAgICAgICAgICAgMlxuICAgICAgICAgICAgXCJcIlwiIFwiXCJcIlxuICAgICAgICAgICAgKGZ1bmN0aW9uICgpXG4gICAgICAgICAgICB7XG4gICAgICAgICAgICAgICAgcmV0dXJuIDFcbiAgICAgICAgICAgICAgICByZXR1cm4gMlxuICAgICAgICAgICAgfSlcbiAgICAgICAgICAgIFwiXCJcIlxuXG4gICAgICAgIGNtcCBcIlwiXCJcbiAgICAgICAgICAgIC0+XG4gICAgICAgICAgICAgICAgMVxuICAgICAgICAgICAgICAgIHJldHVybiAyXG4gICAgICAgICAgICBcIlwiXCIgXCJcIlwiXG4gICAgICAgICAgICAoZnVuY3Rpb24gKClcbiAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICAxXG4gICAgICAgICAgICAgICAgcmV0dXJuIDJcbiAgICAgICAgICAgIH0pXG4gICAgICAgICAgICBcIlwiXCJcblxuICAgICAgICBjbXAgXCJcIlwiXG4gICAgICAgICAgICBhID0gKGEsYixjKSAtPiBkXG4gICAgICAgICAgICBcIlwiXCIgXCJcIlwiXG5cbiAgICAgICAgICAgIGEgPSBmdW5jdGlvbiAoYSwgYiwgYylcbiAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICByZXR1cm4gZFxuICAgICAgICAgICAgfVxuICAgICAgICAgICAgXCJcIlwiXG5cbiAgICAgICAgY21wIFwiXCJcIlxuICAgICAgICAgICAgYS54ID0gKHkseikgLT4gcVxuICAgICAgICAgICAgXCJcIlwiIFwiXCJcIlxuXG4gICAgICAgICAgICBhLnggPSBmdW5jdGlvbiAoeSwgeilcbiAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICByZXR1cm4gcVxuICAgICAgICAgICAgfVxuICAgICAgICAgICAgXCJcIlwiXG5cbiAgICAgICAgY21wIFwiXCJcIlxuICAgICAgICAgICAgYSA9IC0+XG4gICAgICAgICAgICAgICAgYiA9IC0+XG4gICAgICAgICAgICBcIlwiXCIgXCJcIlwiXG5cbiAgICAgICAgICAgIGEgPSBmdW5jdGlvbiAoKVxuICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgIHZhciBiXG5cbiAgICAgICAgICAgICAgICByZXR1cm4gYiA9IGZ1bmN0aW9uICgpXG4gICAgICAgICAgICAgICAge31cbiAgICAgICAgICAgIH1cbiAgICAgICAgICAgIFwiXCJcIlxuXG4gICAgICAgIGNtcCBcIlwiXCJcbiAgICAgICAgICAgIGEgPSAoYixjKSAtPlxuICAgICAgICAgICAgICAgIGIgPSAoZSwgZikgLT4gZ1xuICAgICAgICAgICAgICAgIGJcbiAgICAgICAgICAgIFwiXCJcIiBcIlwiXCJcblxuICAgICAgICAgICAgYSA9IGZ1bmN0aW9uIChiLCBjKVxuICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgIGIgPSBmdW5jdGlvbiAoZSwgZilcbiAgICAgICAgICAgICAgICB7XG4gICAgICAgICAgICAgICAgICAgIHJldHVybiBnXG4gICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgIHJldHVybiBiXG4gICAgICAgICAgICB9XG4gICAgICAgICAgICBcIlwiXCJcblxuICAgICAgICBjbXAgXCJcIlwiXG4gICAgICAgICAgICBhID0gKGIsYykgLT5cbiAgICAgICAgICAgICAgICBiID0gKGUsIGYpIC0+IGhcbiAgICAgICAgICAgIFwiXCJcIiBcIlwiXCJcblxuICAgICAgICAgICAgYSA9IGZ1bmN0aW9uIChiLCBjKVxuICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgIHJldHVybiBiID0gZnVuY3Rpb24gKGUsIGYpXG4gICAgICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgICAgICByZXR1cm4gaFxuICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgIH1cbiAgICAgICAgICAgIFwiXCJcIlxuXG4gICAgICAgIGNtcCBcIlwiXCJcbiAgICAgICAgICAgIGEgPSAoYixjKSAtPlxuICAgICAgICAgICAgICAgIChlLCBmKSAtPiBqXG4gICAgICAgICAgICBcIlwiXCIgXCJcIlwiXG5cbiAgICAgICAgICAgIGEgPSBmdW5jdGlvbiAoYiwgYylcbiAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICByZXR1cm4gZnVuY3Rpb24gKGUsIGYpXG4gICAgICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgICAgICByZXR1cm4galxuICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgIH1cbiAgICAgICAgICAgIFwiXCJcIlxuXG4gICAgICAgIGNtcCBcIlwiXCJcbiAgICAgICAgICAgIGYgPSAtPlxuICAgICAgICAgICAgICAgIChhKSAtPiAxXG4gICAgICAgICAgICBcIlwiXCIgXCJcIlwiXG5cbiAgICAgICAgICAgIGYgPSBmdW5jdGlvbiAoKVxuICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgIHJldHVybiBmdW5jdGlvbiAoYSlcbiAgICAgICAgICAgICAgICB7XG4gICAgICAgICAgICAgICAgICAgIHJldHVybiAxXG4gICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgfVxuICAgICAgICAgICAgXCJcIlwiXG5cbiAgICAgICAgY21wIFwiXCJcIlxuICAgICAgICAgICAgYSA9IC0+XG4gICAgICAgICAgICAgICAgJ2EnXG4gICAgICAgICAgICAxXG5cbiAgICAgICAgICAgIFwiXCJcIiBcIlwiXCJcblxuICAgICAgICAgICAgYSA9IGZ1bmN0aW9uICgpXG4gICAgICAgICAgICB7XG4gICAgICAgICAgICAgICAgcmV0dXJuICdhJ1xuICAgICAgICAgICAgfVxuICAgICAgICAgICAgMVxuICAgICAgICAgICAgXCJcIlwiXG5cbiAgICAgICAgY21wIFwiXCJcIlxuICAgICAgICAgICAgYSA9IC0+XG4gICAgICAgICAgICAgICAgbG9nICdhJ1xuXG4gICAgICAgICAgICBiID0gLT5cbiAgICAgICAgICAgICAgICBsb2cgJ2InXG4gICAgICAgICAgICBcIlwiXCIgXCJcIlwiXG5cbiAgICAgICAgICAgIGEgPSBmdW5jdGlvbiAoKVxuICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgIGNvbnNvbGUubG9nKCdhJylcbiAgICAgICAgICAgIH1cblxuICAgICAgICAgICAgYiA9IGZ1bmN0aW9uICgpXG4gICAgICAgICAgICB7XG4gICAgICAgICAgICAgICAgY29uc29sZS5sb2coJ2InKVxuICAgICAgICAgICAgfVxuICAgICAgICAgICAgXCJcIlwiXG5cbiAgICAgICAgY21wIFwiYSA9ICggYSwgYj0xIGM9MiApIC0+XCIsICBcIlxcbmEgPSBmdW5jdGlvbiAoYSwgYiA9IDEsIGMgPSAyKVxcbnt9XCJcblxuICAgICAgICBjbXAgXCJcIlwiXG4gICAgICAgICAgICBpZiAxIHRoZW4gcmV0dXJuXG4gICAgICAgICAgICBcIlwiXCIgXCJcIlwiXG4gICAgICAgICAgICBpZiAoMSlcbiAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICByZXR1cm5cbiAgICAgICAgICAgIH1cbiAgICAgICAgICAgIFwiXCJcIlxuXG4gICAgICAgIGNtcCBcIlwiXCJcbiAgICAgICAgICAgIGlmIHggdGhlbiByZXR1cm5cbiAgICAgICAgICAgIGFcbiAgICAgICAgICAgIFwiXCJcIiBcIlwiXCJcbiAgICAgICAgICAgIGlmICh4KVxuICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgIHJldHVyblxuICAgICAgICAgICAgfVxuICAgICAgICAgICAgYVxuICAgICAgICAgICAgXCJcIlwiXG5cbiAgICAgICAgY21wIFwiLT4gQGFcIixcbiAgICAgICAgICAgIFwiXCJcIlxuICAgICAgICAgICAgKGZ1bmN0aW9uICgpXG4gICAgICAgICAgICB7XG4gICAgICAgICAgICAgICAgcmV0dXJuIHRoaXMuYVxuICAgICAgICAgICAgfSlcbiAgICAgICAgICAgIFwiXCJcIlxuXG4gICAgICAgIGNtcCBcIihAYSkgLT4gQGFcIixcbiAgICAgICAgICAgIFwiXCJcIlxuICAgICAgICAgICAgKGZ1bmN0aW9uIChhKVxuICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgIHRoaXMuYSA9IGFcbiAgICAgICAgICAgICAgICByZXR1cm4gdGhpcy5hXG4gICAgICAgICAgICB9KVxuICAgICAgICAgICAgXCJcIlwiXG5cbiAgICAgICAgY21wIFwiKEBhLGEpIC0+IGxvZyBAYVwiLFxuICAgICAgICAgICAgXCJcIlwiXG4gICAgICAgICAgICAoZnVuY3Rpb24gKGExLCBhKVxuICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgIHRoaXMuYSA9IGExXG4gICAgICAgICAgICAgICAgY29uc29sZS5sb2codGhpcy5hKVxuICAgICAgICAgICAgfSlcbiAgICAgICAgICAgIFwiXCJcIlxuXG4gICAgIyAwMDAwMDAwMCAgIDAwMDAwMDAwICAwMDAwMDAwMDAgIDAwMCAgIDAwMCAgMDAwMDAwMDAgICAwMDAgICAwMDBcbiAgICAjIDAwMCAgIDAwMCAgMDAwICAgICAgICAgIDAwMCAgICAgMDAwICAgMDAwICAwMDAgICAwMDAgIDAwMDAgIDAwMFxuICAgICMgMDAwMDAwMCAgICAwMDAwMDAwICAgICAgMDAwICAgICAwMDAgICAwMDAgIDAwMDAwMDAgICAgMDAwIDAgMDAwXG4gICAgIyAwMDAgICAwMDAgIDAwMCAgICAgICAgICAwMDAgICAgIDAwMCAgIDAwMCAgMDAwICAgMDAwICAwMDAgIDAwMDBcbiAgICAjIDAwMCAgIDAwMCAgMDAwMDAwMDAgICAgIDAwMCAgICAgIDAwMDAwMDAgICAwMDAgICAwMDAgIDAwMCAgIDAwMFxuXG4gICAgaXQgJ3JldHVybicgLT5cblxuICAgICAgICBjbXAgXCJcIlwiXG4gICAgICAgICAgICBmZiA9IC0+XG4gICAgICAgICAgICAgICAgaWYgMjMyIHRoZW4gcmV0dXJuXG4gICAgICAgICAgICBcIlwiXCIgXCJcIlwiXG4gICAgICAgICAgICBcbiAgICAgICAgICAgIGZmID0gZnVuY3Rpb24gKClcbiAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICBpZiAoMjMyKVxuICAgICAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICAgICAgcmV0dXJuXG4gICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgfVxuICAgICAgICAgICAgXCJcIlwiXG5cbiAgICAgICAgY21wIFwiXCJcIlxuICAgICAgICAgICAgZmZmID0gLT5cbiAgICAgICAgICAgICAgICBpZiAzXG4gICAgICAgICAgICAgICAgICAgIGxvZyAnNDInXG4gICAgICAgICAgICBcIlwiXCIgXCJcIlwiXG5cbiAgICAgICAgICAgIGZmZiA9IGZ1bmN0aW9uICgpXG4gICAgICAgICAgICB7XG4gICAgICAgICAgICAgICAgaWYgKDMpXG4gICAgICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgICAgICBjb25zb2xlLmxvZygnNDInKVxuICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgIH1cbiAgICAgICAgICAgIFwiXCJcIlxuXG4gICAgICAgIGNtcCBcIlwiXCJcbiAgICAgICAgICAgIGZmZmYgPSAtPlxuICAgICAgICAgICAgICAgIGlmIDRcbiAgICAgICAgICAgICAgICAgICAgJzQyJ1xuICAgICAgICAgICAgXCJcIlwiIFwiXCJcIlxuXG4gICAgICAgICAgICBmZmZmID0gZnVuY3Rpb24gKClcbiAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICBpZiAoNClcbiAgICAgICAgICAgICAgICB7XG4gICAgICAgICAgICAgICAgICAgIHJldHVybiAnNDInXG4gICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgfVxuICAgICAgICAgICAgXCJcIlwiXG5cbiAgICAgICAgY21wIFwiXCJcIlxuICAgICAgICAgICAgLT5cbiAgICAgICAgICAgICAgICBpZiAxIHRoZW4gaFxuICAgICAgICAgICAgICAgIGVsc2UgaWYgMlxuICAgICAgICAgICAgICAgICAgICBpZiAzIHRoZW4gaiBlbHNlIGtcbiAgICAgICAgICAgICAgICBlbHNlIGxcbiAgICAgICAgICAgIFwiXCJcIiBcIlwiXCJcbiAgICAgICAgICAgIChmdW5jdGlvbiAoKVxuICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgIGlmICgxKVxuICAgICAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGhcbiAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgZWxzZSBpZiAoMilcbiAgICAgICAgICAgICAgICB7XG4gICAgICAgICAgICAgICAgICAgIGlmICgzKVxuICAgICAgICAgICAgICAgICAgICB7XG4gICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4galxuICAgICAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgICAgIGVsc2VcbiAgICAgICAgICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGtcbiAgICAgICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICBlbHNlXG4gICAgICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgICAgICByZXR1cm4gbFxuICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgIH0pXG4gICAgICAgICAgICBcIlwiXCJcblxuICAgICAgICBjbXAgXCJcIlwiXG4gICAgICAgICAgICByZXR1cm4gJ1EnIGlmIHQgPT0gJ1cnXG4gICAgICAgICAgICBcIlwiXCIgXCJcIlwiXG4gICAgICAgICAgICBpZiAodCA9PT0gJ1cnKVxuICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgIHJldHVybiAnUSdcbiAgICAgICAgICAgIH1cbiAgICAgICAgICAgIFwiXCJcIlxuICAgICAgICAgICAgXG4gICAgICAgIGNtcCBcIlwiXCJcbiAgICAgICAgICAgIHJldHVybiBpZiBub3QgWFhYXG4gICAgICAgICAgICBcIlwiXCIgXCJcIlwiXG4gICAgICAgICAgICBpZiAoIVhYWClcbiAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICByZXR1cm5cbiAgICAgICAgICAgIH1cbiAgICAgICAgICAgIFwiXCJcIlxuICAgICAgICAgICAgXG4gICAgICAgIGNtcCBcIlwiXCJcbiAgICAgICAgICAgIGZmZmZmID0gLT5cbiAgICAgICAgICAgICAgICB0cnlcbiAgICAgICAgICAgICAgICAgICAgJ3JldHVybiBtZSEnXG4gICAgICAgICAgICAgICAgY2F0Y2ggZVxuICAgICAgICAgICAgICAgICAgICBlcnJvciBlXG4gICAgICAgICAgICBcIlwiXCIgXCJcIlwiXG4gICAgICAgICAgICBcbiAgICAgICAgICAgIGZmZmZmID0gZnVuY3Rpb24gKClcbiAgICAgICAgICAgIHtcbiAgICAgICAgICAgICAgICB0cnlcbiAgICAgICAgICAgICAgICB7XG4gICAgICAgICAgICAgICAgICAgIHJldHVybiAncmV0dXJuIG1lISdcbiAgICAgICAgICAgICAgICB9XG4gICAgICAgICAgICAgICAgY2F0Y2ggKGUpXG4gICAgICAgICAgICAgICAge1xuICAgICAgICAgICAgICAgICAgICBjb25zb2xlLmVycm9yKGUpXG4gICAgICAgICAgICAgICAgfVxuICAgICAgICAgICAgfVxuICAgICAgICAgICAgXCJcIlwiXG4iXX0=
-//# sourceURL=func.coffee
+describe('func',function ()
+{
+    it('func',function ()
+    {
+        cmp('->','(function ()\n{})')
+        cmp('(a) ->','(function (a)\n{})')
+        cmp('(a,b,c) ->','(function (a, b, c)\n{})')
+        cmp('a = (a,b) ->','\na = function (a, b)\n{}')
+        cmp(`-> return 1`,`(function ()
+{
+    return 1
+})`)
+        cmp(`->
+    1
+    2`,`(function ()
+{
+    1
+    return 2
+})`)
+        cmp(`->
+    return 1
+    2`,`(function ()
+{
+    return 1
+    return 2
+})`)
+        cmp(`->
+    1
+    return 2`,`(function ()
+{
+    1
+    return 2
+})`)
+        cmp(`a = (a,b,c) -> d`,`
+a = function (a, b, c)
+{
+    return d
+}`)
+        cmp(`a.x = (y,z) -> q`,`
+a.x = function (y, z)
+{
+    return q
+}`)
+        cmp(`a = ->
+    b = ->`,`
+a = function ()
+{
+    var b
+
+    return b = function ()
+    {}
+}`)
+        cmp(`a = (b,c) ->
+    b = (e, f) -> g
+    b`,`
+a = function (b, c)
+{
+    b = function (e, f)
+    {
+        return g
+    }
+    return b
+}`)
+        cmp(`a = (b,c) ->
+    b = (e, f) -> h`,`
+a = function (b, c)
+{
+    return b = function (e, f)
+    {
+        return h
+    }
+}`)
+        cmp(`a = (b,c) ->
+    (e, f) -> j`,`
+a = function (b, c)
+{
+    return function (e, f)
+    {
+        return j
+    }
+}`)
+        cmp(`f = ->
+    (a) -> 1`,`
+f = function ()
+{
+    return function (a)
+    {
+        return 1
+    }
+}`)
+        cmp(`a = ->
+    'a'
+1
+`,`
+a = function ()
+{
+    return 'a'
+}
+1`)
+        cmp(`a = ->
+    log 'a'
+
+b = ->
+    log 'b'`,`
+a = function ()
+{
+    console.log('a')
+}
+
+b = function ()
+{
+    console.log('b')
+}`)
+        cmp("a = ( a, b=1 c=2 ) ->","\na = function (a, b = 1, c = 2)\n{}")
+        cmp(`if 1 then return`,`if (1)
+{
+    return
+}`)
+        cmp(`if x then return
+a`,`if (x)
+{
+    return
+}
+a`)
+        cmp("-> @a",`(function ()
+{
+    return this.a
+})`)
+        cmp("(@a) -> @a",`(function (a)
+{
+    this.a = a
+    return this.a
+})`)
+        return cmp("(@a,a) -> log @a",`(function (a1, a)
+{
+    this.a = a1
+    console.log(this.a)
+})`)
+    })
+    return it('return',function ()
+    {
+        cmp(`ff = ->
+    if 232 then return`,`
+ff = function ()
+{
+    if (232)
+    {
+        return
+    }
+}`)
+        cmp(`fff = ->
+    if 3
+        log '42'`,`
+fff = function ()
+{
+    if (3)
+    {
+        console.log('42')
+    }
+}`)
+        cmp(`ffff = ->
+    if 4
+        '42'`,`
+ffff = function ()
+{
+    if (4)
+    {
+        return '42'
+    }
+}`)
+        cmp(`->
+    if 1 then h
+    else if 2
+        if 3 then j else k
+    else l`,`(function ()
+{
+    if (1)
+    {
+        return h
+    }
+    else if (2)
+    {
+        if (3)
+        {
+            return j
+        }
+        else
+        {
+            return k
+        }
+    }
+    else
+    {
+        return l
+    }
+})`)
+        cmp(`return 'Q' if t == 'W'`,`if (t === 'W')
+{
+    return 'Q'
+}`)
+        cmp(`return if not XXX`,`if (!XXX)
+{
+    return
+}`)
+        return cmp(`fffff = ->
+    try
+        'return me!'
+    catch e
+        error e`,`
+fffff = function ()
+{
+    try
+    {
+        return 'return me!'
+    }
+    catch (e)
+    {
+        console.error(e)
+    }
+}`)
+    })
+})
