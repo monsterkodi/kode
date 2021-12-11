@@ -4,7 +4,7 @@
 
 It is highly inspired by and *tries* to be compatible with [CoffeeScript](http://coffeescript.org), while adding some features and even further its minimalistic approach.
 
-Right now (end of 2021) it is a work in progress, but it works well enough that it can transpile itself.
+Right now (end of 2021) it is a work in progress, but works well enough that it can transpile itself.
 
 # A list of things that work already:
 
@@ -138,13 +138,13 @@ A new object, array or string is build from the results and returned:
 ## For
 
 ```coffeescript
-l = null
-for a in l
+x = null
+for a in x
     log 'hello'
 ```
 
 The above code would throw an exception at runtime in CoffeeScript.
-**kode** generates code that doesn't fail if l is not an array
+**kode** generates code that doesn't fail if x is not an array
 
 ## Constructor shortcut
 
@@ -225,32 +225,26 @@ f()                            # -> a 824μs
 While my first CoffeeScript clone [**koffee**](http://github.com/monsterkodi/koffee) is backwards compatible with CoffeeScript v1,
 I don't intend to do the same with **kode**, but converting coffee to kode shouldn't be too painful.
 
-## Future plans
-
-Fix 
-
-- error messages
-- ? operator : precedence 
-- sourcemaps
-
-Since I will most likely be the only person using **kode**, it's probably wise to ditch the stuff I don't need:
+Stuff I rarely used and therefore didn't bother to re-implement:
 
 - REPL
-- *cake* / *kake*
-- literal coffeescript / ▸doc macro
+- *cake*
+- literal coffeescript
 - `unless`  `until` `or=` `by` ...
 - `when` outside of `switch`
 - wrapper code
-- **koffee** macros in general
 - string interpolation in object keys
 - implicitly returning arrays if last expression is a loop
 
-This is what I would like to add instead:
+# Future plans
 
 - native tests
+- error messages
+- sourcemaps
 - use `is` for `instanceof`/`typeof`
+- ? operator : precedence 
 - `include` keyword to merge source files
-- native `dbg`  `assert`  `profile` instead of macros
+- `dbg`  `assert`  `profile` keywords
 - `profile` in same scope
 - `await`?
 
