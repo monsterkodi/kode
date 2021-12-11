@@ -44,7 +44,7 @@ describe 'test' ->
                 {
                     cmp(1, 1)
                     cmp(true, true)
-                }
+                })
                 section("sub2", function ()
                 {
                     section("subsub", function ()
@@ -52,14 +52,14 @@ describe 'test' ->
                         cmp('a', 'a')
                         cmp(1, 1)
                         cmp(\`ok\`, \`ok\`)
-                    }
-                }
+                    })
+                })
             }
             module.exports["test2"] = function ()
             {
                 section("sub", function ()
                 {
                     cmp(2, 2)
-                }
+                })
             }
             """

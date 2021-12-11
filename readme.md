@@ -144,7 +144,7 @@ for a in x
 ```
 
 The above code would throw an exception at runtime in CoffeeScript.
-**kode** generates code that doesn't fail if x is not an array
+**kode** generates code that doesn't fail if x is not an array.
 
 ## Constructor shortcut
 
@@ -168,7 +168,7 @@ a = [x for x in l]      # -> [1,2,3]
 a = (x for x in l)      # -> [1,2,3]
 ````
 
-**kode** doesn't distuinguish between round and square brackets around list comprehensions
+**kode** doesn't distuinguish between round and square brackets around list comprehensions.
 
 ## Ternary condition operator
 
@@ -185,7 +185,7 @@ null ? a: 'b'     # -> {a:'b'}
 
 ## Old school classes
 
-**kode** gives you the option to use the old school `function` style classes of CoffeeScript v1
+**kode** gives you the option to use the old school `function` style classes of CoffeeScript v1:
 
 ```coffeescript
 function C

@@ -1252,7 +1252,7 @@ class Renderer
           + gi + '{\n' \
           + @indent + @nodes(p.exps, '\n'+@indent) \
           + '\n' \
-          + gi + '}'
+          + gi + '})'
         @ded()
         s
         
