@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.84.0
+// monsterkodi/kode 0.86.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
@@ -69,7 +69,7 @@ register = function ()
 
 lastLineCol = function (e)
 {
-    var _79_13_, _82_30_, cols
+    var _73_13_, _76_30_, cols
 
     if (((e != null ? e.col : undefined) != null))
     {
@@ -109,7 +109,7 @@ lastLineCol = function (e)
 
 firstLineCol = function (e)
 {
-    var _102_13_, cols
+    var _96_13_, cols
 
     if (((e != null ? e.col : undefined) != null))
     {

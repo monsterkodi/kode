@@ -67,28 +67,30 @@ function Parse # the base class of Parser
         while tokens.length
             
             numTokens = tokens.length
+            tok = tokens[0]
             
             b = switch @stack[-1]
             
-                when '▸arg'                 then es.length
-                when 'if' 'switch' 'then' '▸else'  then tokens[0].text == 'else'
-                when '['                    then tokens[0].text == ']'  
-                when '{'                    then tokens[0].text in '}'
-                when '('                    then tokens[0].text == ')'
-                when '▸args'                then tokens[0].text in [']' ';' 'else' 'then']
-                when '▸return'              then tokens[0].text == 'if'
-                when 'call'                 then tokens[0].text in ';' # bail out for implicit calls
-                                                                                   
-                when rule                   then tokens[0].text == stop and tokens[0].type != 'var'
-                else false
+                '▸arg'          ➜ es.length
+                'switch'
+                'if' 'then' 
+                '▸else'         ➜ tok.text == 'else'
+                '['             ➜ tok.text == ']'  
+                '{'             ➜ tok.text in '}'
+                '('             ➜ tok.text == ')'
+                '▸args'         ➜ tok.text in [']' ';' 'else' 'then']
+                '▸return'       ➜ tok.text == 'if'
+                'call'          ➜ tok.text in ';' # bail out for implicit calls
+                rule            ➜ tok.text == stop and tok.type != 'var'
+                                ➜ false
 
-            if b then @verb "exps break for #{tokens[0].text} and stack top" @stack ; break 
+            if b then @verb "exps break for #{tok.text} and stack top" @stack ; break 
                 
-            if stop and tokens[0].text == stop and tokens[0].type != 'var'
-                @verb "exps break for #{tokens[0].text} and stop" stop 
+            if stop and tok.text == stop and tok.type != 'var'
+                @verb "exps break for #{tok.text} and stop" stop 
                 break 
                     
-            if tokens[0].type == 'block'
+            if tok.type == 'block'
     
                 if stop in ['nl']
                     @verb "exps block start with stop #{stop} break!"
@@ -98,12 +100,8 @@ function Parse # the base class of Parser
     
                 @verb "exps block start stop:#{stop} block:" block
 
-                # print.ast 'exps block start' es if @debug
-                
                 blocked = true
                 blockExps = @exps 'block' block.tokens
-                
-                # print.ast 'exps block start' blockExps if @debug
                 
                 es = es.concat blockExps
 
@@ -125,15 +123,13 @@ function Parse # the base class of Parser
                     continue
                     
                 @verb 'exps block end, break!'
-                # print.ast 'exps block end, break!' es if @debug
                 break
                 
-            # if tokens[0].type == 'block'                                then @verb 'exps break on block'   ; break
-            if tokens[0].text == ')'                                    then @verb 'exps break on )'       ; break
-            if tokens[0].text in ['in''of']   and rule == 'for vals'    then @verb 'exps break on in|of'   ; break
-            if tokens[0].type == 'nl' 
+            if tok.text == ')'                                    then @verb 'exps break on )'       ; break
+            if tok.text in ['in''of']   and rule == 'for vals'    then @verb 'exps break on in|of'   ; break
+            if tok.type == 'nl' 
                 
-                @verb 'exps nl stop:' stop, tokens[0], @stack
+                @verb 'exps nl stop:' stop, tok, @stack
                     
                 if @stack[-1] == '[' and tokens[1]?.text == ']'
                     @shiftNewline 'exps nl ] in array' tokens
@@ -156,7 +152,7 @@ function Parse # the base class of Parser
                 @verb 'exps nl continue...'
                 continue
                 
-            if tokens[0].text == ',' 
+            if tok.text == ',' 
                 if @stack[-1] in ['▸args']
                     @verb 'exps comma continues args ...'
                     tokens.shift()
@@ -231,7 +227,7 @@ function Parse # the base class of Parser
             when 'block'    then return error "INTERNAL ERROR: unexpected block token in exp!"
             when 'nl'       then return error "INTERNAL ERROR: unexpected nl token in exp!"
             when ';'        then return error "INTERNAL ERROR: unexpected ; token in exp!"
-                
+            when 'section'  then return @section tok, tokens                
             when 'keyword' # dispatch to block rules identified by keyword
                 
                 if tokens[0]?.text not in ':' # allow keywords as keys
@@ -239,8 +235,7 @@ function Parse # the base class of Parser
                         when 'return'   then return @return   tok, tokens
                         when 'switch'   then return @switch   tok, tokens
                         when 'class'    then return @class    tok, tokens
-                        when 'function' then return @function tok, tokens
-                        when 'section'  then return @section  tok, tokens
+                        when 'function' then return @function tok, tokens                        
                         when 'while'    then return @while    tok, tokens
                         when 'when'     then return @when     tok, tokens
                         when 'try'      then return @try      tok, tokens

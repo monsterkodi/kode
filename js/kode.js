@@ -1,3 +1,5 @@
+// monsterkodi/kode 0.86.0
+
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var slash, kstr, klor, karg, childp, print, pkg, register, args, kode
@@ -24,6 +26,10 @@ class Kode
         if (this.args.verbose)
         {
             this.args.debug = this.args.block = this.args.tokens = this.args.parse = true
+        }
+        if (this.args.tokens || this.args.block || this.args.parse || this.args.astr)
+        {
+            this.args.run = false
         }
         this.literals = ['bool','num','regex','single','double','triple']
         this.atoms = this.literals.concat(['var'])
@@ -133,9 +139,9 @@ class Kode
             }
             _module.filename = sandbox.__filename
             var list = _k_.list(Object.getOwnPropertyNames(require))
-            for (var _114_18_ = 0; _114_18_ < list.length; _114_18_++)
+            for (var _115_18_ = 0; _115_18_ < list.length; _115_18_++)
             {
-                r = list[_114_18_]
+                r = list[_115_18_]
                 if (!(_k_.in(r,['paths','arguments','caller','length','name'])))
                 {
                     _require[r] = require[r]
@@ -178,9 +184,9 @@ class Kode
             return
         }
         var list = _k_.list(this.args.files)
-        for (var _146_17_ = 0; _146_17_ < list.length; _146_17_++)
+        for (var _147_17_ = 0; _147_17_ < list.length; _147_17_++)
         {
-            file = list[_146_17_]
+            file = list[_147_17_]
             file = slash.resolve(file)
             if (this.args.verbose)
             {

@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('../stage/kode');
+require('../stage0/kode');

@@ -1,5 +1,3 @@
-// monsterkodi/kode 0.84.0
-
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var cmp, evl
@@ -16,7 +14,7 @@ describe('misc',function ()
         cmp('@a.b','this.a.b')
         cmp('@a.b()','this.a.b()')
         cmp('t = @','t = this')
-        cmp("a.on 'b', @c","a.on('b',this.c)")
+        cmp("a.on 'b' @c","a.on('b',this.c)")
         cmp("a.on 'b' @c","a.on('b',this.c)")
         cmp(`if @
     1`,`if (this)
@@ -135,7 +133,7 @@ kstr = require('kstr')`)
         cmp('a instanceof b','a instanceof b')
         return cmp('a instanceof b == true','a instanceof b === true')
     })
-    return it('in condition',function ()
+    it('in condition',function ()
     {
         cmp("a in l","_k_.in(a,l)")
         cmp("a in 'xyz'","_k_.in(a,'xyz')")
@@ -155,5 +153,28 @@ kstr = require('kstr')`)
 {
     2
 }`)
+    })
+    return it('primes',function ()
+    {
+        return evl(`eratosthenes = (n) ->
+    
+    prime = [x < 2 and 1 or 0 for x in 0..n]
+    
+    for i in 0..Math.sqrt n
+        
+        if prime[i] == 0
+            
+            l = 2
+
+            while true
+                
+                break if n < j = i * l++
+
+                prime[j] = 1
+
+    prime = prime each (i,p) -> [i, parseInt p ? 0 : i]
+    prime = prime.filter (p) -> p
+                
+eratosthenes 100`,[2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97])
     })
 })

@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.84.0
+// monsterkodi/kode 0.86.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
@@ -669,6 +669,33 @@ col = firstLineCol(key).col
     Parser.prototype["this"] = function (obj, tokens)
     {
         return {prop:{obj:obj,dot:{type:'punct',text:'.',line:obj.line,col:obj.col},prop:tokens.shift()}}
+    }
+
+    Parser.prototype["section"] = function (tok, tokens)
+    {
+        var title, exps
+
+        title = {type:'double',text:'"' + tok.text + '"',line:tok.line,col:tok.col}
+        if (_k_.in('section',this.stack))
+        {
+            this.push('subsect')
+            exps = this.block('subsect',tokens)
+            this.pop('subsect')
+            return {subsect:{title:title,exps:exps}}
+        }
+        else
+        {
+            this.push('section')
+            exps = this.block('section',tokens)
+            this.pop('section')
+            return {section:{title:title,exps:exps}}
+        }
+    }
+
+    Parser.prototype["test"] = function (lhs, tokens)
+    {
+        tokens.shift()
+        return {test:{lhs:lhs,rhs:this.block('test')}}
     }
 
     Parser.prototype["error"] = function (o, tokens)

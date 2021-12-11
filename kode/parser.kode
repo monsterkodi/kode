@@ -872,16 +872,23 @@ function Parser extends Parse
     
     section: (tok, tokens) ->
         
-        log 'section' tok, tokens
-        if tokens[0]?.type == 'block' and tokens[0].tokens[0]?.type == 'section'
-            section:
-                text: tok.text
-                subs: @section tokens[0].tokens.shift(), tokens[0].tokens
+        title = type:'double' text:'"'+tok.text+'"' line:tok.line, col:tok.col
+        
+        if 'section' in @stack
+            @push 'subsect'
+            exps = @block 'subsect' tokens
+            @pop 'subsect'
+            subsect:
+                title:  title
+                exps:   exps
         else
+            @push 'section'
+            exps = @block 'section' tokens
+            @pop 'section'
             section:
-                text: tok.text
-                exps: @block 'subs' tokens
-                
+                title:  title
+                exps:   exps
+        
     # 000000000  00000000   0000000  000000000  
     #    000     000       000          000     
     #    000     0000000   0000000      000     

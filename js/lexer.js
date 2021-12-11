@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.84.0
+// monsterkodi/kode 0.86.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
@@ -40,7 +40,7 @@ class Lexer
 
     tokenize (text)
     {
-        var tokens, line, col, before, key, reg, match, value, lines, after
+        var tokens, line, col, before, key, reg, match, value, lines, end, txt, after
 
         tokens = []
         line = 1
@@ -87,6 +87,27 @@ class Lexer
                             col += value.length
                         }
                     }
+                    else if (key === 'test')
+                    {
+                        if (!(tokens.slice(-2,-1)[0] != null) || tokens.slice(-2,-1)[0].type === 'nl' || tokens.slice(-2,-1)[0].type === 'ws' && (tokens.slice(-3,-2)[0] != null ? tokens.slice(-3,-2)[0].type : undefined) === 'nl')
+                        {
+                            end = text.indexOf('\n')
+                            if (end < 0)
+                            {
+                                end = -1
+                            }
+                            txt = kstr.strip(text.slice(1, typeof end === 'number' ? end+1 : Infinity),' \n')
+                            tokens.slice(-1)[0].type = 'section'
+                            tokens.slice(-1)[0].text = txt
+                            text = text.slice(end)
+                            break
+                        }
+                        else
+                        {
+                            tokens.slice(-1)[0].type = 'op'
+                            tokens.slice(-1)[0].text = kstr.strip(tokens.slice(-1)[0].text,' \n')
+                        }
+                    }
                     else
                     {
                         col += value.length
@@ -111,9 +132,9 @@ class Lexer
         var tok, splt, minind
 
         var list = _k_.list(tokens)
-        for (var _106_16_ = 0; _106_16_ < list.length; _106_16_++)
+        for (var _120_16_ = 0; _120_16_ < list.length; _120_16_++)
         {
-            tok = list[_106_16_]
+            tok = list[_120_16_]
             if (tok.type === 'triple')
             {
                 splt = tok.text.slice(3, -3).split('\n')

@@ -24,7 +24,7 @@ describe 'misc' ->
         cmp '@a.b()' 'this.a.b()'
         cmp 't = @'  't = this'
         
-        cmp "a.on 'b', @c", "a.on('b',this.c)" 
+        cmp "a.on 'b' @c", "a.on('b',this.c)" 
         cmp "a.on 'b' @c", "a.on('b',this.c)" 
 
         cmp """
@@ -263,7 +263,36 @@ describe 'misc' ->
             """
             
         # cmp "a = ( a:1 b:2 ) ->",     "a = function(arg)"
-                                
+
+    it 'primes' ->
+
+        evl """
+            eratosthenes = (n) ->
+                
+                prime = [x < 2 and 1 or 0 for x in 0..n]
+                
+                for i in 0..Math.sqrt n
+                    
+                    if prime[i] == 0
+                        
+                        l = 2
+            
+                        while true
+                            
+                            break if n < j = i * l++
+            
+                            prime[j] = 1
+            
+                prime = prime each (i,p) -> [i, parseInt p ? 0 : i]
+                prime = prime.filter (p) -> p
+                            
+            eratosthenes 100
+            """, 
+            [
+              2  3  5  7  11 13 17 19 23 29 31 37 41 43 47 
+              53 59 61 67 71 73 79 83 89 97
+            ]
+        
     #  0000000   0000000   00     00  00     00  00000000  000   000  000000000   0000000
     # 000       000   000  000   000  000   000  000       0000  000     000     000
     # 000       000   000  000000000  000000000  0000000   000 0 000     000     0000000

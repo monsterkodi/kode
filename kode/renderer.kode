@@ -135,6 +135,7 @@ class Renderer
                 when 'qmrkcolon' then @qmrkcolon v
                 when 'operation' then @operation v
                 when 'section'   then @section v
+                when 'subsect'   then @subsect v
                 when 'incond'    then @incond v
                 when 'parens'    then @parens v
                 when 'object'    then @object v
@@ -1039,34 +1040,39 @@ class Renderer
 
         open = close = ''
         
-        if o == '='
+        if 
+            o == '='
             
-            if op.lhs.object # lhs is curly, eg. {x,y} = require ''
-                s = ''
-                for keyval in op.lhs.object.keyvals
-                    s += "#{keyval.text} = #{@atom(op.rhs)}.#{keyval.text}\n"
-                return s
-                
-            if op.lhs.array # lhs is aray, eg. [x,y] = require ''
-                s = ''
-                for val in op.lhs.array.items
-                    i = op.lhs.array.items.indexOf val
-                    s += (i and @indent or '') + "#{val.text} = #{@atom(op.rhs)}[#{i}]\n"
-                return s
-                
-        else if o == '!'
-
-            if op.rhs?.incond or op.rhs?.operation?.operator?.text == '='
-                    open = '('
-                    close = ')'
+                if op.lhs.object # lhs is curly, eg. {x,y} = require ''
+                    s = ''
+                    for keyval in op.lhs.object.keyvals
+                        s += "#{keyval.text} = #{@atom(op.rhs)}.#{keyval.text}\n"
+                    return s
                     
-        else if op.operator.text in ['empty' 'valid']
-            open = '('
-            close = ')'
+                if op.lhs.array # lhs is aray, eg. [x,y] = require ''
+                    s = ''
+                    for val in op.lhs.array.items
+                        i = op.lhs.array.items.indexOf val
+                        s += (i and @indent or '') + "#{val.text} = #{@atom(op.rhs)}[#{i}]\n"
+                    return s
+                
+            o == '!'
+
+                if op.rhs?.incond or op.rhs?.operation?.operator?.text == '='
+                        open = '('
+                        close = ')'
+                        
+            o == '▸'
+            
+                return "cmp(#{@atom(op.lhs)}, #{@atom(op.rhs)})"
+                    
+            op.operator.text in ['empty' 'valid']
+                open = '('
+                close = ')'
                             
-        else if op.rhs?.operation?.operator.text == '='
-            open = '('
-            close = ')'
+            op.rhs?.operation?.operator.text == '='
+                open = '('
+                close = ')'
             
         first = firstLineCol op.lhs
         prfx = if first.col == 0 and op.rhs?.func then '\n' else ''
@@ -1199,32 +1205,6 @@ class Renderer
         else
             o = if p.dots.text == '...' then '<' else '<='
             "(function() { var r = []; for (var i = #{@node p.from}; i #{o} #{@node p.upto}; i++){ r.push(i); } return r; }).apply(this)"
-
-    # 00000000  00000000   00000000   0000000  000   000  000   000   0000000   00000000   
-    # 000       000   000  000       000       000   000  000   000  000   000  000   000  
-    # 000000    0000000    0000000   0000000   000000000   000 000   000000000  0000000    
-    # 000       000   000  000            000  000   000     000     000   000  000   000  
-    # 000       000   000  00000000  0000000   000   000      0      000   000  000   000  
-    
-    freshVar: (name, suffix=0) ->
-
-        for vars in @varstack
-            for v in vars
-                if v.text == name + (suffix or '')
-                    return @freshVar name, suffix+1
-
-        @varstack[-1].push text:name + (suffix or '')
-        name + (suffix or '')
-
-    verb: -> if @verbose then console.log.apply console.log, arguments
-    
-    ind: ->
-
-        oi = @indent
-        @indent += '    '
-        oi
-
-    ded: -> @indent = @indent[...-4]
         
     #  0000000  000000000  00000000   000  00000000    0000000   000      
     # 000          000     000   000  000  000   000  000   000  000      
@@ -1256,9 +1236,24 @@ class Renderer
     
     section: (p) ->
         
-        s = "section #{p.text}\n"    \
-          + @nodes p.exps if p.exps? \
-          + @node  p.subs if p.subs?
+        gi = @ind()
+        s = "module.exports[#{p.title.text}] = function ()\n" \
+          + gi + '{\n' \
+          + @indent + @nodes(p.exps, '\n'+@indent, true) \
+          + '\n' \
+          + gi + '}'
+        @ded()
+        s
+        
+    subsect: (p) ->
+        
+        gi = @ind()
+        s = "section(#{p.title.text}, function ()\n" \
+          + gi + '{\n' \
+          + @indent + @nodes(p.exps, '\n'+@indent) \
+          + '\n' \
+          + gi + '}'
+        @ded()
         s
         
     test: (p) ->
@@ -1269,5 +1264,31 @@ class Renderer
           + @node p.lhs       \
           + ')\n'
         s
+        
+    # 00000000  00000000   00000000   0000000  000   000  000   000   0000000   00000000   
+    # 000       000   000  000       000       000   000  000   000  000   000  000   000  
+    # 000000    0000000    0000000   0000000   000000000   000 000   000000000  0000000    
+    # 000       000   000  000            000  000   000     000     000   000  000   000  
+    # 000       000   000  00000000  0000000   000   000      0      000   000  000   000  
+    
+    freshVar: (name, suffix=0) ->
+
+        for vars in @varstack
+            for v in vars
+                if v.text == name + (suffix or '')
+                    return @freshVar name, suffix+1
+
+        @varstack[-1].push text:name + (suffix or '')
+        name + (suffix or '')
+
+    verb: -> if @verbose then console.log.apply console.log, arguments
+    
+    ind: ->
+
+        oi = @indent
+        @indent += '    '
+        oi
+
+    ded: -> @indent = @indent[...-4]
        
 module.exports = Renderer
