@@ -1,5 +1,3 @@
-// monsterkodi/kode 0.82.0
-
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
 var slash, kstr, klor, karg, childp, print, pkg, register, args, kode
@@ -226,9 +224,10 @@ if (!module.parent || slash.resolve(module.parent.path).endsWith('/kode/bin'))
     args = karg(`kode option
     files       . **
     eval        . ? evaluate a string and print the result
-    compile     . ? compile a string and print the result
+    compile     . ? transpile a string and print the result
     outdir      . ? output directory for transpiled files
-    run         . ? execute file                            . = true
+    run         . ? execute files                           . = true
+    test        . ? execute tests                           . = false
     map         . ? generate inline source maps             . = true
     kode        . ? pretty print input code                 . = false
     js          . ? pretty print transpiled js code         . = false
@@ -238,7 +237,7 @@ if (!module.parent || slash.resolve(module.parent.path).endsWith('/kode/bin'))
     parse       . ? print parse tree                        . = false  . - P
     astr        . ? print parse tree as string              . = false  . - A
     scope       . ? print scopes                            . = false  . - S
-    verbose     . ? log more                                . = false
+    verbose     . ? log everything                          . = false
     debug       . ? log debug                               . = false
     raw         . ? log raw                                 . = false  . - R
 

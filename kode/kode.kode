@@ -27,6 +27,7 @@ class Kode
         @args ?= {}
 
         if @args.verbose then @args.debug = @args.block = @args.tokens = @args.parse = true
+        if @args.tokens or @args.block or @args.parse or @args.astr then @args.run = false
 
         @literals = ['bool''num''regex''single''double''triple']
         @atoms    = @literals.concat ['var']
@@ -76,7 +77,7 @@ class Kode
         tokens = @lexer.tokenize text
 
         if @args.raw    then print.noon 'raw tokens' tokens
-        if @args.tokens then print.tokens 'tokens' tokens
+        if @args.tokens then print.tokens 'tokens'   tokens
 
         block = @lexer.blockify tokens
 
@@ -108,8 +109,8 @@ class Kode
 
         if not (sandbox.module or sandbox.require) or file
             Module = require 'module'
-            sandbox.module  = _module  = new Module 'eval'
-            sandbox.require = _require = (file) -> Module._load file, _module, true
+            sandbox.module   = _module  = new Module 'eval'
+            sandbox.require  = _require = (file) -> Module._load file, _module, true
             _module.filename = sandbox.__filename
             for r in Object.getOwnPropertyNames require
                 if r not in ['paths' 'arguments' 'caller' 'length' 'name']
@@ -179,9 +180,10 @@ if not module.parent or slash.resolve(module.parent.path).endsWith '/kode/bin'
         kode option
             files       . **
             eval        . ? evaluate a string and print the result
-            compile     . ? compile a string and print the result
+            compile     . ? transpile a string and print the result
             outdir      . ? output directory for transpiled files
-            run         . ? execute file                            . = true
+            run         . ? execute files                           . = true
+            test        . ? execute tests                           . = false
             map         . ? generate inline source maps             . = true
             kode        . ? pretty print input code                 . = false
             js          . ? pretty print transpiled js code         . = false
@@ -191,7 +193,7 @@ if not module.parent or slash.resolve(module.parent.path).endsWith '/kode/bin'
             parse       . ? print parse tree                        . = false  . - P
             astr        . ? print parse tree as string              . = false  . - A
             scope       . ? print scopes                            . = false  . - S
-            verbose     . ? log more                                . = false
+            verbose     . ? log everything                          . = false
             debug       . ? log debug                               . = false
             raw         . ? log raw                                 . = false  . - R
 

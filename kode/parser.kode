@@ -706,12 +706,12 @@ function Parser extends Parse
         
         exps = [@keyval key, tokens]
         
-        literals = @kode.atoms.concat ['keyword'] #['single''double''triple''var''keyword''num''bool''regex']
+        literals = @kode.atoms.concat ['keyword']
         
         while tokens.length
             if tokens[0]?.type == 'nl'
                 break if tokens[1]?.type not in literals
-                break if tokens[2]?.text not in ': ' # space checks for newline!
+                break if tokens[2]?.text not in ': ' # ◂ the space checks for newline!
                 
                 if tokens[1]?.col >= first.col and tokens[1].text not in '])'
                     @shiftNewline 'continue implicit object on nl...' tokens
@@ -862,11 +862,44 @@ function Parser extends Parse
             obj:  obj
             dot:  type:'punct' text:'.' line:obj.line, col:obj.col
             prop: tokens.shift()
+            
+            
+    #  0000000  00000000   0000000  000000000  000   0000000   000   000  
+    # 000       000       000          000     000  000   000  0000  000  
+    # 0000000   0000000   000          000     000  000   000  000 0 000  
+    #      000  000       000          000     000  000   000  000  0000  
+    # 0000000   00000000   0000000     000     000   0000000   000   000  
+    
+    section: (tok, tokens) ->
+        
+        log 'section' tok, tokens
+        if tokens[0]?.type == 'block' and tokens[0].tokens[0]?.type == 'section'
+            section:
+                text: tok.text
+                subs: @section tokens[0].tokens.shift(), tokens[0].tokens
+        else
+            section:
+                text: tok.text
+                exps: @block 'subs' tokens
+                
+    # 000000000  00000000   0000000  000000000  
+    #    000     000       000          000     
+    #    000     0000000   0000000      000     
+    #    000     000            000     000     
+    #    000     00000000  0000000      000     
+    
+    test: (lhs, tokens) ->
+        
+        tokens.shift()
+        
+        test:
+            lhs: lhs
+            rhs: @block 'test'
 
     error: (o, tokens) ->
         
         @pop o.pop if o.pop
         error B3(b7(" #{tokens[0]?.line ? ' '} ")) + R1(y4(" #{o.hdr ? o.pop} ")) + R2(y7(" #{o.msg} "))
         null
-            
+        
 module.exports = Parser

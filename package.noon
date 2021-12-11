@@ -1,10 +1,13 @@
 name            kode
-version         0.82.0
+version         0.85.0
 description     programming language
 main            js/kode.js
 scripts
-                test    mocha -c js/test/*.js
-                watch   mocha -w -c js/test/*.js
+                test      mocha -c js/test/*.js
+                watch     mocha -w -c js/test/*.js
+                build     kode kode/*.kode -Ho stage && kode kode/test/*.kode -Ho stage/test
+                testage   mocha -c stage/test/*.js
+                rebuild   kode kode/*.kode -Ho stage && cp stage/*.js js
 author          monsterkodi
 license         Unlicense
 dependencies

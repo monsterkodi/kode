@@ -2,9 +2,9 @@
 
 **kode** is a programming language that transpiles to JavaScript.
 
-It is highly inspired by and *tries* to be compatible with [CoffeeScript](http://coffeescript.org), while adding a few enhancements.
+It is highly inspired by and *tries* to be compatible with [CoffeeScript](http://coffeescript.org), while adding some features and even further its minimalistic approach.
 
-Right now (end of 2021) it is a work in progress and not yet fully functional.
+Right now (end of 2021) it is a work in progress, but it works well enough that it can transpile itself.
 
 # A list of things that work already:
 
@@ -27,19 +27,6 @@ error 'world!'    # -> world!
 ```
 
 Simple shortcuts for `log`, `warn` and `error` methods of `console`.
-
-## Ternary condition operator
-
-```coffeescript
-false ? 1 : 2     # -> 2
-```
-
-A nifty `if` `then` `else` shortcut, which I have always been missing in CoffeeScript.
-It introduces some ambiguity in a few corner cases, which can be resolved by different spacing:
-
-```coffeescript
-null ? a: 'b'     # -> {a:'b'}
-```
 
 ## Negative indexing
 
@@ -83,16 +70,6 @@ on 'event' @myCallback
 
 log 'a:' a , 'd:' 3            # some commas still make sense :-)
 ```
-
-## List comprehension
-
-```coffeescript
-l = [1,2,3]
-a = [x for x in l]      # -> [1,2,3]
-a = (x for x in l)      # -> [1,2,3]
-````
-
-**kode** doesn't distuinguish between round and square brackets around list comprehensions
 
 ## If shortcut
 
@@ -167,7 +144,7 @@ for a in l
 ```
 
 The above code would throw an exception at runtime in CoffeeScript.
-**kode** generates code that doesn't fail in these kind of situations.
+**kode** generates code that doesn't fail if l is not an array
 
 ## Constructor shortcut
 
@@ -181,6 +158,29 @@ class C
 ```coffeescript
 class C
     constructor: ->
+```
+
+## List comprehension
+
+```coffeescript
+l = [1,2,3]
+a = [x for x in l]      # -> [1,2,3]
+a = (x for x in l)      # -> [1,2,3]
+````
+
+**kode** doesn't distuinguish between round and square brackets around list comprehensions
+
+## Ternary condition operator
+
+```coffeescript
+false ? 1 : 2     # -> 2
+```
+
+A nifty `if` `then` `else` shortcut, which I have always been missing in CoffeeScript.
+It introduces some ambiguity in a few corner cases, which can be resolved by different spacing:
+
+```coffeescript
+null ? a: 'b'     # -> {a:'b'}
 ```
 
 ## Old school classes

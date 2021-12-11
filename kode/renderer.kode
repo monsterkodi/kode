@@ -69,10 +69,8 @@ class Renderer
         if @srcmap
             @srcmap.done s
             sm = @srcmap.generate s
-            # print.noon @srcmap.decodejs("eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGVzdC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbInRlc3QuY29mZmVlIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUV1QixJQUFBOztBQUFBLENBQUEsR0FBeUMiLCJzb3VyY2VzQ29udGVudCI6WyJcblxuICAgICAgICAgICAgICAgICAgICAgICBhICAgICAgICAgICAgICAgICAgPSAgICAgICAgICAgICAgICAgICAgIDAiXX0=")
             print.noon sm
             s += @srcmap.jscode sm
-            
         s
 
     js: (s, tl) => 
@@ -136,6 +134,7 @@ class Renderer
                 when 'stripol'   then @stripol v
                 when 'qmrkcolon' then @qmrkcolon v
                 when 'operation' then @operation v
+                when 'section'   then @section v
                 when 'incond'    then @incond v
                 when 'parens'    then @parens v
                 when 'object'    then @object v
@@ -145,6 +144,7 @@ class Renderer
                 when 'index'     then @index v
                 when 'slice'     then @slice v
                 when 'prop'      then @prop v
+                when 'test'      then @test v
                 when 'each'      then @each v
                 when 'func'      then @func v
                 when 'call'      then @call v
@@ -1238,15 +1238,36 @@ class Renderer
        for chunk in chunks
            t = chunk.text
            switch chunk.type
-               when 'open'  then s+= t+'${'
-               when 'close' then s+= '}'+t
-               when 'midl'  then s+= '}'+t+'${'
-               when 'code'  
-                   # c = @compile t
+               'open'  ➜ s +=       t + '${'
+               'midl'  ➜ s += '}' + t + '${'
+               'close' ➜ s += '}' + t
+               'code'  
                    c = @nodes chunk.exps
-                   if c[0] == ';' then c = c[1..]
+                   if c[0] == ';' ➜ c = c[1..]
                    s+= c
        s += '`'
        s
 
+    #  0000000  00000000   0000000  000000000  000   0000000   000   000  
+    # 000       000       000          000     000  000   000  0000  000  
+    # 0000000   0000000   000          000     000  000   000  000 0 000  
+    #      000  000       000          000     000  000   000  000  0000  
+    # 0000000   00000000   0000000     000     000   0000000   000   000  
+    
+    section: (p) ->
+        
+        s = "section #{p.text}\n"    \
+          + @nodes p.exps if p.exps? \
+          + @node  p.subs if p.subs?
+        s
+        
+    test: (p) ->
+        
+        s = 'cmp('            \
+          + @node p.lhs       \
+          + ','               \
+          + @node p.lhs       \
+          + ')\n'
+        s
+       
 module.exports = Renderer

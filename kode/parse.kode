@@ -240,6 +240,7 @@ function Parse # the base class of Parser
                         when 'switch'   then return @switch   tok, tokens
                         when 'class'    then return @class    tok, tokens
                         when 'function' then return @function tok, tokens
+                        when 'section'  then return @section  tok, tokens
                         when 'while'    then return @while    tok, tokens
                         when 'when'     then return @when     tok, tokens
                         when 'try'      then return @try      tok, tokens
@@ -435,6 +436,7 @@ function Parse # the base class of Parser
             if      nxt.text == '.'    then e = @prop   e, tokens
             else if nxt.type == 'dots' and not @stack[-1].startsWith('op') then e = @slice  e, tokens
             else if nxt.text == 'each' then e = @each   e, tokens
+            else if nxt.type == 'test' then e = @test   e, tokens
             else if nxt.text == '?' 
                 
                 if unspaced # and tokens[1]?.text in '([.'
@@ -491,7 +493,7 @@ function Parse # the base class of Parser
                         nxt.text not in ['if' 'then' 'else' 'break' 'continue' 'in' 'of' 'for' 'while'] and 
                         nxt.type not in ['nl'] and
                         (e.type not in @kode.literals) and
-                        (e.type not in ['punct' 'comment' 'op']) and 
+                        (e.type not in ['punct' 'comment' 'op' 'section' 'test']) and 
                         (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'if' 'then' 'else' 'for' 'while']) and 
                         not e.array and
                         not e.object and

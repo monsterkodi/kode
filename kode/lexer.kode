@@ -62,6 +62,7 @@ class Lexer
                 if match?.index == 0
 
                     value = if key == 'nl' then '' else match[0]
+                    
                     if key == 'then' ➜ value = 'then'; key = 'keyword'
                     if value == 'then' and tokens[-2]?.text == 'else' 
                         # skip then after else
@@ -80,6 +81,19 @@ class Lexer
                             line += lines.length-1
                             if lines.length > 1 ➜ col = lines[-1].length
                                                 ➜ col += value.length
+
+                        key == 'test'
+                            if not tokens[-2]? or tokens[-3].type == 'nl'
+                                end = text.indexOf '\n'
+                                end = -1 if end < 0
+                                txt = kstr.strip text[1..end], ' \n'
+                                # log "▸▸ #{txt}" 
+                                tokens[-1].type = 'section'
+                                tokens[-1].text = txt
+                                text = text[end..]
+                                break
+                            else
+                                tokens[-1].type = 'op'
                         ➜  
                             col += value.length
 

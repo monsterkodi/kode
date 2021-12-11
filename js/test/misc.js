@@ -1,10 +1,11 @@
-// monsterkodi/kode 0.73.0
+// monsterkodi/kode 0.84.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, length: function (l) {return (l != null ? typeof l.length === 'number' ? l.length : 0 : 0)}, in: function (a,l) {return (l != null ? typeof l.indexOf === 'function' ? l.indexOf(a) >= 0 : false : false)}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
 
-var cmp
+var cmp, evl
 
 cmp = require('./utils').cmp
+evl = require('./utils').evl
 
 describe('misc',function ()
 {
@@ -79,6 +80,47 @@ finally
         return cmp(`slash = require 'kslash'
 kstr  = require 'kstr'`,`slash = require('kslash')
 kstr = require('kstr')`)
+    })
+    it('empty',function ()
+    {
+        cmp(`if empty [] == false
+    1234`,`if (_k_.empty([]) === false)
+{
+    1234
+}`)
+        evl("a = []; empty a",true)
+        evl("a = {}; empty a",true)
+        evl("a = ''; empty a",true)
+        evl("a = null; empty a",true)
+        evl("a = undefined; empty a",true)
+        evl("a = NaN; empty a",true)
+        evl("a = Infinity; empty a",false)
+        evl("a = 0; empty a",false)
+        evl("a = 'a'; empty a",false)
+        evl("a = Infinity; empty a",false)
+        evl("a = [null]; empty a",false)
+        evl("a = {a:null}; empty a",false)
+        evl("a = [[]]; empty a",false)
+        evl("valid []",false)
+        evl("valid {}",false)
+        evl("valid ''",false)
+        evl("valid null",false)
+        evl("valid undefined",false)
+        evl("valid NaN",false)
+        evl("valid Infinity",true)
+        evl("valid 0",true)
+        evl("valid 'a'",true)
+        evl("valid [null]",true)
+        evl("valid {a:null}",true)
+        evl("valid [[]]",true)
+        evl('empty 1 or empty {}',true)
+        evl('empty {} or empty 1',true)
+        evl('valid {} or valid 1',true)
+        evl("valid 'a' or valid ''",true)
+        evl("valid 'a' and empty ''",true)
+        evl('empty "x" or valid {}',false)
+        evl('empty {} and valid []',false)
+        return evl('valid {} and valid 0',false)
     })
     it('typeof',function ()
     {

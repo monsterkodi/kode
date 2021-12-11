@@ -1,0 +1,56 @@
+###
+000000000  00000000   0000000  000000000
+   000     000       000          000   
+   000     0000000   0000000      000   
+   000     000            000     000   
+   000     00000000  0000000      000   
+###
+
+{ cmp } = require './utils'
+
+describe 'test' ->
+    
+    it 'test' ->
+        
+        cmp """
+            ▸ test1
+                ▸ sub
+                    
+                    1       ▸   1
+                    true    ▸   true
+                    
+                ▸ sub2
+                    ▸ subsub
+
+                        'a' ▸   
+                        'a'
+                    
+                        1   ▸
+                            1
+                        
+                        \"\"\"
+                        ok
+                        \"\"\" ▸
+                        \"\"\"
+                        ok
+                        \"\"\"
+            """ """
+            module.exports = 
+            {
+                test1: 
+                {
+                    sub: function () 
+                    {
+                        cmp(1,1)
+                        cmp(true,true)
+                    }
+                    sub2: 
+                    {
+                        subsub: function ()
+                        {
+                            cmp('a','a')
+                        }
+                    }
+                }
+            }
+            """
