@@ -1,3 +1,7 @@
 ignore
     kode/.*\.noon
     \.konrad\.noon
+    kode/test
+    stage0
+    stage1
+    
