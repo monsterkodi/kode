@@ -62,4 +62,6 @@ describe 'test' ->
                     cmp(2, 2)
                 })
             }
+            module.exports
+            
             """

@@ -38,6 +38,7 @@ class Kode
         Stripol   = require './stripol'
         Returner  = require './returner'
         Renderer  = require './renderer'
+        Tester    = require './tester'
 
         @lexer    = new Lexer    @
         @parser   = new Parser   @
@@ -45,6 +46,7 @@ class Kode
         @stripol  = new Stripol  @
         @returner = new Returner @
         @renderer = new Renderer @
+        @tester   = new Tester   @
 
     #  0000000   0000000   00     00  00000000   000  000      00000000
     # 000       000   000  000   000  000   000  000  000      000
@@ -94,14 +96,15 @@ class Kode
     # 000          000     000   000  000
     # 00000000      0      000   000  0000000
 
-    eval: (text, file) ->
+    eval: (text, file, glob) ->
 
         return if empty text
 
         vm = require 'vm'
-
+        
         sandbox = vm.createContext()
-        sandbox.global = global
+        if glob then sandbox[k] = v for k,v of glob
+        # sandbox.global = sandbox
 
         sandbox.__filename = file ? 'eval'
         sandbox.__dirname  = slash.dir sandbox.__filename
@@ -161,6 +164,8 @@ class Kode
                     error R2 y3 "can't write #{R3 y6 out}"
             else if @args.js
                 @compile text, file
+            else if @args.test
+                @tester.test text, file
             else if @args.run
                 @eval text, file
             else

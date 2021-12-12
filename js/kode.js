@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.87.0
+// monsterkodi/kode 0.89.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
 var slash, kstr, klor, karg, childp, print, pkg, register, args, kode
 
@@ -18,7 +18,7 @@ class Kode
 {
     constructor (args)
     {
-        var _27_14_, Lexer, Parser, Scoper, Stripol, Returner, Renderer
+        var _27_14_, Lexer, Parser, Scoper, Stripol, Returner, Renderer, Tester
 
         this.args = args
         this.version = pkg.version
@@ -39,12 +39,14 @@ class Kode
         Stripol = require('./stripol')
         Returner = require('./returner')
         Renderer = require('./renderer')
+        Tester = require('./tester')
         this.lexer = new Lexer(this)
         this.parser = new Parser(this)
         this.scoper = new Scoper(this)
         this.stripol = new Stripol(this)
         this.returner = new Returner(this)
         this.renderer = new Renderer(this)
+        this.tester = new Tester(this)
     }
 
     static compile (text, opt = {})
@@ -115,9 +117,9 @@ class Kode
         return print.astr(this.ast(text),scopes)
     }
 
-    eval (text, file)
+    eval (text, file, glob)
     {
-        var vm, sandbox, Module, _module, _require, r, js
+        var vm, sandbox, k, v, Module, _module, _require, r, js
 
         if (_k_.empty(text))
         {
@@ -125,7 +127,14 @@ class Kode
         }
         vm = require('vm')
         sandbox = vm.createContext()
-        sandbox.global = global
+        if (glob)
+        {
+            for (k in glob)
+            {
+                v = glob[k]
+                sandbox[k] = v
+            }
+        }
         sandbox.__filename = (file != null ? file : 'eval')
         sandbox.__dirname = slash.dir(sandbox.__filename)
         sandbox.console = console
@@ -139,9 +148,9 @@ class Kode
             }
             _module.filename = sandbox.__filename
             var list = _k_.list(Object.getOwnPropertyNames(require))
-            for (var _115_18_ = 0; _115_18_ < list.length; _115_18_++)
+            for (var _118_18_ = 0; _118_18_ < list.length; _118_18_++)
             {
-                r = list[_115_18_]
+                r = list[_118_18_]
                 if (!(_k_.in(r,['paths','arguments','caller','length','name'])))
                 {
                     _require[r] = require[r]
@@ -184,9 +193,9 @@ class Kode
             return
         }
         var list = _k_.list(this.args.files)
-        for (var _147_17_ = 0; _147_17_ < list.length; _147_17_++)
+        for (var _150_17_ = 0; _150_17_ < list.length; _150_17_++)
         {
-            file = list[_147_17_]
+            file = list[_150_17_]
             file = slash.resolve(file)
             if (this.args.verbose)
             {
@@ -211,6 +220,10 @@ class Kode
             else if (this.args.js)
             {
                 this.compile(text,file)
+            }
+            else if (this.args.test)
+            {
+                this.tester.test(text,file)
             }
             else if (this.args.run)
             {

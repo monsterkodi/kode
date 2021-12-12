@@ -262,8 +262,6 @@ describe 'loops' ->
     
     it 'each' ->
         
-        cmp "{a:1,b:2}"                                     "{a:1,b:2}"
-
         evl "a = {a:1,b:2}"                                 {a:1,b:2}
         evl "a = {a:1,b:2} each (k,v) -> [k, v*3]"          {a:3,b:6}
         evl "a = {a:1,b:2} each (k,v) -> ['▸'+k, v]"        {'▸a':1,'▸b':2}
@@ -285,6 +283,9 @@ describe 'loops' ->
         evl "a = [1,2] each ->"                             []
         evl "a = [1,2,3] each (v) -> v"                     [1,2,3]
         evl "a = {a:1,b:2} each (v) -> v*3"                 {a:3,b:6}
+        
+        evl "[0,1,2] each (v) -> v"                         [0,1,2]
+        evl "f = (a) -> a\nr = f [0,1,2] each (v) -> 2*v"   [0,2,4]
             
     # 000   000  000   000  000  000      00000000
     # 000 0 000  000   000  000  000      000

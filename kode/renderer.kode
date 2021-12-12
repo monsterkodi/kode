@@ -33,6 +33,7 @@ class Renderer
             empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}
             in: function (a,l) {return [].indexOf.call(l,a) >= 0}
             extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}
+            each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}
             """
         
         ks = k.split('\n').join ', '      
@@ -50,6 +51,7 @@ class Renderer
         # if @kode.args.map and source
             # @srcmap = new SrcMap source
         
+        @hint = {}
         @varstack = [ast.vars]
         @indent = ''
 
@@ -65,6 +67,9 @@ class Renderer
             s += @js "var #{vs}\n\n" true
 
         s += @nodes ast.exps, '\n' true
+        
+        if @hint.section
+            s += '\nmodule.exports\n'
         
         if @srcmap
             @srcmap.done s
@@ -91,7 +96,7 @@ class Renderer
             
             a = @atom nodes[i]
         
-            if sep == '\n'
+            if sep[0] == '\n'
                 
                 stripped = kstr.lstrip a
                 if stripped[0] in '([' then a = ';'+a
@@ -481,9 +486,10 @@ class Renderer
         if valid n.body.exps
 
             s += '\n'
-            ss = n.body.exps.map (s) => @node s
-            ss = ss.map (s) => @indent + s
-            s += ss.join '\n'
+            # ss = n.body.exps.map (s) => @node s
+            # ss = ss.map (s) => @indent + s
+            # s += ss.join '\n'
+            s += @indent + @nodes n.body.exps, '\n'+@indent
             s += '\n' + gi
 
         s += '}'
@@ -650,57 +656,67 @@ class Renderer
         
         numArgs = n.fnc.func.args?.parens.exps.length
         
+        i = @indent
         if numArgs == 1
+            @ind()
+            fnc = @node n.fnc
+            @ded()
             """
-            (function (o) {
-                r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
-                for (k in o)
-                {   
-                    var m = (#{@node n.fnc})(o[k])
-                    if (m != null)
-                    {
-                        r[k] = m
-                    }
-                }
-                return typeof o == 'string' ? r.join('') : r
-            })(#{@node n.lhs})
+            #{i}(function (o) {
+            #{i}    var r = _k_.each_r(o)
+            #{i}    for (var k in o)
+            #{i}    {   
+            #{i}        var m = (#{fnc})(o[k])
+            #{i}        if (m != null)
+            #{i}        {
+            #{i}            r[k] = m
+            #{i}        }
+            #{i}    }
+            #{i}    return typeof o == 'string' ? r.join('') : r
+            #{i}})(#{@node n.lhs})
             """
         else if numArgs
+            @ind()
+            fnc = @node n.fnc
+            @ded()            
             """
-            (function (o) {
-                r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
-                for (k in o)
-                {   
-                    var m = (#{@node n.fnc})(k, o[k])
-                    if (m != null && m[0] != null)
-                    {
-                        r[m[0]] = m[1]
-                    }
-                }
-                return typeof o == 'string' ? r.join('') : r
-            })(#{@node n.lhs})
+            #{i}(function (o) {
+            #{i}    var r = _k_.each_r(o)
+            #{i}    for (var k in o)
+            #{i}    {   
+            #{i}        var m = (#{fnc})(k, o[k])
+            #{i}        if (m != null && m[0] != null)
+            #{i}        {
+            #{i}            r[m[0]] = m[1]
+            #{i}        }
+            #{i}    }
+            #{i}    return typeof o == 'string' ? r.join('') : r
+            #{i}})(#{@node n.lhs})
             """
             
         else # no args
             if n.fnc.func.body.exps?.length > 0 # some func but no args
+                @ind()
+                fnc = @node n.fnc
+                @ded()            
                 """
-                (function (o) {
-                    r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
-                    for (k in o)
-                    {   
-                        var m = (#{@node n.fnc})(o[k])
-                        if (m != null)
-                        {
-                            r[k] = m
-                        }
-                    }
-                    return typeof o == 'string' ? r.join('') : r
-                })(#{@node n.lhs})
+                #{i}(function (o) {
+                #{i}    var r = _k_.each_r(o)
+                #{i}    for (var k in o)
+                #{i}    {   
+                #{i}        var m = (#{fnc})(o[k])
+                #{i}        if (m != null)
+                #{i}        {
+                #{i}            r[k] = m
+                #{i}        }
+                #{i}    }
+                #{i}    return typeof o == 'string' ? r.join('') : r
+                #{i}})(#{@node n.lhs})
                     
                 """
             else # no args and empty func
                 """
-                (function (o) { return o instanceof Array ? [] : typeof o == 'string' ? '' : {} })(#{@node n.lhs})
+                #{i}(function (o) { return o instanceof Array ? [] : typeof o == 'string' ? '' : {} })(#{@node n.lhs})
                 """
         
     # 00000000   0000000   00000000
@@ -1235,6 +1251,8 @@ class Renderer
     # 0000000   00000000   0000000     000     000   0000000   000   000  
     
     section: (p) ->
+        
+        @hint.section = true
         
         gi = @ind()
         s = "module.exports[#{p.title.text}] = function ()\n" \

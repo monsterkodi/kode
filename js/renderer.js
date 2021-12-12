@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.87.0
+// monsterkodi/kode 0.89.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
 var kstr, slash, print, SrcMap, firstLineCol, lastLineCol
 
@@ -30,7 +30,8 @@ class Renderer
         k = `list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}
 empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}
 in: function (a,l) {return [].indexOf.call(l,a) >= 0}
-extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}`
+extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}
+each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}`
         ks = k.split('\n').join(', ')
         return `var _k_ = {${ks}}\n\n`
     }
@@ -39,6 +40,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
     {
         var s, vs, v, sm
 
+        this.hint = {}
         this.varstack = [ast.vars]
         this.indent = ''
         s = ''
@@ -49,10 +51,14 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         s += this.js(this.header(),true)
         if (!_k_.empty(ast.vars))
         {
-            vs = (function () { var result = []; var list = _k_.list(ast.vars); for (var _64_31_ = 0; _64_31_ < list.length; _64_31_++)  { v = list[_64_31_];result.push(v.text)  } return result }).bind(this)().join(', ')
+            vs = (function () { var result = []; var list = _k_.list(ast.vars); for (var _66_31_ = 0; _66_31_ < list.length; _66_31_++)  { v = list[_66_31_];result.push(v.text)  } return result }).bind(this)().join(', ')
             s += this.js(`var ${vs}\n\n`,true)
         }
         s += this.nodes(ast.exps,'\n',true)
+        if (this.hint.section)
+        {
+            s += '\nmodule.exports\n'
+        }
         if (this.srcmap)
         {
             this.srcmap.done(s)
@@ -65,9 +71,9 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     js (s, tl)
     {
-        var _78_15_
+        var _83_15_
 
-        (this.srcmap != null ? this.srcmap.commit(s,tl) : undefined)
+        ;(this.srcmap != null ? this.srcmap.commit(s,tl) : undefined)
         return s
     }
 
@@ -79,7 +85,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         for (i = 0; i < nodes.length; i++)
         {
             a = this.atom(nodes[i])
-            if (sep === '\n')
+            if (sep[0] === '\n')
             {
                 stripped = kstr.lstrip(a)
                 if (_k_.in(stripped[0],'(['))
@@ -103,7 +109,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     node (exp)
     {
-        var _115_19_, _115_33_, a, s, k, v
+        var _120_19_, _120_33_, a, s, k, v
 
         if (!exp)
         {
@@ -115,7 +121,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         }
         if (exp instanceof Array)
         {
-            return (function () { var result = []; var list = _k_.list(exp); for (var _117_60_ = 0; _117_60_ < list.length; _117_60_++)  { a = list[_117_60_];result.push(this.node(a))  } return result }).bind(this)().join(';\n')
+            return (function () { var result = []; var list = _k_.list(exp); for (var _122_60_ = 0; _122_60_ < list.length; _122_60_++)  { a = list[_122_60_];result.push(this.node(a))  } return result }).bind(this)().join(';\n')
         }
         s = ''
         for (k in exp)
@@ -371,7 +377,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     class (n)
     {
-        var s, mthds, con, bind, b, bn, _290_50_, mi
+        var s, mthds, con, bind, b, bn, _295_50_, mi
 
         s = ''
         s += `class ${n.name.text}`
@@ -392,11 +398,11 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             if (bind.length)
             {
                 var list = _k_.list(bind)
-                for (var _288_22_ = 0; _288_22_ < list.length; _288_22_++)
+                for (var _293_22_ = 0; _293_22_ < list.length; _293_22_++)
                 {
-                    b = list[_288_22_]
+                    b = list[_293_22_]
                     bn = b.keyval.val.func.name.text
-                    con.keyval.val.func.body.exps = ((_290_50_=con.keyval.val.func.body.exps) != null ? _290_50_ : [])
+                    con.keyval.val.func.body.exps = ((_295_50_=con.keyval.val.func.body.exps) != null ? _295_50_ : [])
                     con.keyval.val.func.body.exps.unshift({type:'code',text:`this.${bn} = this.${bn}.bind(this)`})
                 }
             }
@@ -444,7 +450,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     function (n)
     {
-        var s, e, mthds, con, bind, b, bn, _362_50_, _368_46_, mi
+        var s, e, mthds, con, bind, b, bn, _367_50_, _373_46_, mi
 
         this.fncnName = n.name.text
         s = '\n'
@@ -453,9 +459,9 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         if (n.extends)
         {
             var list = _k_.list(n.extends)
-            for (var _349_18_ = 0; _349_18_ < list.length; _349_18_++)
+            for (var _354_18_ = 0; _354_18_ < list.length; _354_18_++)
             {
-                e = list[_349_18_]
+                e = list[_354_18_]
                 s += `    _k_.extend(${n.name.text}, ${e.text});`
             }
             s += '\n'
@@ -469,17 +475,17 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             if (bind.length)
             {
                 var list1 = _k_.list(bind)
-                for (var _360_22_ = 0; _360_22_ < list1.length; _360_22_++)
+                for (var _365_22_ = 0; _365_22_ < list1.length; _365_22_++)
                 {
-                    b = list1[_360_22_]
+                    b = list1[_365_22_]
                     bn = b.keyval.val.func.name.text
-                    con.keyval.val.func.body.exps = ((_362_50_=con.keyval.val.func.body.exps) != null ? _362_50_ : [])
+                    con.keyval.val.func.body.exps = ((_367_50_=con.keyval.val.func.body.exps) != null ? _367_50_ : [])
                     con.keyval.val.func.body.exps.unshift({type:'code',text:`this[\"${bn}\"] = this[\"${bn}\"].bind(this)`})
                 }
             }
             if (n.extends)
             {
-                con.keyval.val.func.body.exps = ((_368_46_=con.keyval.val.func.body.exps) != null ? _368_46_ : [])
+                con.keyval.val.func.body.exps = ((_373_46_=con.keyval.val.func.body.exps) != null ? _373_46_ : [])
                 con.keyval.val.func.body.exps.push({type:'code',text:`return ${this.fncnName}.__super__.constructor.apply(this, arguments)`})
             }
             this.indent = '    '
@@ -529,13 +535,13 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     prepareMethods (mthds)
     {
-        var bind, m, name, con, _435_37_, ast
+        var bind, m, name, con, _440_37_, ast
 
         bind = []
         var list = _k_.list(mthds)
-        for (var _420_14_ = 0; _420_14_ < list.length; _420_14_++)
+        for (var _425_14_ = 0; _425_14_ < list.length; _425_14_++)
         {
-            m = list[_420_14_]
+            m = list[_425_14_]
             if (!m.keyval)
             {
                 print.ast('not an method?',m)
@@ -577,17 +583,17 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     func (n, name)
     {
-        var gi, _458_29_, _458_22_, s, args, _463_29_, _463_21_, str, ths, vs, v, t, ss
+        var gi, _463_29_, _463_22_, s, args, _468_29_, _468_21_, str, ths, vs, v, t
 
         if (!n)
         {
             return ''
         }
         gi = this.ind()
-        name = (name != null ? name : ((_458_29_=(n.name != null ? n.name.text : undefined)) != null ? _458_29_ : 'function'))
+        name = (name != null ? name : ((_463_29_=(n.name != null ? n.name.text : undefined)) != null ? _463_29_ : 'function'))
         s = name
         s += ' ('
-        args = ((_463_21_=n.args) != null ? (_463_29_=_463_21_.parens) != null ? _463_29_.exps : undefined : undefined)
+        args = ((_468_21_=n.args) != null ? (_468_29_=_468_21_.parens) != null ? _468_29_.exps : undefined : undefined)
         if (args)
         {
             str = this.args(args)[0]
@@ -601,27 +607,19 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         if (!_k_.empty(n.body.vars))
         {
             s += '\n'
-            vs = (function () { var result = []; var list = _k_.list(n.body.vars); for (var _475_31_ = 0; _475_31_ < list.length; _475_31_++)  { v = list[_475_31_];result.push(v.text)  } return result }).bind(this)().join(', ')
+            vs = (function () { var result = []; var list = _k_.list(n.body.vars); for (var _480_31_ = 0; _480_31_ < list.length; _480_31_++)  { v = list[_480_31_];result.push(v.text)  } return result }).bind(this)().join(', ')
             s += this.indent + `var ${vs}\n`
         }
         var list1 = _k_.list(ths)
-        for (var _478_14_ = 0; _478_14_ < list1.length; _478_14_++)
+        for (var _483_14_ = 0; _483_14_ < list1.length; _483_14_++)
         {
-            t = list1[_478_14_]
+            t = list1[_483_14_]
             s += '\n' + this.indent + ths
         }
         if (!_k_.empty(n.body.exps))
         {
             s += '\n'
-            ss = n.body.exps.map((function (s)
-            {
-                return this.node(s)
-            }).bind(this))
-            ss = ss.map((function (s)
-            {
-                return this.indent + s
-            }).bind(this))
-            s += ss.join('\n')
+            s += this.indent + this.nodes(n.body.exps,'\n' + this.indent)
             s += '\n' + gi
         }
         s += '}'
@@ -641,9 +639,9 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         ths = []
         used = {}
         var list = _k_.list(args)
-        for (var _511_14_ = 0; _511_14_ < list.length; _511_14_++)
+        for (var _517_14_ = 0; _517_14_ < list.length; _517_14_++)
         {
-            a = list[_511_14_]
+            a = list[_517_14_]
             if (a.text)
             {
                 used[a.text] = a.text
@@ -741,23 +739,23 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         s += `if (${this.atom(n.cond)})\n`
         s += gi + "{\n"
         var list = _k_.list(n.then)
-        for (var _591_14_ = 0; _591_14_ < list.length; _591_14_++)
+        for (var _597_14_ = 0; _597_14_ < list.length; _597_14_++)
         {
-            e = list[_591_14_]
+            e = list[_597_14_]
             s += this.indent + this.node(e) + '\n'
         }
         s += gi + "}"
         var list1 = _k_.list(n.elifs)
-        for (var _595_17_ = 0; _595_17_ < list1.length; _595_17_++)
+        for (var _601_17_ = 0; _601_17_ < list1.length; _601_17_++)
         {
-            elif = list1[_595_17_]
+            elif = list1[_601_17_]
             s += '\n'
             s += gi + `else if (${this.atom(elif.elif.cond)})\n`
             s += gi + "{\n"
             var list2 = _k_.list(elif.elif.then)
-            for (var _599_18_ = 0; _599_18_ < list2.length; _599_18_++)
+            for (var _605_18_ = 0; _605_18_ < list2.length; _605_18_++)
             {
-                e = list2[_599_18_]
+                e = list2[_605_18_]
                 s += this.indent + this.node(e) + '\n'
             }
             s += gi + "}"
@@ -768,9 +766,9 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             s += gi + 'else\n'
             s += gi + "{\n"
             var list3 = _k_.list(n.else)
-            for (var _607_18_ = 0; _607_18_ < list3.length; _607_18_++)
+            for (var _613_18_ = 0; _613_18_ < list3.length; _613_18_++)
             {
-                e = list3[_607_18_]
+                e = list3[_613_18_]
                 s += this.indent + this.node(e) + '\n'
             }
             s += gi + "}"
@@ -781,20 +779,20 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     ifInline (n, dontClose)
     {
-        var s, _625_17_, e
+        var s, _631_17_, e
 
         s = ''
         s += `${this.atom(n.cond)} ? `
         if ((n.then != null ? n.then.length : undefined))
         {
-            s += (function () { var result = []; var list = _k_.list(n.then); for (var _626_33_ = 0; _626_33_ < list.length; _626_33_++)  { e = list[_626_33_];result.push(this.atom(e))  } return result }).bind(this)().join(', ')
+            s += (function () { var result = []; var list = _k_.list(n.then); for (var _632_33_ = 0; _632_33_ < list.length; _632_33_++)  { e = list[_632_33_];result.push(this.atom(e))  } return result }).bind(this)().join(', ')
         }
         if (n.elifs)
         {
             var list1 = _k_.list(n.elifs)
-            for (var _629_18_ = 0; _629_18_ < list1.length; _629_18_++)
+            for (var _635_18_ = 0; _635_18_ < list1.length; _635_18_++)
             {
-                e = list1[_629_18_]
+                e = list1[_635_18_]
                 s += ' : '
                 s += this.ifInline(e.elif,true)
             }
@@ -808,7 +806,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             }
             else
             {
-                s += '(' + (function () { var result = []; var list2 = _k_.list(n.else); for (var _638_42_ = 0; _638_42_ < list2.length; _638_42_++)  { e = list2[_638_42_];result.push(this.atom(e))  } return result }).bind(this)().join(', ') + ')'
+                s += '(' + (function () { var result = []; var list2 = _k_.list(n.else); for (var _644_42_ = 0; _644_42_ < list2.length; _644_42_++)  { e = list2[_644_42_];result.push(this.atom(e))  } return result }).bind(this)().join(', ') + ')'
             }
         }
         else if (!dontClose)
@@ -820,60 +818,70 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     each (n)
     {
-        var numArgs, _651_33_, _685_35_
+        var numArgs, _657_33_, i, fnc, _698_35_
 
         numArgs = (n.fnc.func.args != null ? n.fnc.func.args.parens.exps.length : undefined)
+        i = this.indent
         if (numArgs === 1)
         {
-            return `(function (o) {
-    r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
-    for (k in o)
-    {   
-        var m = (${this.node(n.fnc)})(o[k])
-        if (m != null)
-        {
-            r[k] = m
-        }
-    }
-    return typeof o == 'string' ? r.join('') : r
-})(${this.node(n.lhs)})`
+            this.ind()
+            fnc = this.node(n.fnc)
+            this.ded()
+            return `${i}(function (o) {
+${i}    var r = _k_.each_r(o)
+${i}    for (var k in o)
+${i}    {   
+${i}        var m = (${fnc})(o[k])
+${i}        if (m != null)
+${i}        {
+${i}            r[k] = m
+${i}        }
+${i}    }
+${i}    return typeof o == 'string' ? r.join('') : r
+${i}})(${this.node(n.lhs)})`
         }
         else if (numArgs)
         {
-            return `(function (o) {
-    r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
-    for (k in o)
-    {   
-        var m = (${this.node(n.fnc)})(k, o[k])
-        if (m != null && m[0] != null)
-        {
-            r[m[0]] = m[1]
-        }
-    }
-    return typeof o == 'string' ? r.join('') : r
-})(${this.node(n.lhs)})`
+            this.ind()
+            fnc = this.node(n.fnc)
+            this.ded()
+            return `${i}(function (o) {
+${i}    var r = _k_.each_r(o)
+${i}    for (var k in o)
+${i}    {   
+${i}        var m = (${fnc})(k, o[k])
+${i}        if (m != null && m[0] != null)
+${i}        {
+${i}            r[m[0]] = m[1]
+${i}        }
+${i}    }
+${i}    return typeof o == 'string' ? r.join('') : r
+${i}})(${this.node(n.lhs)})`
         }
         else
         {
             if ((n.fnc.func.body.exps != null ? n.fnc.func.body.exps.length : undefined) > 0)
             {
-                return `(function (o) {
-    r = o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}
-    for (k in o)
-    {   
-        var m = (${this.node(n.fnc)})(o[k])
-        if (m != null)
-        {
-            r[k] = m
-        }
-    }
-    return typeof o == 'string' ? r.join('') : r
-})(${this.node(n.lhs)})
+                this.ind()
+                fnc = this.node(n.fnc)
+                this.ded()
+                return `${i}(function (o) {
+${i}    var r = _k_.each_r(o)
+${i}    for (var k in o)
+${i}    {   
+${i}        var m = (${fnc})(o[k])
+${i}        if (m != null)
+${i}        {
+${i}            r[k] = m
+${i}        }
+${i}    }
+${i}    return typeof o == 'string' ? r.join('') : r
+${i}})(${this.node(n.lhs)})
     `
             }
             else
             {
-                return `(function (o) { return o instanceof Array ? [] : typeof o == 'string' ? '' : {} })(${this.node(n.lhs)})`
+                return `${i}(function (o) { return o instanceof Array ? [] : typeof o == 'string' ? '' : {} })(${this.node(n.lhs)})`
             }
         }
     }
@@ -900,7 +908,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     for_in (n, varPrefix = '', lastPrefix = '', lastPostfix = '', lineBreak)
     {
-        var list, _732_27_, gi, nl, eb, g2, listVar, iterVar, s, _754_28_, j, v, e, prefix, postfix
+        var list, _748_27_, gi, nl, eb, g2, listVar, iterVar, s, _770_28_, j, v, e, prefix, postfix
 
         if (!n.list.qmrkop && !n.list.array && !n.list.slice)
         {
@@ -908,7 +916,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         }
         else
         {
-            if (((_732_27_=n.list.array) != null ? _732_27_.items[0] != null ? _732_27_.items[0].slice : undefined : undefined) || n.list.slice)
+            if (((_748_27_=n.list.array) != null ? _748_27_.items[0] != null ? _748_27_.items[0].slice : undefined : undefined) || n.list.slice)
             {
                 return this.for_in_range(n,varPrefix,lastPrefix,lastPostfix,lineBreak)
             }
@@ -951,9 +959,9 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             s += g2 + `${varPrefix}${n.vals[0].text} = ${listVar}[${iterVar}]` + eb
         }
         var list1 = _k_.list(n.then)
-        for (var _766_14_ = 0; _766_14_ < list1.length; _766_14_++)
+        for (var _782_14_ = 0; _782_14_ < list1.length; _782_14_++)
         {
-            e = list1[_766_14_]
+            e = list1[_782_14_]
             prefix = lastPrefix && e === n.then.slice(-1)[0] ? lastPrefix : ''
             postfix = lastPostfix && e === n.then.slice(-1)[0] ? lastPostfix : ''
             s += g2 + prefix + this.node(e) + postfix + nl
@@ -968,14 +976,14 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     for_in_range (n, varPrefix, lastPrefix, lastPostfix, lineBreak)
     {
-        var slice, _783_46_, _783_28_, gi, nl, eb, g2, iterVar, _793_32_, iterStart, iterEnd, start, end, iterCmp, iterDir, s, e, prefix, postfix
+        var slice, _799_46_, _799_28_, gi, nl, eb, g2, iterVar, _809_32_, iterStart, iterEnd, start, end, iterCmp, iterDir, s, e, prefix, postfix
 
-        slice = ((_783_46_=((_783_28_=n.list.array) != null ? _783_28_.items[0] != null ? _783_28_.items[0].slice : undefined : undefined)) != null ? _783_46_ : n.list.slice)
+        slice = ((_799_46_=((_799_28_=n.list.array) != null ? _799_28_.items[0] != null ? _799_28_.items[0].slice : undefined : undefined)) != null ? _799_46_ : n.list.slice)
         gi = lineBreak || this.ind()
         nl = lineBreak || '\n'
         eb = lineBreak && ';' || '\n'
         g2 = lineBreak ? '' : this.indent
-        iterVar = ((_793_32_=n.vals.text) != null ? _793_32_ : n.vals[0].text)
+        iterVar = ((_809_32_=n.vals.text) != null ? _809_32_ : n.vals[0].text)
         iterStart = this.node(slice.from)
         iterEnd = this.node(slice.upto)
         start = parseInt(iterStart)
@@ -994,9 +1002,9 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         s += `for (${iterVar} = ${iterStart}; ${iterVar} ${iterCmp} ${iterEnd}; ${iterVar}${iterDir})` + nl
         s += gi + "{" + nl
         var list = _k_.list(n.then)
-        for (var _812_14_ = 0; _812_14_ < list.length; _812_14_++)
+        for (var _828_14_ = 0; _828_14_ < list.length; _828_14_++)
         {
-            e = list[_812_14_]
+            e = list[_828_14_]
             prefix = lastPrefix && e === n.then.slice(-1)[0] ? lastPrefix : ''
             postfix = lastPostfix && e === n.then.slice(-1)[0] ? lastPostfix : ''
             s += g2 + prefix + this.node(e) + postfix + nl
@@ -1011,13 +1019,13 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     for_of (n, varPrefix = '', lastPrefix = '', lastPostfix = '', lineBreak)
     {
-        var gi, nl, eb, g2, key, _834_26_, val, obj, s, e, prefix, postfix
+        var gi, nl, eb, g2, key, _850_26_, val, obj, s, e, prefix, postfix
 
         gi = lineBreak || this.ind()
         nl = lineBreak || '\n'
         eb = lineBreak && ';' || '\n'
         g2 = lineBreak ? '' : this.indent
-        key = ((_834_26_=n.vals.text) != null ? _834_26_ : (n.vals[0] != null ? n.vals[0].text : undefined))
+        key = ((_850_26_=n.vals.text) != null ? _850_26_ : (n.vals[0] != null ? n.vals[0].text : undefined))
         val = (n.vals[1] != null ? n.vals[1].text : undefined)
         obj = this.node(n.list)
         s = ''
@@ -1028,9 +1036,9 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             s += g2 + `${varPrefix}${val} = ${obj}[${key}]` + eb
         }
         var list = _k_.list(n.then)
-        for (var _843_14_ = 0; _843_14_ < list.length; _843_14_++)
+        for (var _859_14_ = 0; _859_14_ < list.length; _859_14_++)
         {
-            e = list[_843_14_]
+            e = list[_859_14_]
             prefix = lastPrefix && e === n.then.slice(-1)[0] ? lastPrefix : ''
             postfix = lastPostfix && e === n.then.slice(-1)[0] ? lastPostfix : ''
             s += g2 + prefix + this.node(e) + postfix + nl
@@ -1072,9 +1080,9 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         s += `while (${this.node(n.cond)})\n`
         s += gi + "{\n"
         var list = _k_.list(n.then)
-        for (var _881_14_ = 0; _881_14_ < list.length; _881_14_++)
+        for (var _897_14_ = 0; _897_14_ < list.length; _897_14_++)
         {
-            e = list[_881_14_]
+            e = list[_897_14_]
             s += this.indent + this.node(e) + '\n'
         }
         s += gi + "}"
@@ -1099,18 +1107,18 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         s += `switch (${this.node(n.match)})\n`
         s += gi + "{\n"
         var list = _k_.list(n.whens)
-        for (var _905_14_ = 0; _905_14_ < list.length; _905_14_++)
+        for (var _921_14_ = 0; _921_14_ < list.length; _921_14_++)
         {
-            e = list[_905_14_]
+            e = list[_921_14_]
             s += gi + this.node(e) + '\n'
         }
         if (!_k_.empty(n.else))
         {
             s += this.indent + 'default:\n'
             var list1 = _k_.list(n.else)
-            for (var _910_18_ = 0; _910_18_ < list1.length; _910_18_++)
+            for (var _926_18_ = 0; _926_18_ < list1.length; _926_18_++)
             {
-                e = list1[_910_18_]
+                e = list1[_926_18_]
                 s += this.indent + '    ' + this.node(e) + '\n'
             }
         }
@@ -1129,16 +1137,16 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         }
         s = ''
         var list = _k_.list(n.vals)
-        for (var _929_14_ = 0; _929_14_ < list.length; _929_14_++)
+        for (var _945_14_ = 0; _945_14_ < list.length; _945_14_++)
         {
-            e = list[_929_14_]
+            e = list[_945_14_]
             i = e !== n.vals[0] && this.indent || '    '
             s += i + 'case ' + this.node(e) + ':\n'
         }
         var list1 = _k_.list(n.then)
-        for (var _932_14_ = 0; _932_14_ < list1.length; _932_14_++)
+        for (var _948_14_ = 0; _948_14_ < list1.length; _948_14_++)
         {
-            e = list1[_932_14_]
+            e = list1[_948_14_]
             gi = this.ind()
             s += gi + '    ' + this.node(e) + '\n'
             this.ded()
@@ -1211,14 +1219,14 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     operation (op)
     {
-        var opmap, o, sep, ro, _1037_40_, _1037_29_, open, close, s, keyval, val, i, _1061_25_, _1061_64_, _1061_54_, _1061_43_, _1073_29_, _1073_18_, first, prfx, _1078_43_
+        var opmap, o, sep, ro, _1053_40_, _1053_29_, open, close, s, keyval, val, i, _1077_25_, _1077_64_, _1077_54_, _1077_43_, _1089_29_, _1089_18_, first, prfx, _1094_43_
 
         opmap = function (o)
         {
-            var omp, _1030_19_
+            var omp, _1046_19_
 
             omp = {and:'&&',or:'||',not:'!',empty:'_k_.empty',valid:'!_k_.empty','==':'===','!=':'!=='}
-            return ((_1030_19_=omp[o]) != null ? _1030_19_ : o)
+            return ((_1046_19_=omp[o]) != null ? _1046_19_ : o)
         }
         o = opmap(op.operator.text)
         sep = ' '
@@ -1228,7 +1236,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         }
         if (_k_.in(o,['<','<=','===','!==','>=','>']))
         {
-            ro = opmap(((_1037_29_=op.rhs) != null ? (_1037_40_=_1037_29_.operation) != null ? _1037_40_.operator.text : undefined : undefined))
+            ro = opmap(((_1053_29_=op.rhs) != null ? (_1053_40_=_1053_29_.operation) != null ? _1053_40_.operator.text : undefined : undefined))
             if (_k_.in(ro,['<','<=','===','!==','>=','>']))
             {
                 return '(' + this.atom(op.lhs) + sep + o + sep + this.atom(op.rhs.operation.lhs) + ' && ' + kstr.lstrip(this.atom(op.rhs)) + ')'
@@ -1241,9 +1249,9 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             {
                 s = ''
                 var list = _k_.list(op.lhs.object.keyvals)
-                for (var _1048_31_ = 0; _1048_31_ < list.length; _1048_31_++)
+                for (var _1064_31_ = 0; _1064_31_ < list.length; _1064_31_++)
                 {
-                    keyval = list[_1048_31_]
+                    keyval = list[_1064_31_]
                     s += `${keyval.text} = ${this.atom(op.rhs)}.${keyval.text}\n`
                 }
                 return s
@@ -1252,9 +1260,9 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             {
                 s = ''
                 var list1 = _k_.list(op.lhs.array.items)
-                for (var _1054_28_ = 0; _1054_28_ < list1.length; _1054_28_++)
+                for (var _1070_28_ = 0; _1070_28_ < list1.length; _1070_28_++)
                 {
-                    val = list1[_1054_28_]
+                    val = list1[_1070_28_]
                     i = op.lhs.array.items.indexOf(val)
                     s += (i && this.indent || '') + `${val.text} = ${this.atom(op.rhs)}[${i}]\n`
                 }
@@ -1263,7 +1271,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         }
         else if (o === '!')
         {
-            if ((op.rhs != null ? op.rhs.incond : undefined) || ((_1061_43_=op.rhs) != null ? (_1061_54_=_1061_43_.operation) != null ? (_1061_64_=_1061_54_.operator) != null ? _1061_64_.text : undefined : undefined : undefined) === '=')
+            if ((op.rhs != null ? op.rhs.incond : undefined) || ((_1077_43_=op.rhs) != null ? (_1077_54_=_1077_43_.operation) != null ? (_1077_64_=_1077_54_.operator) != null ? _1077_64_.text : undefined : undefined : undefined) === '=')
             {
                 open = '('
                 close = ')'
@@ -1278,7 +1286,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
             open = '('
             close = ')'
         }
-        else if (((_1073_18_=op.rhs) != null ? (_1073_29_=_1073_18_.operation) != null ? _1073_29_.operator.text : undefined : undefined) === '=')
+        else if (((_1089_18_=op.rhs) != null ? (_1089_29_=_1089_18_.operation) != null ? _1089_29_.operator.text : undefined : undefined) === '=')
         {
             open = '('
             close = ')'
@@ -1339,7 +1347,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     index (p)
     {
-        var slice, from, _1144_32_, addOne, upto, _1148_32_, _1150_25_, _1150_54_, u, upper, _1166_27_, ni
+        var slice, from, _1160_32_, addOne, upto, _1164_32_, _1166_25_, _1166_54_, u, upper, _1182_27_, ni
 
         if (slice = p.slidx.slice)
         {
@@ -1417,7 +1425,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
     slice (p)
     {
-        var _1196_41_, from, upto, x, o
+        var _1212_41_, from, upto, x, o
 
         if ((p.from.type === 'num' && 'num' === (p.upto != null ? p.upto.type : undefined)))
         {
@@ -1450,9 +1458,9 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
 
         s = '`'
         var list = _k_.list(chunks)
-        for (var _1218_17_ = 0; _1218_17_ < list.length; _1218_17_++)
+        for (var _1234_17_ = 0; _1234_17_ < list.length; _1234_17_++)
         {
-            chunk = list[_1218_17_]
+            chunk = list[_1234_17_]
             t = chunk.text
             switch (chunk.type)
             {
@@ -1484,6 +1492,7 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
     {
         var gi, s
 
+        this.hint.section = true
         gi = this.ind()
         s = `module.exports[${p.title.text}] = function ()\n` + gi + '{\n' + this.indent + this.nodes(p.exps,'\n' + this.indent,true) + '\n' + gi + '}'
         this.ded()
@@ -1513,13 +1522,13 @@ extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] 
         var vars, v
 
         var list = _k_.list(this.varstack)
-        for (var _1276_17_ = 0; _1276_17_ < list.length; _1276_17_++)
+        for (var _1294_17_ = 0; _1294_17_ < list.length; _1294_17_++)
         {
-            vars = list[_1276_17_]
+            vars = list[_1294_17_]
             var list1 = _k_.list(vars)
-            for (var _1277_18_ = 0; _1277_18_ < list1.length; _1277_18_++)
+            for (var _1295_18_ = 0; _1295_18_ < list1.length; _1295_18_++)
             {
-                v = list1[_1277_18_]
+                v = list1[_1295_18_]
                 if (v.text === name + (suffix || ''))
                 {
                     return this.freshVar(name,suffix + 1)

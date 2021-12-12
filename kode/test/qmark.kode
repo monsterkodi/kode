@@ -85,7 +85,7 @@ describe 'qmark' ->
             """ """
             (function ()
             {
-                (s != null ? s.c : undefined)
+                ;(s != null ? s.c : undefined)
                 return (r != null ? r.d : undefined)
             })
             """
