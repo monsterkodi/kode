@@ -13,16 +13,16 @@ kode = -> new Kode()
 
 module.exports = 
     
-    evl: (c,p) -> chai.assert.deepEqual kode().eval(c), p
-    sme: (c,p) -> kode().compile(c).should.eql kode().compile(p)
-    ast: (c,p) -> kode().astr c, no
-    cmp: (c,p) -> 
-        k = kode().compile c
-        if k.startsWith '// monsterkodi/kode'   then k = k[k.indexOf('\n')+2..]
-        if k.startsWith 'var _k_'               then k = k[k.indexOf('\n')+2..]
-        if k.startsWith 'var '                  then k = k[k.indexOf('\n')+2..]
-        k.should.eql p
+    # evl: (c,p) -> chai.assert.deepEqual kode().eval(c), p
+    # sme: (c,p) -> kode().compile(c).should.eql kode().compile(p)
+    # cmp: (c,p) -> 
+        # k = kode().compile c
+        # if k.startsWith '// monsterkodi/kode'   then k = k[k.indexOf('\n')+2..]
+        # if k.startsWith 'var _k_'               then k = k[k.indexOf('\n')+2..]
+        # if k.startsWith 'var '                  then k = k[k.indexOf('\n')+2..]
+        # k.should.eql p
         
+    ast:(c,p) -> kode().astr c, no
     ke: (c)   -> kode().eval(c)
     kc: (c,p) -> 
         k = kode().compile c
