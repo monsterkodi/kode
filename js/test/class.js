@@ -1,29 +1,29 @@
-// monsterkodi/kode 0.90.0
+// monsterkodi/kode 0.91.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
-var cmp, evl
+var kc, ke
 
-cmp = require('./utils').cmp
-evl = require('./utils').evl
+kc = require('./utils').kc
+ke = require('./utils').ke
 
-describe('class',function ()
+module.exports["class"] = function ()
 {
-    it('class',function ()
+    section("class", function ()
     {
-        cmp(`class A`,`class A
+        compare(kc(`class A`),`class A
 {}
 `)
-        cmp(`class B
-    @: ->`,`class B
+        compare(kc(`class B
+    @: ->`),`class B
 {
     constructor ()
     {}
 }
 `)
-        cmp(`class C
+        compare(kc(`class C
     @a: ->
-    b: ->`,`class C
+    b: ->`),`class C
 {
     static a ()
     {}
@@ -32,8 +32,8 @@ describe('class',function ()
     {}
 }
 `)
-        cmp(`class D
-    a: =>`,`class D
+        compare(kc(`class D
+    a: =>`),`class D
 {
     constructor ()
     {
@@ -44,9 +44,9 @@ describe('class',function ()
     {}
 }
 `)
-        cmp(`class E
+        compare(kc(`class E
     @f: ->
-    @g: ->`,`class E
+    @g: ->`),`class E
 {
     static f ()
     {}
@@ -55,10 +55,10 @@ describe('class',function ()
     {}
 }
 `)
-        cmp(`class F
+        compare(kc(`class F
     @f: ->
     @g: ->
-    @h: ->`,`class F
+    @h: ->`),`class F
 {
     static f ()
     {}
@@ -70,11 +70,11 @@ describe('class',function ()
     {}
 }
 `)
-        cmp(`class X
+        compare(kc(`class X
     @: ->
         '@'
 
-    m: -> 'm'`,`class X
+    m: -> 'm'`),`class X
 {
     constructor ()
     {
@@ -87,11 +87,11 @@ describe('class',function ()
     }
 }
 `)
-        return cmp(`class Y
+        compare(kc(`class Y
     @: -> '@'
 
     m: ->
-        'm'`,`class Y
+        'm'`),`class Y
 {
     constructor ()
     {
@@ -105,14 +105,14 @@ describe('class',function ()
 }
 `)
     })
-    it('bind',function ()
+    section("bind", function ()
     {
-        return cmp(`class A
+        compare(kc(`class A
     @: -> @f()
     b: => log 'hello'
     f: ->
         g = => @b()
-        g()`,`class A
+        g()`),`class A
 {
     constructor ()
     {
@@ -138,9 +138,9 @@ describe('class',function ()
 }
 `)
     })
-    return it('old school',function ()
+    section("old school", function ()
     {
-        evl(`function T1
+        compare(ke(`function T1
     @: ->
     f: (a) -> 1 + a
 
@@ -148,8 +148,8 @@ function T2 extends T1
     @: ->
     f: (a) -> super(a) + 30
     
-(new T2).f 1`,32)
-        return evl(`function T3
+(new T2).f 1`),32)
+        compare(ke(`function T3
      
     f: (a) -> 1 + a
  
@@ -157,6 +157,8 @@ function T4 extends T3
  
     f: (a) -> super(a) + 40
      
-(new T4).f 1`,42)
+(new T4).f 1`),42)
     })
-})
+}
+module.exports["class"]._section_ = true
+module.exports

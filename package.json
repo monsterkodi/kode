@@ -1,29 +1,25 @@
 {
-  "name": "kode",
-  "version": "0.90.0",
-  "description": "programming language",
-  "main": "js/kode.js",
-  "scripts": {
-    "test": "mocha -c js/test/*.js",
-    "watch": "mocha -w -c js/test/*.js",
-    "stage": "pnpm run build0 && pnpm run build1 && pnpm run testage",
-    "build0": "kode kode/*.kode -Ho stage0 && kode kode/test/*.kode -Ho stage0/test",
-    "build1": "k0de kode/*.kode -Ho stage1 && k0de kode/test/*.kode -Ho stage1/test",
-    "testage": "mocha -c stage1/test/*.js",
-    "unstage": "cp stage1/*.js js && cp stage1/test/*.js js/test"
-  },
-  "author": "monsterkodi",
-  "license": "Unlicense",
-  "dependencies": {
-    "colorcat": "monsterkodi/colorcat",
-    "karg": "monsterkodi/karg",
-    "klor": "monsterkodi/klor",
-    "kslash": "monsterkodi/kslash",
-    "kstr": "monsterkodi/kstr",
-    "noon": "monsterkodi/noon"
-  },
-  "devDependencies": {
-    "chai": "^4.3.4",
-    "mocha": "^9.1.3"
-  }
+    "name": "kode",
+    "version": "0.91.0",
+    "description": "programming language",
+    "main": "js/kode.js",
+    "scripts": {
+        "test": "kode -t kode/test/*.kode",
+        "watch": "kode -wt kode/test/*.kode",
+        "stage": "pnpm run build0 && pnpm run build1 && pnpm run testage",
+        "build0": "kode kode/*.kode -Ho stage0 && kode kode/test/*.kode -Ho stage0/test",
+        "build1": "k0de kode/*.kode -Ho stage1 && k0de kode/test/*.kode -Ho stage1/test",
+        "testage": "k1de -t kode/test/*.kode",
+        "unstage": "cp stage1/*.js js && cp stage1/test/*.js js/test"
+    },
+    "author": "monsterkodi",
+    "license": "Unlicense",
+    "dependencies": {
+        "colorcat": "monsterkodi/colorcat",
+        "karg": "monsterkodi/karg",
+        "klor": "monsterkodi/klor",
+        "kslash": "monsterkodi/kslash",
+        "kstr": "monsterkodi/kstr",
+        "noon": "monsterkodi/noon"
+    }
 }

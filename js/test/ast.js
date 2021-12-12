@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.90.0
+// monsterkodi/kode 0.91.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
@@ -6,42 +6,42 @@ var ast
 
 ast = require('./utils').ast
 
-describe('ast',function ()
+module.exports["ast"] = function ()
 {
-    it('simple',function ()
+    section("simple", function ()
     {
-        ast('a','a')
-        ast('1','1')
-        ast('no','no')
-        return ast('1;2','1\n2')
+        compare(ast('a'),'a')
+        compare(ast('1'),'1')
+        compare(ast('no'),'no')
+        compare(ast('1;2'),'1\n2')
     })
-    return it('operation',function ()
+    section("operation", function ()
     {
-        ast('a and b',`operation
+        compare(ast('a and b'),`operation
     lhs
         a
     operator
         and
     rhs
         b`)
-        ast('1 + 2',`operation
+        compare(ast('1 + 2'),`operation
     lhs
         1
     operator
         +
     rhs
         2`)
-        ast('++a',`operation
+        compare(ast('++a'),`operation
     operator
         ++
     rhs
         a`)
-        ast('not a',`operation
+        compare(ast('not a'),`operation
     operator
         not
     rhs
         a`)
-        ast('a = b + 1',`operation
+        compare(ast('a = b + 1'),`operation
     lhs
         a
     operator
@@ -54,7 +54,7 @@ describe('ast',function ()
                 +
             rhs
                 1`)
-        ast('a = b = c',`operation
+        compare(ast('a = b = c'),`operation
     lhs
         a
     operator
@@ -67,7 +67,7 @@ describe('ast',function ()
                 =
             rhs
                 c`)
-        return ast('for a in l then a',`for
+        compare(ast('for a in l then a'),`for
     vals
         a
     inof
@@ -77,4 +77,6 @@ describe('ast',function ()
     then
         a`)
     })
-})
+}
+module.exports["ast"]._section_ = true
+module.exports

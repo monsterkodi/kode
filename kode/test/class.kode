@@ -6,24 +6,26 @@
  0000000  0000000  000   000  0000000   0000000
 ###
 
-{ cmp, evl } = require './utils'
+{ kc, ke } = require './utils'
 
-describe 'class' ->
+▸ class
 
-    it 'class' ->
+    ▸ class
 
-        cmp """
+        kc  """
             class A
-            """ """
+            """ ▸ 
+            """
             class A
             {}
             
             """
 
-        cmp """
+        kc  """
             class B
                 @: ->
-            """ """
+            """ ▸ 
+            """
             class B
             {
                 constructor ()
@@ -32,11 +34,12 @@ describe 'class' ->
 
             """
 
-        cmp """
+        kc  """
             class C
                 @a: ->
                 b: ->
-            """ """
+            """ ▸ 
+            """
             class C
             {
                 static a ()
@@ -48,10 +51,11 @@ describe 'class' ->
 
             """
 
-        cmp """
+        kc  """
             class D
                 a: =>
-            """ """
+            """ ▸ 
+            """
             class D
             {
                 constructor ()
@@ -65,11 +69,12 @@ describe 'class' ->
 
             """
 
-        cmp """
+        kc  """
             class E
                 @f: ->
                 @g: ->
-            """ """
+            """ ▸ 
+            """
             class E
             {
                 static f ()
@@ -81,12 +86,13 @@ describe 'class' ->
 
             """
 
-        cmp """
+        kc  """
             class F
                 @f: ->
                 @g: ->
                 @h: ->
-            """ """
+            """ ▸ 
+            """
             class F
             {
                 static f ()
@@ -101,13 +107,14 @@ describe 'class' ->
 
             """
 
-        cmp """
+        kc  """
             class X
                 @: ->
                     '@'
 
                 m: -> 'm'
-            """ """
+            """ ▸ 
+            """
             class X
             {
                 constructor ()
@@ -123,13 +130,14 @@ describe 'class' ->
 
             """
 
-        cmp """
+        kc  """
             class Y
                 @: -> '@'
 
                 m: ->
                     'm'
-            """ """
+            """ ▸ 
+            """
             class Y
             {
                 constructor ()
@@ -151,16 +159,16 @@ describe 'class' ->
     # 000   000  000  000  0000  000   000  
     # 0000000    000  000   000  0000000    
     
-    it 'bind' ->
+    ▸ bind
 
-        cmp """
+        kc  """
             class A
                 @: -> @f()
                 b: => log 'hello'
                 f: ->
                     g = => @b()
                     g()
-            """,
+            """ ▸
             """
             class A
             {
@@ -195,9 +203,9 @@ describe 'class' ->
     # 000   000  000      000   000             000  000       000   000  000   000  000   000  000      
     #  0000000   0000000  0000000          0000000    0000000  000   000   0000000    0000000   0000000  
     
-    it 'old school' ->
+    ▸ old school
 
-        evl """
+        ke  """
             function T1
                 @: ->
                 f: (a) -> 1 + a
@@ -207,9 +215,9 @@ describe 'class' ->
                 f: (a) -> super(a) + 30
                 
             (new T2).f 1
-            """ 32
+            """ ▸ 32
         
-        evl """
+        ke  """
             function T3
                  
                 f: (a) -> 1 + a
@@ -219,4 +227,4 @@ describe 'class' ->
                 f: (a) -> super(a) + 40
                  
             (new T4).f 1
-            """ 42
+            """ ▸ 42

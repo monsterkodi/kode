@@ -8,7 +8,6 @@
 
 kstr = require 'kstr'
 
-depth = 0
 comps = 0
 succs = 0
 fails = []
@@ -30,7 +29,7 @@ class Tester
 
         stack.push t
         comps = 0
-        depth++
+        depth = stack.length
         log W1 kstr.lpad('' depth*3-1) + ' ' + global["y#{Math.max 1, 8-2*depth}"] t + ' '
         f()
         stack.pop()
@@ -41,20 +40,49 @@ class Tester
     # 000       000   000  000 0 000  000        000   000  000   000  000       
     #  0000000   0000000   000   000  000        000   000  000   000  00000000  
     
+    sameObjects: (a, b) ->
+        
+        if Object.keys(a).length != Object.keys(b).length then return false
+        if typeof a != typeof b then return false
+        for k,v of a
+            if not Object.is v, b[k]
+                if not @sameObjects v, b[k] then return false
+        true
+    
     compare: (a, b) =>
 
+        depth = stack.length
         ind = kstr.lpad('' (depth+1)*3)
         
         comps++
         
-        if a == b
+        if Object.is(a,b)
+            succs++
+            return
+            
+        if Array.isArray(a) and Array.isArray(b)
+            fail = false
+            if a.length == b.length
+                for v,i in a
+                    if not Object.is v, b[i]
+                        if typeof v == typeof b[i] == 'object'
+                            fail = not @sameObjects v, b[i]
+                            break if fail
+                        else
+                            fail = true
+                            break
+            if not fail
+                succs++
+                return
+                
+        else if @sameObjects a, b
             succs++
             return
         
         log R3(r2(ind + comps + ' ')) + ' ' + r5(@short a) + ' ' + R1(r4 ' ▸ ') + ' ' + g1(@short b)
         
         fails.push
-            stack: stack.join(' ')
+            stack: stack.join(' ')+' '+comps
             comps: comps
             lhs:   a
             rhs:   b
@@ -67,6 +95,13 @@ class Tester
     
     test: (text, file) ->
         
+        # log w8 file
+        
+        comps = 0
+        succs = 0
+        fails = []
+        stack = []
+                
         g = 
             compare: @compare
             section: @section
@@ -74,17 +109,25 @@ class Tester
         tests = @kode.eval text, file, g
 
         tests each (k,v) ->
-            depth = 0
-            stack.push k
-            log G1 y8 ' ' + k + ' '
-            v()
-            stack.pop()
+
+            if v._section_
+                stack.push k
+                log G1 y8 ' ' + k + ' '
+                v()
+                stack.pop()
         
-        summary = ''
-        summary += b5(succs+fails.length) + b1(' tests ')
-        summary += g4("✔") + ' ' + g5(succs) + g1(' ok ') if succs
-        summary += R2 y2(' ❌ ') + y6(fails.length) + y3(' failures ') if valid fails
-        log summary
+        for fail in fails
+            log R3 r2 fail.stack
+            log 'lhs' 
+            log r5 fail.lhs
+            log 'rhs' 
+            log g3 fail.rhs
+            
+        if fails.length
+            summary  = b6 succs+fails.length
+            summary += g4(" ✔ ") + g3(succs) + ' ' if succs
+            summary += R2 y2(' ❌ ') + y6(fails.length) + y3(' failures ') if valid fails
+            log summary
 
     #  0000000  000   000   0000000   00000000   000000000  
     # 000       000   000  000   000  000   000     000     

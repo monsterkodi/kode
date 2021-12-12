@@ -6,9 +6,9 @@
 000  000              000     000   000  00000000  000   000
 ###
 
-{ cmp, sme } = require './utils'
+{ kc } = require './utils'
 
-describe 'if' ->
+▸ if
 
     # 000000000  000   000  00000000  000   000  
     #    000     000   000  000       0000  000  
@@ -16,33 +16,36 @@ describe 'if' ->
     #    000     000   000  000       000  0000  
     #    000     000   000  00000000  000   000  
     
-    it 'then' ->
+    ▸ then
         
-        cmp """
+        kc  """
             if n
                 b 
-            """ """
+            """ ▸
+            """
             if (n)
             {
                 b
             }
             """
 
-        cmp """
+        kc  """
             if undefined == null
                 no
-            """ """
+            """ ▸
+            """
             if (undefined === null)
             {
                 false
             }
             """
 
-        cmp """
+        kc  """
             if 2
                 c = 0
                 1
-            """ """
+            """ ▸
+            """
             if (2)
             {
                 c = 0
@@ -50,7 +53,7 @@ describe 'if' ->
             }
             """
 
-        cmp 'if false then true',
+        kc  'if false then true' ▸
             """
             if (false)
             {
@@ -58,20 +61,22 @@ describe 'if' ->
             }
             """
 
-        cmp """
+        kc  """
             if false
                 true
-            """ """
+            """ ▸
+            """
             if (false)
             {
                 true
             }"""
 
-        cmp """
+        kc  """
             if false
                 true
             a = 1
-            """ """
+            """ ▸
+            """
             if (false)
             {
                 true
@@ -79,11 +84,12 @@ describe 'if' ->
             a = 1
             """
             
-        cmp """
+        kc  """
             if false
                 log 2.1
             log 2
-            """ """
+            """ ▸
+            """
             if (false)
             {
                 console.log(2.1)
@@ -91,21 +97,23 @@ describe 'if' ->
             console.log(2)
             """
             
-        cmp """
+        kc  """
             if 2
                 a.b c
-            """ """
+            """ ▸
+            """
             if (2)
             {
                 a.b(c)
             }
             """
             
-        cmp """
+        kc  """
             if 3
                 a.b c
                 a.b c
-            """ """
+            """ ▸
+            """
             if (3)
             {
                 a.b(c)
@@ -113,27 +121,29 @@ describe 'if' ->
             }
             """          
 
-        cmp """
+        kc  """
             if not op in ['--''++']
                 decr
-            """ """
+            """ ▸
+            """
             if (!(_k_.in(op,['--','++'])))
             {
                 decr
             }
             """          
             
-        cmp """
+        kc  """
             if op not in ['--''++']
                 incr
-            """ """
+            """ ▸
+            """
             if (!(_k_.in(op,['--','++'])))
             {
                 incr
             }
             """       
             
-        cmp """
+        kc  """
             if 1
                 if 2
                     a
@@ -143,7 +153,8 @@ describe 'if' ->
                     else 
                         c
                 log 'yes1'
-            """ """
+            """ ▸
+            """
             if (1)
             {
                 if (2)
@@ -165,10 +176,11 @@ describe 'if' ->
             }
             """
             
-        cmp """
+        kc  """
             if e then 1
             if 2 then f
-            """ """
+            """ ▸
+            """
             if (e)
             {
                 1
@@ -179,7 +191,7 @@ describe 'if' ->
             }
             """
             
-        cmp """
+        kc  """
             ->
                 if not e then return
                     
@@ -187,7 +199,8 @@ describe 'if' ->
                     if 2 in a
                         3
                     return
-            """ """
+            """ ▸
+            """
             (function ()
             {
                 if (!e)
@@ -211,30 +224,32 @@ describe 'if' ->
     # 000   000  000      000   000  000       000  000   
     # 0000000    0000000   0000000    0000000  000   000  
     
-    it 'block' ->
+    ▸ block
         
-        cmp """
+        kc  """
             if
                 1 then 2
-            """ """
+            """ ▸
+            """
             if (1)
             {
                 2
             }
             """
 
-        cmp """
+        kc  """
             if
                 10
                     20
-            """ """
+            """ ▸
+            """
             if (10)
             {
                 20
             }
             """
 
-        cmp """
+        kc  """
             if
                 100
                     200
@@ -244,7 +259,8 @@ describe 'if' ->
                     600
                 else
                     700
-            """ """
+            """ ▸
+            """
             if (100)
             {
                 200
@@ -269,11 +285,11 @@ describe 'if' ->
     # 000  000  0000  000      000  000  0000  000       
     # 000  000   000  0000000  000  000   000  00000000  
     
-    it 'inline' ->
+    ▸ inline
         
-        cmp "v = if k == 1 then 2 else 3" "v = k === 1 ? 2 : 3"
+        kc  "v = if k == 1 then 2 else 3" ▸ "v = k === 1 ? 2 : 3"
         
-        cmp "i = 1 if i == 0",             
+        kc  "i = 1 if i == 0" ▸            
             """
             if (i === 0)
             {
@@ -281,7 +297,7 @@ describe 'if' ->
             }
             """
 
-        cmp "if a then i = 10 if i == 10",
+        kc  "if a then i = 10 if i == 10" ▸
             """
             if (a)
             {
@@ -292,18 +308,20 @@ describe 'if' ->
             }
             """
             
-        cmp """
+        kc  """
             if false then true else no
             a = 1
-            """ """
+            """ ▸
+            """
             false ? true : false
             a = 1
             """
 
-        cmp """
+        kc  """
             if false then log 1.1
             log 1
-            """ """
+            """ ▸
+            """
             if (false)
             {
                 console.log(1.1)
@@ -311,28 +329,31 @@ describe 'if' ->
             console.log(1)
             """
 
-        cmp """
+        kc  """
             if false then true else log 3.3
             log 3
-            """ """
+            """ ▸
+            """
             false ? true : console.log(3.3)
             console.log(3)
             """
             
-        cmp """
+        kc  """
             if 1 then a.b c
-            """ """
+            """ ▸
+            """
             if (1)
             {
                 a.b(c)
             }
             """
             
-        cmp """
+        kc  """
             j = ->
                 for m in ms then if bla then blub
                 nextline
-            """ """
+            """ ▸
+            """
             
             j = function ()
             {
@@ -351,10 +372,11 @@ describe 'if' ->
             }
             """
             
-        cmp """
+        kc  """
             if c then return f a
             nextline
-            """ """
+            """ ▸
+            """
             if (c)
             {
                 return f(a)
@@ -362,33 +384,36 @@ describe 'if' ->
             nextline
             """
             
-        cmp """
+        kc  """
             s = if 1
                     2
                 else if 3
                     4
                 else
                     5
-            """ """
+            """ ▸
+            """
             s = 1 ? 2 : 3 ? 4 : 5
             """
 
-        cmp """
+        kc  """
             s = if 1
                     2
                 else if 3
                     4
-            """ """
+            """ ▸
+            """
             s = 1 ? 2 : 3 ? 4 : undefined
             """
             
-        cmp "h = if w then f g else '0'" "h = w ? f(g) : '0'"
+        kc  "h = if w then f g else '0'" ▸ "h = w ? f(g) : '0'"
             
-        cmp "a = if 1 then 2 else if 3 then 4 else if 5 then 6 else 7" "a = 1 ? 2 : 3 ? 4 : 5 ? 6 : 7"
+        kc  "a = if 1 then 2 else if 3 then 4 else if 5 then 6 else 7" ▸ "a = 1 ? 2 : 3 ? 4 : 5 ? 6 : 7"
         
-        cmp """
+        kc  """
             a = if 0 then if 1 then if 2 then 3 else if 4 then 5 else 6 else if 7 then 8 else 9 else if 10 then 11 else 12
-            """ """
+            """ ▸
+            """
             a = 0 ? 1 ? 2 ? 3 : 4 ? 5 : 6 : 7 ? 8 : 9 : 10 ? 11 : 12
             """
         ###
@@ -434,9 +459,9 @@ describe 'if' ->
     # 000       000           000  000             000  000       
     # 00000000  0000000  0000000   00000000        000  000       
     
-    it 'else if' ->
+    ▸ else if
         
-        cmp """
+        kc  """
             if 1
                 log 'yes2'
             else if no
@@ -444,7 +469,8 @@ describe 'if' ->
             else
                 log 'no2'
             log 'end'
-            """ """
+            """ ▸
+            """
             if (1)
             {
                 console.log('yes2')
@@ -460,13 +486,14 @@ describe 'if' ->
             console.log('end')
             """
 
-        cmp """
+        kc  """
             if a in l
                 log 'yes3'
             else
                 log 'no3'
             log 'END'
-            """ """
+            """ ▸
+            """
             if (_k_.in(a,l))
             {
                 console.log('yes3')
@@ -484,11 +511,12 @@ describe 'if' ->
     # 000   000  000          000     000   000  000   000  000  0000       000  
     # 000   000  00000000     000      0000000   000   000  000   000  0000000   
     
-    it 'returns' ->
+    ▸ returns
         
-        cmp """
+        kc  """
             -> if false then true
-            """ """
+            """ ▸
+            """
             (function ()
             {
                 if (false)
@@ -498,9 +526,10 @@ describe 'if' ->
             })
             """
 
-        cmp """
+        kc  """
             -> if 1 then 2 else 3
-            """ """
+            """ ▸
+            """
             (function ()
             {
                 if (1)
@@ -514,13 +543,14 @@ describe 'if' ->
             })
             """   
             
-        cmp """
+        kc  """
             ->    
                 if a
                     e.push
                         key:
                             key: val
-            """ """
+            """ ▸
+            """
             (function ()
             {
                 if (a)
@@ -536,20 +566,22 @@ describe 'if' ->
     #    000     000   000  000  000      
     #    000     000   000  000  0000000  
     
-    it 'tail' ->
+    ▸ tail
         
-        cmp """
+        kc  """
             a if b
-            """ """
+            """ ▸
+            """
             if (b)
             {
                 a
             }
             """
 
-        cmp """
+        kc  """
             a if b if c
-            """ """
+            """ ▸
+            """
             if (c)
             {
                 if (b)
@@ -559,19 +591,20 @@ describe 'if' ->
             }
             """
             
-        cmp """
+        kc  """
             log 'msg' if dbg
-            """ """
+            """ ▸
+            """
             if (dbg)
             {
                 console.log('msg')
             }
             """
             
-        cmp "if 1 then 2"   "if (1)\n{\n    2\n}"
+        kc  "if 1 then 2"       ▸   "if (1)\n{\n    2\n}"
         
-        sme "if 1 then 2"         "if 1 then 2"
-        sme "if 1 ➜ 2 else 3"        "if 1 then 2 else 3"
+        kc  "if 1 then 2"       ▸   kc  "if 1 then 2"
+        kc  "if 1 ➜ 2 else 3"   ▸   kc  "if 1 then 2 else 3"
         # sme "1 ➜ 2 ➜ 3"           "if 1 then 2 else 3"
         # sme "1 ➜ 2 ➜ 3 ➜ 4 ➜ 5"   "if 1 then 2 else if 3 then 4 else 5"
 
@@ -581,15 +614,16 @@ describe 'if' ->
     # 000  0000  000  000       000       000   000  
     # 000   000  000   0000000  00000000  000   000  
     
-    it 'nicer' ->
+    ▸ nicer
               
-        cmp """
+        kc  """
             if
                 x       ➜ 1
                 a == 5  ➜ 2
                 'hello' ➜ 3
                         ➜ fark
-            """ """
+            """ ▸
+            """
             if (x)
             {
                 1
@@ -608,14 +642,15 @@ describe 'if' ->
             }
             """
 
-        cmp """
+        kc  """
             if
                 x       ➜ 1
                 a == 5  ➜ 2
                 'hello' ➜ 3
                 else
                     fark
-            """ """
+            """ ▸
+            """
             if (x)
             {
                 1
@@ -634,13 +669,14 @@ describe 'if' ->
             }
             """
 
-        cmp """
+        kc  """
             if  
                 x       ➜ 1
                 a == 5  ➜ 2
                 'hello' ➜ 3
                 else   fark
-            """ """
+            """ ▸
+            """
             if (x)
             {
                 1
@@ -659,10 +695,11 @@ describe 'if' ->
             }
             """
 
-        cmp """
+        kc  """
             if  x  ➜ 1
                 y  ➜ 2
-            """ """
+            """ ▸
+            """
             if (x)
             {
                 1
@@ -673,11 +710,12 @@ describe 'if' ->
             }
             """
             
-        cmp """
+        kc  """
             if  a 'x' ➜ X
                 b 'y' ➜ Y
                 else    Z
-            """ """
+            """ ▸
+            """
             if (a('x'))
             {
                 X
@@ -692,11 +730,12 @@ describe 'if' ->
             }
             """
 
-        cmp """
+        kc  """
             if  a 'x' ➜ X
                 b 'y' ➜ Y
                       ➜ Z
-            """ """
+            """ ▸
+            """
             if (a('x'))
             {
                 X
@@ -711,10 +750,11 @@ describe 'if' ->
             }
             """
 
-        cmp """
+        kc  """
             if  b   ➜ R
                     ➜ S
-            """ """
+            """ ▸
+            """
             if (b)
             {
                 R
@@ -725,10 +765,11 @@ describe 'if' ->
             }
             """
             
-        cmp """
+        kc  """
             if  a ➜ P
                 ➜   Q
-            """ """
+            """ ▸
+            """
             if (a)
             {
                 P

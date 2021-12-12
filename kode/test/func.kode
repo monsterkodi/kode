@@ -6,31 +6,33 @@
 000        0000000   000   000   0000000
 ###
 
-{cmp} = require './utils'
+{ kc } = require './utils'
 
-describe 'func' ->
+▸ func
 
-    it 'func' ->
+    ▸ func
 
-        cmp '->'               '(function ()\n{})'
-        cmp '(a) ->'           '(function (a)\n{})'
-        cmp '(a,b,c) ->'       '(function (a, b, c)\n{})'
-        cmp 'a = (a,b) ->'     '\na = function (a, b)\n{}'
+        kc  '->'                ▸   '(function ()\n{})'
+        kc  '(a) ->'            ▸   '(function (a)\n{})'
+        kc  '(a,b,c) ->'        ▸   '(function (a, b, c)\n{})'
+        kc  'a = (a,b) ->'      ▸   '\na = function (a, b)\n{}'
 
-        cmp """
+        kc  """
             -> return 1
-            """ """
+            """ ▸
+            """
             (function ()
             {
                 return 1
             })
             """
 
-        cmp """
+        kc  """
             ->
                 1
                 2
-            """ """
+            """ ▸
+            """
             (function ()
             {
                 1
@@ -38,11 +40,12 @@ describe 'func' ->
             })
             """
 
-        cmp """
+        kc  """
             ->
                 return 1
                 2
-            """ """
+            """ ▸
+            """
             (function ()
             {
                 return 1
@@ -50,11 +53,12 @@ describe 'func' ->
             })
             """
 
-        cmp """
+        kc  """
             ->
                 1
                 return 2
-            """ """
+            """ ▸
+            """
             (function ()
             {
                 1
@@ -62,9 +66,10 @@ describe 'func' ->
             })
             """
 
-        cmp """
+        kc  """
             a = (a,b,c) -> d
-            """ """
+            """ ▸
+            """
 
             a = function (a, b, c)
             {
@@ -72,9 +77,10 @@ describe 'func' ->
             }
             """
 
-        cmp """
+        kc  """
             a.x = (y,z) -> q
-            """ """
+            """ ▸
+            """
 
             a.x = function (y, z)
             {
@@ -82,10 +88,11 @@ describe 'func' ->
             }
             """
 
-        cmp """
+        kc  """
             a = ->
                 b = ->
-            """ """
+            """ ▸
+            """
 
             a = function ()
             {
@@ -96,11 +103,12 @@ describe 'func' ->
             }
             """
 
-        cmp """
+        kc  """
             a = (b,c) ->
                 b = (e, f) -> g
                 b
-            """ """
+            """ ▸
+            """
 
             a = function (b, c)
             {
@@ -112,10 +120,11 @@ describe 'func' ->
             }
             """
 
-        cmp """
+        kc  """
             a = (b,c) ->
                 b = (e, f) -> h
-            """ """
+            """ ▸
+            """
 
             a = function (b, c)
             {
@@ -126,10 +135,11 @@ describe 'func' ->
             }
             """
 
-        cmp """
+        kc  """
             a = (b,c) ->
                 (e, f) -> j
-            """ """
+            """ ▸
+            """
 
             a = function (b, c)
             {
@@ -140,10 +150,11 @@ describe 'func' ->
             }
             """
 
-        cmp """
+        kc  """
             f = ->
                 (a) -> 1
-            """ """
+            """ ▸
+            """
 
             f = function ()
             {
@@ -154,12 +165,13 @@ describe 'func' ->
             }
             """
 
-        cmp """
+        kc  """
             a = ->
                 'a'
             1
 
-            """ """
+            """ ▸
+            """
 
             a = function ()
             {
@@ -168,13 +180,14 @@ describe 'func' ->
             1
             """
 
-        cmp """
+        kc  """
             a = ->
                 log 'a'
 
             b = ->
                 log 'b'
-            """ """
+            """ ▸
+            """
 
             a = function ()
             {
@@ -187,21 +200,23 @@ describe 'func' ->
             }
             """
 
-        cmp "a = ( a, b=1 c=2 ) ->",  "\na = function (a, b = 1, c = 2)\n{}"
+        kc  "a = ( a, b=1 c=2 ) ->",  "\na = function (a, b = 1, c = 2)\n{}"
 
-        cmp """
+        kc  """
             if 1 then return
-            """ """
+            """ ▸
+            """
             if (1)
             {
                 return
             }
             """
 
-        cmp """
+        kc  """
             if x then return
             a
-            """ """
+            """ ▸
+            """
             if (x)
             {
                 return
@@ -209,7 +224,7 @@ describe 'func' ->
             a
             """
 
-        cmp "-> @a",
+        kc  "-> @a" ▸
             """
             (function ()
             {
@@ -217,7 +232,7 @@ describe 'func' ->
             })
             """
 
-        cmp "(@a) -> @a",
+        kc  "(@a) -> @a" ▸
             """
             (function (a)
             {
@@ -226,7 +241,7 @@ describe 'func' ->
             })
             """
 
-        cmp "(@a,a) -> log @a",
+        kc  "(@a,a) -> log @a" ▸
             """
             (function (a1, a)
             {
@@ -241,12 +256,13 @@ describe 'func' ->
     # 000   000  000          000     000   000  000   000  000  0000
     # 000   000  00000000     000      0000000   000   000  000   000
 
-    it 'return' ->
+    ▸ return
 
-        cmp """
+        kc  """
             ff = ->
                 if 232 then return
-            """ """
+            """ ▸
+            """
             
             ff = function ()
             {
@@ -257,11 +273,12 @@ describe 'func' ->
             }
             """
 
-        cmp """
+        kc  """
             fff = ->
                 if 3
                     log '42'
-            """ """
+            """ ▸
+            """
 
             fff = function ()
             {
@@ -272,11 +289,12 @@ describe 'func' ->
             }
             """
 
-        cmp """
+        kc  """
             ffff = ->
                 if 4
                     '42'
-            """ """
+            """ ▸
+            """
 
             ffff = function ()
             {
@@ -287,13 +305,14 @@ describe 'func' ->
             }
             """
 
-        cmp """
+        kc  """
             ->
                 if 1 then h
                 else if 2
                     if 3 then j else k
                 else l
-            """ """
+            """ ▸
+            """
             (function ()
             {
                 if (1)
@@ -318,31 +337,34 @@ describe 'func' ->
             })
             """
 
-        cmp """
+        kc  """
             return 'Q' if t == 'W'
-            """ """
+            """ ▸
+            """
             if (t === 'W')
             {
                 return 'Q'
             }
             """
             
-        cmp """
+        kc  """
             return if not XXX
-            """ """
+            """ ▸
+            """
             if (!XXX)
             {
                 return
             }
             """
             
-        cmp """
+        kc  """
             fffff = ->
                 try
                     'return me!'
                 catch e
                     error e
-            """ """
+            """ ▸
+            """
             
             fffff = function ()
             {

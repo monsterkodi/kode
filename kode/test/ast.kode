@@ -7,18 +7,18 @@
 
 {ast} = require './utils'
 
-describe 'ast' ->
+▸ ast
 
-    it 'simple' ->
+    ▸ simple
         
-        ast 'a'  'a'
-        ast '1'  '1'
-        ast 'no' 'no'
-        ast '1;2' '1\n2'
+        ast 'a'    ▸ 'a'
+        ast '1'    ▸ '1'
+        ast 'no'   ▸ 'no'
+        ast '1;2'  ▸ '1\n2'
         
-    it 'operation' ->
+    ▸ operation
         
-        ast 'a and b', 
+        ast 'a and b' ▸ 
             """
             operation
                 lhs
@@ -29,7 +29,7 @@ describe 'ast' ->
                     b
             """
             
-        ast '1 + 2',
+        ast '1 + 2' ▸
             """
             operation
                 lhs
@@ -40,7 +40,7 @@ describe 'ast' ->
                     2
             """
             
-        ast '++a',
+        ast '++a' ▸
             """
             operation
                 operator
@@ -49,7 +49,7 @@ describe 'ast' ->
                     a
             """
 
-        ast 'not a',
+        ast 'not a' ▸
             """
             operation
                 operator
@@ -58,7 +58,7 @@ describe 'ast' ->
                     a
             """
             
-        ast 'a = b + 1',
+        ast 'a = b + 1' ▸
             """
             operation
                 lhs
@@ -75,7 +75,7 @@ describe 'ast' ->
                             1
             """
 
-        ast 'a = b = c',
+        ast 'a = b = c' ▸
             """
             operation
                 lhs
@@ -92,7 +92,7 @@ describe 'ast' ->
                             c
             """
             
-        ast 'for a in l then a',
+        ast 'for a in l then a' ▸
             """
             for
                 vals

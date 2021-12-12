@@ -41,26 +41,28 @@
         {
             section("sub", function ()
             {
-                cmp(1, 1)
-                cmp(true, true)
+                compare(1,1)
+                compare(true,true)
             })
             section("sub2", function ()
             {
                 section("subsub", function ()
                 {
-                    cmp('a', 'a')
-                    cmp(1, 1)
-                    cmp(\`ok\`, \`ok\`)
+                    compare('a','a')
+                    compare(1,1)
+                    compare(\`ok\`,\`ok\`)
                 })
             })
         }
+        module.exports["test1"]._section_ = true
         module.exports["test2"] = function ()
         {
             section("sub", function ()
             {
-                cmp(2, 2)
+                compare(2,2)
             })
         }
+        module.exports["test2"]._section_ = true
         module.exports
         
         """

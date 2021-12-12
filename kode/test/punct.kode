@@ -6,9 +6,9 @@
 000         0000000   000   000   0000000     000      0000000   000   000     000     000   0000000   000   000  
 ###
 
-{ cmp }= require './utils'
+{ kc } = require './utils'
 
-describe 'punctuation' ->
+▸ punctuation
 
     # 00000000    0000000   00000000   00000000  000   000   0000000
     # 000   000  000   000  000   000  000       0000  000  000
@@ -16,12 +16,12 @@ describe 'punctuation' ->
     # 000        000   000  000   000  000       000  0000       000
     # 000        000   000  000   000  00000000  000   000  0000000
 
-    it 'parens' ->
+    ▸ parens
 
-        cmp '(b)'                         ';(b)'
-        cmp '(b c)'                       ';(b(c))'
-        cmp '(b --c)'                     ';(b(--c))'
-        cmp 'a + (b --c)'                 'a + (b(--c))'
+        kc  '(b)'                         ▸ ';(b)'
+        kc  '(b c)'                       ▸ ';(b(c))'
+        kc  '(b --c)'                     ▸ ';(b(--c))'
+        kc  'a + (b --c)'                 ▸ 'a + (b(--c))'
 
     #  0000000   0000000   00     00  00     00   0000000   000000000   0000000   
     # 000       000   000  000   000  000   000  000   000     000     000   000  
@@ -29,56 +29,56 @@ describe 'punctuation' ->
     # 000       000   000  000 0 000  000 0 000  000   000     000     000   000  
     #  0000000   0000000   000   000  000   000  000   000     000     000   000  
     
-    it 'optional commata' ->
+    ▸ optional commata
         
-        cmp "a = -1"                      "a = -1" 
-        cmp "a = [ 1 2 3 ]"               "a = [1,2,3]" 
-        cmp "a = [-1 2 3 ]"               "a = [-1,2,3]" 
-        cmp "a = [ 1 -2 3 ]"              "a = [1,-2,3]" 
-        cmp "a = [-1 -2 -3]"              "a = [-1,-2,-3]" 
-        cmp "a = [ 1 +2 -3]"              "a = [1,2,-3]" 
-        cmp "a = [+1 -2 +3]"              "a = [1,-2,3]" 
-        cmp "a = [1 a]"                   "a = [1,a]" 
-        cmp "a = [1 -b]"                  "a = [1,-b]" 
-        cmp "a = ['0' -2 'c' -3]"         "a = ['0',-2,'c',-3]" 
-        cmp "a = [-1 - 2 - 3]"            "a = [-1 - 2 - 3]" 
-        cmp "a = [-1-2-3]"                "a = [-1 - 2 - 3]" 
-        cmp "a = { a:1 b:2 }"             "a = {a:1,b:2}"
-        cmp "a = a:1 b:2"                 "a = {a:1,b:2}"
-        cmp "a = ['a' 'b' 'c']"           "a = ['a','b','c']"
-        cmp "a = ['a''b''c']"             "a = ['a','b','c']"
-        cmp "a = { a:{a:1}, b:{b:2} }"    "a = {a:{a:1},b:{b:2}}"
-        cmp "a = { a:{a:3} b:{b:4} }"     "a = {a:{a:3},b:{b:4}}"
-        cmp "a = [ {a:5} {b:6} ]"         "a = [{a:5},{b:6}]"
-        cmp "a = [ {a:1 b:2} ]"           "a = [{a:1,b:2}]"
-        cmp "a = [ [] [] ]"               "a = [[],[]]"
-        cmp "a = [[] []]"                 "a = [[],[]]"
-        cmp "a = [[[[[] []] [[] []]]]]"   "a = [[[[[],[]],[[],[]]]]]"
-        cmp "a = [ [1 2] [3 '4'] ]"       "a = [[1,2],[3,'4']]"
-        cmp "a = [ [-1 -2] [-3 '4' -5] ]" "a = [[-1,-2],[-3,'4',-5]]"
-        cmp "a.on 'b' c"                  "a.on('b',c)" 
-        cmp "describe 'test' ->"          "describe('test',function ()\n{})"
-        cmp 'log "hello" 1 "world"'       'console.log("hello",1,"world")'
-        cmp 'log 1 2 3'                   'console.log(1,2,3)'
+        kc  "a = -1"                      ▸ "a = -1" 
+        kc  "a = [ 1 2 3 ]"               ▸ "a = [1,2,3]" 
+        kc  "a = [-1 2 3 ]"               ▸ "a = [-1,2,3]" 
+        kc  "a = [ 1 -2 3 ]"              ▸ "a = [1,-2,3]" 
+        kc  "a = [-1 -2 -3]"              ▸ "a = [-1,-2,-3]" 
+        kc  "a = [ 1 +2 -3]"              ▸ "a = [1,2,-3]" 
+        kc  "a = [+1 -2 +3]"              ▸ "a = [1,-2,3]" 
+        kc  "a = [1 a]"                   ▸ "a = [1,a]" 
+        kc  "a = [1 -b]"                  ▸ "a = [1,-b]" 
+        kc  "a = ['0' -2 'c' -3]"         ▸ "a = ['0',-2,'c',-3]" 
+        kc  "a = [-1 - 2 - 3]"            ▸ "a = [-1 - 2 - 3]" 
+        kc  "a = [-1-2-3]"                ▸ "a = [-1 - 2 - 3]" 
+        kc  "a = { a:1 b:2 }"             ▸ "a = {a:1,b:2}"
+        kc  "a = a:1 b:2"                 ▸ "a = {a:1,b:2}"
+        kc  "a = ['a' 'b' 'c']"           ▸ "a = ['a','b','c']"
+        kc  "a = ['a''b''c']"             ▸ "a = ['a','b','c']"
+        kc  "a = { a:{a:1}, b:{b:2} }"    ▸ "a = {a:{a:1},b:{b:2}}"
+        kc  "a = { a:{a:3} b:{b:4} }"     ▸ "a = {a:{a:3},b:{b:4}}"
+        kc  "a = [ {a:5} {b:6} ]"         ▸ "a = [{a:5},{b:6}]"
+        kc  "a = [ {a:1 b:2} ]"           ▸ "a = [{a:1,b:2}]"
+        kc  "a = [ [] [] ]"               ▸ "a = [[],[]]"
+        kc  "a = [[] []]"                 ▸ "a = [[],[]]"
+        kc  "a = [[[[[] []] [[] []]]]]"   ▸ "a = [[[[[],[]],[[],[]]]]]"
+        kc  "a = [ [1 2] [3 '4'] ]"       ▸ "a = [[1,2],[3,'4']]"
+        kc  "a = [ [-1 -2] [-3 '4' -5] ]" ▸ "a = [[-1,-2],[-3,'4',-5]]"
+        kc  "a.on 'b' c"                  ▸ "a.on('b',c)" 
+        kc  "describe 'test' ->"          ▸ "describe('test',function ()\n{})"
+        kc  'log "hello" 1 "world"'       ▸ 'console.log("hello",1,"world")'
+        kc  'log 1 2 3'                   ▸ 'console.log(1,2,3)'
         
-        cmp "a = ['a' 1 2.3 null undefined true false yes no]", 
-              "a = ['a',1,2.3,null,undefined,true,false,true,false]"
+        kc  "a = ['a' 1 2.3 null undefined true false yes no]" ▸ 
+            "a = ['a',1,2.3,null,undefined,true,false,true,false]"
                   
-        cmp "a = [ [a:2] [b:'4'] [c:[]] ]"  "a = [[{a:2}],[{b:'4'}],[{c:[]}]]"
+        kc  "a = [ [a:2] [b:'4'] [c:[]] ]"  ▸ "a = [[{a:2}],[{b:'4'}],[{c:[]}]]"
             
-        cmp "f 'a' ->"          "f('a',function ()\n{})" 
-        cmp "f 'a' (b) ->"      "f('a',function (b)\n{})" 
-        cmp "f 'b' not a"       "f('b',!a)" 
-        cmp "f 'b' {a:1}"       "f('b',{a:1})" 
-        cmp "f 'b' ++a"         "f('b',++a)" 
-        cmp "f 'b' []"          "f('b',[])" 
-        cmp "f 'b' 1 2"         "f('b',1,2)" 
+        kc  "f 'a' ->"          ▸   "f('a',function ()\n{})" 
+        kc  "f 'a' (b) ->"      ▸   "f('a',function (b)\n{})" 
+        kc  "f 'b' not a"       ▸   "f('b',!a)" 
+        kc  "f 'b' {a:1}"       ▸   "f('b',{a:1})" 
+        kc  "f 'b' ++a"         ▸   "f('b',++a)" 
+        kc  "f 'b' []"          ▸   "f('b',[])" 
+        kc  "f 'b' 1 2"         ▸   "f('b',1,2)" 
         
-        cmp "g 2 ->"            "g(2,function ()\n{})" 
-        cmp "g 2 (b) ->"        "g(2,function (b)\n{})" 
-        cmp "g 2 not a"         "g(2,!a)" 
-        cmp "g 2 {a:1}"         "g(2,{a:1})" 
-        cmp "g 2 ++a"           "g(2,++a)" 
-        cmp "g 2 []"            "g(2,[])" 
-        cmp "g 2 1 2"           "g(2,1,2)" 
+        kc  "g 2 ->"            ▸   "g(2,function ()\n{})" 
+        kc  "g 2 (b) ->"        ▸   "g(2,function (b)\n{})" 
+        kc  "g 2 not a"         ▸   "g(2,!a)" 
+        kc  "g 2 {a:1}"         ▸   "g(2,{a:1})" 
+        kc  "g 2 ++a"           ▸   "g(2,++a)" 
+        kc  "g 2 []"            ▸   "g(2,[])" 
+        kc  "g 2 1 2"           ▸   "g(2,1,2)" 
         

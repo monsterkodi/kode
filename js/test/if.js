@@ -1,79 +1,78 @@
-// monsterkodi/kode 0.90.0
+// monsterkodi/kode 0.91.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
-var cmp, sme
+var kc
 
-cmp = require('./utils').cmp
-sme = require('./utils').sme
+kc = require('./utils').kc
 
-describe('if',function ()
+module.exports["if"] = function ()
 {
-    it('then',function ()
+    section("then", function ()
     {
-        cmp(`if n
-    b `,`if (n)
+        compare(kc(`if n
+    b `),`if (n)
 {
     b
 }`)
-        cmp(`if undefined == null
-    no`,`if (undefined === null)
+        compare(kc(`if undefined == null
+    no`),`if (undefined === null)
 {
     false
 }`)
-        cmp(`if 2
+        compare(kc(`if 2
     c = 0
-    1`,`if (2)
+    1`),`if (2)
 {
     c = 0
     1
 }`)
-        cmp('if false then true',`if (false)
+        compare(kc('if false then true'),`if (false)
 {
     true
 }`)
-        cmp(`if false
-    true`,`if (false)
+        compare(kc(`if false
+    true`),`if (false)
 {
     true
 }`)
-        cmp(`if false
+        compare(kc(`if false
     true
-a = 1`,`if (false)
+a = 1`),`if (false)
 {
     true
 }
 a = 1`)
-        cmp(`if false
+        compare(kc(`if false
     log 2.1
-log 2`,`if (false)
+log 2`),`if (false)
 {
     console.log(2.1)
 }
 console.log(2)`)
-        cmp(`if 2
-    a.b c`,`if (2)
+        compare(kc(`if 2
+    a.b c`),`if (2)
 {
     a.b(c)
 }`)
-        cmp(`if 3
+        compare(kc(`if 3
     a.b c
-    a.b c`,`if (3)
+    a.b c`),`if (3)
 {
     a.b(c)
     a.b(c)
 }`)
-        cmp(`if not op in ['--''++']
-    decr`,`if (!(_k_.in(op,['--','++'])))
+        compare(kc(`if not op in ['--''++']
+    decr`),`if (!(_k_.in(op,['--','++'])))
 {
     decr
 }`)
-        cmp(`if op not in ['--''++']
-    incr`,`if (!(_k_.in(op,['--','++'])))
+        compare(kc(`if op not in ['--''++']
+    incr`),`if (!(_k_.in(op,['--','++'])))
 {
     incr
 }`)
-        cmp(`if 1
+        compare(kc(`if 1
     if 2
         a
     if 3
@@ -81,7 +80,7 @@ console.log(2)`)
             b
         else 
             c
-    log 'yes1'`,`if (1)
+    log 'yes1'`),`if (1)
 {
     if (2)
     {
@@ -100,8 +99,8 @@ console.log(2)`)
     }
     console.log('yes1')
 }`)
-        cmp(`if e then 1
-if 2 then f`,`if (e)
+        compare(kc(`if e then 1
+if 2 then f`),`if (e)
 {
     1
 }
@@ -109,13 +108,13 @@ if (2)
 {
     f
 }`)
-        return cmp(`->
+        compare(kc(`->
     if not e then return
         
     if 1
         if 2 in a
             3
-        return`,`(function ()
+        return`),`(function ()
 {
     if (!e)
     {
@@ -131,20 +130,20 @@ if (2)
     }
 })`)
     })
-    it('block',function ()
+    section("block", function ()
     {
-        cmp(`if
-    1 then 2`,`if (1)
+        compare(kc(`if
+    1 then 2`),`if (1)
 {
     2
 }`)
-        cmp(`if
+        compare(kc(`if
     10
-        20`,`if (10)
+        20`),`if (10)
 {
     20
 }`)
-        return cmp(`if
+        compare(kc(`if
     100
         200
     300
@@ -152,7 +151,7 @@ if (2)
     500
         600
     else
-        700`,`if (100)
+        700`),`if (100)
 {
     200
 }
@@ -169,39 +168,39 @@ else
     700
 }`)
     })
-    it('inline',function ()
+    section("inline", function ()
     {
-        cmp("v = if k == 1 then 2 else 3","v = k === 1 ? 2 : 3")
-        cmp("i = 1 if i == 0",`if (i === 0)
+        compare(kc("v = if k == 1 then 2 else 3"),"v = k === 1 ? 2 : 3")
+        compare(kc("i = 1 if i == 0"),`if (i === 0)
 {
     i = 1
 }`)
-        cmp("if a then i = 10 if i == 10",`if (a)
+        compare(kc("if a then i = 10 if i == 10"),`if (a)
 {
     if (i === 10)
     {
         i = 10
     }
 }`)
-        cmp(`if false then true else no
-a = 1`,`false ? true : false
+        compare(kc(`if false then true else no
+a = 1`),`false ? true : false
 a = 1`)
-        cmp(`if false then log 1.1
-log 1`,`if (false)
+        compare(kc(`if false then log 1.1
+log 1`),`if (false)
 {
     console.log(1.1)
 }
 console.log(1)`)
-        cmp(`if false then true else log 3.3
-log 3`,`false ? true : console.log(3.3)
+        compare(kc(`if false then true else log 3.3
+log 3`),`false ? true : console.log(3.3)
 console.log(3)`)
-        cmp(`if 1 then a.b c`,`if (1)
+        compare(kc(`if 1 then a.b c`),`if (1)
 {
     a.b(c)
 }`)
-        cmp(`j = ->
+        compare(kc(`j = ->
     for m in ms then if bla then blub
-    nextline`,`
+    nextline`),`
 j = function ()
 {
     var m
@@ -217,35 +216,35 @@ j = function ()
     }
     return nextline
 }`)
-        cmp(`if c then return f a
-nextline`,`if (c)
+        compare(kc(`if c then return f a
+nextline`),`if (c)
 {
     return f(a)
 }
 nextline`)
-        cmp(`s = if 1
+        compare(kc(`s = if 1
         2
     else if 3
         4
     else
-        5`,`s = 1 ? 2 : 3 ? 4 : 5`)
-        cmp(`s = if 1
+        5`),`s = 1 ? 2 : 3 ? 4 : 5`)
+        compare(kc(`s = if 1
         2
     else if 3
-        4`,`s = 1 ? 2 : 3 ? 4 : undefined`)
-        cmp("h = if w then f g else '0'","h = w ? f(g) : '0'")
-        cmp("a = if 1 then 2 else if 3 then 4 else if 5 then 6 else 7","a = 1 ? 2 : 3 ? 4 : 5 ? 6 : 7")
-        return cmp(`a = if 0 then if 1 then if 2 then 3 else if 4 then 5 else 6 else if 7 then 8 else 9 else if 10 then 11 else 12`,`a = 0 ? 1 ? 2 ? 3 : 4 ? 5 : 6 : 7 ? 8 : 9 : 10 ? 11 : 12`)
+        4`),`s = 1 ? 2 : 3 ? 4 : undefined`)
+        compare(kc("h = if w then f g else '0'"),"h = w ? f(g) : '0'")
+        compare(kc("a = if 1 then 2 else if 3 then 4 else if 5 then 6 else 7"),"a = 1 ? 2 : 3 ? 4 : 5 ? 6 : 7")
+        compare(kc(`a = if 0 then if 1 then if 2 then 3 else if 4 then 5 else 6 else if 7 then 8 else 9 else if 10 then 11 else 12`),`a = 0 ? 1 ? 2 ? 3 : 4 ? 5 : 6 : 7 ? 8 : 9 : 10 ? 11 : 12`)
     })
-    it('else if',function ()
+    section("else if", function ()
     {
-        cmp(`if 1
+        compare(kc(`if 1
     log 'yes2'
 else if no
     false
 else
     log 'no2'
-log 'end'`,`if (1)
+log 'end'`),`if (1)
 {
     console.log('yes2')
 }
@@ -258,11 +257,11 @@ else
     console.log('no2')
 }
 console.log('end')`)
-        return cmp(`if a in l
+        compare(kc(`if a in l
     log 'yes3'
 else
     log 'no3'
-log 'END'`,`if (_k_.in(a,l))
+log 'END'`),`if (_k_.in(a,l))
 {
     console.log('yes3')
 }
@@ -272,16 +271,16 @@ else
 }
 console.log('END')`)
     })
-    it('returns',function ()
+    section("returns", function ()
     {
-        cmp(`-> if false then true`,`(function ()
+        compare(kc(`-> if false then true`),`(function ()
 {
     if (false)
     {
         return true
     }
 })`)
-        cmp(`-> if 1 then 2 else 3`,`(function ()
+        compare(kc(`-> if 1 then 2 else 3`),`(function ()
 {
     if (1)
     {
@@ -292,11 +291,11 @@ console.log('END')`)
         return 3
     }
 })`)
-        return cmp(`->    
+        compare(kc(`->    
     if a
         e.push
             key:
-                key: val`,`(function ()
+                key: val`),`(function ()
 {
     if (a)
     {
@@ -304,34 +303,34 @@ console.log('END')`)
     }
 })`)
     })
-    it('tail',function ()
+    section("tail", function ()
     {
-        cmp(`a if b`,`if (b)
+        compare(kc(`a if b`),`if (b)
 {
     a
 }`)
-        cmp(`a if b if c`,`if (c)
+        compare(kc(`a if b if c`),`if (c)
 {
     if (b)
     {
         a
     }
 }`)
-        cmp(`log 'msg' if dbg`,`if (dbg)
+        compare(kc(`log 'msg' if dbg`),`if (dbg)
 {
     console.log('msg')
 }`)
-        cmp("if 1 then 2","if (1)\n{\n    2\n}")
-        sme("if 1 then 2","if 1 then 2")
-        return sme("if 1 ➜ 2 else 3","if 1 then 2 else 3")
+        compare(kc("if 1 then 2"),"if (1)\n{\n    2\n}")
+        compare(kc("if 1 then 2"),kc("if 1 then 2"))
+        compare(kc("if 1 ➜ 2 else 3"),kc("if 1 then 2 else 3"))
     })
-    return it('nicer',function ()
+    section("nicer", function ()
     {
-        cmp(`if
+        compare(kc(`if
     x       ➜ 1
     a == 5  ➜ 2
     'hello' ➜ 3
-            ➜ fark`,`if (x)
+            ➜ fark`),`if (x)
 {
     1
 }
@@ -347,12 +346,12 @@ else
 {
     fark
 }`)
-        cmp(`if
+        compare(kc(`if
     x       ➜ 1
     a == 5  ➜ 2
     'hello' ➜ 3
     else
-        fark`,`if (x)
+        fark`),`if (x)
 {
     1
 }
@@ -368,11 +367,11 @@ else
 {
     fark
 }`)
-        cmp(`if  
+        compare(kc(`if  
     x       ➜ 1
     a == 5  ➜ 2
     'hello' ➜ 3
-    else   fark`,`if (x)
+    else   fark`),`if (x)
 {
     1
 }
@@ -388,8 +387,8 @@ else
 {
     fark
 }`)
-        cmp(`if  x  ➜ 1
-    y  ➜ 2`,`if (x)
+        compare(kc(`if  x  ➜ 1
+    y  ➜ 2`),`if (x)
 {
     1
 }
@@ -397,9 +396,9 @@ else if (y)
 {
     2
 }`)
-        cmp(`if  a 'x' ➜ X
+        compare(kc(`if  a 'x' ➜ X
     b 'y' ➜ Y
-    else    Z`,`if (a('x'))
+    else    Z`),`if (a('x'))
 {
     X
 }
@@ -411,9 +410,9 @@ else
 {
     Z
 }`)
-        cmp(`if  a 'x' ➜ X
+        compare(kc(`if  a 'x' ➜ X
     b 'y' ➜ Y
-          ➜ Z`,`if (a('x'))
+          ➜ Z`),`if (a('x'))
 {
     X
 }
@@ -425,8 +424,8 @@ else
 {
     Z
 }`)
-        cmp(`if  b   ➜ R
-        ➜ S`,`if (b)
+        compare(kc(`if  b   ➜ R
+        ➜ S`),`if (b)
 {
     R
 }
@@ -434,8 +433,8 @@ else
 {
     S
 }`)
-        return cmp(`if  a ➜ P
-    ➜   Q`,`if (a)
+        compare(kc(`if  a ➜ P
+    ➜   Q`),`if (a)
 {
     P
 }
@@ -444,4 +443,6 @@ else
     Q
 }`)
     })
-})
+}
+module.exports["if"]._section_ = true
+module.exports

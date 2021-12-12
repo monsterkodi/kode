@@ -6,16 +6,17 @@
 0000000   00     00  000     000      0000000  000   000
 ###
 
-{cmp} = require './utils'
+{ kc } = require './utils'
 
-describe 'switch' ->
+▸ switch
 
-    it 'switches' ->
+    ▸ switches
 
-        cmp """
+        kc  """
             switch a
                 when 1 then 2
-            """ """
+            """ ▸
+            """
             switch (a)
             {
                 case 1:
@@ -24,10 +25,11 @@ describe 'switch' ->
             }\n
             """
 
-        cmp """
+        kc  """
             switch a
                 when 11 then 22; 33
-            """ """
+            """ ▸
+            """
             switch (a)
             {
                 case 11:
@@ -37,10 +39,11 @@ describe 'switch' ->
             }\n
             """
 
-        cmp """
+        kc  """
             switch a
                 when 'a'   then i++ ; j = 1 if k == 0
-            """ """
+            """ ▸
+            """
             switch (a)
             {
                 case 'a':
@@ -53,11 +56,12 @@ describe 'switch' ->
             }\n
             """
 
-        cmp """
+        kc  """
             switch a
                 when 'a'   then i++ ; j = 0 if k == 1
                 when 'b'   then l++ ; m = 2 if p == 3
-            """ """
+            """ ▸
+            """
             switch (a)
             {
                 case 'a':
@@ -77,13 +81,14 @@ describe 'switch' ->
             }\n
             """
 
-        cmp """
+        kc  """
             switch a
                 when 'a'   then i++ ; i = 1 if i == 0
                 when 'b'   then f++ ; f = 1 if f == 0
                 when 'c'
                     i++ if f != 'f'
-            """ """
+            """ ▸
+            """
             switch (a)
             {
                 case 'a':
@@ -109,11 +114,12 @@ describe 'switch' ->
             }\n
             """
             
-        cmp """
+        kc  """
             switch a
                 when 111 222 333 then
                 when 'a' 'b' 'c' then
-            """ """
+            """ ▸
+            """
             switch (a)
             {
                 case 111:
@@ -127,11 +133,12 @@ describe 'switch' ->
             }\n
             """
 
-        cmp """
+        kc  """
             switch a
                 when 111 222 333
                 when 'a' 'b' 'c'
-            """ """
+            """ ▸
+            """
             switch (a)
             {
                 case 111:
@@ -151,15 +158,16 @@ describe 'switch' ->
     # 000   000       000       000  000  000   000  000  0000  
     # 000   000  0000000   0000000   000   0000000   000   000  
     
-    it 'assign' ->
+    ▸ assign
          
-        cmp """
+        kc  """
             b = switch c
                 when 'c'
                     true
                 when 'd'
                     false
-            """ """
+            """ ▸
+            """
             b = ((function ()
             {
                 switch (c)
@@ -175,7 +183,7 @@ describe 'switch' ->
             }).bind(this))()
             """
 
-        cmp """
+        kc  """
             b = switch matches[0][0]
                 when 'close'
                     c += index+length
@@ -187,7 +195,8 @@ describe 'switch' ->
                     log 'unhandled?' matches[0]
                     c += index+length
                     true
-            """ """
+            """ ▸
+            """
             b = ((function ()
             {
                 switch (matches[0][0])
@@ -217,14 +226,15 @@ describe 'switch' ->
     # 000  0000  000  000       000       000   000  
     # 000   000  000   0000000  00000000  000   000  
     
-    it 'nicer' ->
+    ▸ nicer
              
-        cmp """
+        kc  """
             switch x
                 'bla'   ➜ bla
                 'hello' ➜ blub
                         ➜ fork
-            """ """
+            """ ▸
+            """
             switch (x)
             {
                 case 'bla':
@@ -238,7 +248,7 @@ describe 'switch' ->
             }\n
             """
 
-        cmp """
+        kc  """
             switch x
                 'x' 
                 1 2 3
@@ -246,7 +256,8 @@ describe 'switch' ->
                 'a' 'b'
                 'hello' ➜ blub
                         ➜ fork
-            """ """
+            """ ▸
+            """
             switch (x)
             {
                 case 'x':

@@ -1,56 +1,56 @@
-// monsterkodi/kode 0.90.0
+// monsterkodi/kode 0.91.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
-var cmp
+var kc
 
-cmp = require('./utils').cmp
+kc = require('./utils').kc
 
-describe('func',function ()
+module.exports["func"] = function ()
 {
-    it('func',function ()
+    section("func", function ()
     {
-        cmp('->','(function ()\n{})')
-        cmp('(a) ->','(function (a)\n{})')
-        cmp('(a,b,c) ->','(function (a, b, c)\n{})')
-        cmp('a = (a,b) ->','\na = function (a, b)\n{}')
-        cmp(`-> return 1`,`(function ()
+        compare(kc('->'),'(function ()\n{})')
+        compare(kc('(a) ->'),'(function (a)\n{})')
+        compare(kc('(a,b,c) ->'),'(function (a, b, c)\n{})')
+        compare(kc('a = (a,b) ->'),'\na = function (a, b)\n{}')
+        compare(kc(`-> return 1`),`(function ()
 {
     return 1
 })`)
-        cmp(`->
+        compare(kc(`->
     1
-    2`,`(function ()
+    2`),`(function ()
 {
     1
     return 2
 })`)
-        cmp(`->
+        compare(kc(`->
     return 1
-    2`,`(function ()
+    2`),`(function ()
 {
     return 1
     return 2
 })`)
-        cmp(`->
+        compare(kc(`->
     1
-    return 2`,`(function ()
+    return 2`),`(function ()
 {
     1
     return 2
 })`)
-        cmp(`a = (a,b,c) -> d`,`
+        compare(kc(`a = (a,b,c) -> d`),`
 a = function (a, b, c)
 {
     return d
 }`)
-        cmp(`a.x = (y,z) -> q`,`
+        compare(kc(`a.x = (y,z) -> q`),`
 a.x = function (y, z)
 {
     return q
 }`)
-        cmp(`a = ->
-    b = ->`,`
+        compare(kc(`a = ->
+    b = ->`),`
 a = function ()
 {
     var b
@@ -58,9 +58,9 @@ a = function ()
     return b = function ()
     {}
 }`)
-        cmp(`a = (b,c) ->
+        compare(kc(`a = (b,c) ->
     b = (e, f) -> g
-    b`,`
+    b`),`
 a = function (b, c)
 {
     b = function (e, f)
@@ -69,8 +69,8 @@ a = function (b, c)
     }
     return b
 }`)
-        cmp(`a = (b,c) ->
-    b = (e, f) -> h`,`
+        compare(kc(`a = (b,c) ->
+    b = (e, f) -> h`),`
 a = function (b, c)
 {
     return b = function (e, f)
@@ -78,8 +78,8 @@ a = function (b, c)
         return h
     }
 }`)
-        cmp(`a = (b,c) ->
-    (e, f) -> j`,`
+        compare(kc(`a = (b,c) ->
+    (e, f) -> j`),`
 a = function (b, c)
 {
     return function (e, f)
@@ -87,8 +87,8 @@ a = function (b, c)
         return j
     }
 }`)
-        cmp(`f = ->
-    (a) -> 1`,`
+        compare(kc(`f = ->
+    (a) -> 1`),`
 f = function ()
 {
     return function (a)
@@ -96,20 +96,20 @@ f = function ()
         return 1
     }
 }`)
-        cmp(`a = ->
+        compare(kc(`a = ->
     'a'
 1
-`,`
+`),`
 a = function ()
 {
     return 'a'
 }
 1`)
-        cmp(`a = ->
+        compare(kc(`a = ->
     log 'a'
 
 b = ->
-    log 'b'`,`
+    log 'b'`),`
 a = function ()
 {
     console.log('a')
@@ -119,36 +119,36 @@ b = function ()
 {
     console.log('b')
 }`)
-        cmp("a = ( a, b=1 c=2 ) ->","\na = function (a, b = 1, c = 2)\n{}")
-        cmp(`if 1 then return`,`if (1)
+        kc("a = ( a, b=1 c=2 ) ->","\na = function (a, b = 1, c = 2)\n{}")
+        compare(kc(`if 1 then return`),`if (1)
 {
     return
 }`)
-        cmp(`if x then return
-a`,`if (x)
+        compare(kc(`if x then return
+a`),`if (x)
 {
     return
 }
 a`)
-        cmp("-> @a",`(function ()
+        compare(kc("-> @a"),`(function ()
 {
     return this.a
 })`)
-        cmp("(@a) -> @a",`(function (a)
+        compare(kc("(@a) -> @a"),`(function (a)
 {
     this.a = a
     return this.a
 })`)
-        return cmp("(@a,a) -> log @a",`(function (a1, a)
+        compare(kc("(@a,a) -> log @a"),`(function (a1, a)
 {
     this.a = a1
     console.log(this.a)
 })`)
     })
-    return it('return',function ()
+    section("return", function ()
     {
-        cmp(`ff = ->
-    if 232 then return`,`
+        compare(kc(`ff = ->
+    if 232 then return`),`
 ff = function ()
 {
     if (232)
@@ -156,9 +156,9 @@ ff = function ()
         return
     }
 }`)
-        cmp(`fff = ->
+        compare(kc(`fff = ->
     if 3
-        log '42'`,`
+        log '42'`),`
 fff = function ()
 {
     if (3)
@@ -166,9 +166,9 @@ fff = function ()
         console.log('42')
     }
 }`)
-        cmp(`ffff = ->
+        compare(kc(`ffff = ->
     if 4
-        '42'`,`
+        '42'`),`
 ffff = function ()
 {
     if (4)
@@ -176,11 +176,11 @@ ffff = function ()
         return '42'
     }
 }`)
-        cmp(`->
+        compare(kc(`->
     if 1 then h
     else if 2
         if 3 then j else k
-    else l`,`(function ()
+    else l`),`(function ()
 {
     if (1)
     {
@@ -202,19 +202,19 @@ ffff = function ()
         return l
     }
 })`)
-        cmp(`return 'Q' if t == 'W'`,`if (t === 'W')
+        compare(kc(`return 'Q' if t == 'W'`),`if (t === 'W')
 {
     return 'Q'
 }`)
-        cmp(`return if not XXX`,`if (!XXX)
+        compare(kc(`return if not XXX`),`if (!XXX)
 {
     return
 }`)
-        return cmp(`fffff = ->
+        compare(kc(`fffff = ->
     try
         'return me!'
     catch e
-        error e`,`
+        error e`),`
 fffff = function ()
 {
     try
@@ -227,4 +227,6 @@ fffff = function ()
     }
 }`)
     })
-})
+}
+module.exports["func"]._section_ = true
+module.exports

@@ -1,151 +1,153 @@
-// monsterkodi/kode 0.90.0
+// monsterkodi/kode 0.91.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
-var cmp
+var kc
 
-cmp = require('./utils').cmp
+kc = require('./utils').kc
 
-describe('basics',function ()
+module.exports["basics"] = function ()
 {
-    it('literals',function ()
+    section("literals", function ()
     {
-        cmp('','')
-        cmp(' ','')
-        cmp('a','a')
-        cmp('1','1')
-        cmp('2.2','2.2')
-        cmp('""','""')
-        cmp("''","''")
-        cmp('[]',';[]')
-        cmp('()',';()')
-        cmp('{}','{}')
-        cmp('true','true')
-        cmp('false','false')
-        cmp('yes','true')
-        cmp('no','false')
-        cmp('Infinity','Infinity')
-        cmp('NaN','NaN')
-        cmp('null','null')
-        return cmp('undefined','undefined')
+        compare(kc(''),'')
+        compare(kc(' '),'')
+        compare(kc('a'),'a')
+        compare(kc('1'),'1')
+        compare(kc('2.2'),'2.2')
+        compare(kc('""'),'""')
+        compare(kc("''"),"''")
+        compare(kc('[]'),';[]')
+        compare(kc('()'),';()')
+        compare(kc('{}'),'{}')
+        compare(kc('true'),'true')
+        compare(kc('false'),'false')
+        compare(kc('yes'),'true')
+        compare(kc('no'),'false')
+        compare(kc('Infinity'),'Infinity')
+        compare(kc('NaN'),'NaN')
+        compare(kc('null'),'null')
+        compare(kc('undefined'),'undefined')
     })
-    it('prop',function ()
+    section("prop", function ()
     {
-        cmp('a.a','a.a')
-        cmp('{a:b}.a','{a:b}.a')
-        cmp('a.b.c d','a.b.c(d)')
-        cmp('a.b.c[d]','a.b.c[d]')
-        return cmp('[a.b*c[d]]',';[a.b * c[d]]')
+        compare(kc('a.a'),'a.a')
+        compare(kc('{a:b}.a'),'{a:b}.a')
+        compare(kc('a.b.c d'),'a.b.c(d)')
+        compare(kc('a.b.c[d]'),'a.b.c[d]')
+        compare(kc('[a.b*c[d]]'),';[a.b * c[d]]')
     })
-    it('regex',function ()
+    section("regex", function ()
     {
-        cmp('/a/','/a/')
-        cmp('/a|b/','/a|b/')
-        cmp('/(a|b)/','/(a|b)/')
-        cmp('/(a|b)/g','/(a|b)/g')
-        return cmp('/\\//gimsuy','/\\//gimsuy')
+        compare(kc('/a/'),'/a/')
+        compare(kc('/a|b/'),'/a|b/')
+        compare(kc('/(a|b)/'),'/(a|b)/')
+        compare(kc('/(a|b)/g'),'/(a|b)/g')
+        compare(kc('/\\//gimsuy'),'/\\//gimsuy')
     })
-    it('op',function ()
+    section("op", function ()
     {
-        cmp('a == b','a === b')
-        cmp('a != b','a !== b')
-        cmp('a and b','a && b')
-        cmp('1 and 2 and 3','1 && 2 && 3')
-        cmp('e and (f or g)','e && (f || g)')
-        cmp('(e and f) or g',';(e && f) || g')
-        cmp(`a and \
+        compare(kc('a == b'),'a === b')
+        compare(kc('a != b'),'a !== b')
+        compare(kc('a and b'),'a && b')
+        compare(kc('1 and 2 and 3'),'1 && 2 && 3')
+        compare(kc('e and (f or g)'),'e && (f || g)')
+        compare(kc('(e and f) or g'),';(e && f) || g')
+        compare(kc(`a and \
 b or \
-c`,`a && b || c`)
-        cmp(`d and
+c`),`a && b || c`)
+        compare(kc(`d and
     e or f and
-        g or h`,`d && e || f && g || h`)
-        cmp(`d and
+        g or h`),`d && e || f && g || h`)
+        compare(kc(`d and
 e or f and
-g or h`,`d && e || f && g || h`)
-        cmp(`a = d and
+g or h`),`d && e || f && g || h`)
+        compare(kc(`a = d and
     e or f and
-    g or h`,`a = d && e || f && g || h`)
-        cmp(`b = 1 <= a < c`,`b = (1 <= a && a < c)`)
-        cmp(`x = y > z >= 1`,`x = (y > z && z >= 1)`)
-        cmp(`a = b == c == d`,`a = (b === c && c === d)`)
-        return cmp(`a = b != c != d`,`a = (b !== c && c !== d)`)
+    g or h`),`a = d && e || f && g || h`)
+        compare(kc(`b = 1 <= a < c`),`b = (1 <= a && a < c)`)
+        compare(kc(`x = y > z >= 1`),`x = (y > z && z >= 1)`)
+        compare(kc(`a = b == c == d`),`a = (b === c && c === d)`)
+        compare(kc(`a = b != c != d`),`a = (b !== c && c !== d)`)
     })
-    it('not',function ()
+    section("not", function ()
     {
-        cmp('not true','!true')
-        cmp('not c1 or c2','!c1 || c2')
-        cmp('not (x > 0)','!(x > 0)')
-        cmp('not x == 0','!x === 0')
-        return cmp('if not m = t','if (!(m = t))\n{\n}')
+        compare(kc('not true'),'!true')
+        compare(kc('not c1 or c2'),'!c1 || c2')
+        compare(kc('not (x > 0)'),'!(x > 0)')
+        compare(kc('not x == 0'),'!x === 0')
+        compare(kc('if not m = t'),'if (!(m = t))\n{\n}')
     })
-    it('assign',function ()
+    section("assign", function ()
     {
-        cmp('a = b','a = b')
-        cmp('a = b = c = 1','a = b = c = 1')
-        cmp(`module.exports = sthg
-log 'ok'`,`module.exports = sthg
+        compare(kc('a = b'),'a = b')
+        compare(kc('a = b = c = 1'),'a = b = c = 1')
+        compare(kc(`module.exports = sthg
+log 'ok'`),`module.exports = sthg
 console.log('ok')`)
-        cmp(`a = b = c = sthg == othr
-log 'ok'`,`a = b = c = sthg === othr
+        compare(kc(`a = b = c = sthg == othr
+log 'ok'`),`a = b = c = sthg === othr
 console.log('ok')`)
-        cmp(`d = a and
+        compare(kc(`d = a and
 b or
-    c`,`d = a && b || c`)
-        cmp(`d = a and
+    c`),`d = a && b || c`)
+        compare(kc(`d = a and
     b or
-        c`,`d = a && b || c`)
-        cmp(`d = a and
+        c`),`d = a && b || c`)
+        compare(kc(`d = a and
     b or
-    c`,`d = a && b || c`)
-        return cmp(`r = 1 + p = 2 + 3`,`r = 1 + (p = 2 + 3)`)
+    c`),`d = a && b || c`)
+        compare(kc(`r = 1 + p = 2 + 3`),`r = 1 + (p = 2 + 3)`)
     })
-    it('math',function ()
+    section("math", function ()
     {
-        cmp('a + b','a + b')
-        cmp('a - b + c - 1','a - b + c - 1')
-        cmp('-a+-b','-a + -b')
-        cmp('+a+-b','+a + -b')
-        cmp('a + -b','a + -b')
-        cmp('a+ -b','a + -b')
-        cmp('a + -(b-c)','a + -(b - c)')
-        cmp('b --c','b(--c)')
-        cmp('a + -b --c','a + -b(--c)')
-        cmp('a -b','a(-b)')
-        cmp('-a -b','-a(-b)')
-        cmp('-a +b','-a(+b)')
-        return cmp('+a -b','+a(-b)')
+        compare(kc('a + b'),'a + b')
+        compare(kc('a - b + c - 1'),'a - b + c - 1')
+        compare(kc('-a+-b'),'-a + -b')
+        compare(kc('+a+-b'),'+a + -b')
+        compare(kc('a + -b'),'a + -b')
+        compare(kc('a+ -b'),'a + -b')
+        compare(kc('a + -(b-c)'),'a + -(b - c)')
+        compare(kc('b --c'),'b(--c)')
+        compare(kc('a + -b --c'),'a + -b(--c)')
+        compare(kc('a -b'),'a(-b)')
+        compare(kc('-a -b'),'-a(-b)')
+        compare(kc('-a +b'),'-a(+b)')
+        compare(kc('+a -b'),'+a(-b)')
     })
-    return it('increment',function ()
+    section("increment", function ()
     {
-        cmp('a++','a++')
-        cmp('a--','a--')
-        cmp('++a','++a')
-        cmp('--a','--a')
-        cmp('--a,++b','--a\n++b')
-        cmp('a[1]++','a[1]++')
-        cmp('a[1]--','a[1]--')
-        cmp('--a[1]','--a[1]')
-        cmp('++a[1]','++a[1]')
-        cmp('a.b.c++','a.b.c++')
-        cmp('a.b.c--','a.b.c--')
-        cmp('a(b).c++','a(b).c++')
-        cmp('a(b).c--','a(b).c--')
-        cmp('(--b)',';(--b)')
-        cmp('(++b)',';(++b)')
-        cmp('(b--)',';(b--)')
-        cmp('(b++)',';(b++)')
-        cmp('log(++b)','console.log(++b)')
-        cmp('log(++{b:1}.b)','console.log(++{b:1}.b)')
+        compare(kc('a++'),'a++')
+        compare(kc('a--'),'a--')
+        compare(kc('++a'),'++a')
+        compare(kc('--a'),'--a')
+        compare(kc('--a,++b'),'--a\n++b')
+        compare(kc('a[1]++'),'a[1]++')
+        compare(kc('a[1]--'),'a[1]--')
+        compare(kc('--a[1]'),'--a[1]')
+        compare(kc('++a[1]'),'++a[1]')
+        compare(kc('a.b.c++'),'a.b.c++')
+        compare(kc('a.b.c--'),'a.b.c--')
+        compare(kc('a(b).c++'),'a(b).c++')
+        compare(kc('a(b).c--'),'a(b).c--')
+        compare(kc('(--b)'),';(--b)')
+        compare(kc('(++b)'),';(++b)')
+        compare(kc('(b--)'),';(b--)')
+        compare(kc('(b++)'),';(b++)')
+        compare(kc('log(++b)'),'console.log(++b)')
+        compare(kc('log(++{b:1}.b)'),'console.log(++{b:1}.b)')
         if (false)
         {
-            cmp(('--a++')(''))
-            cmp(('--a--')(''))
-            cmp(('++a++')(''))
-            cmp(('++a--')(''))
-            cmp(('++--')(''))
-            cmp(('++1')(''))
-            cmp(('1--')(''))
-            return cmp(('""++')(''))
+            compare(kc(('--a++')),'')
+            compare(kc(('--a--')),'')
+            compare(kc(('++a++')),'')
+            compare(kc(('++a--')),'')
+            compare(kc(('++--')),'')
+            compare(kc(('++1')),'')
+            compare(kc(('1--')),'')
+            compare(kc(('""++')),'')
         }
     })
-})
+}
+module.exports["basics"]._section_ = true
+module.exports

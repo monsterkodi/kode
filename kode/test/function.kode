@@ -6,15 +6,16 @@
 000        0000000   000   000   0000000     000     000   0000000   000   000  
 ###
 
-{cmp} = require './utils'
+{ kc } = require './utils'
 
-describe 'function' ->
+▸ function
 
-    it 'function' ->
+    ▸ function
 
-        cmp """
+        kc  """
             function A
-            """ """
+            """ ▸
+            """
             
             A = (function ()
             {
@@ -23,10 +24,11 @@ describe 'function' ->
             
             """
 
-        # cmp """
+        # kc  """
             # class B
                 # @: ->
-            # """ """
+            # """ ▸
+            # """
 
             # class B
             # {
@@ -36,11 +38,12 @@ describe 'function' ->
 
             # """
 
-        # cmp """
+        # kc  """
             # class C
                 # @a: ->
                 # b: ->
-            # """ """
+            # """ ▸
+            # """
 
             # class C
             # {
@@ -53,10 +56,11 @@ describe 'function' ->
 
             # """
 
-        # cmp """
+        # kc  """
             # class D
                 # a: =>
-            # """ """
+            # """ ▸
+            # """
 
             # class D
             # {
@@ -71,11 +75,12 @@ describe 'function' ->
 
             # """
 
-        # cmp """
+        # kc  """
             # class E
                 # @f: ->
                 # @g: ->
-            # """ """
+            # """ ▸
+            # """
 
             # class E
             # {
@@ -88,12 +93,13 @@ describe 'function' ->
 
             # """
 
-        # cmp """
+        # kc  """
             # class F
                 # @f: ->
                 # @g: ->
                 # @h: ->
-            # """ """
+            # """ ▸
+            # """
 
             # class F
             # {
@@ -109,13 +115,14 @@ describe 'function' ->
 
             # """
 
-        # cmp """
+        # kc  """
             # class X
                 # @: ->
                     # '@'
 
                 # m: -> 'm'
-            # """ """
+            # """ ▸
+            # """
 
             # class X
             # {
@@ -132,13 +139,14 @@ describe 'function' ->
 
             # """
 
-        # cmp """
+        # kc  """
             # class Y
                 # @: -> '@'
 
                 # m: ->
                     # 'm'
-            # """ """
+            # """ ▸
+            # """
 
             # class Y
             # {
@@ -161,16 +169,17 @@ describe 'function' ->
     # 000   000  000  000  0000  000   000  
     # 0000000    000  000   000  0000000    
     
-    # it 'bind' ->
+    # ▸ bind
 
-        # cmp """
+        # kc  """
             # class A
                 # @: -> @f()
                 # b: => log 'hello'
                 # f: ->
                     # g = => @b()
                     # g()
-            # """ """
+            # """ ▸
+            # """
 
             # class A
             # {

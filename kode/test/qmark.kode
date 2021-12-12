@@ -6,9 +6,9 @@
  00000 00  000   000  000   000  000   000  000   000  
 ###
 
-{ cmp, evl } = require './utils'
+{ kc, ke } = require './utils'
 
-describe 'qmark' ->
+▸ qmark
 
     # 000   000  000   000  000      000       0000000  00     00  00000000   
     # 0000  000  000   000  000      000      000       000   000  000   000  
@@ -16,22 +16,22 @@ describe 'qmark' ->
     # 000  0000  000   000  000      000      000       000 0 000  000        
     # 000   000   0000000   0000000  0000000   0000000  000   000  000        
 
-    it 'nullcmp' ->
+    ▸ nullcmp
             
-        cmp "a?"                    ";(a != null)"
-        cmp "a.b.c?"                ";(a.b.c != null)"
-        cmp "a.b().c?"              ";(a.b().c != null)"
-        cmp "if a.b().c?"           "if ((a.b().c != null))\n{\n}"
-        cmp "@m?"                   ";(this.m != null)"
+        kc  "a?"                    ▸   ";(a != null)"
+        kc  "a.b.c?"                ▸   ";(a.b.c != null)"
+        kc  "a.b().c?"              ▸   ";(a.b().c != null)"
+        kc  "if a.b().c?"           ▸   "if ((a.b().c != null))\n{\n}"
+        kc  "@m?"                   ▸   ";(this.m != null)"
         
-        cmp "-> m?",
+        kc  "-> m?" ▸
             """
             (function ()
             {
                 return (m != null)
             })
             """
-        cmp "r.filter (m) -> m?",
+        kc  "r.filter (m) -> m?" ▸
             """
             r.filter(function (m)
             {
@@ -39,7 +39,7 @@ describe 'qmark' ->
             })
             """
             
-        cmp "matches = matches.filter (m) -> m[1]?",
+        kc  "matches = matches.filter (m) -> m[1]?" ▸
             """
             matches = matches.filter(function (m)
             {
@@ -47,14 +47,14 @@ describe 'qmark' ->
             })
             """
             
-    it '?=' ->
+    ▸ ?=
         
-        cmp "t.a ?= {}",
+        kc  "t.a ?= {}" ▸
             """
             t.a = ((_1_4_=t.a) != null ? _1_4_ : {})
             """
         
-        cmp "x = t.b ?= {}",
+        kc  "x = t.b ?= {}" ▸
             """
             x = t.b = ((_1_8_=t.b) != null ? _1_8_ : {})
             """
@@ -65,24 +65,25 @@ describe 'qmark' ->
     # 000   000       000       000  000       000   000     000     
     # 000   000  0000000   0000000   00000000  000   000     000     
     
-    it 'assert' ->
+    ▸ assert
         
-        cmp "e?.d"                  ";(e != null ? e.d : undefined)"
-        cmp "e?()"                  ';(typeof e === "function" ? e() : undefined)'
-        cmp "e?[1]"                 ";(e != null ? e[1] : undefined)"
-        cmp "e?[1].f"               ";(e != null ? e[1].f : undefined)"
-        cmp "e?[1]?.g"              ";(e != null ? e[1] != null ? e[1].g : undefined : undefined)"
-        cmp "e?.f?.d"               ";(e != null ? (_1_4_=e.f) != null ? _1_4_.d : undefined : undefined)"
+        kc  "e?.d"                  ▸   ";(e != null ? e.d : undefined)"
+        kc  "e?()"                  ▸   ';(typeof e === "function" ? e() : undefined)'
+        kc  "e?[1]"                 ▸   ";(e != null ? e[1] : undefined)"
+        kc  "e?[1].f"               ▸   ";(e != null ? e[1].f : undefined)"
+        kc  "e?[1]?.g"              ▸   ";(e != null ? e[1] != null ? e[1].g : undefined : undefined)"
+        kc  "e?.f?.d"               ▸   ";(e != null ? (_1_4_=e.f) != null ? _1_4_.d : undefined : undefined)"
         
-        cmp "@m?.n"                 ";(this.m != null ? this.m.n : undefined)"
-        cmp "@m? a"                 ';(typeof this.m === "function" ? this.m(a) : undefined)'
-        cmp "@m?.f a"               ";(this.m != null ? this.m.f(a) : undefined)"
+        kc  "@m?.n"                 ▸   ";(this.m != null ? this.m.n : undefined)"
+        kc  "@m? a"                 ▸   ';(typeof this.m === "function" ? this.m(a) : undefined)'
+        kc  "@m?.f a"               ▸   ";(this.m != null ? this.m.f(a) : undefined)"
         
-        cmp """
+        kc  """
             ->
                 s?.c
                 r?.d
-            """ """
+            """ ▸
+            """
             (function ()
             {
                 ;(s != null ? s.c : undefined)
@@ -90,7 +91,7 @@ describe 'qmark' ->
             })
             """
         
-        evl "e=1;e?[1]?.g"          undefined
+        ke  "e=1;e?[1]?.g"          ▸ undefined
         
     #  0000000   0000000   00     00  0000000    000  000   000  00000000  0000000    
     # 000       000   000  000   000  000   000  000  0000  000  000       000   000  
@@ -98,25 +99,28 @@ describe 'qmark' ->
     # 000       000   000  000 0 000  000   000  000  000  0000  000       000   000  
     #  0000000   0000000   000   000  0000000    000  000   000  00000000  0000000    
     
-    it 'combined' ->
+    ▸ combined
         
-        cmp "e?.col?"               ";((e != null ? e.col : undefined) != null)"
+        kc  "e?.col?"               ▸ ";((e != null ? e.col : undefined) != null)"
         
-        cmp """
+        kc  """
             (a.b?.c.d?.e == 2)
-            """ """
+            """ ▸
+            """
             ;(((_1_4_=a.b) != null ? (_1_9_=_1_4_.c.d) != null ? _1_9_.e : undefined : undefined) === 2)
             """ 
 
-        cmp """
+        kc  """
             x = a[1]?.b()?.c?().d?.e
-            """ """
+            """ ▸
+            """
             x = (a[1] != null ? (_1_13_=a[1].b()) != null ? typeof (_1_16_=_1_13_.c) === "function" ? (_1_21_=_1_16_().d) != null ? _1_21_.e : undefined : undefined : undefined : undefined)
             """ 
 
-        cmp """
+        kc  """
             x = a.b?[222]?(333)?.e
-            """ """
+            """ ▸
+            """
             x = ((_1_7_=a.b) != null ? typeof _1_7_[222] === "function" ? (_1_19_=_1_7_[222](333)) != null ? _1_19_.e : undefined : undefined : undefined)
             """ 
             
@@ -126,16 +130,17 @@ describe 'qmark' ->
     # 000       000   000  000  0000  000          000     000  000   000  000  0000       000  
     # 000        0000000   000   000   0000000     000     000   0000000   000   000  0000000   
     
-    it 'functions' ->
+    ▸ functions
         
-        cmp "f c ? '', 4"   "f((c != null ? c : ''),4)"
+        kc  "f c ? '', 4"   ▸   "f((c != null ? c : ''),4)"
         
-        cmp """
+        kc  """
             a = ->
                 if b?.e?.l
                     hua
                 oga
-            """ """
+            """ ▸
+            """
 
             a = function ()
             {

@@ -6,9 +6,9 @@
 0000000      000     000   000  000  000   000   0000000   
 ###
 
-{ cmp, evl } = require './utils'
+{ kc, ke } = require './utils'
 
-describe 'string' ->
+▸ string
     
     # 000000000  00000000   000  00000000   000      00000000  
     #    000     000   000  000  000   000  000      000       
@@ -16,95 +16,109 @@ describe 'string' ->
     #    000     000   000  000  000        000      000       
     #    000     000   000  000  000        0000000  00000000  
     
-    it 'triple' ->
+    ▸ triple
         
-        # cmp """
+        # kc """
             # log \"\"\"
                 # hello
                 # \"\"\"
-            # """ """
+            # """ ▸
+            # """
             # console.log(`hello`)
             # """
 
-        evl """
+        ke  """
             a =\"\"\"
                 hello
                 \"\"\"
-            """ 'hello'
+            """ ▸
+            'hello'
             
-        evl """
+        ke  """
             a =\"\"\"
             hello
                 \"\"\"
-            """ 'hello'
+            """ ▸
+            'hello'
             
-        evl """
+        ke  """
             a =\"\"\"hello\"\"\"
-            """ 'hello'
+            """ ▸
+            'hello'
 
-        evl """
+        ke  """
             a =\"\"\"   hello\"\"\"
-            """ '   hello'
+            """ ▸
+            '   hello'
             
-        evl """
+        ke  """
             a =\"\"\"   hello   \"\"\"
-            """ '   hello   '
+            """ ▸
+            '   hello   '
             
-        evl """
+        ke  """
             a =\"\"\"
                 hello
             world
                 \"\"\"
-            """ '    hello\nworld'
+            """ ▸
+            '    hello\nworld'
             
-        evl """
+        ke  """
             a =\"\"\"
                     hello
                 world
                 \"\"\"
-            """ '    hello\nworld'
+            """ ▸
+            '    hello\nworld'
             
-        evl """
+        ke  """
             a =\"\"\"
                     hello
                 world
                         ugga
                 \"\"\"
-            """ """
-                    hello
-                world
-                        ugga
+            """ ▸
+            """
+                hello
+            world
+                    ugga
             """
 
-        evl """
+        ke  """
             a =\"\"\"heLlo world\"\"\"
-            """ """heLlo world"""
+            """ ▸
+            """heLlo world"""
 
-        evl """
+        ke  """
             a =\"\"\" helLo world\"\"\"
-            """ """ helLo world"""
+            """ ▸
+            """ helLo world"""
             
-        evl """
+        ke  """
             a =\"\"\"   hellO world   \"\"\"
-            """ """   hellO world   """
+            """ ▸
+            """   hellO world   """
 
-        evl """
+        ke  """
             a =\"\"\"   hello World
             \"\"\"
-            """ """   hello World"""
+            """ ▸
+            """   hello World"""
             
-        evl """
+        ke  """
             a =\"\"\"
                 
                 hullo
                 wurld
                 
                 \"\"\"
-            """ '\nhullo\nwurld\n'
+            """ ▸
+            '\nhullo\nwurld\n'
             
-        evl '("""\nclass A\n{\n\n}\n""")' "class A\n{\n\n}"
+        ke  '("""\nclass A\n{\n\n}\n""")' ▸ "class A\n{\n\n}"
             
-        evl '("""\n' +
+        ke  '("""\n' +
             'class A\n' +
             '{\n' +
             '    constructor ()\n' +
@@ -130,7 +144,8 @@ describe 'string' ->
             '    }\n' +
             '}\n' +
             '\n' +
-            '""")' , 'class A\n' +
+            '""")' ▸ 
+            'class A\n' +
             '{\n' +
             '    constructor ()\n' +
             '    {\n' +
@@ -162,18 +177,18 @@ describe 'string' ->
     # 000  000  0000     000     000       000   000  000        000   000  000
     # 000  000   000     000     00000000  000   000  000         0000000   0000000
 
-    it 'interpolation' ->
-        # cmp "'#{}'"                                     "'#{}'"
-        # cmp '"#{}"'                                     "\`${}\`"
-        # cmp '"#{1}"'                                    "`${1}`"
-        cmp '"#{a}"'                                    "`${a}`"
-        cmp '"01234\#{}890"'                            "`01234${}890`"
-        cmp '"01234#{}890"'                             "`01234${}890`"
-        cmp 'log "#{a+1}", "#{a}"'                      'console.log(`${a + 1}`,`${a}`)'
-        cmp '"#{b+2}" ; "#{b}"'                          '`${b + 2}`\n`${b}`'
-        cmp 'log "- #{c+3} - #{c}"'                     'console.log(`- ${c + 3} - ${c}`)'
-        cmp '"""tri#{triple}ple""" ; "dou#{double}ble"'  '`tri${triple}ple`\n`dou${double}ble`'
-        cmp '"#{\'a\'}"'                                "`${'a'}`"
-        cmp '"""#{"a"}"""'                              '`${"a"}`'
-        cmp '"nullcheck in #{stripol ? 123}"'           "`nullcheck in ${(stripol != null ? stripol : 123)}`"
-        cmp '"""{ok#} #{"well" + "1+\'2\' #{\'omg\'}" + is kinda fukked}"""'  "`{ok#} ${\"well\" + `1+'2' ${'omg'}` + is(kinda(fukked))}`"
+    ▸ interpolation
+        # kc "'#{}'"                                     ▸ "'#{}'"
+        # kc '"#{}"'                                     ▸ "\`${}\`"
+        # kc '"#{1}"'                                    ▸ "`${1}`"
+        kc '"#{a}"'                                     ▸    "`${a}`"
+        kc '"01234\#{}890"'                             ▸    "`01234${}890`"
+        kc '"01234#{}890"'                              ▸    "`01234${}890`"
+        kc 'log "#{a+1}", "#{a}"'                       ▸    'console.log(`${a + 1}`,`${a}`)'
+        kc '"#{b+2}" ; "#{b}"'                          ▸    '`${b + 2}`\n`${b}`'
+        kc 'log "- #{c+3} - #{c}"'                      ▸    'console.log(`- ${c + 3} - ${c}`)'
+        kc '"""tri#{triple}ple""" ; "dou#{double}ble"'  ▸    '`tri${triple}ple`\n`dou${double}ble`'
+        kc '"#{\'a\'}"'                                 ▸    "`${'a'}`"
+        kc '"""#{"a"}"""'                               ▸    '`${"a"}`'
+        kc '"nullcheck in #{stripol ? 123}"'            ▸    "`nullcheck in ${(stripol != null ? stripol : 123)}`"
+        kc '"""{ok#} #{"well" + "1+\'2\' #{\'omg\'}" + is kinda fukked}"""'  ▸  "`{ok#} ${\"well\" + `1+'2' ${'omg'}` + is(kinda(fukked))}`"

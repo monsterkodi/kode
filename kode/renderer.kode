@@ -1078,10 +1078,6 @@ class Renderer
                         open = '('
                         close = ')'
                         
-            o == '▸'
-            
-                return "cmp(#{@atom(op.lhs)}, #{@atom(op.rhs)})"
-                    
             op.operator.text in ['empty' 'valid']
                 open = '('
                 close = ')'
@@ -1259,7 +1255,8 @@ class Renderer
           + gi + '{\n' \
           + @indent + @nodes(p.exps, '\n'+@indent, true) \
           + '\n' \
-          + gi + '}'
+          + gi + '}\n' \
+          + "module.exports[#{p.title.text}]._section_ = true"
         @ded()
         s
         
@@ -1286,7 +1283,7 @@ class Renderer
           + @node(p.lhs)      \
           + ','               \
           + @node(p.rhs)      \
-          + ')\n'
+          + ')'
         s
         
     # 00000000  00000000   00000000   0000000  000   000  000   000   0000000   00000000   

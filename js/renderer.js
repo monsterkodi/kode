@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.90.0
+// monsterkodi/kode 0.91.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
@@ -1219,7 +1219,7 @@ ${i}})(${this.node(n.lhs)})
 
     operation (op)
     {
-        var opmap, o, sep, ro, _1053_40_, _1053_29_, open, close, s, keyval, val, i, _1077_25_, _1077_64_, _1077_54_, _1077_43_, _1089_29_, _1089_18_, first, prfx, _1094_43_
+        var opmap, o, sep, ro, _1053_40_, _1053_29_, open, close, s, keyval, val, i, _1077_25_, _1077_64_, _1077_54_, _1077_43_, _1085_29_, _1085_18_, first, prfx, _1090_43_
 
         opmap = function (o)
         {
@@ -1277,16 +1277,12 @@ ${i}})(${this.node(n.lhs)})
                 close = ')'
             }
         }
-        else if (o === '▸')
-        {
-            return `cmp(${this.atom(op.lhs)}, ${this.atom(op.rhs)})`
-        }
         else if (_k_.in(op.operator.text,['empty','valid']))
         {
             open = '('
             close = ')'
         }
-        else if (((_1089_18_=op.rhs) != null ? (_1089_29_=_1089_18_.operation) != null ? _1089_29_.operator.text : undefined : undefined) === '=')
+        else if (((_1085_18_=op.rhs) != null ? (_1085_29_=_1085_18_.operation) != null ? _1085_29_.operator.text : undefined : undefined) === '=')
         {
             open = '('
             close = ')'
@@ -1347,7 +1343,7 @@ ${i}})(${this.node(n.lhs)})
 
     index (p)
     {
-        var slice, from, _1160_32_, addOne, upto, _1164_32_, _1166_25_, _1166_54_, u, upper, _1182_27_, ni
+        var slice, from, _1156_32_, addOne, upto, _1160_32_, _1162_25_, _1162_54_, u, upper, _1178_27_, ni
 
         if (slice = p.slidx.slice)
         {
@@ -1425,7 +1421,7 @@ ${i}})(${this.node(n.lhs)})
 
     slice (p)
     {
-        var _1212_41_, from, upto, x, o
+        var _1208_41_, from, upto, x, o
 
         if ((p.from.type === 'num' && 'num' === (p.upto != null ? p.upto.type : undefined)))
         {
@@ -1458,9 +1454,9 @@ ${i}})(${this.node(n.lhs)})
 
         s = '`'
         var list = _k_.list(chunks)
-        for (var _1234_17_ = 0; _1234_17_ < list.length; _1234_17_++)
+        for (var _1230_17_ = 0; _1230_17_ < list.length; _1230_17_++)
         {
-            chunk = list[_1234_17_]
+            chunk = list[_1230_17_]
             t = chunk.text
             switch (chunk.type)
             {
@@ -1494,7 +1490,7 @@ ${i}})(${this.node(n.lhs)})
 
         this.hint.section = true
         gi = this.ind()
-        s = `module.exports[${p.title.text}] = function ()\n` + gi + '{\n' + this.indent + this.nodes(p.exps,'\n' + this.indent,true) + '\n' + gi + '}'
+        s = `module.exports[${p.title.text}] = function ()\n` + gi + '{\n' + this.indent + this.nodes(p.exps,'\n' + this.indent,true) + '\n' + gi + '}\n' + `module.exports[${p.title.text}]._section_ = true`
         this.ded()
         return s
     }
@@ -1513,7 +1509,7 @@ ${i}})(${this.node(n.lhs)})
     {
         var s
 
-        s = 'compare(' + this.node(p.lhs) + ',' + this.node(p.rhs) + ')\n'
+        s = 'compare(' + this.node(p.lhs) + ',' + this.node(p.rhs) + ')'
         return s
     }
 
@@ -1522,13 +1518,13 @@ ${i}})(${this.node(n.lhs)})
         var vars, v
 
         var list = _k_.list(this.varstack)
-        for (var _1300_17_ = 0; _1300_17_ < list.length; _1300_17_++)
+        for (var _1297_17_ = 0; _1297_17_ < list.length; _1297_17_++)
         {
-            vars = list[_1300_17_]
+            vars = list[_1297_17_]
             var list1 = _k_.list(vars)
-            for (var _1301_18_ = 0; _1301_18_ < list1.length; _1301_18_++)
+            for (var _1298_18_ = 0; _1298_18_ < list1.length; _1298_18_++)
             {
-                v = list1[_1301_18_]
+                v = list1[_1298_18_]
                 if (v.text === name + (suffix || ''))
                 {
                     return this.freshVar(name,suffix + 1)
