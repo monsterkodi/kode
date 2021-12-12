@@ -274,7 +274,7 @@ function Parse # the base class of Parser
             print.ast "lhs" e if @verbose
 
             if tokens[0]?.text in ';'
-                @verb 'exp break on ;'
+                @verb 'exp break on ;' tokens[0]?.text
                 break
             
             if numTokens == tokens.length    
@@ -523,7 +523,7 @@ function Parse # the base class of Parser
                 e = @operation e, tokens.shift(), tokens
                                 
             else
-                print.tokens "lhs no nxt match? break! stack:#{@stack} nxt:" [nxt] if @verbose
+                # print.tokens "lhs no nxt match? break! stack:#{@stack} nxt:" [nxt] if @verbose
                 break                    
             
             if numTokens == tokens.length

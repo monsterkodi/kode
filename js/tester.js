@@ -1,10 +1,11 @@
-// monsterkodi/kode 0.92.0
+// monsterkodi/kode 0.93.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
-var kstr, comps, succs, fails, stack
+var kstr, print, comps, succs, fails, stack
 
 kstr = require('kstr')
+print = require('./print')
 comps = 0
 succs = 0
 fails = []
@@ -25,7 +26,7 @@ class Tester
         stack.push(t)
         comps = 0
         depth = stack.length
-        console.log(W1(kstr.lpad('',depth * 3 - 1) + ' ' + global[`y${Math.max(1,8 - 2 * depth)}`](t + ' ')))
+        console.log(W1(kstr.lpad('',depth * 3 - 1) + ' ' + global[`g${Math.max(1,8 - 2 * depth)}`](kstr.pad(t,20) + ' ')))
         f()
         return stack.pop()
     }
@@ -34,23 +35,28 @@ class Tester
     {
         var k, v
 
-        if (Object.keys(a).length !== Object.keys(b).length)
+        if (Object.is(a,b))
+        {
+            return true
+        }
+        if (typeof(a) !== typeof(b))
         {
             return false
         }
-        if (typeof(a) !== typeof(b))
+        if (!Array.isArray(a) && typeof(a) !== 'object')
+        {
+            return false
+        }
+        if (Object.keys(a).length !== Object.keys(b).length)
         {
             return false
         }
         for (k in a)
         {
             v = a[k]
-            if (!Object.is(v,b[k]))
+            if (!this.sameObjects(v,b[k]))
             {
-                if (!this.sameObjects(v,b[k]))
-                {
-                    return false
-                }
+                return false
             }
         }
         return true
@@ -58,56 +64,18 @@ class Tester
 
     compare (a, b)
     {
-        var depth, ind, fail, v, i
+        var depth, ind
 
         depth = stack.length
         ind = kstr.lpad('',(depth + 1) * 3)
         comps++
-        if (Object.is(a,b))
+        if (this.sameObjects(a,b))
         {
             succs++
             return
         }
-        if (Array.isArray(a) && Array.isArray(b))
-        {
-            fail = false
-            if (a.length === b.length)
-            {
-                var list = _k_.list(a)
-                for (i = 0; i < list.length; i++)
-                {
-                    v = list[i]
-                    if (!Object.is(v,b[i]))
-                    {
-                        if ((typeof(v) === typeof(b[i]) && typeof(b[i]) === 'object'))
-                        {
-                            fail = !this.sameObjects(v,b[i])
-                            if (fail)
-                            {
-                                break
-                            }
-                        }
-                        else
-                        {
-                            fail = true
-                            break
-                        }
-                    }
-                }
-            }
-            if (!fail)
-            {
-                succs++
-                return
-            }
-        }
-        else if (this.sameObjects(a,b))
-        {
-            succs++
-            return
-        }
-        console.log(R3(r2(ind + comps + ' ')) + ' ' + r5(this.short(a)) + ' ' + R1(r4(' ▸ ')) + ' ' + g1(this.short(b)))
-        return fails.push({stack:stack.join(' ') + ' ' + comps,comps:comps,lhs:a,rhs:b})
+        console.log(R1(black(ind + comps + ' ')) + ' ' + r5(this.short(a)) + ' ' + R1(r4(' ▸ ')) + ' ' + g1(this.short(b)))
+        return fails.push({stack:stack.concat([comps]),comps:comps,lhs:a,rhs:b})
     }
 
     test (text, file)
@@ -129,7 +97,7 @@ class Tester
                 if (v._section_)
                 {
                     stack.push(k)
-                    console.log(G1(y8(' ' + k + ' ')))
+                    console.log(G1(y8(' ' + kstr.pad(k,25) + ' ')))
                     v()
                     return stack.pop()
                 }
@@ -142,14 +110,20 @@ class Tester
             return typeof o == 'string' ? r.join('') : r
         })(tests)
         var list = _k_.list(fails)
-        for (var _119_17_ = 0; _119_17_ < list.length; _119_17_++)
+        for (var _102_17_ = 0; _102_17_ < list.length; _102_17_++)
         {
-            fail = list[_119_17_]
-            console.log(R3(r2(fail.stack)))
-            console.log('lhs')
-            console.log(r5(fail.lhs))
-            console.log('rhs')
+            fail = list[_102_17_]
+            console.log(R2(y5(' ' + fail.stack[0] + ' ')) + R1(y5(' ' + fail.stack.slice(1).join(r3(' ▸ ')) + ' ')))
+            console.log(r5(fail.lhs) + b6(' ▸ '))
             console.log(g3(fail.rhs))
+            if (('' + fail.lhs).indexOf("[object Object]" >= 0))
+            {
+                print.noon('lhs',fail.lhs)
+            }
+            if (_k_.in("[object Object]",'' + fail.rhs))
+            {
+                print.noon('rhs',fail.rhs)
+            }
         }
         if (fails.length)
         {
