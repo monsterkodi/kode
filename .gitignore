@@ -1,5 +1,6 @@
 node_modules
 test.coffee
+test.js
 js/test
 stage0
 stage1
