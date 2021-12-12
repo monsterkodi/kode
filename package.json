@@ -1,0 +1,29 @@
+{
+    "name": "kode",
+    "version": "0.89.0",
+    "description": "programming language",
+    "main": "js/kode.js",
+    "scripts": {
+        "test": "mocha -c js/test/*.js",
+        "watch": "mocha -w -c js/test/*.js",
+        "stage": "pnpm run build0 && pnpm run build1 && pnpm run testage",
+        "build0": "kode kode/*.kode -Ho stage0 && kode kode/test/*.kode -Ho stage0/test",
+        "build1": "k0de kode/*.kode -Ho stage1 && k0de kode/test/*.kode -Ho stage1/test",
+        "testage": "mocha -c stage1/test/*.js",
+        "unstage": "cp stage1/*.js js"
+    },
+    "author": "monsterkodi",
+    "license": "Unlicense",
+    "dependencies": {
+        "colorcat": "monsterkodi/colorcat",
+        "karg": "monsterkodi/karg",
+        "klor": "monsterkodi/klor",
+        "kslash": "monsterkodi/kslash",
+        "kstr": "monsterkodi/kstr",
+        "noon": "monsterkodi/noon"
+    },
+    "devDependencies": {
+        "chai": "^4.3.4",
+        "mocha": "^9.1.3"
+    }
+}

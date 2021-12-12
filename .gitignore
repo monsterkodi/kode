@@ -1,5 +1,4 @@
 node_modules
-package.json
 test*.coffee
 test*.js
 stage0
