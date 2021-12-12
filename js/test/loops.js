@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.84.0
+// monsterkodi/kode 0.90.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
 var cmp, evl
 
@@ -141,7 +141,6 @@ for (var _1_10_ = 0; _1_10_ < list.length; _1_10_++)
     })
     it('each',function ()
     {
-        cmp("{a:1,b:2}","{a:1,b:2}")
         evl("a = {a:1,b:2}",{a:1,b:2})
         evl("a = {a:1,b:2} each (k,v) -> [k, v*3]",{a:3,b:6})
         evl("a = {a:1,b:2} each (k,v) -> ['▸'+k, v]",{'▸a':1,'▸b':2})
@@ -160,7 +159,9 @@ for (var _1_10_ = 0; _1_10_ < list.length; _1_10_++)
         evl("a = [1,2] each -> 'a'",['a','a'])
         evl("a = [1,2] each ->",[])
         evl("a = [1,2,3] each (v) -> v",[1,2,3])
-        return evl("a = {a:1,b:2} each (v) -> v*3",{a:3,b:6})
+        evl("a = {a:1,b:2} each (v) -> v*3",{a:3,b:6})
+        evl("[0,1,2] each (v) -> v",[0,1,2])
+        return evl("f = (a) -> a\nr = f [0,1,2] each (v) -> 2*v",[0,2,4])
     })
     return it('while',function ()
     {

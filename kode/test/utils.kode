@@ -22,4 +22,10 @@ module.exports =
         if k.startsWith 'var _k_'               then k = k[k.indexOf('\n')+2..]
         if k.startsWith 'var '                  then k = k[k.indexOf('\n')+2..]
         k.should.eql p
+    kc: (c,p) -> 
+        k = kode().compile c
+        if k.startsWith '// monsterkodi/kode'   then k = k[k.indexOf('\n')+2..]
+        if k.startsWith 'var _k_'               then k = k[k.indexOf('\n')+2..]
+        if k.startsWith 'var '                  then k = k[k.indexOf('\n')+2..]
+        k
         

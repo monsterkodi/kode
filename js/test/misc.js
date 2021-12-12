@@ -1,4 +1,6 @@
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}}
+// monsterkodi/kode 0.90.0
+
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
 var cmp, evl
 
@@ -92,6 +94,8 @@ kstr = require('kstr')`)
         evl("a = null; empty a",true)
         evl("a = undefined; empty a",true)
         evl("a = NaN; empty a",true)
+        evl('empty 1 or empty {}',true)
+        evl('empty {} or empty 1',true)
         evl("a = Infinity; empty a",false)
         evl("a = 0; empty a",false)
         evl("a = 'a'; empty a",false)
@@ -99,26 +103,27 @@ kstr = require('kstr')`)
         evl("a = [null]; empty a",false)
         evl("a = {a:null}; empty a",false)
         evl("a = [[]]; empty a",false)
+        evl('empty "x" or valid {}',false)
+        return evl('empty {} and valid []',false)
+    })
+    it('valid',function ()
+    {
         evl("valid []",false)
         evl("valid {}",false)
         evl("valid ''",false)
         evl("valid null",false)
         evl("valid undefined",false)
         evl("valid NaN",false)
+        evl('valid {} and valid 0',false)
         evl("valid Infinity",true)
         evl("valid 0",true)
         evl("valid 'a'",true)
         evl("valid [null]",true)
         evl("valid {a:null}",true)
         evl("valid [[]]",true)
-        evl('empty 1 or empty {}',true)
-        evl('empty {} or empty 1',true)
         evl('valid {} or valid 1',true)
         evl("valid 'a' or valid ''",true)
-        evl("valid 'a' and empty ''",true)
-        evl('empty "x" or valid {}',false)
-        evl('empty {} and valid []',false)
-        return evl('valid {} and valid 0',false)
+        return evl("valid 'a' and empty ''",true)
     })
     it('typeof',function ()
     {

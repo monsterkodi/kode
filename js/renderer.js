@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.89.0
+// monsterkodi/kode 0.90.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
@@ -176,6 +176,9 @@ each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.
                     case 'subsect':
                         return this.subsect(v)
 
+                    case 'compare':
+                        return this.compare(v)
+
                     case 'incond':
                         return this.incond(v)
 
@@ -202,9 +205,6 @@ each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.
 
                     case 'prop':
                         return this.prop(v)
-
-                    case 'test':
-                        return this.test(v)
 
                     case 'each':
                         return this.each(v)
@@ -1509,11 +1509,11 @@ ${i}})(${this.node(n.lhs)})
         return s
     }
 
-    test (p)
+    compare (p)
     {
         var s
 
-        s = 'cmp(' + this.node(p.lhs + ',' + this.node(p.lhs + ')\n'))
+        s = 'compare(' + this.node(p.lhs) + ',' + this.node(p.rhs) + ')\n'
         return s
     }
 
@@ -1522,13 +1522,13 @@ ${i}})(${this.node(n.lhs)})
         var vars, v
 
         var list = _k_.list(this.varstack)
-        for (var _1294_17_ = 0; _1294_17_ < list.length; _1294_17_++)
+        for (var _1300_17_ = 0; _1300_17_ < list.length; _1300_17_++)
         {
-            vars = list[_1294_17_]
+            vars = list[_1300_17_]
             var list1 = _k_.list(vars)
-            for (var _1295_18_ = 0; _1295_18_ < list1.length; _1295_18_++)
+            for (var _1301_18_ = 0; _1301_18_ < list1.length; _1301_18_++)
             {
-                v = list1[_1295_18_]
+                v = list1[_1301_18_]
                 if (v.text === name + (suffix || ''))
                 {
                     return this.freshVar(name,suffix + 1)

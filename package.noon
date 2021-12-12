@@ -1,5 +1,5 @@
 name            kode
-version         0.89.0
+version         0.90.0
 description     programming language
 main            js/kode.js
 scripts
@@ -9,7 +9,7 @@ scripts
                 build0    kode kode/*.kode -Ho stage0 && kode kode/test/*.kode -Ho stage0/test
                 build1    k0de kode/*.kode -Ho stage1 && k0de kode/test/*.kode -Ho stage1/test
                 testage   mocha -c stage1/test/*.js
-                unstage   cp stage1/*.js js
+                unstage   cp stage1/*.js js && cp stage1/test/*.js js/test
 author          monsterkodi
 license         Unlicense
 dependencies

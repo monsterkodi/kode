@@ -2,11 +2,9 @@
 
 **kode** is a programming language that transpiles to JavaScript.
 
-It is highly inspired by and *tries* to be compatible with [CoffeeScript](http://coffeescript.org), while adding some features and even further its minimalistic approach.
+It is highly inspired by and *tries* to be compatible with [CoffeeScript](http://coffeescript.org), while adding some features and further its minimalistic approach.
 
-Right now (end of 2021) it is a work in progress, but works well enough that it can transpile itself.
-
-# A list of things that work already:
+# A list of enhancements over CoffeeScript:
 
 ## Ranges
 

@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.89.0
+// monsterkodi/kode 0.90.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
@@ -214,6 +214,18 @@ Parse = (function ()
                 }
 
             }
+            if ((tokens[0] != null ? tokens[0].text : undefined) === '▸')
+            {
+                if (_k_.in(this.stack.slice(-1)[0],['▸args']))
+                {
+                    es.push(e)
+                    break
+                }
+                else
+                {
+                    e = this.compare(e,tokens)
+                }
+            }
             es.push(e)
             if ((_k_.in((tokens[0] != null ? tokens[0].text : undefined),['if','then','for','while']) && tokens[0].col > last.col && es.length && !blocked && last.line === tokens[0].line))
             {
@@ -245,7 +257,7 @@ Parse = (function ()
 
     Parse.prototype["exp"] = function (tokens)
     {
-        var tok, _253_34_, e, numTokens, _286_33_
+        var tok, _261_34_, e, numTokens, _294_33_
 
         if (_k_.empty(tokens))
         {
@@ -324,7 +336,7 @@ Parse = (function ()
 
         }
 
-        this.sheapPush('exp',((_253_34_=tok.text) != null ? _253_34_ : tok.type))
+        this.sheapPush('exp',((_261_34_=tok.text) != null ? _261_34_ : tok.type))
         e = tok
         while (tokens.length)
         {
@@ -364,13 +376,13 @@ Parse = (function ()
         {
             print.ast(`exp ${_k_.empty((this.stack)) ? 'DONE' : ''}`,e)
         }
-        this.sheapPop('exp',((_286_33_=tok.text) != null ? _286_33_ : tok.type))
+        this.sheapPop('exp',((_294_33_=tok.text) != null ? _294_33_ : tok.type))
         return e
     }
 
     Parse.prototype["rhs"] = function (e, tokens)
     {
-        var nxt, numTokens, unspaced, llc, spaced, _340_26_
+        var nxt, numTokens, unspaced, llc, spaced, _348_26_
 
         this.sheapPush('rhs','rhs')
         while (nxt = tokens[0])
@@ -529,7 +541,7 @@ Parse = (function ()
 
     Parse.prototype["lhs"] = function (e, tokens)
     {
-        var nxt, numTokens, last, first, unspaced, spaced, b, _499_38_, _499_30_
+        var nxt, numTokens, last, first, unspaced, spaced, b, _510_38_, _510_30_
 
         this.sheapPush('lhs','lhs')
         while (nxt = tokens[0])
@@ -584,10 +596,6 @@ Parse = (function ()
             {
                 e = this.each(e,tokens)
             }
-            else if (nxt.type === 'test')
-            {
-                e = this.test(e,tokens)
-            }
             else if (nxt.text === '?')
             {
                 if (unspaced)
@@ -613,6 +621,11 @@ Parse = (function ()
                 else if (_k_.in(this.stack.slice(-1)[0],['in?','opempty','opvalid']))
                 {
                     this.verb(`lhs stop on ${this.stack.slice(-1)[0]}`,e,nxt)
+                    break
+                }
+                else if (nxt.text === '▸')
+                {
+                    this.verb("lhs break on ▸")
                     break
                 }
                 else
@@ -645,7 +658,7 @@ Parse = (function ()
             {
                 e = {operation:{operator:tokens.shift(),rhs:this.incond(e,tokens)}}
             }
-            else if ((spaced && (nxt.line === last.line || (nxt.col > first.col && !(_k_.in(this.stack.slice(-1)[0],['if'])))) && !(_k_.in(nxt.text,['if','then','else','break','continue','in','of','for','while'])) && !(_k_.in(nxt.type,['nl'])) && (!(_k_.in(e.type,this.kode.literals))) && (!(_k_.in(e.type,['punct','comment','op','section','test']))) && (!(_k_.in(e.text,['null','undefined','Infinity','NaN','if','then','else','for','while']))) && !e.array && !e.object && !e.keyval && !e.operation && !e.incond && !e.qmrkop && !(_k_.in(((_499_30_=e.call) != null ? (_499_38_=_499_30_.callee) != null ? _499_38_.text : undefined : undefined),['delete','new','typeof'])) && !(_k_.in('▸arg',this.stack))))
+            else if ((spaced && (nxt.line === last.line || (nxt.col > first.col && !(_k_.in(this.stack.slice(-1)[0],['if'])))) && !(_k_.in(nxt.text,['if','then','else','break','continue','in','of','for','while'])) && !(_k_.in(nxt.type,['nl'])) && (!(_k_.in(e.type,this.kode.literals))) && (!(_k_.in(e.type,['punct','comment','op','section','test']))) && (!(_k_.in(e.text,['null','undefined','Infinity','NaN','if','then','else','for','while']))) && !e.array && !e.object && !e.keyval && !e.operation && !e.incond && !e.qmrkop && !(_k_.in(((_510_30_=e.call) != null ? (_510_38_=_510_30_.callee) != null ? _510_38_.text : undefined : undefined),['delete','new','typeof'])) && !(_k_.in('▸arg',this.stack))))
             {
                 this.verb('lhs is lhs of implicit call! e',e,this.stack.slice(-1)[0])
                 this.verb('    is lhs of implicit call! nxt',nxt)
@@ -718,15 +731,15 @@ Parse = (function ()
 
     Parse.prototype["nameMethods"] = function (mthds)
     {
-        var m, name, _578_39_, _578_34_, _579_41_, _579_35_
+        var m, name, _589_39_, _589_34_, _590_41_, _590_35_
 
         if ((mthds != null ? mthds.length : undefined))
         {
             var list = _k_.list(mthds)
-            for (var _577_18_ = 0; _577_18_ < list.length; _577_18_++)
+            for (var _588_18_ = 0; _588_18_ < list.length; _588_18_++)
             {
-                m = list[_577_18_]
-                if (name = ((_578_34_=m.keyval) != null ? (_578_39_=_578_34_.key) != null ? _578_39_.text : undefined : undefined))
+                m = list[_588_18_]
+                if (name = ((_589_34_=m.keyval) != null ? (_589_39_=_589_34_.key) != null ? _589_39_.text : undefined : undefined))
                 {
                     if (((m.keyval.val != null ? m.keyval.val.func : undefined) != null))
                     {

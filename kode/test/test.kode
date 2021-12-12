@@ -6,62 +6,61 @@
    000     00000000  0000000      000   
 ###
 
-{ cmp } = require './utils'
+{ kc } = require './utils'
 
-describe 'test' ->
+▸ test
     
-    it 'test' ->
+    kc  """
+        ▸ test1
+            ▸ sub
                 
-        cmp """
-            ▸ test1
-                ▸ sub
-                    
-                    1       ▸   1
-                    true    ▸   true
-                    
-                ▸ sub2
-                    ▸ subsub
+                1       ▸   1
+                true    ▸   true
+                
+            ▸ sub2
+                ▸ subsub
 
-                        'a' ▸   
-                        'a'
+                    'a' ▸   
+                    'a'
+                
+                    1   ▸
+                        1
                     
-                        1   ▸
-                            1
-                        
-                        \"\"\"
-                        ok
-                        \"\"\" ▸
-                        \"\"\"
-                        ok
-                        \"\"\"
-            ▸ test2
-                ▸ sub
-                    2 ▸ 2
-            """ """
-            module.exports["test1"] = function ()
+                    \"\"\"
+                    ok
+                    \"\"\" ▸
+                    \"\"\"
+                    ok
+                    \"\"\"
+        ▸ test2
+            ▸ sub
+                2 ▸ 2
+        """ ▸ 
+        """
+        module.exports["test1"] = function ()
+        {
+            section("sub", function ()
             {
-                section("sub", function ()
+                cmp(1, 1)
+                cmp(true, true)
+            })
+            section("sub2", function ()
+            {
+                section("subsub", function ()
                 {
+                    cmp('a', 'a')
                     cmp(1, 1)
-                    cmp(true, true)
+                    cmp(\`ok\`, \`ok\`)
                 })
-                section("sub2", function ()
-                {
-                    section("subsub", function ()
-                    {
-                        cmp('a', 'a')
-                        cmp(1, 1)
-                        cmp(\`ok\`, \`ok\`)
-                    })
-                })
-            }
-            module.exports["test2"] = function ()
+            })
+        }
+        module.exports["test2"] = function ()
+        {
+            section("sub", function ()
             {
-                section("sub", function ()
-                {
-                    cmp(2, 2)
-                })
-            }
-            module.exports
-            
-            """
+                cmp(2, 2)
+            })
+        }
+        module.exports
+        
+        """

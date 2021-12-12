@@ -68,7 +68,7 @@ class Tester
     test: (text, file) ->
         
         g = 
-            cmp:     @compare
+            compare: @compare
             section: @section
         
         tests = @kode.eval text, file, g

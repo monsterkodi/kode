@@ -141,6 +141,7 @@ class Renderer
                 when 'operation' then @operation v
                 when 'section'   then @section v
                 when 'subsect'   then @subsect v
+                when 'compare'   then @compare v
                 when 'incond'    then @incond v
                 when 'parens'    then @parens v
                 when 'object'    then @object v
@@ -150,7 +151,6 @@ class Renderer
                 when 'index'     then @index v
                 when 'slice'     then @slice v
                 when 'prop'      then @prop v
-                when 'test'      then @test v
                 when 'each'      then @each v
                 when 'func'      then @func v
                 when 'call'      then @call v
@@ -1274,12 +1274,18 @@ class Renderer
         @ded()
         s
         
-    test: (p) ->
+    #  0000000   0000000   00     00  00000000    0000000   00000000   00000000  
+    # 000       000   000  000   000  000   000  000   000  000   000  000       
+    # 000       000   000  000000000  00000000   000000000  0000000    0000000   
+    # 000       000   000  000 0 000  000        000   000  000   000  000       
+    #  0000000   0000000   000   000  000        000   000  000   000  00000000  
+    
+    compare: (p) ->
         
-        s = 'cmp('            \
-          + @node p.lhs       \
+        s = 'compare('            \
+          + @node(p.lhs)      \
           + ','               \
-          + @node p.lhs       \
+          + @node(p.rhs)      \
           + ')\n'
         s
         
