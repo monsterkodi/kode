@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.102.0
+// monsterkodi/kode 0.103.0
 
 var _k_ = {each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -126,18 +126,27 @@ class Tester
         return allfails = allfails.concat(fails)
     }
 
+    showSpace (s)
+    {
+        return s.split('\n').map(function (l)
+        {
+            return l + w2('◂')
+        }).join('\n')
+    }
+
     summarize ()
     {
         var fail
 
         var list = _k_.list(allfails)
-        for (var _128_17_ = 0; _128_17_ < list.length; _128_17_++)
+        for (var _132_17_ = 0; _132_17_ < list.length; _132_17_++)
         {
-            fail = list[_128_17_]
+            fail = list[_132_17_]
             console.log(R2(y5(' ' + fail.stack[0] + ' ')) + R1(y5(' ' + fail.stack.slice(1).join(r3(' ▸ ')) + ' ')))
-            console.log(r5(fail.lhs) + b6(' ▸ '))
-            console.log(g3(fail.rhs))
-            if (('' + fail.lhs).indexOf("[object Object]" >= 0))
+            console.log(r5(this.showSpace(fail.lhs)))
+            console.log(R1(r3(' ▸ ')))
+            console.log(g3(this.showSpace(fail.rhs)))
+            if (_k_.in("[object Object]",'' + fail.lhs))
             {
                 print.noon('lhs',fail.lhs)
             }

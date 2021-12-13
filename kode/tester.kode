@@ -123,14 +123,19 @@ class Tester
     #      000  000   000  000 0 000  000 0 000  000   000  000   000  000   000     000       
     # 0000000    0000000   000   000  000   000  000   000  000   000  000  0000000  00000000  
     
+    showSpace: (s) ->
+        
+        s.split('\n').map((l) -> l+w2('◂')).join '\n'
+    
     summarize: ->
         
         for fail in allfails
             log R2(y5 ' ' + fail.stack[0] + ' ') + R1 y5 ' ' + fail.stack[1..].join(r3 ' ▸ ') + ' '
-            log r5(fail.lhs) + b6(' ▸ ') 
-            log g3 fail.rhs
+            log r5(@showSpace fail.lhs) 
+            log R1 r3(' ▸ ') 
+            log g3 @showSpace fail.rhs
              
-            if (''+fail.lhs).indexOf "[object Object]" >= 0
+            if "[object Object]" in ''+fail.lhs
                 print.noon 'lhs' fail.lhs            
             if "[object Object]" in ''+fail.rhs
                 print.noon 'rhs' fail.rhs

@@ -1,5 +1,5 @@
 name          kode
-version       0.102.0
+version       0.103.0
 description   programming language
 main          js/kode.js
 bin
