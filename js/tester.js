@@ -1,8 +1,8 @@
 // monsterkodi/kode 0.104.0
 
-var _k_ = {each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
+var _k_ = {each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined}
 
-var kstr, print, comps, succs, fails, stack, allfails
+var kstr, print, comps, succs, fails, stack, allfails, allsuccs
 
 kstr = require('kstr')
 print = require('./print')
@@ -11,6 +11,7 @@ succs = 0
 fails = []
 stack = []
 allfails = []
+allsuccs = 0
 class Tester
 {
     constructor (kode)
@@ -81,7 +82,7 @@ class Tester
 
     test (text, file)
     {
-        var g, tests, summary
+        var g, tests
 
         comps = 0
         succs = 0
@@ -110,19 +111,7 @@ class Tester
             }
             return typeof o == 'string' ? r.join('') : r
         })(tests)
-        if (fails.length)
-        {
-            summary = b6(succs + fails.length)
-            if (succs)
-            {
-                summary += g4(" ✔ ") + g3(succs) + ' '
-            }
-            if (!_k_.empty(fails))
-            {
-                summary += R2(y2(' ❌ ') + y6(fails.length) + y3(' failures '))
-            }
-            console.log(summary)
-        }
+        allsuccs += succs
         return allfails = allfails.concat(fails)
     }
 
@@ -140,12 +129,12 @@ class Tester
 
     summarize ()
     {
-        var fail
+        var fail, summary
 
         var list = _k_.list(allfails)
-        for (var _132_17_ = 0; _132_17_ < list.length; _132_17_++)
+        for (var _128_17_ = 0; _128_17_ < list.length; _128_17_++)
         {
-            fail = list[_132_17_]
+            fail = list[_128_17_]
             console.log(R2(y5(' ' + fail.stack[0] + ' ')) + R1(y5(' ' + fail.stack.slice(1).join(r3(' ▸ ')) + ' ')))
             console.log(r5(this.showSpace(fail.lhs)))
             console.log(R1(r3(' ▸ ')))
@@ -159,7 +148,21 @@ class Tester
                 print.noon('rhs',fail.rhs)
             }
         }
-        return allfails = []
+        if (allsuccs || fails.length)
+        {
+            summary = b6(allsuccs + allfails.length)
+            if (allsuccs)
+            {
+                summary += g4(" ✔ ") + g3(allsuccs) + ' '
+            }
+            if (!_k_.empty(allfails))
+            {
+                summary += R2(y2(' ❌ ') + y6(allfails.length) + y3(' failures '))
+            }
+            console.log(summary)
+        }
+        allfails = []
+        return allsuccs = 0
     }
 
     short (s)

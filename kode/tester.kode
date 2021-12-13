@@ -14,6 +14,7 @@ succs = 0
 fails = []
 stack = []
 allfails = []
+allsuccs = 0
 
 class Tester
 
@@ -108,13 +109,8 @@ class Tester
                 # print.noon 'lhs' fail.lhs            
             # if "[object Object]" in ''+fail.rhs
                 # print.noon 'rhs' fail.rhs
-            
-        if fails.length
-            summary  = b6 succs+fails.length
-            summary += g4(" ✔ ") + g3(succs) + ' ' if succs
-            summary += R2 y2(' ❌ ') + y6(fails.length) + y3(' failures ') if valid fails
-            log summary
-            
+                        
+        allsuccs += succs
         allfails = allfails.concat fails
         
     #  0000000  000   000  00     00  00     00   0000000   00000000   000  0000000  00000000  
@@ -140,7 +136,14 @@ class Tester
             if "[object Object]" in ''+fail.rhs
                 print.noon 'rhs' fail.rhs
         
+        if allsuccs or fails.length
+            summary  = b6 allsuccs+allfails.length
+            summary += g4(" ✔ ") + g3(allsuccs) + ' ' if allsuccs
+            summary += R2 y2(' ❌ ') + y6(allfails.length) + y3(' failures ') if valid allfails
+            log summary
+
         allfails = []
+        allsuccs = 0
 
     #  0000000  000   000   0000000   00000000   000000000  
     # 000       000   000  000   000  000   000     000     
