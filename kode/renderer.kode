@@ -331,9 +331,15 @@ class Renderer
         
         if n.keyval
             s  = '\n'
-            @mthdName = n.keyval.val.func.name.text
-            s += @indent + @func n.keyval.val.func
-            delete @mthdName
+            if n.keyval.val.func?
+                @mthdName = n.keyval.val.func.name.text
+                s += @indent + @func n.keyval.val.func
+                delete @mthdName
+            else
+                if n.keyval.key.text.startsWith '@'
+                    s += @indent + 'static ' + n.keyval.key.text[1..] + ' = ' + @node n.keyval.val
+                else
+                    log 'what is this?' n
         s
 
     # 00000000  000   000  000   000   0000000  000000000  000   0000000   000   000  
@@ -426,8 +432,7 @@ class Renderer
             if not m.keyval
                 print.ast 'not an method?' m
                 continue
-            if not m.keyval.val.func
-                print.ast 'no func for method?' m
+            if not m.keyval.val.func # probably a static var
                 continue
 
             name = m.keyval.val.func.name.text

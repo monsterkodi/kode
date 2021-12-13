@@ -167,9 +167,37 @@ class Kode
             else if @args.test
                 @tester.test text, file
             else if @args.run
-                @eval text, file
+                log @eval text, file
             else
                 log @compile text
+                
+            if @args.watch
+                slash.watch file, @onChange
+                
+    #  0000000   000   000   0000000  000   000   0000000   000   000   0000000   00000000  
+    # 000   000  0000  000  000       000   000  000   000  0000  000  000        000       
+    # 000   000  000 0 000  000       000000000  000000000  000 0 000  000  0000  0000000   
+    # 000   000  000  0000  000       000   000  000   000  000  0000  000   000  000       
+    #  0000000   000   000   0000000  000   000  000   000  000   000   0000000   00000000  
+    
+    onChange: (file) =>
+
+        log file
+        
+        text = slash.readText file
+
+        if empty text then error Y4 r2 "can't read #{R3 y5 file}"; return
+
+        if @args.outdir
+            js  = @compile text, file
+            out = slash.resolve @args.outdir, slash.file file
+            out = slash.swapExt out, 'js'
+            if not slash.writeText out, js
+                error R2 y3 "can't write #{R3 y6 out}"
+        else if @args.test
+            @tester.test text, file
+        else if @args.run
+            log @eval text, file
             
 # 00     00   0000000   000  000   000
 # 000   000  000   000  000  0000  000
@@ -187,20 +215,21 @@ if not module.parent or slash.resolve(module.parent.path).endsWith '/kode/bin'
             eval        . ? evaluate a string and print the result
             compile     . ? transpile a string and print the result
             outdir      . ? output directory for transpiled files
-            run         . ? execute files                           . = true
-            test        . ? execute tests                           . = false
-            map         . ? generate inline source maps             . = true
-            kode        . ? pretty print input code                 . = false
-            js          . ? pretty print transpiled js code         . = false
-            header      . ? prepend output with version header      . = false  . - H
-            tokens      . ? print tokens                            . = false  . - T
-            block       . ? print block tree                        . = false  . - B
-            parse       . ? print parse tree                        . = false  . - P
-            astr        . ? print parse tree as string              . = false  . - A
-            scope       . ? print scopes                            . = false  . - S
-            verbose     . ? log everything                          . = false
-            debug       . ? log debug                               . = false
-            raw         . ? log raw                                 . = false  . - R
+            run         . ? execute files                               . = true
+            test        . ? execute tests                               . = false
+            watch       . ? watch for changes and compile, test or run  . = false
+            map         . ? generate inline source maps                 . = true
+            kode        . ? pretty print input code                     . = false
+            js          . ? pretty print transpiled js code             . = false
+            header      . ? prepend output with version header          . = false  . - H
+            tokens      . ? print tokens                                . = false  . - T
+            block       . ? print block tree                            . = false  . - B
+            parse       . ? print parse tree                            . = false  . - P
+            astr        . ? print parse tree as string                  . = false  . - A
+            scope       . ? print scopes                                . = false  . - S
+            verbose     . ? log everything                              . = false
+            debug       . ? log debug                                   . = false
+            raw         . ? log raw                                     . = false  . - R
 
         version  #{pkg.version}
         """

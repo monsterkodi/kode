@@ -10,7 +10,7 @@
 
 ▸ class
 
-    ▸ class
+    ▸ empty
 
         kc  """
             class A
@@ -20,6 +20,8 @@
             {}
             
             """
+            
+    ▸ constructor
 
         kc  """
             class B
@@ -34,6 +36,8 @@
 
             """
 
+    ▸ static
+        
         kc  """
             class C
                 @a: ->
@@ -50,25 +54,7 @@
             }
 
             """
-
-        kc  """
-            class D
-                a: =>
-            """ ▸ 
-            """
-            class D
-            {
-                constructor ()
-                {
-                    this.a = this.a.bind(this)
-                }
-
-                a ()
-                {}
-            }
-
-            """
-
+            
         kc  """
             class E
                 @f: ->
@@ -152,6 +138,20 @@
             }
 
             """
+            
+        ▸ var
+        
+            kc  """
+                class SV
+                    @x: 1
+                """ ▸
+                """
+                class SV
+                {
+                    static x = 1
+                }
+                
+                """
 
     # 0000000    000  000   000  0000000    
     # 000   000  000  0000  000  000   000  
@@ -161,6 +161,24 @@
     
     ▸ bind
 
+        kc  """
+            class D
+                a: =>
+            """ ▸ 
+            """
+            class D
+            {
+                constructor ()
+                {
+                    this.a = this.a.bind(this)
+                }
+
+                a ()
+                {}
+            }
+
+            """
+    
         kc  """
             class A
                 @: -> @f()

@@ -73,91 +73,97 @@
 
     ▸ op
 
-        kc  'a == b'          ▸ 'a === b'
-        kc  'a != b'          ▸ 'a !== b'
+        ▸ eql
+            
+            kc  'a == b'          ▸ 'a === b'
+            kc  'a != b'          ▸ 'a !== b'
 
-        kc  'a and b'         ▸ 'a && b'
-        kc  '1 and 2 and 3'   ▸ '1 && 2 && 3'
-        kc  'e and (f or g)'  ▸ 'e && (f || g)'
-        kc  '(e and f) or g'  ▸ ';(e && f) || g'
-
-        kc  """
-            a and \
-            b or \
-            c
-            """ ▸
-            """
-            a && b || c
-            """
-
-        kc  """
-            d and
-                e or f and
-                    g or h
-            """ ▸
-            """
-            d && e || f && g || h
-            """
-
-        kc  """
-            d and
-            e or f and
-            g or h
-            """ ▸ 
-            """
-            d && e || f && g || h
-            """
-
-        kc  """
-            a = d and
+        ▸ logigal
+            
+            kc  'a and b'         ▸ 'a && b'
+            kc  '1 and 2 and 3'   ▸ '1 && 2 && 3'
+            kc  'e and (f or g)'  ▸ 'e && (f || g)'
+            kc  '(e and f) or g'  ▸ ';(e && f) || g'
+    
+            kc  """
+                a and \
+                b or \
+                c
+                """ ▸
+                """
+                a && b || c
+                """
+    
+            kc  """
+                d and
+                    e or f and
+                        g or h
+                """ ▸
+                """
+                d && e || f && g || h
+                """
+    
+            kc  """
+                d and
                 e or f and
                 g or h
-            """ ▸
-            """
-            a = d && e || f && g || h
-            """
-
-        kc  """
-            b = 1 <= a < c
-            """ ▸
-            """
-            b = (1 <= a && a < c)
-            """
-
-        kc  """
-            x = y > z >= 1
-            """ ▸
-            """
-            x = (y > z && z >= 1)
-            """
-
-        kc  """
-            a = b == c == d
-            """ ▸
-            """
-            a = (b === c && c === d)
-            """
-
-        kc  """
-            a = b != c != d
-            """ ▸
-            """
-            a = (b !== c && c !== d)
-            """
-
-    # 000   000   0000000   000000000  
-    # 0000  000  000   000     000     
-    # 000 0 000  000   000     000     
-    # 000  0000  000   000     000     
-    # 000   000   0000000      000     
+                """ ▸ 
+                """
+                d && e || f && g || h
+                """
     
-    ▸ not
+            kc  """
+                a = d and
+                    e or f and
+                    g or h
+                """ ▸
+                """
+                a = d && e || f && g || h
+                """
+
+        ▸ compchain
+                
+            kc  """
+                b = 1 <= a < c
+                """ ▸
+                """
+                b = (1 <= a && a < c)
+                """
+    
+            kc  """
+                x = y > z >= 1
+                """ ▸
+                """
+                x = (y > z && z >= 1)
+                """
+    
+            kc  """
+                a = b == c == d
+                """ ▸
+                """
+                a = (b === c && c === d)
+                """
+    
+            kc  """
+                a = b != c != d
+                """ ▸
+                """
+                a = (b !== c && c !== d)
+                """
+
+        # 000   000   0000000   000000000  
+        # 0000  000  000   000     000     
+        # 000 0 000  000   000     000     
+        # 000  0000  000   000     000     
+        # 000   000   0000000      000     
         
-        kc  'not true'      ▸   '!true'
-        kc  'not c1 or c2'  ▸   '!c1 || c2'
-        kc  'not (x > 0)'   ▸   '!(x > 0)'
-        kc  'not x == 0'    ▸   '!x === 0'
-        kc  'if not m = t'  ▸   'if (!(m = t))\n{\n}'
+        ▸ not
+            
+            kc  'not true'      ▸   '!true'
+            kc  'not c1 or c2'  ▸   '!c1 || c2'
+            kc  'not (x > 0)'   ▸   '!(x > 0)'
+            kc  'not x == 0'    ▸   '!x === 0'
+            kc  'if not m = t'  ▸   'if (!(m = t))\n{\n}'
             
     #  0000000    0000000   0000000  000   0000000   000   000
     # 000   000  000       000       000  000        0000  000

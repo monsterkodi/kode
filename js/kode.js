@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.93.0
+// monsterkodi/kode 0.92.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return [].indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
 var slash, kstr, klor, karg, childp, print, pkg, register, args, kode
 
@@ -21,6 +21,7 @@ class Kode
         var _27_14_, Lexer, Parser, Scoper, Stripol, Returner, Renderer, Tester
 
         this.args = args
+        this.onChange = this.onChange.bind(this)
         this.version = pkg.version
         this.args = ((_27_14_=this.args) != null ? _27_14_ : {})
         if (this.args.verbose)
@@ -227,12 +228,47 @@ class Kode
             }
             else if (this.args.run)
             {
-                this.eval(text,file)
+                console.log(this.eval(text,file))
             }
             else
             {
                 console.log(this.compile(text))
             }
+            if (this.args.watch)
+            {
+                slash.watch(file,this.onChange)
+            }
+        }
+    }
+
+    onChange (file)
+    {
+        var text, js, out
+
+        console.log(file)
+        text = slash.readText(file)
+        if (_k_.empty(text))
+        {
+            console.error(Y4(r2(`can't read ${R3(y5(file))}`)))
+            return
+        }
+        if (this.args.outdir)
+        {
+            js = this.compile(text,file)
+            out = slash.resolve(this.args.outdir,slash.file(file))
+            out = slash.swapExt(out,'js')
+            if (!slash.writeText(out,js))
+            {
+                return console.error(R2(y3(`can't write ${R3(y6(out))}`)))
+            }
+        }
+        else if (this.args.test)
+        {
+            return this.tester.test(text,file)
+        }
+        else if (this.args.run)
+        {
+            console.log(this.eval(text,file))
         }
     }
 }
@@ -245,20 +281,21 @@ if (!module.parent || slash.resolve(module.parent.path).endsWith('/kode/bin'))
     eval        . ? evaluate a string and print the result
     compile     . ? transpile a string and print the result
     outdir      . ? output directory for transpiled files
-    run         . ? execute files                           . = true
-    test        . ? execute tests                           . = false
-    map         . ? generate inline source maps             . = true
-    kode        . ? pretty print input code                 . = false
-    js          . ? pretty print transpiled js code         . = false
-    header      . ? prepend output with version header      . = false  . - H
-    tokens      . ? print tokens                            . = false  . - T
-    block       . ? print block tree                        . = false  . - B
-    parse       . ? print parse tree                        . = false  . - P
-    astr        . ? print parse tree as string              . = false  . - A
-    scope       . ? print scopes                            . = false  . - S
-    verbose     . ? log everything                          . = false
-    debug       . ? log debug                               . = false
-    raw         . ? log raw                                 . = false  . - R
+    run         . ? execute files                               . = true
+    test        . ? execute tests                               . = false
+    watch       . ? watch for changes and compile, test or run  . = false
+    map         . ? generate inline source maps                 . = true
+    kode        . ? pretty print input code                     . = false
+    js          . ? pretty print transpiled js code             . = false
+    header      . ? prepend output with version header          . = false  . - H
+    tokens      . ? print tokens                                . = false  . - T
+    block       . ? print block tree                            . = false  . - B
+    parse       . ? print parse tree                            . = false  . - P
+    astr        . ? print parse tree as string                  . = false  . - A
+    scope       . ? print scopes                                . = false  . - S
+    verbose     . ? log everything                              . = false
+    debug       . ? log debug                                   . = false
+    raw         . ? log raw                                     . = false  . - R
 
 version  ${pkg.version}`)
     register()

@@ -589,8 +589,6 @@ function Parse # the base class of Parser
                 if name = m.keyval?.key?.text
                     if m.keyval.val?.func?
                         m.keyval.val.func.name = type:'name' text:name
-                    else
-                        log 'no function for method?' name, m
         mthds
         
     # 000000000  000   000  00000000  000   000 

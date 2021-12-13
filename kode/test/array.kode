@@ -18,28 +18,28 @@
 
     ▸ index
 
-        kc 'a[1]'            ▸ 'a[1]'
-        kc 'a[1][2]'         ▸ 'a[1][2]'
-        kc 'a[1][2]'         ▸ 'a[1][2]'
-        kc '[1,2][1]'        ▸ ';[1,2][1]'
-        kc '{a:1}["a"]'      ▸ '{a:1}["a"]'
+        kc 'a[1]'           ▸ 'a[1]'
+        kc 'a[1][2]'        ▸ 'a[1][2]'
+        kc 'a[1][2]'        ▸ 'a[1][2]'
+        kc '[1,2][1]'       ▸ ';[1,2][1]'
+        kc '{a:1}["a"]'     ▸ '{a:1}["a"]'
 
-    ▸ index slice
+        ▸ slice
 
-        kc 'a[0..1]'         ▸ 'a.slice(0, 2)'
-        kc 'a[0...1]'        ▸ 'a.slice(0, 1)'
-        kc 'a[-1]'           ▸ 'a.slice(-1)[0]'
-        kc 'a[-2]'           ▸ 'a.slice(-2,-1)[0]'
-        kc 'a[-100]'         ▸ 'a.slice(-100,-99)[0]'
-        
-        kc  """
-            blocks[-1].tokens.push block
-            blocks.push block
-            """ ▸
-            """
-            blocks.slice(-1)[0].tokens.push(block)
-            blocks.push(block)
-            """
+            kc 'a[0..1]'    ▸ 'a.slice(0, 2)'
+            kc 'a[0...1]'   ▸ 'a.slice(0, 1)'
+            kc 'a[-1]'      ▸ 'a.slice(-1)[0]'
+            kc 'a[-2]'      ▸ 'a.slice(-2,-1)[0]'
+            kc 'a[-100]'    ▸ 'a.slice(-100,-99)[0]'
+            
+            kc  """
+                blocks[-1].tokens.push block
+                blocks.push block
+                """ ▸
+                """
+                blocks.slice(-1)[0].tokens.push(block)
+                blocks.push(block)
+                """
             
     # 00000000    0000000   000   000   0000000   00000000
     # 000   000  000   000  0000  000  000        000

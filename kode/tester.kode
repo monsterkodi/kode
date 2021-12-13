@@ -31,7 +31,7 @@ class Tester
         stack.push t
         comps = 0
         depth = stack.length
-        log W1 kstr.lpad('' depth*3-1) + ' ' + global["g#{Math.max 1, 8-2*depth}"] kstr.pad(t,20) + ' '
+        log W1 kstr.lpad('' depth*3-1) + ' ' + global["g#{Math.max 1, 8-2*depth}"] kstr.pad(t,26-depth*3) + ' '
         f()
         stack.pop()
         
