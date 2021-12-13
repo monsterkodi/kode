@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.109.0
+// monsterkodi/kode 0.110.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined}
 
@@ -164,6 +164,10 @@ class Returner
     try (e)
     {
         this.insert(e.exps)
+        if (e.catch)
+        {
+            this.insert(e.catch)
+        }
         if (e.finally)
         {
             return this.insert(e.finally)
@@ -175,9 +179,9 @@ class Returner
         var w
 
         var list = _k_.list(e.whens)
-        for (var _115_14_ = 0; _115_14_ < list.length; _115_14_++)
+        for (var _116_14_ = 0; _116_14_ < list.length; _116_14_++)
         {
-            w = list[_115_14_]
+            w = list[_116_14_]
             if (!_k_.empty(w.when.then))
             {
                 this.insert(w.when.then)
@@ -191,7 +195,7 @@ class Returner
 
     insert (e)
     {
-        var lst, _136_50_, _136_42_
+        var lst, _137_50_, _137_42_
 
         if (e instanceof Array)
         {
@@ -216,7 +220,7 @@ class Returner
             {
                 return
             }
-            if (!(lst.return || _k_.in(((_136_42_=lst.call) != null ? (_136_50_=_136_42_.callee) != null ? _136_50_.text : undefined : undefined),['log','throw'])))
+            if (!(lst.return || _k_.in(((_137_42_=lst.call) != null ? (_137_50_=_137_42_.callee) != null ? _137_50_.text : undefined : undefined),['log','throw'])))
             {
                 return e.push({return:{ret:{type:'keyword',text:'return'},val:e.pop()}})
             }
@@ -240,9 +244,9 @@ class Returner
             if (e.length)
             {
                 var list = _k_.list(e)
-                for (var _154_50_ = 0; _154_50_ < list.length; _154_50_++)
+                for (var _155_50_ = 0; _155_50_ < list.length; _155_50_++)
                 {
-                    v = list[_154_50_]
+                    v = list[_155_50_]
                     this.exp(v)
                 }
             }
@@ -269,9 +273,9 @@ class Returner
                             if (val instanceof Array)
                             {
                                 var list1 = _k_.list(val)
-                                for (var _165_49_ = 0; _165_49_ < list1.length; _165_49_++)
+                                for (var _166_49_ = 0; _166_49_ < list1.length; _166_49_++)
                                 {
-                                    v = list1[_165_49_]
+                                    v = list1[_166_49_]
                                     this.exp(v)
                                 }
                             }

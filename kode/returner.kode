@@ -102,6 +102,7 @@ class Returner
     try: (e) ->
         
         @insert e.exps
+        @insert e.catch   if e.catch
         @insert e.finally if e.finally
         
     #  0000000  000   000  000  000000000   0000000  000   000  
