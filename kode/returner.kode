@@ -102,8 +102,8 @@ class Returner
     try: (e) ->
         
         @insert e.exps
-        @insert e.catch   if e.catch
-        @insert e.finally if e.finally
+        @insert e.catch.exps if valid e.catch.exps
+        @insert e.finally    if valid e.finally
         
     #  0000000  000   000  000  000000000   0000000  000   000  
     # 000       000 0 000  000     000     000       000   000  
@@ -134,7 +134,7 @@ class Returner
             if lst.while  ➜ return
             if lst.for    ➜ return
             
-            if not (lst.return or lst.call?.callee?.text in ['log' 'throw'])
+            if not (lst.call?.callee?.text in ['log' 'warn' 'error' 'throw'])
                 e.push
                     return:
                         ret: type:'keyword' text:'return'

@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.110.0
+// monsterkodi/kode 0.112.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined}
 
@@ -164,11 +164,11 @@ class Returner
     try (e)
     {
         this.insert(e.exps)
-        if (e.catch)
+        if (!_k_.empty(e.catch.exps))
         {
-            this.insert(e.catch)
+            this.insert(e.catch.exps)
         }
-        if (e.finally)
+        if (!_k_.empty(e.finally))
         {
             return this.insert(e.finally)
         }
@@ -195,7 +195,7 @@ class Returner
 
     insert (e)
     {
-        var lst, _137_50_, _137_42_
+        var lst, _137_36_, _137_28_
 
         if (e instanceof Array)
         {
@@ -220,7 +220,7 @@ class Returner
             {
                 return
             }
-            if (!(lst.return || _k_.in(((_137_42_=lst.call) != null ? (_137_50_=_137_42_.callee) != null ? _137_50_.text : undefined : undefined),['log','throw'])))
+            if (!(_k_.in(((_137_28_=lst.call) != null ? (_137_36_=_137_28_.callee) != null ? _137_36_.text : undefined : undefined),['log','warn','error','throw'])))
             {
                 return e.push({return:{ret:{type:'keyword',text:'return'},val:e.pop()}})
             }
