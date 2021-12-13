@@ -67,6 +67,7 @@ class Returner
                     lst.stripol             ➜ ins()
                     lst.qmrkop              ➜ ins()
                     lst.incond              ➜ ins()
+                    lst.compare             ➜ null
                     lst.return              ➜ null
                     lst.while               ➜ null
                     lst.for                 ➜ null
@@ -127,6 +128,7 @@ class Returner
         if e instanceof Array
             lst = e[-1]
             if lst.if     ➜ return @if lst.if
+            if lst.try    ➜ return @try lst.try
             if lst.return ➜ return
             if lst.while  ➜ return
             if lst.for    ➜ return
