@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.108.0
+// monsterkodi/kode 0.109.0
 
 var _k_ = {each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined}
 
@@ -76,6 +76,14 @@ class Tester
             succs++
             return
         }
+        if (typeof(b) === 'function')
+        {
+            if (b(a))
+            {
+                succs++
+                return
+            }
+        }
         console.log(R1(black(ind + comps + ' ')) + ' ' + r5(this.short(a)) + ' ' + R1(r4(' ▸ ')) + ' ' + g1(this.short(b)))
         return fails.push({stack:stack.concat([comps]),comps:comps,lhs:a,rhs:b})
     }
@@ -132,9 +140,9 @@ class Tester
         var fail, summary
 
         var list = _k_.list(allfails)
-        for (var _128_17_ = 0; _128_17_ < list.length; _128_17_++)
+        for (var _121_17_ = 0; _121_17_ < list.length; _121_17_++)
         {
-            fail = list[_128_17_]
+            fail = list[_121_17_]
             console.log(R2(y5(' ' + fail.stack[0] + ' ')) + R1(y5(' ' + fail.stack.slice(1).join(r3(' ▸ ')) + ' ')))
             console.log(r5(this.showSpace(fail.lhs)))
             console.log(R1(r3(' ▸ ')))
