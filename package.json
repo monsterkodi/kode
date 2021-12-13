@@ -1,6 +1,6 @@
 {
   "name": "kode",
-  "version": "0.107.0",
+  "version": "0.108.0",
   "description": "programming language",
   "main": "js/kode.js",
   "bin": {
@@ -10,9 +10,9 @@
     "test": "kode -t kode/test/*.kode",
     "watch": "kode -wt kode/test/*.kode",
     "stage": "pnpm run build0 && pnpm run build1 && pnpm run testage",
-    "build0": "kode kode/*.kode -Ho stage0 && kode kode/test/*.kode -Ho stage0/test",
-    "build1": "k0de kode/*.kode -Ho stage1 && k0de kode/test/*.kode -Ho stage1/test",
-    "testage": "k1de -t kode/test/*.kode",
+    "build0": "kode kode/*.kode -Ho stage0 && cp -r kode/test stage0",
+    "build1": "k0de kode/*.kode -Ho stage1 && cp -r kode/test stage1",
+    "testage": "k1de -t stage1/test/*.kode",
     "unstage": "cp stage1/*.js js"
   },
   "author": "monsterkodi",

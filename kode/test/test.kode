@@ -9,9 +9,25 @@
 { kc } = require './utils'
 
 ▸ test
+
+    kc  """
+        ▸ t1
+            ▸ t2
+        """ ▸
+        """
+        module.exports["t1"] = function ()
+        {
+            section("t2", function ()
+            {
+            })
+        }
+        module.exports["t1"]._section_ = true
+        module.exports
+        
+        """
     
     kc  """
-        ▸ test1
+        ▸ t3
             ▸ sub
                 
                 1       ▸   1
@@ -32,12 +48,12 @@
                     \"\"\"
                     ok
                     \"\"\"
-        ▸ test2
+        ▸ t4
             ▸ sub
                 2 ▸ 2
         """ ▸ 
         """
-        module.exports["test1"] = function ()
+        module.exports["t3"] = function ()
         {
             section("sub", function ()
             {
@@ -54,19 +70,19 @@
                 })
             })
         }
-        module.exports["test1"]._section_ = true
-        module.exports["test2"] = function ()
+        module.exports["t3"]._section_ = true
+        module.exports["t4"] = function ()
         {
             section("sub", function ()
             {
                 compare(2,2)
             })
         }
-        module.exports["test2"]._section_ = true
+        module.exports["t4"]._section_ = true
         module.exports
         
         """
         
-    ▸ fail
+    # ▸ fail
     
         # [1,2,{a:3,b:4,d:e:'1'}] ▸ [1,2,{a:3,b:4}]

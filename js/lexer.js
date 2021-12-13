@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.107.0
+// monsterkodi/kode 0.108.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}}
 
@@ -94,12 +94,12 @@ class Lexer
                             end = text.indexOf('\n')
                             if (end < 0)
                             {
-                                end = -1
+                                end = text.length
                             }
-                            txt = kstr.strip(text.slice(1, typeof end === 'number' ? end+1 : Infinity),' \n')
+                            txt = kstr.strip(text.slice(1, typeof end === 'number' ? end : -1))
                             tokens.slice(-1)[0].type = 'section'
                             tokens.slice(-1)[0].text = txt
-                            text = text.slice(end)
+                            end >= text.length ? text = '' : text = text.slice(end)
                             break
                         }
                         else

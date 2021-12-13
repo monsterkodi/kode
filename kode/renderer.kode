@@ -98,6 +98,9 @@ class Renderer
     
     nodes: (nodes, sep=',' tl) ->
 
+        if not nodes?
+            log 'no nodes?!?@' nodes, sep, tl
+        
         s = ''
         for i in 0...nodes.length
             
@@ -502,6 +505,7 @@ class Renderer
             # ss = n.body.exps.map (s) => @node s
             # ss = ss.map (s) => @indent + s
             # s += ss.join '\n'
+            
             s += @indent + @nodes n.body.exps, '\n'+@indent
             s += '\n' + gi
 
@@ -1269,25 +1273,23 @@ class Renderer
     section: (p) ->
         
         @hint.section = true
-        
+                
         gi = @ind()
-        s = "module.exports[#{p.title.text}] = function ()\n" \
-          + gi + '{\n' \
-          + @indent + @nodes(p.exps, '\n'+@indent, true) \
-          + '\n' \
-          + gi + '}\n' \
-          + "module.exports[#{p.title.text}]._section_ = true"
+        s = "module.exports[#{p.title.text}] = function ()\n"
+        s+= gi + '{\n' 
+        s+= @indent + @nodes(p.exps, '\n'+@indent, true) + '\n' if valid p.exps
+        s+= gi + '}\n' 
+        s+= "module.exports[#{p.title.text}]._section_ = true"
         @ded()
         s
         
     subsect: (p) ->
         
         gi = @ind()
-        s = "section(#{p.title.text}, function ()\n" \
-          + gi + '{\n' \
-          + @indent + @nodes(p.exps, '\n'+@indent) \
-          + '\n' \
-          + gi + '})'
+        s = "section(#{p.title.text}, function ()\n"
+        s+= gi + '{\n'
+        s+= @indent + @nodes(p.exps, '\n'+@indent) + '\n' if valid p.exps
+        s+= gi + '})'
         @ded()
         s
         

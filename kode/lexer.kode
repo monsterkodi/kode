@@ -85,11 +85,11 @@ class Lexer
                         key == 'test'
                             if not tokens[-2]? or tokens[-2].type == 'nl' or tokens[-2].type == 'ws' and tokens[-3]?.type == 'nl'
                                 end = text.indexOf '\n'
-                                end = -1 if end < 0
-                                txt = kstr.strip text[1..end], ' \n'
+                                end = text.length if end < 0
+                                txt = kstr.strip text[1...end]
                                 tokens[-1].type = 'section'
                                 tokens[-1].text = txt
-                                text = text[end..]
+                                if end >= text.length then text = '' else text = text[end..]
                                 break
                             else
                                 tokens[-1].type = 'op'
