@@ -232,9 +232,9 @@ function Parse # the base class of Parser
         
         switch tok.type
             
-            when 'block'    then return error "INTERNAL ERROR: unexpected block token in exp!"
-            when 'nl'       then return error "INTERNAL ERROR: unexpected nl token in exp!"
-            when ';'        then return error "INTERNAL ERROR: unexpected ; token in exp!"
+            when 'block'    then print.tokens 'ERROR: unexpected block' [tok].concat tokens; return error "INTERNAL ERROR: unexpected block token in exp!"
+            when 'nl'       then print.tokens 'ERROR: unexpected nl'    [tok].concat tokens; return error "INTERNAL ERROR: unexpected nl token in exp!"
+            when ';'        then print.tokens 'ERROR: unexpected ;'     [tok].concat tokens; return error "INTERNAL ERROR: unexpected ; token in exp!"
             when 'section'  then return @section tok, tokens                
             when 'keyword' # dispatch to block rules identified by keyword
                 

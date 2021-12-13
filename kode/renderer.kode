@@ -199,7 +199,7 @@ class Renderer
     
     fixAsserts: (s) ->
 
-        @verb 'fixAsserts' s
+        # @verb 'fixAsserts' s
         
         return '' if not s? or s.length == 0
         return s if s in ['▾' "'▾'" '"▾"']

@@ -340,9 +340,12 @@ function Parser extends Parse
             @push 'catch'
 
             tokens.shift()
+            
+            if tokens[0].type != 'block'
+                errr = @exp tokens
         
             ctch = 
-                errr: @exp tokens
+                errr: errr
                 exps: @block 'body' tokens
         
             @pop  'catch'

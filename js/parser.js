@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.96.0
+// monsterkodi/kode 0.97.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
@@ -225,7 +225,7 @@ Parser = (function ()
 
     Parser.prototype["try"] = function (tok, tokens)
     {
-        var exps, ctch, fnlly
+        var exps, errr, ctch, fnlly
 
         this.push('try')
         exps = this.block('body',tokens)
@@ -234,7 +234,11 @@ Parser = (function ()
         {
             this.push('catch')
             tokens.shift()
-            ctch = {errr:this.exp(tokens),exps:this.block('body',tokens)}
+            if (tokens[0].type !== 'block')
+            {
+                errr = this.exp(tokens)
+            }
+            ctch = {errr:errr,exps:this.block('body',tokens)}
             this.pop('catch')
             this.shiftNewlineTok('try catch end',tokens,tok,(tokens[1] != null ? tokens[1].text : undefined) === 'finally')
         }
