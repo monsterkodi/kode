@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.93.0
+// monsterkodi/kode 0.96.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
@@ -740,10 +740,6 @@ Parse = (function ()
                     if (((m.keyval.val != null ? m.keyval.val.func : undefined) != null))
                     {
                         m.keyval.val.func.name = {type:'name',text:name}
-                    }
-                    else
-                    {
-                        console.log('no function for method?',name,m)
                     }
                 }
             }

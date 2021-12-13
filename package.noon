@@ -9,7 +9,7 @@ scripts
               build0    kode kode/*.kode -Ho stage0 && kode kode/test/*.kode -Ho stage0/test
               build1    k0de kode/*.kode -Ho stage1 && k0de kode/test/*.kode -Ho stage1/test
               testage   k1de -t kode/test/*.kode
-              unstage   cp stage1/*.js js && cp stage1/test/*.js js/test
+              unstage   cp stage1/*.js js
 author        monsterkodi
 license       Unlicense
 dependencies
