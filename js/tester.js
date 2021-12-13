@@ -128,6 +128,10 @@ class Tester
 
     showSpace (s)
     {
+        if (typeof(s) !== 'string')
+        {
+            return s
+        }
         return s.split('\n').map(function (l)
         {
             return l + w2('◂')
