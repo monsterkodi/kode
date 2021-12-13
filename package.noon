@@ -1,7 +1,9 @@
 name          kode
-version       0.97.0
+version       0.98.0
 description   programming language
 main          js/kode.js
+bin 
+              kode      bin/kode
 scripts
               test      kode -t kode/test/*.kode
               watch     kode -wt kode/test/*.kode
