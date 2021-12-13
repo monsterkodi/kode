@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.104.0
+// monsterkodi/kode 0.107.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -412,8 +412,7 @@ class Renderer
         mthds = n.body
         if ((mthds != null ? mthds.length : undefined))
         {
-            con = this.prepareMethods(mthds)[0]
-            bind = this.prepareMethods(mthds)[1]
+            [con,bind] = this.prepareMethods(mthds)
 
             if (bind.length)
             {
@@ -504,8 +503,7 @@ class Renderer
         mthds = n.body
         if ((mthds != null ? mthds.length : undefined))
         {
-            con = this.prepareMethods(mthds)[0]
-            bind = this.prepareMethods(mthds)[1]
+            [con,bind] = this.prepareMethods(mthds)
 
             if (bind.length)
             {
@@ -630,8 +628,7 @@ class Renderer
         args = ((_481_21_=n.args) != null ? (_481_29_=_481_21_.parens) != null ? _481_29_.exps : undefined : undefined)
         if (args)
         {
-            str = this.args(args)[0]
-            ths = this.args(args)[1]
+            [str,ths] = this.args(args)
 
             s += str
         }
@@ -1257,7 +1254,7 @@ ${i}})(${this.node(n.lhs)})
 
     operation (op)
     {
-        var opmap, o, sep, ro, _1070_40_, _1070_29_, open, close, s, keyval, val, i, _1094_25_, _1094_64_, _1094_54_, _1094_43_, _1104_29_, _1104_18_, first, prfx, _1109_43_
+        var opmap, o, sep, ro, _1070_40_, _1070_29_, open, close, s, keyval, _1094_25_, _1094_64_, _1094_54_, _1094_43_, _1104_29_, _1104_18_, first, prfx, _1109_43_
 
         opmap = function (o)
         {
@@ -1296,15 +1293,7 @@ ${i}})(${this.node(n.lhs)})
             }
             if (op.lhs.array)
             {
-                s = ''
-                var list1 = _k_.list(op.lhs.array.items)
-                for (var _1087_28_ = 0; _1087_28_ < list1.length; _1087_28_++)
-                {
-                    val = list1[_1087_28_]
-                    i = op.lhs.array.items.indexOf(val)
-                    s += (i && this.indent || '') + `${val.text} = ${this.atom(op.rhs)}[${i}]\n`
-                }
-                return s
+                return `${this.node(op.lhs)} = ${this.atom(op.rhs)}\n`
             }
         }
         else if (o === '!')

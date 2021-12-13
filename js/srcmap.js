@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.104.0
+// monsterkodi/kode 0.107.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
 
@@ -59,8 +59,7 @@ class SourceMap
         console.log(y5('solve'),this.jsline)
         for (ci = 0; ci < this.cache.length; ci++)
         {
-            cs = this.cache[ci][0]
-            tok = this.cache[ci][1]
+            [cs,tok] = this.cache[ci]
 
             while ((i = ln.indexOf(cs,p)) <= 0)
             {
@@ -119,8 +118,7 @@ class SourceMap
     {
         var line, column, _127_21_
 
-        line = target[0]
-        column = target[1]
+        ;[line,column] = target
 
         this.lines[line] = ((_127_21_=this.lines[line]) != null ? _127_21_ : new LineMap(line))
         return this.lines[line].add(column,source,jsstr)
@@ -247,8 +245,7 @@ class LineMap
     {
         var sourceLine, sourceColumn
 
-        sourceLine = srcloc[0]
-        sourceColumn = srcloc[1]
+        ;[sourceLine,sourceColumn] = srcloc
 
         if (this.columns[column])
         {
