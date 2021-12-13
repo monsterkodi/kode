@@ -13,6 +13,7 @@ comps = 0
 succs = 0
 fails = []
 stack = []
+allfails = []
 
 class Tester
 
@@ -98,22 +99,43 @@ class Tester
                 log G1 y8 ' ' + kstr.pad(k, 25) + ' '
                 v()
                 stack.pop()
-        
-        for fail in fails
-            log R2(y5 ' ' + fail.stack[0] + ' ') + R1 y5 ' ' + fail.stack[1..].join(r3 ' ▸ ') + ' '
-            log r5(fail.lhs) + b6(' ▸ ') 
-            log g3 fail.rhs
-            
-            if (''+fail.lhs).indexOf "[object Object]" >= 0
-                print.noon 'lhs' fail.lhs            
-            if "[object Object]" in ''+fail.rhs
-                print.noon 'rhs' fail.rhs
+                
+        # for fail in fails
+            # log R2(y5 ' ' + fail.stack[0] + ' ') + R1 y5 ' ' + fail.stack[1..].join(r3 ' ▸ ') + ' '
+            # log r5(fail.lhs) + b6(' ▸ ') 
+            # log g3 fail.rhs
+            # if (''+fail.lhs).indexOf "[object Object]" >= 0
+                # print.noon 'lhs' fail.lhs            
+            # if "[object Object]" in ''+fail.rhs
+                # print.noon 'rhs' fail.rhs
             
         if fails.length
             summary  = b6 succs+fails.length
             summary += g4(" ✔ ") + g3(succs) + ' ' if succs
             summary += R2 y2(' ❌ ') + y6(fails.length) + y3(' failures ') if valid fails
             log summary
+            
+        allfails = allfails.concat fails
+        
+    #  0000000  000   000  00     00  00     00   0000000   00000000   000  0000000  00000000  
+    # 000       000   000  000   000  000   000  000   000  000   000  000     000   000       
+    # 0000000   000   000  000000000  000000000  000000000  0000000    000    000    0000000   
+    #      000  000   000  000 0 000  000 0 000  000   000  000   000  000   000     000       
+    # 0000000    0000000   000   000  000   000  000   000  000   000  000  0000000  00000000  
+    
+    summarize: ->
+        
+        for fail in allfails
+            log R2(y5 ' ' + fail.stack[0] + ' ') + R1 y5 ' ' + fail.stack[1..].join(r3 ' ▸ ') + ' '
+            log r5(fail.lhs) + b6(' ▸ ') 
+            log g3 fail.rhs
+             
+            if (''+fail.lhs).indexOf "[object Object]" >= 0
+                print.noon 'lhs' fail.lhs            
+            if "[object Object]" in ''+fail.rhs
+                print.noon 'rhs' fail.rhs
+        
+        allfails = []
 
     #  0000000  000   000   0000000   00000000   000000000  
     # 000       000   000  000   000  000   000     000     

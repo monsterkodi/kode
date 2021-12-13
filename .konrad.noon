@@ -1,7 +1,9 @@
 ignore
     kode/.*\.noon
     \.konrad\.noon
-    kode/test
+    kode/test/
+    test\.kode
+    test\.coffee
     stage0
     stage1
     

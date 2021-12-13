@@ -66,6 +66,7 @@ class Returner
                     lst.assert              ➜ ins()
                     lst.stripol             ➜ ins()
                     lst.qmrkop              ➜ ins()
+                    lst.incond              ➜ ins()
                     lst.return              ➜ null
                     lst.while               ➜ null
                     lst.for                 ➜ null

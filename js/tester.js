@@ -1,8 +1,8 @@
-// monsterkodi/kode 0.97.0
+// monsterkodi/kode 0.99.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
-var kstr, print, comps, succs, fails, stack
+var kstr, print, comps, succs, fails, stack, allfails
 
 kstr = require('kstr')
 print = require('./print')
@@ -10,6 +10,7 @@ comps = 0
 succs = 0
 fails = []
 stack = []
+allfails = []
 class Tester
 {
     constructor (kode)
@@ -80,7 +81,7 @@ class Tester
 
     test (text, file)
     {
-        var g, tests, fail, summary
+        var g, tests, summary
 
         comps = 0
         succs = 0
@@ -109,22 +110,6 @@ class Tester
             }
             return typeof o == 'string' ? r.join('') : r
         })(tests)
-        var list = _k_.list(fails)
-        for (var _102_17_ = 0; _102_17_ < list.length; _102_17_++)
-        {
-            fail = list[_102_17_]
-            console.log(R2(y5(' ' + fail.stack[0] + ' ')) + R1(y5(' ' + fail.stack.slice(1).join(r3(' ▸ ')) + ' ')))
-            console.log(r5(fail.lhs) + b6(' ▸ '))
-            console.log(g3(fail.rhs))
-            if (('' + fail.lhs).indexOf("[object Object]" >= 0))
-            {
-                print.noon('lhs',fail.lhs)
-            }
-            if (_k_.in("[object Object]",'' + fail.rhs))
-            {
-                print.noon('rhs',fail.rhs)
-            }
-        }
         if (fails.length)
         {
             summary = b6(succs + fails.length)
@@ -138,6 +123,30 @@ class Tester
             }
             console.log(summary)
         }
+        return allfails = allfails.concat(fails)
+    }
+
+    summarize ()
+    {
+        var fail
+
+        var list = _k_.list(allfails)
+        for (var _128_17_ = 0; _128_17_ < list.length; _128_17_++)
+        {
+            fail = list[_128_17_]
+            console.log(R2(y5(' ' + fail.stack[0] + ' ')) + R1(y5(' ' + fail.stack.slice(1).join(r3(' ▸ ')) + ' ')))
+            console.log(r5(fail.lhs) + b6(' ▸ '))
+            console.log(g3(fail.rhs))
+            if (('' + fail.lhs).indexOf("[object Object]" >= 0))
+            {
+                print.noon('lhs',fail.lhs)
+            }
+            if (_k_.in("[object Object]",'' + fail.rhs))
+            {
+                print.noon('rhs',fail.rhs)
+            }
+        }
+        return allfails = []
     }
 
     short (s)

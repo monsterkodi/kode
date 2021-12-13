@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.97.0
+// monsterkodi/kode 0.99.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}}
 
@@ -99,6 +99,10 @@ class Returner
                 {
                     ins()
                 }
+                else if (lst.incond)
+                {
+                    ins()
+                }
                 else if (lst.return)
                 {
                     null
@@ -139,9 +143,9 @@ class Returner
         e.returns = true
         this.insert(e.then)
         var list = _k_.list(e.elifs)
-        for (var _89_15_ = 0; _89_15_ < list.length; _89_15_++)
+        for (var _90_15_ = 0; _90_15_ < list.length; _90_15_++)
         {
-            ei = list[_89_15_]
+            ei = list[_90_15_]
             if (ei.elif.then)
             {
                 this.insert(ei.elif.then)
@@ -167,9 +171,9 @@ class Returner
         var w
 
         var list = _k_.list(e.whens)
-        for (var _113_14_ = 0; _113_14_ < list.length; _113_14_++)
+        for (var _114_14_ = 0; _114_14_ < list.length; _114_14_++)
         {
-            w = list[_113_14_]
+            w = list[_114_14_]
             if (!_k_.empty(w.when.then))
             {
                 this.insert(w.when.then)
@@ -183,7 +187,7 @@ class Returner
 
     insert (e)
     {
-        var lst, _133_50_, _133_42_
+        var lst, _134_50_, _134_42_
 
         if (e instanceof Array)
         {
@@ -204,7 +208,7 @@ class Returner
             {
                 return
             }
-            if (!(lst.return || _k_.in(((_133_42_=lst.call) != null ? (_133_50_=_133_42_.callee) != null ? _133_50_.text : undefined : undefined),['log','throw'])))
+            if (!(lst.return || _k_.in(((_134_42_=lst.call) != null ? (_134_50_=_134_42_.callee) != null ? _134_50_.text : undefined : undefined),['log','throw'])))
             {
                 return e.push({return:{ret:{type:'keyword',text:'return'},val:e.pop()}})
             }
@@ -228,9 +232,9 @@ class Returner
             if (e.length)
             {
                 var list = _k_.list(e)
-                for (var _151_50_ = 0; _151_50_ < list.length; _151_50_++)
+                for (var _152_50_ = 0; _152_50_ < list.length; _152_50_++)
                 {
-                    v = list[_151_50_]
+                    v = list[_152_50_]
                     this.exp(v)
                 }
             }
@@ -257,9 +261,9 @@ class Returner
                             if (val instanceof Array)
                             {
                                 var list1 = _k_.list(val)
-                                for (var _162_49_ = 0; _162_49_ < list1.length; _162_49_++)
+                                for (var _163_49_ = 0; _163_49_ < list1.length; _163_49_++)
                                 {
-                                    v = list1[_162_49_]
+                                    v = list1[_163_49_]
                                     this.exp(v)
                                 }
                             }
