@@ -153,7 +153,7 @@
                 
         ▸ binary
         
-            kc "f a|b, x | y, c|d | e| f" ▸ 'f(a|b, x|y, c|d|e|f)'
+            kc "f a|b, x | y, c|d | e| f" ▸ 'f(a | b,x | y,c | d | e | f)'
 
         # 000   000   0000000   000000000  
         # 0000  000  000   000     000     

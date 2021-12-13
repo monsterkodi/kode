@@ -20,26 +20,6 @@ class Renderer
         @debug   = @kode.args?.debug
         @verbose = @kode.args?.verbose
         
-    # 000   000  00000000   0000000   0000000    00000000  00000000   
-    # 000   000  000       000   000  000   000  000       000   000  
-    # 000000000  0000000   000000000  000   000  0000000   0000000    
-    # 000   000  000       000   000  000   000  000       000   000  
-    # 000   000  00000000  000   000  0000000    00000000  000   000  
-    
-    header: ->
-        
-        k = """
-            list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}
-            empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}
-            in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}
-            extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}
-            each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}
-            """
-        
-        ks = k.split('\n').join ', '      
-            
-        "var _k_ = {#{ks}}\n\n"
-
     # 00000000   00000000  000   000  0000000    00000000  00000000   
     # 000   000  000       0000  000  000   000  000       000   000  
     # 0000000    0000000   000 0 000  000   000  0000000   0000000    
@@ -51,7 +31,7 @@ class Renderer
         # if @kode.args.map and source
             # @srcmap = new SrcMap source
         
-        @hint = {}
+        @hint = _k_:{}
         @varstack = [ast.vars]
         @indent = ''
 
@@ -60,7 +40,7 @@ class Renderer
         if @kode.args.header
             s += @js "// monsterkodi/kode #{@kode.version}\n\n" true
             
-        s += @js @header(), true
+        s += @js "var _k_\n\n", true
         
         if valid ast.vars
             vs = (v.text for v in ast.vars).join ', '
@@ -76,13 +56,40 @@ class Renderer
             sm = @srcmap.generate s
             print.noon sm
             s += @srcmap.jscode sm
+            
+        s = @header s
+            
         s
-
+        
     js: (s, tl) => 
     
         @srcmap?.commit s, tl
         s
         
+    # 000   000  00000000   0000000   0000000    00000000  00000000   
+    # 000   000  000       000   000  000   000  000       000   000  
+    # 000000000  0000000   000000000  000   000  0000000   0000000    
+    # 000   000  000       000   000  000   000  000       000   000  
+    # 000   000  00000000  000   000  0000000    00000000  000   000  
+    
+    header: (s) ->
+        if empty Object.keys @hint._k_
+            return s
+
+        kf = 
+            list:   "function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}"
+            empty:  "function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}"
+            in:     "function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}"
+            extend: "function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}"
+            each_r: "function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}"
+        
+        hr = @hint._k_ each (k,v) -> if v then [k, "#{k}: #{kf[k]}"]
+        ks = Object.values(hr).join ', '
+        ht = "var _k_ = {#{ks}}\n\n"
+
+        s = s.replace "var _k_\n\n" ht
+        s
+                
     # 000   000   0000000   0000000    00000000   0000000  
     # 0000  000  000   000  000   000  000       000       
     # 000 0 000  000   000  000   000  0000000   0000000   
@@ -358,6 +365,7 @@ class Renderer
 
         if n.extends
             for e in n.extends
+                @hint._k_.extend = true
                 s += "    _k_.extend(#{n.name.text}, #{e.text});"
             s += '\n'
 
@@ -663,6 +671,7 @@ class Renderer
         
         i = @indent
         if numArgs == 1
+            @hint._k_.each_r = true
             @ind()
             fnc = @node n.fnc
             @ded()
@@ -681,6 +690,7 @@ class Renderer
             #{i}})(#{@node n.lhs})
             """
         else if numArgs
+            @hint._k_.each_r = true
             @ind()
             fnc = @node n.fnc
             @ded()            
@@ -701,6 +711,7 @@ class Renderer
             
         else # no args
             if n.fnc.func.body.exps?.length > 0 # some func but no args
+                @hint._k_.each_r = true
                 @ind()
                 fnc = @node n.fnc
                 @ded()            
@@ -748,6 +759,7 @@ class Renderer
     for_in: (n, varPrefix='', lastPrefix='', lastPostfix='', lineBreak) ->
 
         if not n.list.qmrkop and not n.list.array and not n.list.slice
+            @hint._k_.list = true
             list = "_k_.list(#{@atom n.list})"
         else
             if n.list.array?.items[0]?.slice or n.list.slice
@@ -1084,6 +1096,8 @@ class Renderer
                         close = ')'
                         
             op.operator.text in ['empty' 'valid']
+                @hint._k_.empty = true
+                @hint._k_.valid = true if op.operator.text == 'valid'
                 open = '('
                 close = ')'
                             
@@ -1103,7 +1117,8 @@ class Renderer
     # 000  000   000   0000000   0000000   000   000  0000000
 
     incond: (p) ->
-
+        
+        @hint._k_.in = true
         "_k_.in(#{@atom p.lhs},#{@atom p.rhs})"
 
     # 00000000    0000000   00000000   00000000  000   000   0000000
