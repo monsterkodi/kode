@@ -25,7 +25,21 @@
         module.exports
         
         """
-    
+
+    kc  """
+        ▸ test
+            typeof a       ▸ 'function'
+        """ ▸
+        """
+        module.exports["test"] = function ()
+        {
+            compare(typeof(a),'function')
+        }
+        module.exports["test"]._section_ = true
+        module.exports
+        
+        """
+        
     kc  """
         ▸ test
             f a, b:true ▸ xxx

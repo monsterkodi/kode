@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.122.0
+// monsterkodi/kode 0.123.0
 
 var _k_ = {extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -319,7 +319,7 @@ Parser = (function ()
 
     Parser.prototype["call"] = function (tok, tokens, qmrk)
     {
-        var last, open, args, name, close, e
+        var last, open, args, close, e
 
         this.push('call')
         if (tok.token)
@@ -345,13 +345,14 @@ Parser = (function ()
         {
             if (tok.type === 'keyword' && _k_.in(tok.text,['typeof','delete']))
             {
-                name = 'arg'
+                this.push('▸arg')
+                args = [this.exp(tokens)]
+                this.pop('▸arg')
             }
             else
             {
-                name = 'args'
+                args = this.block('args',tokens)
             }
-            args = this.block(name,tokens)
         }
         if (open)
         {

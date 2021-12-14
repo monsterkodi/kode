@@ -457,11 +457,11 @@ function Parser extends Parse
                 @pop 'args('
         else
             if tok.type == 'keyword' and tok.text in ['typeof' 'delete']
-                name = 'arg'
+                @push '▸arg'
+                args = [@exp tokens]
+                @pop  '▸arg'
             else
-                name = 'args'
-            
-            args = @block name, tokens
+                args = @block 'args', tokens
 
         if open 
             if tokens[0]?.text == ')'

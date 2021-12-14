@@ -333,7 +333,7 @@ function Parse # the base class of Parser
             if nxt.text in '({' and e.type in @kode.literals
                 break
                 
-            if nxt.text == '▸' then break
+            if nxt.text == '▸' then @verb 'rhs break for ▸'; break
             
             if @stack[-1] == '▸arg' and nxt.type == 'op' then @verb 'rhs break for ▸arg'; break
            
