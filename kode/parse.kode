@@ -175,7 +175,7 @@ function Parse # the base class of Parser
                     when 'while' then e = @whileTail e, tokens.shift(), tokens
             
             if tokens[0]?.text == '▸'
-                if @stack[-1] in ['▸args']
+                if @stack[-1] in ['▸args' '{']
                     es.push e
                     break
                 else
