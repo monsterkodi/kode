@@ -160,6 +160,11 @@ function Parse # the base class of Parser
                         @verb 'exps comma followed by block ...'
                         tokens = tokens.shift().tokens
                     continue
+                    
+            if tok.text == ';' and tokens[1]?.text != ':'
+                @verb "exps shift semicolon ; and continue..."
+                tokens.shift()
+                continue
                 
             e = @exp tokens
             last = lastLineCol e
