@@ -111,6 +111,8 @@ class Renderer
                 stripped = kstr.lstrip a
                 if stripped[0] in '([' then a = ';'+a
                 else if stripped.startsWith 'function' then a = "(#{a})"
+                
+            # if kstr.lstrip(a)[0] in '([' then log "prefix with ;?", sep, a
             
             a += if i<nodes.length-1 then sep else ''
             @js a, tl if tl
@@ -915,8 +917,9 @@ class Renderer
         s = ''
         s += "while (#{@atom n.cond})\n"
         s += gi+"{\n"
-        for e in n.then
-            s += @indent + @node(e) + '\n'
+        # for e in n.then
+            # s += @indent + @node(e) + '\n'
+        s += @indent + @nodes(n.then, '\n'+@indent) + '\n' if valid n.then
         s += gi+"}"
 
         @ded()
