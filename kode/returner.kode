@@ -61,6 +61,7 @@ class Returner
                     lst.func                ➜ ins()
                     lst.array               ➜ ins()
                     lst.prop                ➜ ins()
+                    lst.each                ➜ ins()
                     lst.index               ➜ ins()
                     lst.object              ➜ ins()
                     lst.assert              ➜ ins()
