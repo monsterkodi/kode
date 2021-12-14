@@ -332,6 +332,8 @@ function Parse # the base class of Parser
 
             if nxt.text in '({' and e.type in @kode.literals
                 break
+                
+            if nxt.text == '▸' then break
             
             if @stack[-1] == '▸arg' and nxt.type == 'op' then @verb 'rhs break for ▸arg'; break
            
@@ -349,10 +351,14 @@ function Parse # the base class of Parser
                 else
                     @verb 'rhs is key of (implicit) object' e
                     e = @keyval e, tokens
+                    
             else if nxt.text == 'in' and @stack[-1] != 'for'
+                
                 @verb 'incond' e, tokens
                 e = @incond e, tokens
+                
             else if e.text?
+                
                 if      e.text == '['   then e = @array           e, tokens
                 else if e.text == '('   then e = @parens          e, tokens
                 else if e.text == '{'   then e = @curly           e, tokens                

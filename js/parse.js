@@ -394,7 +394,7 @@ Parse = (function ()
 
     Parse.prototype["rhs"] = function (e, tokens)
     {
-        var nxt, numTokens, unspaced, llc, spaced, _355_26_
+        var nxt, numTokens, unspaced, llc, spaced, _360_26_
 
         this.sheapPush('rhs','rhs')
         while (nxt = tokens[0])
@@ -407,6 +407,10 @@ Parse = (function ()
             unspaced = (llc = lastLineCol(e)).col === nxt.col && llc.line === nxt.line
             spaced = !unspaced
             if (_k_.in(nxt.text,'({') && _k_.in(e.type,this.kode.literals))
+            {
+                break
+            }
+            if (nxt.text === '▸')
             {
                 break
             }
@@ -553,7 +557,7 @@ Parse = (function ()
 
     Parse.prototype["lhs"] = function (e, tokens)
     {
-        var nxt, numTokens, last, first, unspaced, spaced, b, _517_38_, _517_30_
+        var nxt, numTokens, last, first, unspaced, spaced, b, _523_38_, _523_30_
 
         this.sheapPush('lhs','lhs')
         while (nxt = tokens[0])
@@ -670,7 +674,7 @@ Parse = (function ()
             {
                 e = {operation:{operator:tokens.shift(),rhs:this.incond(e,tokens)}}
             }
-            else if ((spaced && (nxt.line === last.line || (nxt.col > first.col && !(_k_.in(this.stack.slice(-1)[0],['if'])))) && !(_k_.in(nxt.text,['if','then','else','break','continue','in','of','for','while'])) && !(_k_.in(nxt.type,['nl'])) && (!(_k_.in(e.type,this.kode.literals))) && (!(_k_.in(e.type,['punct','comment','op','section','test','func']))) && (!(_k_.in(e.text,['null','undefined','Infinity','NaN','if','then','else','for','while']))) && !e.array && !e.object && !e.keyval && !e.operation && !e.incond && !e.qmrkop && !(_k_.in(((_517_30_=e.call) != null ? (_517_38_=_517_30_.callee) != null ? _517_38_.text : undefined : undefined),['delete','new','typeof'])) && !(_k_.in('▸arg',this.stack))))
+            else if ((spaced && (nxt.line === last.line || (nxt.col > first.col && !(_k_.in(this.stack.slice(-1)[0],['if'])))) && !(_k_.in(nxt.text,['if','then','else','break','continue','in','of','for','while'])) && !(_k_.in(nxt.type,['nl'])) && (!(_k_.in(e.type,this.kode.literals))) && (!(_k_.in(e.type,['punct','comment','op','section','test','func']))) && (!(_k_.in(e.text,['null','undefined','Infinity','NaN','if','then','else','for','while']))) && !e.array && !e.object && !e.keyval && !e.operation && !e.incond && !e.qmrkop && !(_k_.in(((_523_30_=e.call) != null ? (_523_38_=_523_30_.callee) != null ? _523_38_.text : undefined : undefined),['delete','new','typeof'])) && !(_k_.in('▸arg',this.stack))))
             {
                 this.verb('lhs is lhs of implicit call! e',e,this.stack.slice(-1)[0])
                 this.verb('    is lhs of implicit call! nxt',nxt)
@@ -739,15 +743,15 @@ Parse = (function ()
 
     Parse.prototype["nameMethods"] = function (mthds)
     {
-        var m, name, _596_39_, _596_34_, _597_41_, _597_35_
+        var m, name, _602_39_, _602_34_, _603_41_, _603_35_
 
         if ((mthds != null ? mthds.length : undefined))
         {
             var list = _k_.list(mthds)
-            for (var _595_18_ = 0; _595_18_ < list.length; _595_18_++)
+            for (var _601_18_ = 0; _601_18_ < list.length; _601_18_++)
             {
-                m = list[_595_18_]
-                if (name = ((_596_34_=m.keyval) != null ? (_596_39_=_596_34_.key) != null ? _596_39_.text : undefined : undefined))
+                m = list[_601_18_]
+                if (name = ((_602_34_=m.keyval) != null ? (_602_39_=_602_34_.key) != null ? _602_39_.text : undefined : undefined))
                 {
                     if (((m.keyval.val != null ? m.keyval.val.func : undefined) != null))
                     {
