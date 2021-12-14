@@ -142,7 +142,7 @@ class Kode
             return
             
         if @args.eval
-            log @eval @args.eval
+            log @eval @args.eval, 'eval', global
             return
 
         return if not @args.files.length
@@ -167,7 +167,7 @@ class Kode
             else if @args.test
                 @tester.test text, file
             else if @args.run
-                log @eval text, file
+                log @eval text, file, global
             else
                 log @compile text
                 
@@ -200,7 +200,7 @@ class Kode
             @tester.test text, file
             @tester.summarize()
         else if @args.run
-            log @eval text, file
+            log @eval text, file, global
             
 # 00     00   0000000   000  000   000
 # 000   000  000   000  000  0000  000

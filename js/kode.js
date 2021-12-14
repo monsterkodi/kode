@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.112.0
+// monsterkodi/kode 0.113.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -186,7 +186,7 @@ class Kode
         }
         if (this.args.eval)
         {
-            console.log(this.eval(this.args.eval))
+            console.log(this.eval(this.args.eval,'eval',global))
             return
         }
         if (!this.args.files.length)
@@ -228,7 +228,7 @@ class Kode
             }
             else if (this.args.run)
             {
-                console.log(this.eval(text,file))
+                console.log(this.eval(text,file,global))
             }
             else
             {
@@ -273,7 +273,7 @@ class Kode
         }
         else if (this.args.run)
         {
-            console.log(this.eval(text,file))
+            console.log(this.eval(text,file,global))
         }
     }
 }
