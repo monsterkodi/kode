@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.118.0
+// monsterkodi/kode 0.119.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -1116,7 +1116,7 @@ ${i}})(${this.node(n.lhs)})
 
         gi = this.ind()
         s = ''
-        s += `while (${this.node(n.cond)})\n`
+        s += `while (${this.atom(n.cond)})\n`
         s += gi + "{\n"
         var list = _k_.list(n.then)
         for (var _918_14_ = 0; _918_14_ < list.length; _918_14_++)

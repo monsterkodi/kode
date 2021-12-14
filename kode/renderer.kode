@@ -913,7 +913,7 @@ class Renderer
         gi = @ind()
 
         s = ''
-        s += "while (#{@node n.cond})\n"
+        s += "while (#{@atom n.cond})\n"
         s += gi+"{\n"
         for e in n.then
             s += @indent + @node(e) + '\n'

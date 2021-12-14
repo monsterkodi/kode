@@ -22,6 +22,9 @@
         kc  "a.b.c?"                ▸   ";(a.b.c != null)"
         kc  "a.b().c?"              ▸   ";(a.b().c != null)"
         kc  "if a.b().c?"           ▸   "if ((a.b().c != null))\n{\n}"
+        kc  "while l?"              ▸   "while ((l != null))\n{\n}"
+        kc  "while l?.a"            ▸   "while ((l != null ? l.a : undefined))\n{\n}"
+        
         kc  "@m?"                   ▸   ";(this.m != null)"
         
         kc  "-> m?" ▸
