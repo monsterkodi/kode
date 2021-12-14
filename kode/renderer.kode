@@ -1090,11 +1090,13 @@ class Renderer
                     return s
                     
                 if op.lhs.array # lhs is aray, eg. [x,y] = require ''
-                    # s = ''
-                    # for val in op.lhs.array.items
-                        # i = op.lhs.array.items.indexOf val
-                        # s += (i and @indent or '') + "#{val.text} = #{@atom(op.rhs)}[#{i}]\n"
-                    return "#{@node(op.lhs)} = #{@atom(op.rhs)}\n"
+                    v = "_#{op.operator.line}_#{op.operator.col}_"
+                    s = "var #{v} = #{@atom(op.rhs)} "
+                    for val in op.lhs.array.items
+                        i = op.lhs.array.items.indexOf val
+                        s += (i and @indent or '') + "; #{val.text} = #{v}[#{i}]"
+                    return s + '\n'
+                    # return "#{@node(op.lhs)} = #{@atom(op.rhs)}\n"
                 
             o == '!'
 
