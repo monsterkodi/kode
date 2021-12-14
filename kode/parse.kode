@@ -76,7 +76,7 @@ function Parse # the base class of Parser
                 'if' 'then' 
                 '▸else'         ➜ tok.text == 'else'
                 '['             ➜ tok.text == ']'  
-                '{'             ➜ tok.text in ['}' '->' '=>' '(']
+                '{'             ➜ tok.text in ['}' '->' '=>' '(' '▸']
                 '('             ➜ tok.text == ')'
                 '▸args'         ➜ tok.text in [']' ';' 'else' 'then']
                 '▸return'       ➜ tok.text == 'if'

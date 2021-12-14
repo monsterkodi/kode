@@ -27,6 +27,20 @@
         """
     
     kc  """
+        ▸ test
+            f a, b:true ▸ xxx
+        """ ▸
+        """
+        module.exports["test"] = function ()
+        {
+            compare(f(a,{b:true}),xxx)
+        }
+        module.exports["test"]._section_ = true
+        module.exports
+        
+        """
+        
+    kc  """
         ▸ t3
             ▸ sub
                 
