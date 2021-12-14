@@ -504,10 +504,6 @@ class Renderer
         if valid n.body.exps
 
             s += '\n'
-            # ss = n.body.exps.map (s) => @node s
-            # ss = ss.map (s) => @indent + s
-            # s += ss.join '\n'
-            
             s += @indent + @nodes n.body.exps, '\n'+@indent
             s += '\n' + gi
 
@@ -1113,6 +1109,16 @@ class Renderer
             op.rhs?.operation?.operator.text == '='
                 open = '('
                 close = ')'
+                
+            op.operator.text == 'is'
+                if op.rhs?.type in ['single' 'double' 'triple']
+                    return "typeof(#{@atom op.lhs}) == #{@node op.rhs}"
+                else
+                    if op.rhs.text == 'num'
+                        lhs = @atom op.lhs
+                        return "!isNaN(#{lhs}) && !isNaN(parseFloat(#{lhs})) && isFinite(#{lhs})"
+                    else
+                        return "#{@atom op.lhs} instanceof #{@atom op.rhs}"
             
         first = firstLineCol op.lhs
         prfx = if first.col == 0 and op.rhs?.func then '\n' else ''

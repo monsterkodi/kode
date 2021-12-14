@@ -102,11 +102,29 @@ switch x
     else            Z
 ```
 
+## Is
+
+```coffeescript
+1 is 'number' and '' is 'string' and {} is Object and [] is Array # -> true
+1 is Number or '' is String or [] is 'array'                      # -> false
+```
+
+`is` a shortcut for `typeof` and `instanceof`. 
+The first is used, when the right hand side is a string.
+
+### is num
+
+```coffeescript
+"0xFF" is num and "-4.536" is num       ->  true
+```
+
+The special keyword `num` does a string coersion via `parseFloat` in the test.
+
 ## Empty
 
 ```coffeescript
 empty [] and empty {} and empty '' and empty null and empty NaN  # -> true
-empty 0 or empty 'a' or empty [null] or empty or empty Infinity  # -> false
+empty 0 or empty 'a' or empty [null] or empty Infinity           # -> false
 ```
 
 Returns `true` for null, undefined, NaN and empty array, object or string.
@@ -132,6 +150,9 @@ A new object, array or string is build from the results and returned:
 [1,3]     each (i,v) -> [1-i,v*v]    # -> [9,1]
 {a:1,b:3} each (k,v) -> ['▸'+k, k+v] # -> { '▸a': 'a1', '▸b': 'b3' }
 ```
+
+If the function expects only one argument, 
+it is the value/item/character and a single return value is expected.
 
 ## For
 

@@ -12,7 +12,12 @@ kode = -> new Kode()
 module.exports = 
             
     ast:(c,p) -> kode().astr c, no
-    ke: (c)   -> kode().eval(c)
+    ke: (c)   -> 
+        try
+            kode().eval(c)
+        catch err
+            log c
+            log err
     kc: (c,p) -> 
         k = kode().compile c
         if k.startsWith '// monsterkodi/kode'   then k = k[k.indexOf('\n')+2..]

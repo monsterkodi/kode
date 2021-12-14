@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.123.0
+// monsterkodi/kode 0.124.0
 
 var _k_ = {each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined}
 
@@ -97,7 +97,15 @@ class Tester
         fails = []
         stack = []
         g = {compare:this.compare,section:this.section}
-        tests = this.kode.eval(text,file,g)
+        try
+        {
+            tests = this.kode.eval(text,file,g)
+        }
+        catch (err)
+        {
+            console.error(text)
+            console.error(err)
+        }
         ;        (function (o) {
             var r = _k_.each_r(o)
             for (var k in o)
@@ -140,9 +148,9 @@ class Tester
         var fail, summary
 
         var list = _k_.list(allfails)
-        for (var _121_17_ = 0; _121_17_ < list.length; _121_17_++)
+        for (var _125_17_ = 0; _125_17_ < list.length; _125_17_++)
         {
-            fail = list[_121_17_]
+            fail = list[_125_17_]
             console.log(R2(y5(' ' + fail.stack[0] + ' ')) + R1(y5(' ' + fail.stack.slice(1).join(r3(' ▸ ')) + ' ')))
             console.log(r5(this.showSpace(fail.lhs)))
             console.log(R1(r3(' ▸ ')))

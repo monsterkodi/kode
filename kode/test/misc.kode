@@ -285,6 +285,72 @@
         ke  "valid 'a' or valid ''"     ▸   true
         ke  "valid 'a' and empty ''"    ▸   true
         
+    # 000   0000000  
+    # 000  000       
+    # 000  0000000   
+    # 000       000  
+    # 000  0000000   
+    
+    ▸ is
+    
+        ke '1 is "number"'              ▸   true
+        ke 'a = {} is Object'           ▸   true
+        ke 'a = {} is "object"'         ▸   true
+        ke '(->) is "function"'         ▸   true
+        ke '[] is "object"'             ▸   true
+        ke '[] is Array'                ▸   true
+        ke '"" is "string"'             ▸   true
+        ke '(new String "") is String'  ▸   true
+        ke '(new Number 0) is Number'   ▸   true
+        
+        ke  """
+            class A
+            class B extends A
+            a = new B
+            a is B and a is A and a is 'object'
+            """ ▸ true
+            
+        ke '"" is String'               ▸   false
+        ke '1 is Number'                ▸   false
+        
+        ▸ num
+            # https://stackoverflow.com/questions/18082/validate-decimal-numbers-in-javascript-isnumeric/174921#174921
+                
+            ke  'a = "-10" is num'                      ▸ true
+            ke  'a = "0" is num'                        ▸ true
+            ke  'a = "5" is num'                        ▸ true
+            ke  'a = -16 is num'                        ▸ true
+            ke  'a = 0 is num'                          ▸ true
+            ke  'a = 32 is num'                         ▸ true
+            ke  'a = "040" is num'                      ▸ true
+            ke  'a = 0144 is num'                       ▸ true
+            ke  'a = "0xFF" is num'                     ▸ true
+            ke  'a = 0xFFF is num'                      ▸ true
+            ke  'a = "-1.6" is num'                     ▸ true
+            ke  'a = "4.536" is num'                    ▸ true
+            ke  'a = -2.6 is num'                       ▸ true
+            ke  'a = 3.1415 is num'                     ▸ true
+            ke  'a = 8e5 is num'                        ▸ true
+            ke  'a = "123e-2" is num'                   ▸ true
+            ke  'a = "" is num'                         ▸ false
+            ke  'a = "        " is num'                 ▸ false
+            ke  'a = "\t\t" is num'                     ▸ false
+            ke  'a = "abcdefghijklm1234567890" is num'  ▸ false
+            ke  'a = "xabcdefx" is num'                 ▸ false
+            ke  'a = true is num'                       ▸ false
+            ke  'a = false is num'                      ▸ false
+            ke  'a = "bcfed5.2" is num'                 ▸ false
+            ke  'a = "7.2acdgs" is num'                 ▸ false
+            ke  'a = undefined is num'                  ▸ false
+            ke  'a = null is num'                       ▸ false
+            ke  'a = NaN is num'                        ▸ false
+            ke  'a = Infinity is num'                   ▸ false
+            ke  'a = Number.POSITIVE_INFINITY is num'   ▸ false
+            ke  'a = Number.NEGATIVE_INFINITY is num'   ▸ false
+            ke  'a = (new Date(2009, 1, 1)) is num'     ▸ false
+            ke  'a = (new Object()) is num'             ▸ false
+            ke  'a = (->) is num'                       ▸ false
+        
     # 000000000  000   000  00000000   00000000   0000000   00000000  
     #    000      000 000   000   000  000       000   000  000       
     #    000       00000    00000000   0000000   000   000  000000    

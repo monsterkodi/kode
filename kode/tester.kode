@@ -93,7 +93,11 @@ class Tester
         g = compare: @compare
             section: @section
         
-        tests = @kode.eval text, file, g
+        try
+            tests = @kode.eval text, file, g
+        catch err
+            error text
+            error err
 
         tests each (k,v) ->
 
