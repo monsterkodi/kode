@@ -184,8 +184,6 @@ class Kode
     
     onChange: (file) =>
 
-        log file
-        
         text = slash.readText file
 
         if empty text then error Y4 r2 "can't read #{R3 y5 file}"; return

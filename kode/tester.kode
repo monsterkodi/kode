@@ -130,8 +130,8 @@ class Tester
                 print.noon 'rhs' fail.rhs
         
         if allsuccs or fails.length
-            summary  = b6 allsuccs+allfails.length
-            summary += g4(" ✔ ") + g3(allsuccs) + ' ' if allsuccs
+            summary  = w2 kstr.now() + ' '
+            summary += g3(" ✔ ") + g1(allsuccs) + ' ' if allsuccs
             summary += R2 y2(' ❌ ') + y6(allfails.length) + y3(' failures ') if valid allfails
             log summary
 
