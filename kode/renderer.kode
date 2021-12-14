@@ -1092,7 +1092,6 @@ class Renderer
                         i = op.lhs.array.items.indexOf val
                         s += (i and @indent or '') + "; #{val.text} = #{v}[#{i}]"
                     return s + '\n'
-                    # return "#{@node(op.lhs)} = #{@atom(op.rhs)}\n"
                 
             o == '!'
 
