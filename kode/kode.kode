@@ -155,23 +155,18 @@ class Kode
 
             if empty text then error Y4 r2 "can't read #{R3 y5 file}"; continue
 
-            if @args.outdir
-                js  = @compile text, file
-                out = slash.resolve @args.outdir, slash.file file
-                out = slash.swapExt out, 'js'
-                if not slash.writeText out, js
-                    error R2 y3 "can't write #{R3 y6 out}"
-            else if @args.js
-                @compile text, file
-            else if @args.test
-                @tester.test text, file
-            else if @args.run
-                log @eval text, file, global
-            else
-                log @compile text
+            if 
+                @args.outdir
+                                js  = @compile text, file
+                                out = slash.resolve @args.outdir, slash.file file
+                                out = slash.swapExt out, 'js'
+                                if not slash.writeText out, js then error R2 y3 "can't write #{R3 y6 out}"
+                @args.js    ➜   @compile text, file
+                @args.test  ➜   @tester.test text, file
+                @args.run   ➜   log @eval text, file, global
+                            ➜   log @compile text
                 
-            if @args.watch
-                slash.watch file, @onChange
+            if @args.watch  ➜   slash.watch file, @onChange
                 
         if @args.test then @tester.summarize()
                 
@@ -187,17 +182,18 @@ class Kode
 
         if empty text then error Y4 r2 "can't read #{R3 y5 file}"; return
 
-        if @args.outdir
-            js  = @compile text, file
-            out = slash.resolve @args.outdir, slash.file file
-            out = slash.swapExt out, 'js'
-            if not slash.writeText out, js
-                error R2 y3 "can't write #{R3 y6 out}"
-        else if @args.test
-            @tester.test text, file
-            @tester.summarize()
-        else if @args.run
-            log @eval text, file, global
+        if 
+            @args.outdir
+                        js  = @compile text, file
+                        out = slash.resolve @args.outdir, slash.file file
+                        out = slash.swapExt out, 'js'
+                        if not slash.writeText out, js
+                            error R2 y3 "can't write #{R3 y6 out}"
+            @args.test
+                        @tester.test text, file
+                        @tester.summarize()
+            @args.run
+                        log @eval text, file, global
             
 # 00     00   0000000   000  000   000
 # 000   000  000   000  000  0000  000
