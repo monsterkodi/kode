@@ -62,13 +62,15 @@ class Operator
         if  
             not e       ➜ return
             e.type      ➜ return
-            e.operation ➜ @op e
+            e.operation ➜ @op e; @exp e.operation.rhs
             e is Array  ➜ @exp v for v in e if e.length
             e is Object
                 for key,val of e
                     if val
                         if val.operation then @op val
-                        else @exp v for k,v of val
+                        else
+                            @exp val
+                            # @exp v for k,v of val
                                     
     #  0000000   00000000   
     # 000   000  000   000  
@@ -89,6 +91,8 @@ class Operator
             
             p = chain.map (i) -> precedence i
                         
+            @logChain chain, p if @debug
+            
             for i in 1...p.length
                 if p[i] > p[i-1]
                     @fixPrec e, chain, p
@@ -115,7 +119,11 @@ class Operator
             if op.operator.text in ['=''+=''-=''*=''/=''%=''^=''&=''|=''&&=''||=']
                 @verb 'skip assignment'
                 return
-            
+
+            if e.operation.rhs?.operation?.operator.text in ['=''+=''-=''*=''/=''%=''^=''&=''|=''&&=''||=']
+                @verb 'skip rhs assignment'
+                return
+                
             @verb 'swap' precedence(e), precedence(e.operation.rhs)
             print.ast 'before swap' e if @debug
             

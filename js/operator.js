@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.126.0
+// monsterkodi/kode 0.128.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -120,7 +120,7 @@ class Operator
 
     exp (e)
     {
-        var v, key, val, k
+        var v, key, val
 
         if (!e)
         {
@@ -132,7 +132,8 @@ class Operator
         }
         else if (e.operation)
         {
-            return this.op(e)
+            this.op(e)
+            return this.exp(e.operation.rhs)
         }
         else if (e instanceof Array)
         {
@@ -159,11 +160,7 @@ class Operator
                     }
                     else
                     {
-                        for (k in val)
-                        {
-                            v = val[k]
-                            this.exp(v)
-                        }
+                        this.exp(val)
                     }
                 }
             }
@@ -172,7 +169,7 @@ class Operator
 
     op (e)
     {
-        var chain, c, _84_19_, p, i
+        var chain, c, _86_19_, p, i
 
         chain = [e]
         c = e.operation
@@ -187,6 +184,10 @@ class Operator
             {
                 return precedence(i)
             })
+            if (this.debug)
+            {
+                this.logChain(chain,p)
+            }
             for (i = 1; i < p.length; i++)
             {
                 if (p[i] > p[i - 1])
@@ -200,7 +201,7 @@ class Operator
 
     fixPrec (e, chain, p)
     {
-        var op, _111_52_, _111_91_, _111_81_, _111_70_, newlhs, newop, c, _142_27_
+        var op, _115_52_, _115_91_, _115_81_, _115_70_, _123_41_, _123_30_, newlhs, newop, c, _150_27_
 
         if (this.debug)
         {
@@ -209,7 +210,7 @@ class Operator
         if (precedence(e) < precedence(e.rhs))
         {
             op = e.operation
-            if (op.operator.text === 'not' && ((op.rhs != null ? op.rhs.incond : undefined) || _k_.in(((_111_70_=op.rhs) != null ? (_111_81_=_111_70_.operation) != null ? (_111_91_=_111_81_.operator) != null ? _111_91_.text : undefined : undefined : undefined),['=','+=','-=','*=','/=','%=','^=','&=','|=','&&=','||='])))
+            if (op.operator.text === 'not' && ((op.rhs != null ? op.rhs.incond : undefined) || _k_.in(((_115_70_=op.rhs) != null ? (_115_81_=_115_70_.operation) != null ? (_115_91_=_115_81_.operator) != null ? _115_91_.text : undefined : undefined : undefined),['=','+=','-=','*=','/=','%=','^=','&=','|=','&&=','||='])))
             {
                 this.verb('skip not in or not x ?=')
                 return
@@ -217,6 +218,11 @@ class Operator
             if (_k_.in(op.operator.text,['=','+=','-=','*=','/=','%=','^=','&=','|=','&&=','||=']))
             {
                 this.verb('skip assignment')
+                return
+            }
+            if (_k_.in(((_123_30_=e.operation.rhs) != null ? (_123_41_=_123_30_.operation) != null ? _123_41_.operator.text : undefined : undefined),['=','+=','-=','*=','/=','%=','^=','&=','|=','&&=','||=']))
+            {
+                this.verb('skip rhs assignment')
                 return
             }
             this.verb('swap',precedence(e),precedence(e.operation.rhs))
@@ -251,7 +257,7 @@ class Operator
 
     logChain (chain, p)
     {
-        var s, rndr, _158_49_
+        var s, rndr, _166_49_
 
         s = ''
         rndr = (function (n)
@@ -269,7 +275,7 @@ class Operator
         {
             return (rndr(i.operation.lhs)) + ' ' + w3(i.operation.operator.text) + ' ' + b6(precedence(i))
         }).bind(this)).join(' ')
-        s += ' ' + ((_158_49_=rndr(chain.slice(-1)[0].operation.rhs)) != null ? _158_49_ : '...')
+        s += ' ' + ((_166_49_=rndr(chain.slice(-1)[0].operation.rhs)) != null ? _166_49_ : '...')
         console.log(w4('▪'),s,g3(p))
     }
 
