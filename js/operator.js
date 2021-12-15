@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.125.0
+// monsterkodi/kode 0.126.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
 var precedence, print
 
@@ -200,26 +200,58 @@ class Operator
 
     fixPrec (e, chain, p)
     {
+        var op, _111_52_, _111_91_, _111_81_, _111_70_, newlhs, newop, c, _142_27_
+
         if (this.debug)
         {
             this.logChain(chain,p,precedence(e),precedence(e.rhs))
         }
         if (precedence(e) < precedence(e.rhs))
         {
+            op = e.operation
+            if (op.operator.text === 'not' && ((op.rhs != null ? op.rhs.incond : undefined) || _k_.in(((_111_70_=op.rhs) != null ? (_111_81_=_111_70_.operation) != null ? (_111_91_=_111_81_.operator) != null ? _111_91_.text : undefined : undefined : undefined),['=','+=','-=','*=','/=','%=','^=','&=','|=','&&=','||='])))
+            {
+                this.verb('skip not in or not x ?=')
+                return
+            }
+            if (_k_.in(op.operator.text,['=','+=','-=','*=','/=','%=','^=','&=','|=','&&=','||=']))
+            {
+                this.verb('skip assignment')
+                return
+            }
+            this.verb('swap',precedence(e),precedence(e.operation.rhs))
             if (this.debug)
             {
-                console.log('swap',precedence(e),precedence(e.rhs))
+                print.ast('before swap',e)
+            }
+            newlhs = {operation:{lhs:e.operation.lhs,operator:e.operation.operator,rhs:e.operation.rhs.operation.lhs}}
+            newop = {operation:{lhs:newlhs,operator:e.operation.rhs.operation.operator,rhs:e.operation.rhs.operation.rhs}}
+            e.operation = newop.operation
+            if (this.debug)
+            {
+                print.ast('after swap2',e)
             }
             if (this.debug)
             {
-                return print.ast('before swap',e)
+                chain = [e]
+                c = e.operation
+                while ((c.rhs != null ? c.rhs.operation : undefined))
+                {
+                    chain.push(c.rhs)
+                    c = c.rhs.operation
+                }
+                p = chain.map(function (i)
+                {
+                    return precedence(i)
+                })
+                return this.logChain(chain,p)
             }
         }
     }
 
     logChain (chain, p)
     {
-        var s, rndr, _132_49_
+        var s, rndr, _158_49_
 
         s = ''
         rndr = (function (n)
@@ -237,7 +269,7 @@ class Operator
         {
             return (rndr(i.operation.lhs)) + ' ' + w3(i.operation.operator.text) + ' ' + b6(precedence(i))
         }).bind(this)).join(' ')
-        s += ' ' + ((_132_49_=rndr(chain.slice(-1)[0].operation.rhs)) != null ? _132_49_ : '...')
+        s += ' ' + ((_158_49_=rndr(chain.slice(-1)[0].operation.rhs)) != null ? _158_49_ : '...')
         console.log(w4('▪'),s,g3(p))
     }
 

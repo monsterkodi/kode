@@ -106,19 +106,45 @@ class Operator
         
         if precedence(e) < precedence(e.rhs)
             
-            log 'swap' precedence(e), precedence(e.rhs) if @debug
+            op = e.operation
+            
+            if op.operator.text == 'not' and (op.rhs?.incond or op.rhs?.operation?.operator?.text in ['=''+=''-=''*=''/=''%=''^=''&=''|=''&&=''||='])
+                @verb 'skip not in or not x ?='
+                return
+                
+            if op.operator.text in ['=''+=''-=''*=''/=''%=''^=''&=''|=''&&=''||=']
+                @verb 'skip assignment'
+                return
+            
+            @verb 'swap' precedence(e), precedence(e.operation.rhs)
             print.ast 'before swap' e if @debug
             
-            # newrhs = 
-                # lhs:        e.lhs
-                # operator:   e.operator
-                # rhs:        e.rhs.lhs
+            newlhs = 
+                operation:
+                    lhs:        e.operation.lhs
+                    operator:   e.operation.operator
+                    rhs:        e.operation.rhs.operation.lhs
+                    
+            newop = 
+                operation:
+                    lhs: newlhs
+                    operator: e.operation.rhs.operation.operator
+                    rhs:      e.operation.rhs.operation.rhs
 
-            # e.lhs       = e.rhs.rhs
-            # e.operator  = e.rhs.operator
-            # e.rhs       = newrhs
-#             
-            # print.ast 'after swap' e
+            e.operation = newop.operation
+            
+            print.ast 'after swap2' e if @debug
+
+            if @debug
+                chain = [e]
+                 
+                c = e.operation
+                while c.rhs?.operation
+                    chain.push c.rhs
+                    c = c.rhs.operation
+                 
+                p = chain.map (i) -> precedence i
+                @logChain chain, p
 
     logChain: (chain, p) ->
                 

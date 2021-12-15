@@ -315,7 +315,7 @@
         
         kc  "if d is 'function' and not o?" ▸ 
             """
-            if (typeof d == 'function' && !(o != null))
+            if (typeof(d) == 'function' && !(o != null))
             {
             }
             """
