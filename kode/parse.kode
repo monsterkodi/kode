@@ -710,7 +710,7 @@ function Parse # the base class of Parser
             t = tokens.shift()
             if t.type == 'nl'
                 subbs.push []
-                if tokens[0].text == 'then'
+                if tokens[0]?.text == 'then'
                     tokens[0].text = 'else'
             else
                 subbs[-1].push t

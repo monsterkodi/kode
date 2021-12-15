@@ -74,8 +74,6 @@ class Kode
 
     ast: (text) ->
 
-        text += '\n' if not text[-1] == '\n'
-
         print.code 'kode' text, 'coffee' if @args.verbose or @args.debug or @args.kode
 
         tokens = @lexer.tokenize text
@@ -106,7 +104,6 @@ class Kode
         
         sandbox = vm.createContext()
         if glob then sandbox[k] = v for k,v of glob
-        # sandbox.global = sandbox
 
         sandbox.__filename = file ? 'eval'
         sandbox.__dirname  = slash.dir sandbox.__filename

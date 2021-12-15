@@ -86,10 +86,6 @@ class Kode
     {
         var tokens, block
 
-        if (!text.slice(-1)[0] === '\n')
-        {
-            text += '\n'
-        }
         if (this.args.verbose || this.args.debug || this.args.kode)
         {
             print.code('kode',text,'coffee')
@@ -151,9 +147,9 @@ class Kode
             }
             _module.filename = sandbox.__filename
             var list = _k_.list(Object.getOwnPropertyNames(require))
-            for (var _120_18_ = 0; _120_18_ < list.length; _120_18_++)
+            for (var _117_18_ = 0; _117_18_ < list.length; _117_18_++)
             {
-                r = list[_120_18_]
+                r = list[_117_18_]
                 if (!(_k_.in(r,['paths','arguments','caller','length','name'])))
                 {
                     _require[r] = require[r]
@@ -196,9 +192,9 @@ class Kode
             return
         }
         var list = _k_.list(this.args.files)
-        for (var _152_17_ = 0; _152_17_ < list.length; _152_17_++)
+        for (var _149_17_ = 0; _149_17_ < list.length; _149_17_++)
         {
-            file = list[_152_17_]
+            file = list[_149_17_]
             file = slash.resolve(file)
             if (this.args.verbose)
             {

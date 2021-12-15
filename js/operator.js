@@ -2,6 +2,97 @@
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
 
+var precedence, print
+
+
+precedence = function (o)
+{
+    var t, _12_20_
+
+    t = (o != null ? (_12_20_=o.operation) != null ? _12_20_.operator.text : undefined : undefined)
+    switch (t)
+    {
+        case 'not':
+        case 'delete':
+        case 'empty':
+        case 'valid':
+        case '~':
+            return 0
+
+        case '*':
+        case '/':
+        case '%':
+            return 1
+
+        case '+':
+        case '-':
+            return 2
+
+        case '<<':
+        case '>>':
+        case '>>>':
+            return 3
+
+        case '<':
+        case '<=':
+        case '>':
+        case '>=':
+            return 4
+
+        case 'is':
+        case 'equals':
+            return 5
+
+        case '==':
+        case '!=':
+            return 6
+
+        case '&':
+            return 7
+
+        case '^':
+            return 8
+
+        case '|':
+            return 9
+
+        case 'and':
+            return 10
+
+        case 'or':
+            return 11
+
+        case '?':
+        case '?:':
+            return 12
+
+        case '=':
+            return 13
+
+        case '+=':
+        case '-=':
+        case '*=':
+        case '/=':
+        case '%=':
+        case '&=':
+        case '^=':
+        case '|=':
+            return 14
+
+        case '<<=':
+        case '>>=':
+        case '>>>=':
+        case '&&=':
+        case '||=':
+        case '?=':
+            return 15
+
+        default:
+            return Infinity
+    }
+
+}
+print = require('./print')
 class Operator
 {
     constructor (kode)
@@ -13,23 +104,18 @@ class Operator
 
     collect (tl)
     {
-        return this.scope(tl)
-    }
+        var _50_19_, e
 
-    scope (body)
-    {
-        var _34_21_, e
-
-        if ((body != null ? (_34_21_=body.exps) != null ? _34_21_.length : undefined : undefined))
+        if ((tl != null ? (_50_19_=tl.exps) != null ? _50_19_.length : undefined : undefined))
         {
-            var list = _k_.list(body.exps)
-            for (var _35_25_ = 0; _35_25_ < list.length; _35_25_++)
+            var list = _k_.list(tl.exps)
+            for (var _51_25_ = 0; _51_25_ < list.length; _51_25_++)
             {
-                e = list[_35_25_]
+                e = list[_51_25_]
                 this.exp(e)
             }
         }
-        return body
+        return tl
     }
 
     exp (e)
@@ -53,9 +139,9 @@ class Operator
             if (e.length)
             {
                 var list = _k_.list(e)
-                for (var _50_50_ = 0; _50_50_ < list.length; _50_50_++)
+                for (var _66_42_ = 0; _66_42_ < list.length; _66_42_++)
                 {
-                    v = list[_50_50_]
+                    v = list[_66_42_]
                     this.exp(v)
                 }
             }
@@ -73,22 +159,10 @@ class Operator
                     }
                     else
                     {
-                        if (val instanceof Array)
+                        for (k in val)
                         {
-                            var list1 = _k_.list(val)
-                            for (var _57_45_ = 0; _57_45_ < list1.length; _57_45_++)
-                            {
-                                v = list1[_57_45_]
-                                this.exp(v)
-                            }
-                        }
-                        else
-                        {
-                            for (k in val)
-                            {
-                                v = val[k]
-                                this.exp(v)
-                            }
+                            v = val[k]
+                            this.exp(v)
                         }
                     }
                 }
@@ -98,7 +172,7 @@ class Operator
 
     op (e)
     {
-        var chain, c, _72_19_, print, s, rndr, _81_53_
+        var chain, c, _84_19_, p, i
 
         chain = [e]
         c = e.operation
@@ -109,19 +183,62 @@ class Operator
         }
         if (chain.length > 1)
         {
-            print = require('./print')
-            s = ''
-            rndr = (function (n)
+            p = chain.map(function (i)
             {
-                return n
-            }).bind(this)
-            s += chain.map((function (i)
+                return precedence(i)
+            })
+            for (i = 1; i < p.length; i++)
             {
-                return (rndr(i.operation.lhs)) + ' ' + i.operation.operator.text
-            }).bind(this)).join(' ')
-            s += ' ' + ((_81_53_=rndr(chain.slice(-1)[0].operation.rhs)) != null ? _81_53_ : '...')
-            console.log(w4('operator.op chain'),s)
+                if (p[i] > p[i - 1])
+                {
+                    this.fixPrec(e,chain,p)
+                    break
+                }
+            }
         }
+    }
+
+    fixPrec (e, chain, p)
+    {
+        if (this.debug)
+        {
+            this.logChain(chain,p,precedence(e),precedence(e.rhs))
+        }
+        if (precedence(e) < precedence(e.rhs))
+        {
+            if (this.debug)
+            {
+                console.log('swap',precedence(e),precedence(e.rhs))
+            }
+            if (this.debug)
+            {
+                return print.ast('before swap',e)
+            }
+        }
+    }
+
+    logChain (chain, p)
+    {
+        var s, rndr, _132_49_
+
+        s = ''
+        rndr = (function (n)
+        {
+            try
+            {
+                return w2(this.kode.renderer.node(n))
+            }
+            catch (e)
+            {
+                return print.noon(e,n)
+            }
+        }).bind(this)
+        s += chain.map((function (i)
+        {
+            return (rndr(i.operation.lhs)) + ' ' + w3(i.operation.operator.text) + ' ' + b6(precedence(i))
+        }).bind(this)).join(' ')
+        s += ' ' + ((_132_49_=rndr(chain.slice(-1)[0].operation.rhs)) != null ? _132_49_ : '...')
+        console.log(w4('▪'),s,g3(p))
     }
 
     verb ()

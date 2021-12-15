@@ -869,7 +869,7 @@ Parse = (function ()
             if (t.type === 'nl')
             {
                 subbs.push([])
-                if (tokens[0].text === 'then')
+                if ((tokens[0] != null ? tokens[0].text : undefined) === 'then')
                 {
                     tokens[0].text = 'else'
                 }
