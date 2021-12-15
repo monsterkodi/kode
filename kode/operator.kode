@@ -1,0 +1,130 @@
+###
+ 0000000   00000000   00000000  00000000    0000000   000000000   0000000   00000000   
+000   000  000   000  000       000   000  000   000     000     000   000  000   000  
+000   000  00000000   0000000   0000000    000000000     000     000   000  0000000    
+000   000  000        000       000   000  000   000     000     000   000  000   000  
+ 0000000   000        00000000  000   000  000   000     000      0000000   000   000  
+###
+
+# walks through an abstract syntax tree and sorts operations by precedence
+
+#   ! ~ - + ++ -- typeof delete
+#   * / %
+#   + -
+#   << >> >>>
+#   < <= > >= instanceof
+#   == != === !==
+#   &
+#   ^
+#   |
+#   &&
+#   ||
+#   ?:
+#   = += -= *= /= %= <<= >>= >>>= &= ^= |= &&= ||= ??=
+
+precedence = (o) ->
+    
+    switch o.operation.operator.text
+    
+        'not' 'delete' 'empty' 'valid' '~'        ➜  0
+        '*' '/' '%'                               ➜  1
+        '+' '-'                                   ➜  2
+        '<<' '>>' '>>>'                           ➜  3
+        '<' '<=' '>' '>='                         ➜  4
+        'is' 'equals'                             ➜  5
+        '==' '!='                                 ➜  6
+        '&'                                       ➜  7
+        '^'                                       ➜  8
+        '|'                                       ➜  9
+        'and'                                     ➜ 10
+        'or'                                      ➜ 11
+        '?' '?:'                                  ➜ 12
+        '='                                       ➜ 13
+        '+=' '-=' '*=' '/=' '%=' '&=' '^=' '|='   ➜ 14
+        '<<=' '>>=' '>>>=' '&&=' '||=' '?='       ➜ 15
+                                                  ➜ Infinity
+    
+class Operator
+
+    @: (@kode) ->
+
+        @verbose = @kode.args.verbose
+        @debug   = @kode.args.debug
+        
+    #  0000000   0000000   000      000      00000000   0000000  000000000  
+    # 000       000   000  000      000      000       000          000     
+    # 000       000   000  000      000      0000000   000          000     
+    # 000       000   000  000      000      000       000          000     
+    #  0000000   0000000   0000000  0000000  00000000   0000000     000     
+    
+    collect: (tl) -> @scope tl
+
+    scope: (body) ->
+
+        if body?.exps?.length
+            @exp e for e in body.exps
+        body
+        
+    # 00000000  000   000  00000000   
+    # 000        000 000   000   000  
+    # 0000000     00000    00000000   
+    # 000        000 000   000        
+    # 00000000  000   000  000        
+    
+    exp: (e) ->
+
+        if  
+            not e               ➜ return
+            e.type              ➜ return
+            e.operation         ➜ @op e
+            e instanceof Array  ➜ @exp v for v in e if e.length
+            e instanceof Object
+                for key,val of e
+                    if val
+                        if val.operation then @op val
+                        else
+                            if val instanceof Array
+                                @exp v for v in val
+                            else
+                                @exp v for k,v of val
+                                    
+    #  0000000   00000000   
+    # 000   000  000   000  
+    # 000   000  00000000   
+    # 000   000  000        
+    #  0000000   000        
+    
+    op: (e) ->
+        
+        print = require './print'
+        
+        chain = [e]
+        
+        c = e.operation
+        while c.rhs?.operation
+            chain.push c.rhs
+            c = c.rhs.operation
+        
+        if chain.length > 1
+            
+            p = chain.map (i) -> precedence i
+            
+            printChain = =>
+                s = ''
+                rndr = (n) => 
+                    try
+                        w2 @kode.renderer.node n
+                    catch e
+                        print.noon e, n
+                s += chain.map((i) => (rndr i.operation.lhs) + ' ' + w3(i.operation.operator.text) + ' ' + b6(precedence i)).join ' '
+                s += ' ' + rndr(chain[-1].operation.rhs) ? '...'
+                log w4('▪'), s, g3 p
+            
+            for i in 1...p.length
+                if p[i] > p[i-1]
+                    printChain()
+                    break
+        
+    verb: -> if @verbose then console.log.apply console.log, arguments 
+
+module.exports = Operator

@@ -37,6 +37,7 @@ class Kode
         Scoper    = require './scoper'
         Stripol   = require './stripol'
         Returner  = require './returner'
+        Operator  = require './operator'
         Renderer  = require './renderer'
         Tester    = require './tester'
 
@@ -45,6 +46,7 @@ class Kode
         @scoper   = new Scoper   @
         @stripol  = new Stripol  @
         @returner = new Returner @
+        @operator = new Operator @
         @renderer = new Renderer @
         @tester   = new Tester   @
 
@@ -86,7 +88,7 @@ class Kode
         if @args.raw   then print.noon 'raw block' block
         if @args.block then print.block 'tl block' block
 
-        @returner.collect @scoper.collect @stripol.collect @parser.parse block
+        @operator.collect @returner.collect @scoper.collect @stripol.collect @parser.parse block
 
     astr: (text, scopes) -> print.astr @ast(text), scopes
         

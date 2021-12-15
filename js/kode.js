@@ -18,7 +18,7 @@ class Kode
 {
     constructor (args)
     {
-        var _27_14_, Lexer, Parser, Scoper, Stripol, Returner, Renderer, Tester
+        var _27_14_, Lexer, Parser, Scoper, Stripol, Returner, Operator, Renderer, Tester
 
         this.args = args
         this.onChange = this.onChange.bind(this)
@@ -39,6 +39,7 @@ class Kode
         Scoper = require('./scoper')
         Stripol = require('./stripol')
         Returner = require('./returner')
+        Operator = require('./operator')
         Renderer = require('./renderer')
         Tester = require('./tester')
         this.lexer = new Lexer(this)
@@ -46,6 +47,7 @@ class Kode
         this.scoper = new Scoper(this)
         this.stripol = new Stripol(this)
         this.returner = new Returner(this)
+        this.operator = new Operator(this)
         this.renderer = new Renderer(this)
         this.tester = new Tester(this)
     }
@@ -110,7 +112,7 @@ class Kode
         {
             print.block('tl block',block)
         }
-        return this.returner.collect(this.scoper.collect(this.stripol.collect(this.parser.parse(block))))
+        return this.operator.collect(this.returner.collect(this.scoper.collect(this.stripol.collect(this.parser.parse(block)))))
     }
 
     astr (text, scopes)
@@ -149,9 +151,9 @@ class Kode
             }
             _module.filename = sandbox.__filename
             var list = _k_.list(Object.getOwnPropertyNames(require))
-            for (var _118_18_ = 0; _118_18_ < list.length; _118_18_++)
+            for (var _120_18_ = 0; _120_18_ < list.length; _120_18_++)
             {
-                r = list[_118_18_]
+                r = list[_120_18_]
                 if (!(_k_.in(r,['paths','arguments','caller','length','name'])))
                 {
                     _require[r] = require[r]
@@ -194,9 +196,9 @@ class Kode
             return
         }
         var list = _k_.list(this.args.files)
-        for (var _150_17_ = 0; _150_17_ < list.length; _150_17_++)
+        for (var _152_17_ = 0; _152_17_ < list.length; _152_17_++)
         {
-            file = list[_150_17_]
+            file = list[_152_17_]
             file = slash.resolve(file)
             if (this.args.verbose)
             {

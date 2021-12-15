@@ -313,6 +313,13 @@
         ke '"" is String'               ▸   false
         ke '1 is Number'                ▸   false
         
+        kc  "if d is 'function' and not o?" ▸ 
+            """
+            if (typeof d == 'function' && !(o != null))
+            {
+            }
+            """
+        
         ▸ num
             # https://stackoverflow.com/questions/18082/validate-decimal-numbers-in-javascript-isnumeric/174921#174921
                 

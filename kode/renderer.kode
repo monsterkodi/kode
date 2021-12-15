@@ -17,8 +17,10 @@ class Renderer
 
     @: (@kode) ->
 
-        @debug   = @kode.args?.debug
-        @verbose = @kode.args?.verbose
+        @debug    = @kode.args?.debug
+        @verbose  = @kode.args?.verbose
+        @hint     = _k_:{}
+        @varstack = []
         
     # 00000000   00000000  000   000  0000000    00000000  00000000   
     # 000   000  000       0000  000  000   000  000       000   000  

@@ -2,9 +2,7 @@
 
 **kode** is a programming language that transpiles to JavaScript.
 
-It is highly inspired by and *tries* to be compatible with [CoffeeScript](http://coffeescript.org), while adding some features and further its minimalistic approach.
-
-# A list of enhancements over CoffeeScript:
+It is highly inspired by and *tries* to be compatible with [CoffeeScript](http://coffeescript.org), while adding some features and further its minimalistic approach:
 
 ## Ranges
 
@@ -257,13 +255,10 @@ Stuff I rarely used and therefore didn't bother to re-implement:
 
 # Future plans
 
-- native tests
+- ? operator : precedence 
 - error messages
 - sourcemaps
-- use `is` for `instanceof`/`typeof`
-- ? operator : precedence 
 - `include` keyword to merge source files
 - `dbg`  `assert`  `profile` keywords
 - `profile` in same scope
-- `await`?
 
