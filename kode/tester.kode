@@ -100,7 +100,7 @@ class Tester
             error 'TESTER ERROR' err
             return
 
-        return if not tests._test_
+        return if tests?._test_ != true
             
         tests each (k,v) ->
 
