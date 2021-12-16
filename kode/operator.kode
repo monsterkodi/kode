@@ -30,6 +30,8 @@ precedence = (o) ->
         '<<=' '>>=' '>>>=' '&&=' '||=' '?='       ➜ 15
                                                   ➜ Infinity
 
+assign = ['=''+=''-=''*=''/=''%=''^=''&=''|=''&&=''||=']
+                                                  
 print = require './print'
 
 class Operator
@@ -68,9 +70,7 @@ class Operator
                 for key,val of e
                     if val
                         if val.operation then @op val
-                        else
-                            @exp val
-                            # @exp v for k,v of val
+                        else @exp val
                                     
     #  0000000   00000000   
     # 000   000  000   000  
@@ -112,34 +112,27 @@ class Operator
             
             op = e.operation
             
-            if op.operator.text == 'not' and (op.rhs?.incond or op.rhs?.operation?.operator?.text in ['=''+=''-=''*=''/=''%=''^=''&=''|=''&&=''||='])
-                @verb 'skip not in or not x ?='
-                return
+            return if op.operator.text == 'not' and (op.rhs?.incond or op.rhs?.operation?.operator?.text in assign)
                 
-            if op.operator.text in ['=''+=''-=''*=''/=''%=''^=''&=''|=''&&=''||=']
-                @verb 'skip assignment'
-                return
-
-            if e.operation.rhs?.operation?.operator.text in ['=''+=''-=''*=''/=''%=''^=''&=''|=''&&=''||=']
-                @verb 'skip rhs assignment'
-                return
+            return if op.operator.text in assign
                 
-            @verb 'swap' precedence(e), precedence(e.operation.rhs)
+            return if e.operation.rhs?.operation?.operator.text in assign
+                
+            @verb 'swap' precedence(e), precedence(op.rhs)
             print.ast 'before swap' e if @debug
             
             newlhs = 
                 operation:
-                    lhs:        e.operation.lhs
-                    operator:   e.operation.operator
-                    rhs:        e.operation.rhs.operation.lhs
+                    lhs:        op.lhs
+                    operator:   op.operator
+                    rhs:        op.rhs.operation.lhs
                     
             newop = 
-                operation:
-                    lhs: newlhs
-                    operator: e.operation.rhs.operation.operator
-                    rhs:      e.operation.rhs.operation.rhs
+                lhs: newlhs
+                operator: op.rhs.operation.operator
+                rhs:      op.rhs.operation.rhs
 
-            e.operation = newop.operation
+            e.operation = newop
             
             print.ast 'after swap2' e if @debug
 

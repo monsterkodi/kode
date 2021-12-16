@@ -146,7 +146,7 @@ function Parse # the base class of Parser
                 nl = @shiftNewline "exps nl (no stop) ..." tokens
                 
                 if tokens[0]?.text == '.' and tokens[1]?.type == 'var'
-                    log 'exps nl next line starts with .var!'
+                    log 'exps nl next line starts with .var!' @stack
                     es.push @prop es.pop(), tokens
                     
                 @verb 'exps nl continue...'
@@ -276,7 +276,7 @@ function Parse # the base class of Parser
             
             print.ast "rhs" e if @verbose    
 
-            e = @lhs e, tokens               # see, if we can use the result as the left hand side of something
+            e = @lhs e, tokens               # see if we can use the result as the left hand side of something
             
             print.ast "lhs" e if @verbose
 
@@ -284,19 +284,44 @@ function Parse # the base class of Parser
                 @verb 'exp break on ;' tokens[0]?.text
                 break
             
-            if numTokens == tokens.length    
+            if numTokens == tokens.length    # simple expansion to the left and right didn't succeed
                 
-                if tokens[0]?.text in ','
-                    if @stack[-1] in ['▸args']
+                if tokens[0]?.text in ','               # next token is comma
+                    if @stack[-1] in ['▸args']          # and we are in arguments
                         @verb 'comma in args, break without shifting'
-                        break
+                        break                               # those are parsed with @exps ➜ give back one arg
                     @verb 'exp shift comma'
-                    tokens.shift()
+                    tokens.shift()                      # probably in a list or something similar ➜ ignore comma
                     
-                @verb 'exp no token consumed: break!'
-                break # bail out if no token was consumed
+                if tokens[0]?.type == 'block'           # next line is indented
+                    if tokens[0].tokens[0]?.text == '.' # and starts with property access ...
+                        @verb 'exp prop chain block! shift block and continue ...'
+                        @push 'propchain' + tokens[0].tokens[0].col
+                        block = tokens.shift()
+                        e = @prop e, block.tokens
+                        if block.tokens.length
+                            @verb 'dangling prop chain tokens' block.tokens, @stack[-1]
+                            tokens = block.tokens
+                            continue
+                        break
+                        
+                if tokens[0]?.type == 'nl'              # next line is not indendented
+                    if tokens[1]?.text == '.'           # and starts with property access ...
+                        if "propchain#{tokens[1]?.col}" in @stack[..-2]
+                            @verb 'exp higher level prop chain active! break!'
+                            break
+                        @verb 'exp prop chain block continues on next line! shift nl and continue ...'
+                        @shiftNewline 'exp prop chain block continues' tokens
+                        continue
+                    
+                @verb 'exp no token consumed: break!' @stack[-1]
+                break # bail out because no token was consumed to prevent endless recursion
             
         print.ast "exp #{if empty(@stack) then 'DONE' else ''}" e if @verbose
+        
+        if @stack[-1]?.startsWith 'propchain'
+            @verb "exp cleanup #{@stack[-1]}"
+            @pop @stack[-1]
         
         @sheapPop 'exp' tok.text ? tok.type
         e        

@@ -1,8 +1,8 @@
-// monsterkodi/kode 0.128.0
+// monsterkodi/kode 0.130.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
-var precedence, print
+var precedence, assign, print
 
 
 precedence = function (o)
@@ -92,6 +92,7 @@ precedence = function (o)
     }
 
 }
+assign = ['=','+=','-=','*=','/=','%=','^=','&=','|=','&&=','||=']
 print = require('./print')
 class Operator
 {
@@ -104,14 +105,14 @@ class Operator
 
     collect (tl)
     {
-        var _50_19_, e
+        var _52_19_, e
 
-        if ((tl != null ? (_50_19_=tl.exps) != null ? _50_19_.length : undefined : undefined))
+        if ((tl != null ? (_52_19_=tl.exps) != null ? _52_19_.length : undefined : undefined))
         {
             var list = _k_.list(tl.exps)
-            for (var _51_25_ = 0; _51_25_ < list.length; _51_25_++)
+            for (var _53_25_ = 0; _53_25_ < list.length; _53_25_++)
             {
-                e = list[_51_25_]
+                e = list[_53_25_]
                 this.exp(e)
             }
         }
@@ -140,9 +141,9 @@ class Operator
             if (e.length)
             {
                 var list = _k_.list(e)
-                for (var _66_42_ = 0; _66_42_ < list.length; _66_42_++)
+                for (var _68_42_ = 0; _68_42_ < list.length; _68_42_++)
                 {
-                    v = list[_66_42_]
+                    v = list[_68_42_]
                     this.exp(v)
                 }
             }
@@ -201,7 +202,7 @@ class Operator
 
     fixPrec (e, chain, p)
     {
-        var op, _115_52_, _115_91_, _115_81_, _115_70_, _123_41_, _123_30_, newlhs, newop, c, _150_27_
+        var op, _115_59_, _115_98_, _115_88_, _115_77_, _119_48_, _119_37_, newlhs, newop, c, _143_27_
 
         if (this.debug)
         {
@@ -210,29 +211,26 @@ class Operator
         if (precedence(e) < precedence(e.rhs))
         {
             op = e.operation
-            if (op.operator.text === 'not' && ((op.rhs != null ? op.rhs.incond : undefined) || _k_.in(((_115_70_=op.rhs) != null ? (_115_81_=_115_70_.operation) != null ? (_115_91_=_115_81_.operator) != null ? _115_91_.text : undefined : undefined : undefined),['=','+=','-=','*=','/=','%=','^=','&=','|=','&&=','||='])))
+            if (op.operator.text === 'not' && ((op.rhs != null ? op.rhs.incond : undefined) || _k_.in(((_115_77_=op.rhs) != null ? (_115_88_=_115_77_.operation) != null ? (_115_98_=_115_88_.operator) != null ? _115_98_.text : undefined : undefined : undefined),assign)))
             {
-                this.verb('skip not in or not x ?=')
                 return
             }
-            if (_k_.in(op.operator.text,['=','+=','-=','*=','/=','%=','^=','&=','|=','&&=','||=']))
+            if (_k_.in(op.operator.text,assign))
             {
-                this.verb('skip assignment')
                 return
             }
-            if (_k_.in(((_123_30_=e.operation.rhs) != null ? (_123_41_=_123_30_.operation) != null ? _123_41_.operator.text : undefined : undefined),['=','+=','-=','*=','/=','%=','^=','&=','|=','&&=','||=']))
+            if (_k_.in(((_119_37_=e.operation.rhs) != null ? (_119_48_=_119_37_.operation) != null ? _119_48_.operator.text : undefined : undefined),assign))
             {
-                this.verb('skip rhs assignment')
                 return
             }
-            this.verb('swap',precedence(e),precedence(e.operation.rhs))
+            this.verb('swap',precedence(e),precedence(op.rhs))
             if (this.debug)
             {
                 print.ast('before swap',e)
             }
-            newlhs = {operation:{lhs:e.operation.lhs,operator:e.operation.operator,rhs:e.operation.rhs.operation.lhs}}
-            newop = {operation:{lhs:newlhs,operator:e.operation.rhs.operation.operator,rhs:e.operation.rhs.operation.rhs}}
-            e.operation = newop.operation
+            newlhs = {operation:{lhs:op.lhs,operator:op.operator,rhs:op.rhs.operation.lhs}}
+            newop = {lhs:newlhs,operator:op.rhs.operation.operator,rhs:op.rhs.operation.rhs}
+            e.operation = newop
             if (this.debug)
             {
                 print.ast('after swap2',e)
@@ -257,7 +255,7 @@ class Operator
 
     logChain (chain, p)
     {
-        var s, rndr, _166_49_
+        var s, rndr, _159_49_
 
         s = ''
         rndr = (function (n)
@@ -275,7 +273,7 @@ class Operator
         {
             return (rndr(i.operation.lhs)) + ' ' + w3(i.operation.operator.text) + ' ' + b6(precedence(i))
         }).bind(this)).join(' ')
-        s += ' ' + ((_166_49_=rndr(chain.slice(-1)[0].operation.rhs)) != null ? _166_49_ : '...')
+        s += ' ' + ((_159_49_=rndr(chain.slice(-1)[0].operation.rhs)) != null ? _159_49_ : '...')
         console.log(w4('▪'),s,g3(p))
     }
 
