@@ -22,6 +22,7 @@
             })
         }
         module.exports["t1"]._section_ = true
+        module.exports._test_ = true
         module.exports
         
         """
@@ -36,6 +37,7 @@
             compare(typeof(a),'function')
         }
         module.exports["test"]._section_ = true
+        module.exports._test_ = true
         module.exports
         
         """
@@ -50,6 +52,7 @@
             compare(f(a,{b:true}),xxx)
         }
         module.exports["test"]._section_ = true
+        module.exports._test_ = true
         module.exports
         
         """
@@ -64,6 +67,7 @@
             compare(f(a,{b:true,c:false}),yyy)
         }
         module.exports["test"]._section_ = true
+        module.exports._test_ = true
         module.exports
         
         """
@@ -121,6 +125,7 @@
             })
         }
         module.exports["t4"]._section_ = true
+        module.exports._test_ = true
         module.exports
         
         """

@@ -97,8 +97,11 @@ class Tester
             tests = @kode.eval text, file, g
         catch err
             error text
-            error err
+            error 'TESTER ERROR' err
+            return
 
+        return if not tests._test_
+            
         tests each (k,v) ->
 
             if v._section_
@@ -124,7 +127,7 @@ class Tester
         
         for fail in allfails
             log R2(y5 ' ' + fail.stack[0] + ' ') + R1 y5 ' ' + fail.stack[1..].join(r3 ' ▸ ') + ' '
-            log r5(@showSpace fail.lhs) 
+            log r5 @showSpace fail.lhs
             log R1 r3(' ▸ ') 
             log g3 @showSpace fail.rhs
              

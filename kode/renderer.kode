@@ -51,6 +51,7 @@ class Renderer
         s += @nodes ast.exps, '\n' true
         
         if @hint.section
+            s += '\nmodule.exports._test_ = true'
             s += '\nmodule.exports\n'
         
         if @srcmap

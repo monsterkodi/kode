@@ -170,7 +170,7 @@ class C
     @: ->
 ```
 
-... is an *optional* shortcut for ...
+... is a shortcut for ...
 
 ```coffeescript
 class C
@@ -256,9 +256,9 @@ Stuff I rarely used and therefore didn't bother to re-implement:
 # Future plans
 
 - ? operator : precedence 
-- error messages
-- sourcemaps
-- `include` keyword to merge source files
 - `dbg`  `assert`  `profile` keywords
 - `profile` in same scope
+- `include` keyword to merge source files
+- sourcemaps
+- error messages
 
