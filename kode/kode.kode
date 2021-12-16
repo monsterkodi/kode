@@ -184,16 +184,24 @@ class Kode
 
         if 
             @args.outdir
-                        js  = @compile text, file
-                        out = slash.resolve @args.outdir, slash.file file
-                        out = slash.swapExt out, 'js'
-                        if not slash.writeText out, js
-                            error R2 y3 "can't write #{R3 y6 out}"
+                    
+                js  = @compile text, file
+                out = slash.resolve @args.outdir, slash.file file
+                out = slash.swapExt out, 'js'
+                if not slash.writeText out, js
+                    error R2 y3 "can't write #{R3 y6 out}"
+                    
             @args.test
-                        @tester.test text, file
-                        @tester.summarize()
+                
+                if @tester.test text, file
+                    @tester.summarize()
+                else
+                    for f in @args.files ➜ @tester.test slash.readText(f), f
+                    @tester.summarize()
+                    
             @args.run
-                        log @eval text, file, global
+                    
+                    log @eval text, file, global
             
 # 00     00   0000000   000  000   000
 # 000   000  000   000  000  0000  000

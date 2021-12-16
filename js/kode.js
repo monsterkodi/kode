@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.131.1
+// monsterkodi/kode 0.133.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -245,7 +245,7 @@ class Kode
 
     onChange (file)
     {
-        var text, js, out
+        var text, js, out, f
 
         text = slash.readText(file)
         if (_k_.empty(text))
@@ -265,8 +265,20 @@ class Kode
         }
         else if (this.args.test)
         {
-            this.tester.test(text,file)
-            return this.tester.summarize()
+            if (this.tester.test(text,file))
+            {
+                return this.tester.summarize()
+            }
+            else
+            {
+                var list = _k_.list(this.args.files)
+                for (var _199_26_ = 0; _199_26_ < list.length; _199_26_++)
+                {
+                    f = list[_199_26_]
+                    this.tester.test(slash.readText(f),f)
+                }
+                return this.tester.summarize()
+            }
         }
         else if (this.args.run)
         {

@@ -1,12 +1,12 @@
 name          kode
-version       0.131.1
+version       0.133.0
 description   programming language
 main          js/kode.js
 bin
               kode  bin/kode
 scripts
-              test      kode -t kode/test/*.kode
-              watch     kode -wt kode/test/*.kode kode/renderer.kode kode/parser.kode kode/parse.kode
+              test      kode -t  kode/test/*.kode
+              watch     kode -wt kode/test/*.kode kode/*.kode
               stage     pnpm run build0 && pnpm run build1 && pnpm run testage
               build0    kode kode/*.kode -Ho stage0
               build1    k0de kode/*.kode -Ho stage1 && cp -r kode/test stage1
