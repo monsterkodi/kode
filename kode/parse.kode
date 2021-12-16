@@ -61,7 +61,7 @@ function Parse # the base class of Parser
         return if empty tokens
         
         @sheapPush 'exps' rule
-
+        
         es = []
                         
         while tokens.length
@@ -71,18 +71,18 @@ function Parse # the base class of Parser
             
             b = switch @stack[-1]
             
-                '▸arg'          ➜ es.length
+                '▸arg'      ➜ es.length
                 'switch'
                 'if' 'then' 
-                '▸else'         ➜ tok.text == 'else'
-                '['             ➜ tok.text == ']'  
-                '{'             ➜ tok.text in ['}' '->' '=>' '(' '▸']
-                '('             ➜ tok.text == ')'
-                '▸args'         ➜ tok.text in [']' ';' 'else' 'then']
-                '▸return'       ➜ tok.text == 'if'
-                'call'          ➜ tok.text in ';' # bail out for implicit calls
-                rule            ➜ tok.text == stop and tok.type != 'var'
-                                ➜ false
+                '▸else'     ➜ tok.text == 'else'
+                '['         ➜ tok.text == ']'  
+                '{'         ➜ tok.text in ['}' '->' '=>' '(' '▸']
+                '('         ➜ tok.text == ')'
+                '▸args'     ➜ tok.text in [']' ';' 'else' 'then']
+                '▸return'   ➜ tok.text == 'if'
+                'call'      ➜ tok.text in ';' # bail out for implicit calls
+                rule        ➜ tok.text == stop and tok.type != 'var'
+                            ➜ false
 
             if b then @verb "exps break for #{tok.text} and stack top" @stack ; break 
                 
@@ -125,8 +125,8 @@ function Parse # the base class of Parser
                 @verb 'exps block end, break!'
                 break
                 
-            if tok.text == ')'                                    then @verb 'exps break on )'       ; break
-            if tok.text in ['in''of']   and rule == 'for vals'    then @verb 'exps break on in|of'   ; break
+            if tok.text == ')'                               ➜ @verb 'exps break on )'     ; break
+            if tok.text in ['in''of'] and rule == 'for vals' ➜ @verb 'exps break on in|of' ; break
             if tok.type == 'nl' 
                 
                 @verb 'exps nl stop:' stop, tok, @stack
@@ -175,9 +175,9 @@ function Parse # the base class of Parser
                     
                 @verb "exps #{tokens[0].text }Tail" e, @stack
                 switch tokens[0].text 
-                    when 'if'    then e = @ifTail    e, tokens.shift(), tokens
-                    when 'for'   then e = @forTail   e, tokens.shift(), tokens
-                    when 'while' then e = @whileTail e, tokens.shift(), tokens
+                    'if'    ➜ e = @ifTail    e, tokens.shift(), tokens
+                    'for'   ➜ e = @forTail   e, tokens.shift(), tokens
+                    'while' ➜ e = @whileTail e, tokens.shift(), tokens
             
             if tokens[0]?.text == '▸'
                 if @stack[-1] in ['▸args' '{']
@@ -237,31 +237,29 @@ function Parse # the base class of Parser
         
         switch tok.type
             
-            when 'block'    then print.tokens 'ERROR: unexpected block' [tok].concat tokens; return error "INTERNAL ERROR: unexpected block token in exp!"
-            when 'nl'       then print.tokens 'ERROR: unexpected nl'    [tok].concat tokens; return error "INTERNAL ERROR: unexpected nl token in exp!"
-            when ';'        then print.tokens 'ERROR: unexpected ;'     [tok].concat tokens; return error "INTERNAL ERROR: unexpected ; token in exp!"
-            when 'section'  then return @section tok, tokens                
-            when 'keyword' # dispatch to block rules identified by keyword
-                
-                if tokens[0]?.text not in ':' # allow keywords as keys
-                    switch tok.text 
-                        when 'return'   then return @return   tok, tokens
-                        when 'switch'   then return @switch   tok, tokens
-                        when 'class'    then return @class    tok, tokens
-                        when 'function' then return @function tok, tokens                        
-                        when 'while'    then return @while    tok, tokens
-                        when 'when'     then return @when     tok, tokens
-                        when 'try'      then return @try      tok, tokens
-                        when 'for'      then return @for      tok, tokens
-                        when 'if' 
-                            if @stack[-1] not in ['▸args' '▸return']
-                                @verb 'if' @stack if @stack.length
-                                return @if tok, tokens
-            else
-                switch tok.text
-                    when '->' '=>'  
-                        if @stack[-1] not in ['{']
-                            return @func null, tok, tokens
+            'block'     ➜   print.tokens 'ERROR: unexpected block' [tok].concat tokens; return error "INTERNAL ERROR: unexpected block token in exp!"
+            'nl'        ➜   print.tokens 'ERROR: unexpected nl'    [tok].concat tokens; return error "INTERNAL ERROR: unexpected nl token in exp!"
+            ';'         ➜   print.tokens 'ERROR: unexpected ;'     [tok].concat tokens; return error "INTERNAL ERROR: unexpected ; token in exp!"
+            'section'   ➜   return @section tok, tokens                
+            'keyword'       # dispatch to block rules identified by keyword
+                            if tokens[0]?.text not in ':' # allow keywords as keys
+                                switch tok.text 
+                                    'return'   ➜ return @return   tok, tokens
+                                    'switch'   ➜ return @switch   tok, tokens
+                                    'class'    ➜ return @class    tok, tokens
+                                    'function' ➜ return @function tok, tokens                        
+                                    'while'    ➜ return @while    tok, tokens
+                                    'when'     ➜ return @when     tok, tokens
+                                    'try'      ➜ return @try      tok, tokens
+                                    'for'      ➜ return @for      tok, tokens
+                                    'if' 
+                                        if @stack[-1] not in ['▸args' '▸return']
+                                            @verb 'if' @stack if @stack.length
+                                            return @if tok, tokens
+                        ➜   switch tok.text
+                                when '->' '=>'  
+                                    if @stack[-1] not in ['{']
+                                        return @func null, tok, tokens
 
         # here starts the hairy part :-)
 
@@ -362,66 +360,71 @@ function Parse # the base class of Parser
             
             if @stack[-1] == '▸arg' and nxt.type == 'op' then @verb 'rhs break for ▸arg'; break
            
-            else if nxt.text == ':' and @stack[-1] in ['class']
+            if 
+                nxt.text == ':' and @stack[-1] in ['class']
                 
-                print.tokens 'rhs is class method' tokens[..20] if @debug
-                e = @keyval e, tokens
-                break
-                
-            else if nxt.text == ':' and (unspaced or '?' not in @stack)
-                if @stack[-1] != '{'
-                    @verb 'rhs is first key of implicit object' e
-                    print.tokens 'rhs is first key of implicit object' tokens if @verbose
-                    e = @object e, tokens
-                else
-                    @verb 'rhs is key of (implicit) object' e
+                    print.tokens 'rhs is class method' tokens[..20] if @debug
                     e = @keyval e, tokens
-                    
-            else if nxt.text == 'in' and @stack[-1] != 'for'
-                
-                @verb 'incond' e, tokens
-                e = @incond e, tokens
-                
-            else if e.text?
-                
-                if      e.text == '['   then e = @array           e, tokens
-                else if e.text == '('   then e = @parens          e, tokens
-                else if e.text == '{'   then e = @curly           e, tokens                
-                else if e.text in ['not''empty''valid'] and 
-                    (nxt.type not in ['op'] or nxt.text in ['++' '--' '+' '-' '!']) then e = @operation null, e, tokens
-                else if e.text in ['++''--'] and unspaced
-                    @verb 'rhs increment'
-                    e = @operation null, e, tokens
-                else if e.text in ['+''-'] and unspaced
-                    if nxt.type == 'num'
-                        @verb 'rhs +- num'
-                        if e.text == '-'
-                            nxt.text = '-' + nxt.text
-                            nxt.col -= 1
-                        e = tokens.shift()
-                    else
-                        @verb 'rhs +- operation'
-                        e = @operation null, e, tokens
-                else if nxt.text in ['++''--'] and unspaced
-                    if e.type not in ['var']
-                        return error 'wrong rhs increment'
-                    e = @operation e, tokens.shift()
-                else
-                    print.tokens "rhs no nxt match? break! stack:#{@stack} nxt:" [nxt] if @verbose
-                    break                    
-                    
-            else # if e is not a token anymore
-                
-                if nxt.text in ['++''--']    and unspaced        then e = @operation e, tokens.shift(); break
-                else if @stack[-1] == 'call' and nxt.text == ']' then @verb 'rhs call array end';       break
-                else if @stack[-1] == '{'    and nxt.text == '}' then @verb 'rhs curly end';            break                    
-                else if @stack[-1] == '['    and nxt.text == ']' then @verb 'rhs array end';            break
-                else if @stack[-1] == '['    and nxt.text == ']' then @verb 'rhs [ array end' nxt;      break
-                else
-                    if @verbose
-                        print.ast "rhs no nxt match?? stack:#{@stack} e:" e
-                        print.tokens "rhs no nxt match?? nxt:" nxt
                     break
+                
+                nxt.text == ':' and (unspaced or '?' not in @stack)
+                    
+                    if @stack[-1] != '{'
+                        @verb 'rhs is first key of implicit object' e
+                        print.tokens 'rhs is first key of implicit object' tokens if @verbose
+                        e = @object e, tokens
+                    else
+                        @verb 'rhs is key of (implicit) object' e
+                        e = @keyval e, tokens
+                    
+                nxt.text == 'in' and @stack[-1] != 'for'
+                
+                    @verb 'incond' e, tokens
+                    e = @incond e, tokens
+                
+                e.text?
+                
+                    if      
+                        e.text == '['   ➜ e = @array           e, tokens
+                        e.text == '('   ➜ e = @parens          e, tokens
+                        e.text == '{'   ➜ e = @curly           e, tokens                
+                        e.text in ['not''empty''valid'] and 
+                            (nxt.type not in ['op'] or 
+                             nxt.text in ['++' '--' '+' '-' '!']) ➜ e = @operation null, e, tokens
+                        e.text in ['++''--'] and unspaced
+                            @verb 'rhs increment'
+                            e = @operation null, e, tokens
+                        e.text in ['+''-'] and unspaced
+                            if nxt.type == 'num'
+                                @verb 'rhs +- num'
+                                if e.text == '-'
+                                    nxt.text = '-' + nxt.text
+                                    nxt.col -= 1
+                                e = tokens.shift()
+                            else
+                                @verb 'rhs +- operation'
+                                e = @operation null, e, tokens
+                        nxt.text in ['++''--'] and unspaced
+                            if e.type not in ['var']
+                                return error 'wrong rhs increment'
+                            e = @operation e, tokens.shift()
+                        ➜
+                            print.tokens "rhs no nxt match? break! stack:#{@stack} nxt:" [nxt] if @verbose
+                            break                    
+                    
+                ➜ # if e is not a token anymore
+                
+                    if 
+                        nxt.text in ['++''--']  and unspaced        ➜ e = @operation e, tokens.shift(); break
+                        @stack[-1] == 'call'    and nxt.text == ']' ➜ @verb 'rhs call array end';       break
+                        @stack[-1] == '{'       and nxt.text == '}' ➜ @verb 'rhs curly end';            break                    
+                        @stack[-1] == '['       and nxt.text == ']' ➜ @verb 'rhs array end';            break
+                        @stack[-1] == '['       and nxt.text == ']' ➜ @verb 'rhs [ array end' nxt;      break
+                        ➜
+                            if @verbose
+                                print.ast "rhs no nxt match?? stack:#{@stack} e:" e
+                                print.tokens "rhs no nxt match?? nxt:" nxt
+                            break
                     
             if numTokens == tokens.length
                 @verb 'rhs no token consumed, break!'
@@ -459,8 +462,8 @@ function Parse # the base class of Parser
             spaced = not unspaced
 
             b = switch @stack[-1]
-                when '[' then nxt.text == ']'
-                when '{' then nxt.text == '}'
+                '[' ➜ nxt.text == ']'
+                '{' ➜ nxt.text == '}'
                 
             break if b
             
@@ -468,101 +471,104 @@ function Parse # the base class of Parser
                 if (nxt.type == 'block' and @stack[-1] == 'if' or 
                     (spaced and nxt.text == 'then') or 
                     nxt.type == 'nl' or
-                    nxt.text == ',' )
+                    nxt.text == ',')
                         break
                 else
                     e = @this e, tokens
                     break
             
-            if      nxt.text == '.'    then e = @prop   e, tokens
-            else if nxt.type == 'dots' and not @stack[-1].startsWith('op') then e = @slice  e, tokens
-            else if nxt.text == 'each' then e = @each   e, tokens
-            # else if nxt.type == 'test' then e = @test   e, tokens
-            else if nxt.text == '?' 
+            if      
+                nxt.text == '.'    ➜ e = @prop   e, tokens
+                nxt.type == 'dots' and not @stack[-1].startsWith('op') ➜ e = @slice  e, tokens
+                nxt.text == 'each' ➜ e = @each   e, tokens
+                nxt.text == '?' 
                 
-                if unspaced # and tokens[1]?.text in '([.'
-
-                    e = @assert e, tokens
+                    if unspaced
+    
+                        e = @assert e, tokens
+                        
+                    else
+                        
+                        e = @qmrkop e, tokens
                     
-                else
-                    
-                    e = @qmrkop e, tokens
-                    
-            else if nxt.text == ':' and e.qmrkop
+                nxt.text == ':' and e.qmrkop
                 
-                e = @qmrkcolon e.qmrkop, tokens
+                    e = @qmrkcolon e.qmrkop, tokens
                 
-            else if (   nxt.type == 'op' and 
-                        nxt.text not in ['++' '--' '+' '-' 'not'] and 
-                        e.text not in ['[' '('] and                     
-                        '▸arg' not in @stack)
-                if @stack[-1]?.startsWith 'op' and @stack[-1] != 'op='
-                    @verb 'lhs stop on operation' e, nxt
-                    break
-                else if @stack[-1] in ['in?' 'opempty' 'opvalid']
-                    @verb "lhs stop on #{@stack[-1]}" e, nxt
-                    break
-                else if nxt.text == '▸'
-                    @verb "lhs break on ▸"
-                    break
-                else
-                    @verb 'lhs is lhs of op' e, nxt
+                (   nxt.type == 'op' and 
+                    nxt.text not in ['++' '--' '+' '-' 'not'] and 
+                    e.text not in ['[' '('] and                     
+                    '▸arg' not in @stack)
+                    
+                    if 
+                        @stack[-1]?.startsWith 'op' and @stack[-1] != 'op='
+                            @verb 'lhs stop on operation' e, nxt
+                            break
+                        @stack[-1] in ['in?' 'opempty' 'opvalid']
+                            @verb "lhs stop on #{@stack[-1]}" e, nxt
+                            break
+                        nxt.text == '▸'
+                            @verb "lhs break on ▸"
+                            break
+                        ➜
+                            @verb 'lhs is lhs of op' e, nxt
+                            e = @operation e, tokens.shift(), tokens
+                
+                (   nxt.text in ['+' '-'] and 
+                    e.text not in ['[' '('] and
+                    spaced and tokens[1]?.col > nxt.col+nxt.text.length)
+                    
+                    @verb 'lhs is lhs of +-\s' e, nxt
                     e = @operation e, tokens.shift(), tokens
-                
-            else if (   nxt.text in ['+' '-'] and 
-                        e.text not in ['[' '('] and
-                        spaced and tokens[1]?.col > nxt.col+nxt.text.length)
-                @verb 'lhs is lhs of +-\s' e, nxt
-                e = @operation e, tokens.shift(), tokens
             
-            else if nxt.type == 'func' and e.parens
-                @verb 'lhs is args for func' e
-                e = @func e, tokens.shift(), tokens
+                nxt.type == 'func' and e.parens
+                    @verb 'lhs is args for func' e
+                    e = @func e, tokens.shift(), tokens
                 
-            else if nxt.text == '(' and unspaced
-                @verb 'lhs is lhs of call'
-                e = @call e, tokens
+                nxt.text == '(' and unspaced
+                    @verb 'lhs is lhs of call'
+                    e = @call e, tokens
                     
-            else if nxt.text == '[' and unspaced and tokens[1]?.text != ']'
-                @verb 'lhs is lhs of index' e
-                e = @index e, tokens
+                nxt.text == '[' and unspaced and tokens[1]?.text != ']'
+                    @verb 'lhs is lhs of index' e
+                    e = @index e, tokens
                 
-            else if nxt.text == 'not' and tokens[1]?.text == 'in'
+                nxt.text == 'not' and tokens[1]?.text == 'in'
 
-                e = operation:
-                    operator:tokens.shift()
-                    rhs:@incond e, tokens
+                    e = operation:
+                        operator:tokens.shift()
+                        rhs:@incond e, tokens
                     
-            else if (   spaced and (nxt.line == last.line or (nxt.col > first.col and @stack[-1] not in ['if'])) and
-                        nxt.text not in ['if' 'then' 'else' 'break' 'continue' 'in' 'of' 'for' 'while'] and 
-                        nxt.type not in ['nl'] and
-                        (e.type not in @kode.literals) and
-                        (e.type not in ['punct' 'comment' 'op' 'section' 'test' 'func']) and 
-                        (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'if' 'then' 'else' 'for' 'while']) and 
-                        not e.array and
-                        not e.object and
-                        not e.keyval and
-                        not e.operation and
-                        not e.incond and
-                        not e.qmrkop and
-                        e.call?.callee?.text not in ['delete''new''typeof'] and
-                        '▸arg' not in @stack)
-                @verb 'lhs is lhs of implicit call! e' e, @stack[-1]
-                @verb '    is lhs of implicit call! nxt' nxt
-                @verb '    is lhs first' first 
-                e = @call e, tokens
-                break
-
-            else if nxt.text in ['+' '-'] and e.text not in ['[' '(']
-                if spaced and tokens[1]?.col == nxt.col+nxt.text.length
-                    @verb 'lhs op is unbalanced +- break...' e, nxt, @stack
+                (   spaced and (nxt.line == last.line or (nxt.col > first.col and @stack[-1] not in ['if'])) and
+                    nxt.text not in ['if' 'then' 'else' 'break' 'continue' 'in' 'of' 'for' 'while'] and 
+                    nxt.type not in ['nl'] and
+                    (e.type not in @kode.literals) and
+                    (e.type not in ['punct' 'comment' 'op' 'section' 'test' 'func']) and 
+                    (e.text not in ['null' 'undefined' 'Infinity' 'NaN' 'if' 'then' 'else' 'for' 'while']) and 
+                    not e.array and
+                    not e.object and
+                    not e.keyval and
+                    not e.operation and
+                    not e.incond and
+                    not e.qmrkop and
+                    e.call?.callee?.text not in ['delete''new''typeof'] and
+                    '▸arg' not in @stack)
+                    @verb 'lhs is lhs of implicit call! e' e, @stack[-1]
+                    @verb '    is lhs of implicit call! nxt' nxt
+                    @verb '    is lhs first' first 
+                    e = @call e, tokens
                     break
-                @verb 'lhs is lhs of +- op' e, nxt
-                e = @operation e, tokens.shift(), tokens
+
+                nxt.text in ['+' '-'] and e.text not in ['[' '(']
+                    if spaced and tokens[1]?.col == nxt.col+nxt.text.length
+                        @verb 'lhs op is unbalanced +- break...' e, nxt, @stack
+                        break
+                    @verb 'lhs is lhs of +- op' e, nxt
+                    e = @operation e, tokens.shift(), tokens
                                 
-            else
-                # print.tokens "lhs no nxt match? break! stack:#{@stack} nxt:" [nxt] if @verbose
-                break                    
+                ➜
+                    # print.tokens "lhs no nxt match? break! stack:#{@stack} nxt:" [nxt] if @verbose
+                    break                    
             
             if numTokens == tokens.length
                 error 'lhs no token consumed?'
@@ -719,24 +725,31 @@ function Parse # the base class of Parser
     #      000  000   000  000   000  000   000  000      000   000  000       000  000        000  
     # 0000000    0000000   0000000    0000000    0000000   0000000    0000000  000   000  0000000   
     
+    # helps to figure out blocked if and switch statements
+    # converts the list of block tokens into a list of token lists
+    # each list in the returned lists contains the tokens for one else(if) or when statement
+    
     subBlocks: (tokens) ->
         
         subbs = [[]]
         
-        if tokens[-1].type == 'block' and tokens[-1].tokens[0].text == 'then'
-            elseBlock = tokens.pop()
-            elseTokens = elseBlock.tokens
-            elseTokens[0].text = 'else'
-        if tokens[0]?.text == 'then'
-            tokens[0].text = 'else'
-            return [tokens]
+        if tokens[-1].type == 'block' and tokens[-1].tokens[0].text == 'then' # trailing then that represent else
+            elseBlock = tokens.pop()                                            # remove,
+            elseTokens = elseBlock.tokens                                       # remember and
+            elseTokens[0].text = 'else'                                         # undisguise
             
-        while valid tokens
-            t = tokens.shift()
-            if t.type == 'nl'
-                subbs.push []
-                if tokens[0]?.text == 'then'
-                    tokens[0].text = 'else'
+        if tokens[0]?.text == 'then'                                          # we start with a then, so the block contains the else 
+            tokens[0].text = 'else'                                             # undisguise
+            return [tokens]                                                     # done
+            
+        while valid tokens                                                    # eat remaining tokens
+            t = tokens.shift()                                     
+            if t.type == 'nl'                                                   # nl might seperate a subblock
+                if tokens[0]?.text in ')}]'                                         # no, it's a dangling close
+                    subbs[-1].push t
+                else
+                    subbs.push []                                                   # yes, start another subblock
+                    if tokens[0]?.text == 'then' ➜ tokens[0].text = 'else'          # this should not be necessary?!
             else
                 subbs[-1].push t
 
