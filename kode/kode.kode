@@ -192,6 +192,10 @@ class Kode
                     error R2 y3 "can't write #{R3 y6 out}"
                     
             @args.test
+            
+                for k,v of require.cache # invalidate cache for changed file
+                    if slash.base(k) == slash.base(file)
+                        delete require.cache[k]
                 
                 if @tester.test text, file
                     @tester.summarize()
