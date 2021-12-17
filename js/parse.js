@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.135.0
+// monsterkodi/kode 0.136.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, valid: undefined}
 
@@ -885,13 +885,12 @@ Parse = (function ()
 
     Parse.prototype["subBlocks"] = function (tokens)
     {
-        var subbs, elseBlock, elseTokens, t
+        var subbs, elseTokens, t
 
         subbs = [[]]
         if (tokens.slice(-1)[0].type === 'block' && tokens.slice(-1)[0].tokens[0].text === 'then')
         {
-            elseBlock = tokens.pop()
-            elseTokens = elseBlock.tokens
+            elseTokens = tokens.pop().tokens
             elseTokens[0].text = 'else'
         }
         if ((tokens[0] != null ? tokens[0].text : undefined) === 'then')

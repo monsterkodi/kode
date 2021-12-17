@@ -733,23 +733,24 @@ function Parse # the base class of Parser
         
         subbs = [[]]
         
-        if tokens[-1].type == 'block' and tokens[-1].tokens[0].text == 'then' # trailing then that represent else
-            elseBlock = tokens.pop()                                            # remove,
-            elseTokens = elseBlock.tokens                                       # remember and
-            elseTokens[0].text = 'else'                                         # undisguise
+        if tokens[-1].type == 'block' and       # trailing block with disguised else
+           tokens[-1].tokens[0].text == 'then' 
+                elseTokens = tokens.pop().tokens    # remove, remember and
+                elseTokens[0].text = 'else'         # undisguise
             
-        if tokens[0]?.text == 'then'                                          # we start with a then, so the block contains the else 
-            tokens[0].text = 'else'                                             # undisguise
-            return [tokens]                                                     # done
+        if tokens[0]?.text == 'then'            # block starts with then: only a disguised else 
+            tokens[0].text = 'else'                 # undisguise
+            return [tokens]                         # done
             
-        while valid tokens                                                    # eat remaining tokens
+        while valid tokens                      
             t = tokens.shift()                                     
-            if t.type == 'nl'                                                   # nl might seperate a subblock
-                if tokens[0]?.text in ')}]'                                         # no, it's a dangling close
+            if t.type == 'nl'                       # nl might seperate a subblock
+                if tokens[0]?.text in ')}]'             # no: it's a dangling close
                     subbs[-1].push t
-                else
-                    subbs.push []                                                   # yes, start another subblock
-                    if tokens[0]?.text == 'then' ➜ tokens[0].text = 'else'          # this should not be necessary?!
+                else    
+                    subbs.push []                       # yes: start another subblock
+                    if tokens[0]?.text == 'then'        # undisguis else
+                        tokens[0].text = 'else'             
             else
                 subbs[-1].push t
 
