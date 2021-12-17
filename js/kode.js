@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.136.0
+// monsterkodi/kode 0.137.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -147,9 +147,9 @@ class Kode
             }
             _module.filename = sandbox.__filename
             var list = _k_.list(Object.getOwnPropertyNames(require))
-            for (var _117_18_ = 0; _117_18_ < list.length; _117_18_++)
+            for (var _119_18_ = 0; _119_18_ < list.length; _119_18_++)
             {
-                r = list[_117_18_]
+                r = list[_119_18_]
                 if (!(_k_.in(r,['paths','arguments','caller','length','name'])))
                 {
                     _require[r] = require[r]
@@ -192,9 +192,9 @@ class Kode
             return
         }
         var list = _k_.list(this.args.files)
-        for (var _149_17_ = 0; _149_17_ < list.length; _149_17_++)
+        for (var _151_17_ = 0; _151_17_ < list.length; _151_17_++)
         {
-            file = list[_149_17_]
+            file = list[_151_17_]
             file = slash.resolve(file)
             if (this.args.verbose)
             {
@@ -280,9 +280,9 @@ class Kode
             else
             {
                 var list = _k_.list(this.args.files)
-                for (var _203_26_ = 0; _203_26_ < list.length; _203_26_++)
+                for (var _205_26_ = 0; _205_26_ < list.length; _205_26_++)
                 {
-                    f = list[_203_26_]
+                    f = list[_205_26_]
                     this.tester.test(slash.readText(f),f)
                 }
                 return this.tester.summarize()
@@ -298,26 +298,26 @@ class Kode
 module.exports = Kode
 if (!module.parent || slash.resolve(module.parent.path).endsWith('/kode/bin'))
 {
-    args = karg(`kode option
-    files       . **
-    eval        . ? evaluate a string and print the result
-    compile     . ? transpile a string and print the result
-    outdir      . ? output directory for transpiled files
-    run         . ? execute files                               . = true
-    test        . ? execute tests                               . = false
-    watch       . ? watch for changes and compile, test or run  . = false
-    map         . ? generate inline source maps                 . = true
-    kode        . ? pretty print input code                     . = false
-    js          . ? pretty print transpiled js code             . = false
-    header      . ? prepend output with version header          . = false  . - H
-    tokens      . ? print tokens                                . = false  . - T
-    block       . ? print block tree                            . = false  . - B
-    parse       . ? print parse tree                            . = false  . - P
-    astr        . ? print parse tree as string                  . = false  . - A
-    scope       . ? print scopes                                . = false  . - S
-    verbose     . ? log everything                              . = false
-    debug       . ? log debug                                   . = false
-    raw         . ? log raw                                     . = false  . - R
+    args = karg(`kode
+    files       **
+    eval        evaluate a string and print the result
+    compile     transpile a string and print the result
+    outdir      output directory for transpiled files
+    run         execute files                               = true
+    test        execute tests                               = false
+    watch       watch for changes and compile, test or run  = false
+    map         generate inline source maps                 = true
+    kode        pretty print input code                     = false
+    js          pretty print transpiled js code             = false
+    header      prepend output with version header          = false -H
+    tokens      print tokens                                = false -T
+    block       print block tree                            = false -B
+    parse       print parse tree                            = false -P
+    astr        print parse tree as string                  = false -A
+    scope       print scopes                                = false -S
+    verbose     log everything                              = false
+    debug       log debug                                   = false
+    raw         log raw                                     = false -R
 
 version  ${pkg.version}`)
     register()
