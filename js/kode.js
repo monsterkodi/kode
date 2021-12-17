@@ -2,7 +2,7 @@
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
-var slash, kstr, klor, karg, childp, print, pkg, register, args, kode
+var slash, kstr, klor, karg, childp, print, pkg, register, ddi, passOnArgv, args, kode
 
 slash = require('kslash')
 kstr = require('kstr')
@@ -147,9 +147,9 @@ class Kode
             }
             _module.filename = sandbox.__filename
             var list = _k_.list(Object.getOwnPropertyNames(require))
-            for (var _119_18_ = 0; _119_18_ < list.length; _119_18_++)
+            for (var _117_18_ = 0; _117_18_ < list.length; _117_18_++)
             {
-                r = list[_119_18_]
+                r = list[_117_18_]
                 if (!(_k_.in(r,['paths','arguments','caller','length','name'])))
                 {
                     _require[r] = require[r]
@@ -192,9 +192,9 @@ class Kode
             return
         }
         var list = _k_.list(this.args.files)
-        for (var _151_17_ = 0; _151_17_ < list.length; _151_17_++)
+        for (var _149_17_ = 0; _149_17_ < list.length; _149_17_++)
         {
-            file = list[_151_17_]
+            file = list[_149_17_]
             file = slash.resolve(file)
             if (this.args.verbose)
             {
@@ -280,9 +280,9 @@ class Kode
             else
             {
                 var list = _k_.list(this.args.files)
-                for (var _205_26_ = 0; _205_26_ < list.length; _205_26_++)
+                for (var _203_26_ = 0; _203_26_ < list.length; _203_26_++)
                 {
-                    f = list[_205_26_]
+                    f = list[_203_26_]
                     this.tester.test(slash.readText(f),f)
                 }
                 return this.tester.summarize()
@@ -298,6 +298,12 @@ class Kode
 module.exports = Kode
 if (!module.parent || slash.resolve(module.parent.path).endsWith('/kode/bin'))
 {
+    if (_k_.in('--',process.argv))
+    {
+        ddi = process.argv.indexOf('--')
+        passOnArgv = process.argv.slice(ddi + 1)
+        process.argv = process.argv.slice(0,ddi)
+    }
     args = karg(`kode
     files       **
     eval        evaluate a string and print the result
@@ -320,6 +326,7 @@ if (!module.parent || slash.resolve(module.parent.path).endsWith('/kode/bin'))
     raw         log raw                                     = false -R
 
 version  ${pkg.version}`)
+    process.argv = process.argv.slice(0, 2).concat((passOnArgv != null ? passOnArgv : []))
     register()
     kode = new Kode(args)
     kode.cli()

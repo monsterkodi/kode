@@ -29,8 +29,6 @@ class Kode
         if @args.verbose then @args.debug = @args.block = @args.tokens = @args.parse = true
         if @args.tokens or @args.block or @args.parse or @args.astr then @args.run = false
 
-        # print.noon @args
-        
         @literals = ['bool''num''regex''single''double''triple']
         @atoms    = @literals.concat ['var']
         
@@ -219,6 +217,11 @@ module.exports = Kode
 
 if not module.parent or slash.resolve(module.parent.path).endsWith '/kode/bin'
 
+    if '--' in process.argv
+        ddi = process.argv.indexOf '--'
+        passOnArgv   = process.argv.slice ddi+1
+        process.argv = process.argv.slice 0 ddi
+    
     args = karg """
         kode
             files       **
@@ -243,9 +246,9 @@ if not module.parent or slash.resolve(module.parent.path).endsWith '/kode/bin'
 
         version  #{pkg.version}
         """
-
-    # print.noon args
         
+    process.argv = process.argv[..1].concat passOnArgv ? []
+    
     register()
     kode = new Kode args
     kode.cli()
