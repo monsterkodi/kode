@@ -261,8 +261,6 @@ function Parse # the base class of Parser
                                     if @stack[-1] not in ['{']
                                         return @func null, tok, tokens
 
-        # here starts the hairy part :-)
-
         @sheapPush 'exp' tok.text ? tok.type
         
         e = tok
