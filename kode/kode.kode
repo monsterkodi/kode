@@ -227,7 +227,7 @@ if not module.parent or slash.resolve(module.parent.path).endsWith '/kode/bin'
             files       **
             eval        evaluate a string and print the result
             compile     transpile a string and print the result
-            outdir      output directory for transpiled files
+            outdir      transpile files into output directory
             run         execute files                               = true
             test        execute tests                               = false
             watch       watch for changes and compile, test or run  = false
@@ -244,6 +244,11 @@ if not module.parent or slash.resolve(module.parent.path).endsWith '/kode/bin'
             debug       log debug                                   = false
             raw         log raw                                     = false -R
 
+        ▸
+            --      
+                arguments following a standalone -- are ignored
+                and passed on to the executed script
+            
         version  #{pkg.version}
         """
         

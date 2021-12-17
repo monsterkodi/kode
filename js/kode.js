@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.137.0
+// monsterkodi/kode 0.139.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -308,7 +308,7 @@ if (!module.parent || slash.resolve(module.parent.path).endsWith('/kode/bin'))
     files       **
     eval        evaluate a string and print the result
     compile     transpile a string and print the result
-    outdir      output directory for transpiled files
+    outdir      transpile files into output directory
     run         execute files                               = true
     test        execute tests                               = false
     watch       watch for changes and compile, test or run  = false
@@ -325,6 +325,11 @@ if (!module.parent || slash.resolve(module.parent.path).endsWith('/kode/bin'))
     debug       log debug                                   = false
     raw         log raw                                     = false -R
 
+▸
+    --      
+        arguments following a standalone -- are ignored
+        and passed on to the executed script
+    
 version  ${pkg.version}`)
     process.argv = process.argv.slice(0, 2).concat((passOnArgv != null ? passOnArgv : []))
     register()
