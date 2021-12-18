@@ -113,7 +113,7 @@ The first is used, when the right hand side is a string.
 ### is num
 
 ```coffeescript
-"0xFF" is num and "-4.536" is num       ->  true
+"0xFF" is num and "-4.536" is num and 42 is num                   # ->  true
 ```
 
 The special keyword `num` does a string coersion via `parseFloat` in the test.
