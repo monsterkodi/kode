@@ -319,6 +319,42 @@
             {
             }
             """
+            
+        ▸ if block
+        
+            kc  """
+                if
+                    a is Object ➜ 1
+                    a is Array  ➜ 2
+                """ ▸
+                """
+                if (a instanceof Object)
+                {
+                    1
+                }
+                else if (a instanceof Array)
+                {
+                    2
+                }
+                """
+                
+            kc  """
+                if
+                    a is Object 
+                        1
+                    a is Array  
+                        2
+                """ ▸
+                """
+                if (a instanceof Object)
+                {
+                    1
+                }
+                else if (a instanceof Array)
+                {
+                    2
+                }
+                """
         
         ▸ num
             # https://stackoverflow.com/questions/18082/validate-decimal-numbers-in-javascript-isnumeric/174921#174921

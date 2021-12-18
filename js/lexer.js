@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.139.0
+// monsterkodi/kode 0.140.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}}
 
@@ -22,7 +22,7 @@ class Lexer
         for (key in this.patterns)
         {
             pat = this.patterns[key]
-            if (typeof(pat) === 'string')
+            if (typeof(pat) == 'string')
             {
                 this.regs.push([key,new RegExp(pat)])
             }
@@ -119,7 +119,8 @@ class Lexer
             after = text.length
             if (before === after)
             {
-                console.log(`stray character ${text[0]} in line ${line} col ${col}`)
+                console.log("files",this.kode.args.files)
+                console.log(`stray character ▸${text[0]}◂ in line ${line} col ${col} text:\n`,text)
                 tokens.push({type:'stray',text:text[0],line:line,col:col})
                 text = text.slice(1)
             }
@@ -132,9 +133,9 @@ class Lexer
         var tok, splt, minind
 
         var list = _k_.list(tokens)
-        for (var _120_16_ = 0; _120_16_ < list.length; _120_16_++)
+        for (var _121_16_ = 0; _121_16_ < list.length; _121_16_++)
         {
-            tok = list[_120_16_]
+            tok = list[_121_16_]
             if (tok.type === 'triple')
             {
                 splt = tok.text.slice(3, -3).split('\n')

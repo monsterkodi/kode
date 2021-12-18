@@ -54,14 +54,14 @@ class Stripol
                 p[k] = @string e
             return
             
-        else if e instanceof Array  then @exp e, k, v for v,k in e if e.length
-        else if e instanceof Object
+        else if e is Array  then @exp e, k, v for v,k in e if e.length
+        else if e is Object
             
             for key,val of e
                 if val
                     if val.type then @exp e, key, val
                     else
-                        if val instanceof Array
+                        if val is Array
                             @exp val, k, v for v,k in val if val.length
                         else
                             @exp val, k, v for k,v of val

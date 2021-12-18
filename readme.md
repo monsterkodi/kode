@@ -120,7 +120,7 @@ A new object, array or string is build from the results and returned:
 {a:1,b:3} each (k,v) -> ['▸'+k, k+v] # -> { '▸a': 'a1', '▸b': 'b3' }
 ```
 
-If the function expects only one argument, 
+If the function takes only one argument, 
 it is the value/item/character and a single return value is expected.
 
 ## For

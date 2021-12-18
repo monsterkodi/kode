@@ -97,8 +97,8 @@ class Scoper
             if e.type == 'code'
                 @exp e.exps
             return
-        else if e instanceof Array  then @exp v for v in e if e.length
-        else if e instanceof Object
+        else if e is Array  then @exp v for v in e if e.length
+        else if e is Object
             
             if e.operation and e.operation.operator.text == '='
                 if e.operation.lhs?.text

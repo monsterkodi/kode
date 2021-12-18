@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.139.0
+// monsterkodi/kode 0.140.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
 
@@ -126,9 +126,9 @@ class Scoper
             if (e.length)
             {
                 var list = _k_.list(e)
-                for (var _100_54_ = 0; _100_54_ < list.length; _100_54_++)
+                for (var _100_46_ = 0; _100_46_ < list.length; _100_46_++)
                 {
-                    v = list[_100_54_]
+                    v = list[_100_46_]
                     this.exp(v)
                 }
             }

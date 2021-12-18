@@ -127,7 +127,7 @@ class Returner
     
     insert: (e) ->
 
-        if e instanceof Array
+        if e is Array
             lst = e[-1]
             if lst.if     ➜ return @if lst.if
             if lst.try    ➜ return @try lst.try
@@ -152,9 +152,9 @@ class Returner
         if not e then return
             
         if  
-            e.type              ➜ return
-            e instanceof Array  ➜ @exp v for v in e if e.length
-            e instanceof Object
+            e.type      ➜ return
+            e is Array  ➜ @exp v for v in e if e.length
+            e is Object
             
                 if e.func
                     @func e.func
@@ -163,7 +163,7 @@ class Returner
                         if val
                             if val.type then @exp val
                             else
-                                if val instanceof Array
+                                if val is Array
                                     @exp v for v in val
                                 else
                                     @exp v for k,v of val

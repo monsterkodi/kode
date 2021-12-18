@@ -25,11 +25,11 @@ class Lexer
         for key,pat of @patterns
             
             if 
-                typeof pat == 'string'
+                pat is 'string'
                     
                     @regs.push [key, new RegExp pat]
                     
-                pat instanceof Array
+                pat is Array
                     
                     pat = pat.map (p) -> kstr.escapeRegexp "#{p}"
                     reg = '\\b(' + pat.join('|') + ')\\b'

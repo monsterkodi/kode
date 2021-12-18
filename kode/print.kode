@@ -124,7 +124,7 @@ class Print
             
             if node.type
                 s += b6(kstr.lpad node.line ? '', 4) + ' ' + blue(kstr.lpad node.col ? '', 3) + ' ' + gray(kstr.pad node.type, 10) + ' ' + bold yellow(indent + node.text) + '\n'
-            else if node instanceof Array
+            else if node is Array
                 
                 return s if node in visited
                 visited.push node
@@ -147,7 +147,7 @@ class Print
                     s += printNode value, indent+'  ', visited
             s
 
-        if ast instanceof Array
+        if ast is Array
             log printNode node for node in ast
         else
             log printNode ast
@@ -168,7 +168,7 @@ class Print
             
             if node.type
                 s += indent + node.text + '\n'
-            else if node instanceof Array
+            else if node is Array
                 
                 return s if node in visited
                 visited.push node
@@ -189,7 +189,7 @@ class Print
                         s += printNode value, indent+'    ' visited
             s
 
-        if ast instanceof Array
+        if ast is Array
             s = (printNode node for node in ast).join ''
         else
             s = printNode ast

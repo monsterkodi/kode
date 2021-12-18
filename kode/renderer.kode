@@ -134,7 +134,7 @@ class Renderer
 
         if exp.type? and exp.text? then return @token exp
 
-        if exp instanceof Array then return (@node(a) for a in exp).join ';\n'
+        if exp is Array then return (@node(a) for a in exp).join ';\n'
 
         s = ''
 

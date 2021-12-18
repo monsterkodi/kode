@@ -74,7 +74,7 @@ lastLineCol = (e) ->
         return
             line: e.line
             col:  e.col+e.text?.length
-    else if e? and e instanceof Object
+    else if e? and e is Object
         cols = Object.values(e).map lastLineCol
         if valid cols
             return cols.reduce (a,b) -> 
@@ -97,7 +97,7 @@ firstLineCol = (e) ->
         return
             line: e.line
             col:  e.col
-    else if e? and e instanceof Object
+    else if e? and e is Object
         cols = Object.values(e).map firstLineCol
         if valid cols
             return cols.reduce (a,b) -> 
