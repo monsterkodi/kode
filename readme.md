@@ -33,40 +33,6 @@ Simple shortcuts for `log`, `warn` and `error` methods of `console`.
 
 `v[-n]` is a shortcut for `v[-n..-n][0]` for number literals `n`
 
-## Optional commata
-
-CoffeeScript has a very nice way of initializing arrays:
-
-```coffeescript
-a = [
-        1
-        2
-        3
-    ]
-```
-
-If you decide to join these into a single line, you have a problem: 
-for each of the lines a comma must be inserted.
-The same goes for objects that span over multiple lines.
-
-In **kode**, you don't need to insert commata after number or string literals and POD structures.
-Those are all valid expressions:
-
-```coffeescript
-a = [ 1 2 3 ]
-a = { b:1 c:2 d:3 }
-a =   b:1 c:2 d:3
-a =   b:[ c:2 'd' 3 ]
-a = [ [1 2] [d:3] ]
-
-test 'something' ->
-    it 'should' ->
-
-on 'event' @myCallback
-
-log 'a:' a , 'd:' 3            # some commas still make sense :-)
-```
-
 ## If shortcut
 
 ```coffeescript
@@ -212,6 +178,40 @@ null ? a: 'b'     # -> {a:'b'}
 ```coffeescript
 function C
     @: ->
+```
+
+## Optional commata
+
+CoffeeScript has a very nice way of initializing arrays:
+
+```coffeescript
+a = [
+        1
+        2
+        3
+    ]
+```
+
+If you decide to join these into a single line, you have a problem: 
+for each of the lines a comma must be inserted.
+The same goes for objects that span over multiple lines.
+
+In **kode**, you don't need to insert commata after number or string literals and POD structures.
+Those are all valid expressions:
+
+```coffeescript
+a = [ 1 2 3 ]
+a = { b:1 c:2 d:3 }
+a =   b:1 c:2 d:3
+a =   b:[ c:2 'd' 3 ]
+a = [ [1 2] [d:3] ]
+
+test 'something' ->
+    it 'should' ->
+
+on 'event' @myCallback
+
+log 'a:' a , 'd:' 3            # some commas still make sense :-)
 ```
 
 # Planned stuff that does not work yet:
