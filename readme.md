@@ -129,6 +129,11 @@ Returns `true` for null, undefined, NaN and empty array, object or string.
 
 ## Valid
 
+```coffeescript
+valid 0 and valid 'a' and valid [null] and valid Infinity        # -> true
+valid [] or valid {} or valid '' or valid null or valid NaN      # -> false
+```
+
 Just the negation of `empty`.
 
 ## Each
