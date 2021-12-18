@@ -85,8 +85,8 @@ class Scoper
             
         insert = (v,t) =>
             
-            for map in @maps then if map[v] then return
-            for arg in @args then if arg[v] then return
+            return if map[v] for map in @maps
+            return if arg[v] for arg in @args
                 
             @verb yellow(v), red(t)
             
