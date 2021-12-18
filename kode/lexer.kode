@@ -102,7 +102,8 @@ class Lexer
 
             after = text.length
             if before == after
-                log "stray character #{text[0]} in line #{line} col #{col}"
+                log "files" @kode.args.files
+                log "stray character ▸#{text[0]}◂ in line #{line} col #{col} text:\n" text
                 tokens.push type:'stray' text:text[0], line:line, col:col
                 text = text[1..-1]
         tokens

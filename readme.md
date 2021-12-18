@@ -1,3 +1,5 @@
+<img src="./bin/kode.svg" />
+
 ![banner](./bin/banner.png)
 
 **kode** is a programming language that transpiles to JavaScript.
