@@ -94,8 +94,10 @@ class Stripol
             
         push = (type,text) => 
             if type == 'code'
-                exps = @kode.ast(text).exps
-                chunks.push type:type, exps:exps, line:line, col:col+c
+                ast = @kode.ast text
+                # log 'stripol.dissect' text, ast
+                exps = ast.exps
+                chunks.push code: exps: exps
             else
                 chunks.push type:type, text:text, line:line, col:col+c
         

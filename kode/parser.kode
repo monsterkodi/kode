@@ -42,8 +42,9 @@ function Parser extends Parse
             return @ifBlock tok, tokens
 
         @push 'if'
-        
+        @lockBlock = true
         cond = @exp tokens
+        @lockBlock = false
         thn = @then 'if' tokens
 
         e = if:
@@ -456,7 +457,7 @@ function Parser extends Parse
                 args = @exps '(' tokens, ')'
                 @pop 'args('
         else
-            if tok.type == 'keyword' and tok.text in ['typeof' 'delete']
+            if tok.type == 'keyword' and tok.text in ['typeof' 'delete' 'new']
                 @push '▸arg'
                 args = [@exp tokens]
                 @pop  '▸arg'
@@ -909,7 +910,7 @@ function Parser extends Parse
     error: (o, tokens) ->
         
         @pop o.pop if o.pop
-        error B3(b7(" #{tokens[0]?.line ? ' '} ")) + R1(y4(" #{o.hdr ? o.pop} ")) + R2(y7(" #{o.msg} "))
+        error B3(b7(" #{tokens?[0]?.line ? ' '} ")) + R1(y4(" #{o.hdr ? o.pop} ")) + R2(y7(" #{o.msg} "))
         null
         
 module.exports = Parser

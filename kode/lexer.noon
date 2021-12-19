@@ -11,7 +11,7 @@ paren       [\(\)\[\]\{\}]
 func        (->|=>)
 test        ▸[\s\n]+
 then        ➜
-op          (\band\b|\bor\b|\bnot\b|\+\+|--|==|!=|>=|<=|\+=|-=|\*=|\/=|\|=|\^=|\?=|\&=|%=|<<|>>|=|\*|\/|\+|-|%|\^|~|\&|\||<|>|\bis\b|\binstanceof\b)
+op          (\band\b|\bor\b|\bnot\b|\+\+|--|==|!=|>=|<=|\+=|-=|\*=|\/=|\|=|\^=|\?=|\&=|%=|<<|>>|=|\*|\/|\+|-|%|\^|~|\&|\||<|>|\bis\b|\binstanceof\b|\bdelete\b)
 punct       [,:;!&~\|\.\?\\]
 this        @
 bool        (\byes\b|\bno\b|\btrue\b|\bfalse\b)
@@ -32,8 +32,7 @@ keyword
     of
     new
     class
-    super
-    delete
+    super    
     extends
     try
     catch

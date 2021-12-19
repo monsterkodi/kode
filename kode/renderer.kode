@@ -33,6 +33,8 @@ class Renderer
         # if @kode.args.map and source
             # @srcmap = new SrcMap source
         
+        @ast = ast
+            
         @hint = _k_:{}
         @varstack = [ast.vars]
         @indent = ''
@@ -102,7 +104,9 @@ class Renderer
     nodes: (nodes, sep=',' tl) ->
 
         if not nodes?
-            log 'no nodes?!?@' nodes, sep, tl
+            log 'no nodes?!?' @stack, @sheap
+            print.ast 'no nodes' @ast
+            return ''
         
         s = ''
         for i in 0...nodes.length
@@ -1070,7 +1074,7 @@ class Renderer
 
         o   = opmap op.operator.text
         sep = ' '
-        sep = '' if not op.lhs or not op.rhs
+        sep = '' if (not op.lhs and op.operator.text not in ['delete' 'new']) or not op.rhs
 
         if o in ['<''<=''===''!==''>=''>']
             ro = opmap op.rhs?.operation?.operator.text
@@ -1124,8 +1128,10 @@ class Renderer
             
         first = firstLineCol op.lhs
         prfx = if first.col == 0 and op.rhs?.func then '\n' else ''
-            
-        prfx + @atom(op.lhs) + sep + o + sep + open + kstr.lstrip @atom(op.rhs) + close
+ 
+        lhs = if op.lhs then @atom(op.lhs) + sep else ''
+        
+        prfx + lhs + o + sep + open + kstr.lstrip @atom(op.rhs) + close
 
     # 000  000   000   0000000   0000000   000   000  0000000
     # 000  0000  000  000       000   000  0000  000  000   000
@@ -1267,13 +1273,13 @@ class Renderer
        for chunk in chunks
            t = chunk.text
            switch chunk.type
-               'open'  ➜ s +=       t + '${'
-               'midl'  ➜ s += '}' + t + '${'
-               'close' ➜ s += '}' + t
-               'code'  
-                   c = @nodes chunk.exps
-                   if c[0] == ';' ➜ c = c[1..]
-                   s+= c
+               'open'  ➜    s +=       t + '${'
+               'midl'  ➜    s += '}' + t + '${'
+               'close' ➜    s += '}' + t
+                       ➜    if chunk.code  
+                                c = @nodes chunk.code.exps
+                                if c[0] == ';' ➜ c = c[1..]
+                                s+= c
        s += '`'
        s
 
