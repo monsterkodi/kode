@@ -564,7 +564,8 @@ function Parse # the base class of Parser
                         @stackAllowsBlockArg() and
                         nxt.tokens[0]?.text != 'then' and
                         @stack[-1] not in ['if' 'then' 'for' 'while' 'switch' 'when' 'catch' 'in?' '▸args' 'class' 'function' 'op+' 'op-' 'opis' 'opor' 'opand' 'op==' 'opnot' 'op<' 'op>']
-                            log 'blocked call arg' @stack, e, nxt
+                            # log 'blocked call arg' @stack, e, nxt
+                            e = @call e, tokens
                     break                    
             
             if numTokens == tokens.length

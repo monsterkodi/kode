@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.141.0
+// monsterkodi/kode 0.142.0
 
 var _k_ = {extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -25,14 +25,16 @@ Parser = (function ()
 
     Parser.prototype["if"] = function (tok, tokens)
     {
-        var cond, thn, e, _65_23_
+        var cond, thn, e, _66_23_
 
         if (tokens[0].type === 'block')
         {
             return this.ifBlock(tok,tokens)
         }
         this.push('if')
+        this.lockBlock = true
         cond = this.exp(tokens)
+        this.lockBlock = false
         thn = this.then('if',tokens)
         e = {if:{cond:cond,then:thn}}
         this.shiftNewlineTok('if after then',tokens,tok,(tokens[1] != null ? tokens[1].text : undefined) === 'else')
@@ -46,7 +48,7 @@ Parser = (function ()
         {
             tokens.shift()
             tokens.shift()
-            e.if.elifs = ((_65_23_=e.if.elifs) != null ? _65_23_ : [])
+            e.if.elifs = ((_66_23_=e.if.elifs) != null ? _66_23_ : [])
             cond = this.exp(tokens)
             thn = this.then('elif',tokens)
             this.shiftNewlineTok('if after elif then',tokens,tok,(tokens[1] != null ? tokens[1].text : undefined) === 'else')
@@ -63,7 +65,7 @@ Parser = (function ()
 
     Parser.prototype["ifBlock"] = function (tok, tokens, e)
     {
-        var subbs, cond, thn, _115_23_
+        var subbs, cond, thn, _116_23_
 
         this.push('if')
         subbs = this.subBlocks(tokens.shift().tokens)
@@ -83,7 +85,7 @@ Parser = (function ()
             }
             cond = this.exp(tokens)
             thn = this.then('elif',tokens)
-            e.if.elifs = ((_115_23_=e.if.elifs) != null ? _115_23_ : [])
+            e.if.elifs = ((_116_23_=e.if.elifs) != null ? _116_23_ : [])
             e.if.elifs.push({elif:{cond:cond,then:thn}})
         }
         this.pop('if')
@@ -343,7 +345,7 @@ Parser = (function ()
         }
         else
         {
-            if (tok.type === 'keyword' && _k_.in(tok.text,['typeof','delete']))
+            if (tok.type === 'keyword' && _k_.in(tok.text,['typeof','delete','new']))
             {
                 this.push('▸arg')
                 args = [this.exp(tokens)]
@@ -705,13 +707,13 @@ col = firstLineCol(key).col
 
     Parser.prototype["error"] = function (o, tokens)
     {
-        var _1_16_, _1_6_
+        var _1_17_, _1_6_
 
         if (o.pop)
         {
             this.pop(o.pop)
         }
-        console.error(B3(b7(` ${((_1_16_=(tokens[0] != null ? tokens[0].line : undefined)) != null ? _1_16_ : ' ')} `)) + R1(y4(` ${((_1_6_=o.hdr) != null ? _1_6_ : o.pop)} `)) + R2(y7(` ${o.msg} `)))
+        console.error(B3(b7(` ${((_1_17_=(tokens != null ? tokens[0] != null ? tokens[0].line : undefined : undefined)) != null ? _1_17_ : ' ')} `)) + R1(y4(` ${((_1_6_=o.hdr) != null ? _1_6_ : o.pop)} `)) + R2(y7(` ${o.msg} `)))
         return null
     }
 
