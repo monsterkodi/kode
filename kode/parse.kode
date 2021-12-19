@@ -562,9 +562,9 @@ function Parse # the base class of Parser
                     if  nxt.type == 'block' and
                         @isSuitableForImplicitCall(e) and 
                         @stackAllowsBlockArg() and
-                        nxt.tokens[0]?.text != 'then' and
+                        nxt.tokens[0]?.text not in ['then' 'when'] and
                         @stack[-1] not in ['if' 'then' 'for' 'while' 'switch' 'when' 'catch' 'in?' '▸args' 'class' 'function' 'op+' 'op-' 'opis' 'opor' 'opand' 'op==' 'opnot' 'op<' 'op>']
-                            # log 'blocked call arg' @stack, e, nxt
+                            @verb 'blocked call arg' @stack, e, nxt
                             e = @call e, tokens
                     break                    
             

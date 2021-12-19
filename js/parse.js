@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.145.0
+// monsterkodi/kode 0.146.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, valid: undefined}
 
@@ -738,8 +738,9 @@ Parse = (function ()
                 {
                     print.ast(`lhs no nxt match? break! stack:${this.stack}`,e)
                 }
-                if (nxt.type === 'block' && this.isSuitableForImplicitCall(e) && this.stackAllowsBlockArg() && (nxt.tokens[0] != null ? nxt.tokens[0].text : undefined) !== 'then' && !(_k_.in(this.stack.slice(-1)[0],['if','then','for','while','switch','when','catch','in?','▸args','class','function','op+','op-','opis','opor','opand','op==','opnot','op<','op>'])))
+                if (nxt.type === 'block' && this.isSuitableForImplicitCall(e) && this.stackAllowsBlockArg() && !(_k_.in((nxt.tokens[0] != null ? nxt.tokens[0].text : undefined),['then','when'])) && !(_k_.in(this.stack.slice(-1)[0],['if','then','for','while','switch','when','catch','in?','▸args','class','function','op+','op-','opis','opor','opand','op==','opnot','op<','op>'])))
                 {
+                    this.verb('blocked call arg',this.stack,e,nxt)
                     e = this.call(e,tokens)
                 }
                 break
