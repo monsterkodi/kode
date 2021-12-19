@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.150.0
+// monsterkodi/kode 0.151.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, valid: undefined}
 
@@ -203,8 +203,12 @@ Parse = (function ()
             }
             e = this.exp(tokens)
             last = lastLineCol(e)
-            while ((_k_.in((tokens[0] != null ? tokens[0].text : undefined),['if','for','while']) && !(_k_.in(this.stack.slice(-1)[0],['▸args','▸return'])) && last.line === tokens[0].line))
+            while ((_k_.in((tokens[0] != null ? tokens[0].text : undefined),['if','for','while']) && this.noThenAhead(tokens) && !(_k_.in(this.stack.slice(-1)[0],['▸args','▸return'])) && last.line === tokens[0].line))
             {
+                if (!this.noThenAhead(tokens))
+                {
+                    console.log('then ahead!',tokens)
+                }
                 this.verb(`exps ${tokens[0].text}Tail`,e,this.stack)
                 switch (tokens[0].text)
                 {
@@ -263,7 +267,7 @@ Parse = (function ()
 
     Parse.prototype["exp"] = function (tokens)
     {
-        var block, e, numTokens, tok, _264_34_, _322_33_
+        var block, e, numTokens, tok, _268_34_, _326_33_
 
         if (_k_.empty(tokens))
         {
@@ -321,7 +325,7 @@ Parse = (function ()
                             return this.for(tok,tokens)
 
                         case 'if':
-                            if (!(_k_.in(this.stack.slice(-1)[0],['▸args','▸return'])))
+                            if (!(_k_.in(this.stack.slice(-1)[0],['▸return'])))
                             {
                                 if (this.stack.length)
                                 {
@@ -348,7 +352,7 @@ Parse = (function ()
 
         }
 
-        this.sheapPush('exp',((_264_34_=tok.text) != null ? _264_34_ : tok.type))
+        this.sheapPush('exp',((_268_34_=tok.text) != null ? _268_34_ : tok.type))
         e = tok
         while (tokens.length)
         {
@@ -424,13 +428,13 @@ Parse = (function ()
             this.verb(`exp cleanup ${this.stack.slice(-1)[0]}`)
             this.pop(this.stack.slice(-1)[0])
         }
-        this.sheapPop('exp',((_322_33_=tok.text) != null ? _322_33_ : tok.type))
+        this.sheapPop('exp',((_326_33_=tok.text) != null ? _326_33_ : tok.type))
         return e
     }
 
     Parse.prototype["rhs"] = function (e, tokens)
     {
-        var llc, numTokens, nxt, spaced, unspaced, _383_22_
+        var llc, numTokens, nxt, spaced, unspaced, _387_22_
 
         this.sheapPush('rhs','rhs')
         while (nxt = tokens[0])
@@ -710,7 +714,7 @@ Parse = (function ()
             {
                 e = {operation:{operator:tokens.shift(),rhs:this.incond(e,tokens)}}
             }
-            else if ((spaced && (nxt.line === last.line || (nxt.col > first.col && !(_k_.in(this.stack.slice(-1)[0],['if'])))) && !(_k_.in(nxt.text,['if','then','else','break','continue','in','of','for','while'])) && !(_k_.in(nxt.text,':)}]')) && !(_k_.in(nxt.type,['nl'])) && (nxt.type !== 'op' || _k_.in(nxt.text,['+','++','--','-'])) && this.isSuitableForImplicitCall(e)))
+            else if ((spaced && (nxt.line === last.line || (nxt.col > first.col && !(_k_.in(this.stack.slice(-1)[0],['if'])))) && !(_k_.in(nxt.text,['then','else','break','continue','in','of','for','while'])) && (!(_k_.in(nxt.text,['if'])) || !this.noThenAhead(tokens)) && !(_k_.in(nxt.text,':)}]')) && !(_k_.in(nxt.type,['nl'])) && (nxt.type !== 'op' || _k_.in(nxt.text,['+','++','--','-'])) && this.isSuitableForImplicitCall(e)))
             {
                 this.verb('lhs is lhs of implicit call! e',e,this.stack.slice(-1)[0])
                 this.verb('    is lhs of implicit call! nxt',nxt)
@@ -792,15 +796,15 @@ Parse = (function ()
 
     Parse.prototype["nameMethods"] = function (mthds)
     {
-        var m, name, _631_34_, _631_39_, _632_35_, _632_41_
+        var m, name, _636_34_, _636_39_, _637_35_, _637_41_
 
         if ((mthds != null ? mthds.length : undefined))
         {
             var list = _k_.list(mthds)
-            for (var _630_18_ = 0; _630_18_ < list.length; _630_18_++)
+            for (var _635_18_ = 0; _635_18_ < list.length; _635_18_++)
             {
-                m = list[_630_18_]
-                if (name = ((_631_34_=m.keyval) != null ? (_631_39_=_631_34_.key) != null ? _631_39_.text : undefined : undefined))
+                m = list[_635_18_]
+                if (name = ((_636_34_=m.keyval) != null ? (_636_39_=_636_34_.key) != null ? _636_39_.text : undefined : undefined))
                 {
                     if (((m.keyval.val != null ? m.keyval.val.func : undefined) != null))
                     {
@@ -962,6 +966,28 @@ Parse = (function ()
             return true
         }
         return false
+    }
+
+    Parse.prototype["noThenAhead"] = function (tokens)
+    {
+        var ti
+
+        ti = 0
+        while (++ti < tokens.length)
+        {
+            if (tokens[ti].text === 'then')
+            {
+                if (tokens[ti].col > tokens[ti - 1].col + tokens[ti - 1].text.length)
+                {
+                    return false
+                }
+            }
+            if (_k_.in(tokens[ti].type,['nl','block']))
+            {
+                return true
+            }
+        }
+        return true
     }
 
     Parse.prototype["sheapPush"] = function (type, text)

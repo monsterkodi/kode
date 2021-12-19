@@ -170,8 +170,12 @@ function Parse # the base class of Parser
             last = lastLineCol e
             
             while ( tokens[0]?.text in ['if' 'for' 'while'] and 
+                    @noThenAhead(tokens) and
                     @stack[-1] not in ['▸args' '▸return'] and
-                    last.line == tokens[0].line)
+                    last.line == tokens[0].line )
+
+                if not @noThenAhead(tokens)
+                    log 'then ahead!' tokens
                     
                 @verb "exps #{tokens[0].text }Tail" e, @stack
                 switch tokens[0].text 
@@ -253,7 +257,7 @@ function Parse # the base class of Parser
                                     'try'      ➜ return @try      tok, tokens
                                     'for'      ➜ return @for      tok, tokens
                                     'if' 
-                                        if @stack[-1] not in ['▸args' '▸return']
+                                        if @stack[-1] not in ['▸return']
                                             @verb 'if' @stack if @stack.length
                                             return @if tok, tokens
                         ➜   switch tok.text
@@ -409,7 +413,7 @@ function Parse # the base class of Parser
                             print.tokens "rhs no nxt match? break! stack:#{@stack} nxt:" [nxt] if @verbose
                             break                    
                     
-                ➜ # if e is not a token anymore
+                ➜ # e is not a token anymore
                 
                     if 
                         nxt.text in ['++''--']  and unspaced        ➜ e = @operation e, tokens.shift(); break
@@ -537,7 +541,8 @@ function Parse # the base class of Parser
                     
                 (   spaced and 
                     (nxt.line == last.line or (nxt.col > first.col and @stack[-1] not in ['if'])) and
-                    nxt.text not in ['if' 'then' 'else' 'break' 'continue' 'in' 'of' 'for' 'while'] and
+                    nxt.text not in ['then' 'else' 'break' 'continue' 'in' 'of' 'for' 'while'] and
+                    (nxt.text not in ['if'] or not @noThenAhead tokens) and
                     nxt.text not in ':)}]' and
                     nxt.type not in ['nl'] and
                     (nxt.type != 'op' or nxt.text in ['+''++''--''-']) and
@@ -779,8 +784,17 @@ function Parse # the base class of Parser
         s = @stack.filter (s) -> s in ['if' 'for' 'while' 'then' 'class' 'function' '{' ':']
         return true if empty s
         return true if s[-1] == 'then'
-        # log 'stackAllowsBlockArg?' s
         false
+        
+    noThenAhead: (tokens) ->
+        
+        ti = 0
+        while ++ti < tokens.length
+            if tokens[ti].text == 'then'
+                if tokens[ti].col > tokens[ti-1].col + tokens[ti-1].text.length # if then is spaced
+                    return false 
+            return true  if tokens[ti].type in ['nl' 'block']
+        true
                             
     #  0000000  000   000  00000000   0000000   00000000     
     # 000       000   000  000       000   000  000   000    
