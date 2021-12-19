@@ -222,6 +222,19 @@
             slash = require('kslash')
             kstr = require('kstr')
             """
+            
+        kc  """
+            if true
+                {m,n} = require 'bla'
+            """ ▸
+            """
+            if (true)
+            {
+                m = require('bla').m
+                n = require('bla').n
+            
+            }
+            """
 
     # 00000000  00     00  00000000   000000000  000   000  
     # 000       000   000  000   000     000      000 000   

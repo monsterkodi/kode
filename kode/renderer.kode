@@ -1093,7 +1093,8 @@ class Renderer
                 if op.lhs.object # lhs is curly, eg. {x,y} = require ''
                     s = ''
                     for keyval in op.lhs.object.keyvals
-                        s += "#{keyval.text} = #{@atom(op.rhs)}.#{keyval.text}\n"
+                        ind = if op.lhs.object.keyvals.indexOf(keyval) > 0 then @indent else ''
+                        s += ind + "#{keyval.text} = #{@atom(op.rhs)}.#{keyval.text}\n"
                     return s
                     
                 if op.lhs.array # lhs is aray, eg. [x,y] = require ''
