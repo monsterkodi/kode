@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.147.0
+// monsterkodi/kode 0.149.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}}
 
@@ -35,7 +35,7 @@ class Stripol
 
     exp (p, k, e)
     {
-        var v, key, val
+        var key, v, val
 
         if (!e)
         {
@@ -102,7 +102,7 @@ class Stripol
 
     string (e)
     {
-        var s, chunks
+        var chunks, s
 
         s = e.type === 'triple' ? e.text.slice(3, -3) : e.text.slice(1, -1)
         chunks = this.dissect(s,e.line,e.col)
@@ -119,7 +119,7 @@ class Stripol
 
     dissect (s, line, col)
     {
-        var c, chunks, push, t, m, ic, rgs, matches, k, r, length, index, b
+        var b, c, chunks, ic, index, k, length, m, matches, push, r, rgs, t
 
         c = 0
         chunks = []

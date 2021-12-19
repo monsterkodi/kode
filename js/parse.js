@@ -1,8 +1,8 @@
-// monsterkodi/kode 0.147.0
+// monsterkodi/kode 0.149.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, valid: undefined}
 
-var kstr, print, firstLineCol, lastLineCol, Parse
+var firstLineCol, kstr, lastLineCol, Parse, print
 
 kstr = require('kstr')
 print = require('./print')
@@ -37,7 +37,7 @@ Parse = (function ()
 
     Parse.prototype["exps"] = function (rule, tokens, stop)
     {
-        var es, numTokens, tok, b, block, blocked, blockExps, nl, e, last, colon
+        var b, block, blocked, blockExps, colon, e, es, last, nl, numTokens, tok
 
         if (_k_.empty(tokens))
         {
@@ -263,7 +263,7 @@ Parse = (function ()
 
     Parse.prototype["exp"] = function (tokens)
     {
-        var tok, _264_34_, e, numTokens, block, _322_33_
+        var block, e, numTokens, tok, _264_34_, _322_33_
 
         if (_k_.empty(tokens))
         {
@@ -430,7 +430,7 @@ Parse = (function ()
 
     Parse.prototype["rhs"] = function (e, tokens)
     {
-        var nxt, numTokens, unspaced, llc, spaced, _383_22_
+        var llc, numTokens, nxt, spaced, unspaced, _383_22_
 
         this.sheapPush('rhs','rhs')
         while (nxt = tokens[0])
@@ -593,7 +593,7 @@ Parse = (function ()
 
     Parse.prototype["lhs"] = function (e, tokens)
     {
-        var nxt, numTokens, last, first, unspaced, spaced, b
+        var b, first, last, numTokens, nxt, spaced, unspaced
 
         this.sheapPush('lhs','lhs')
         while (nxt = tokens[0])
@@ -710,7 +710,7 @@ Parse = (function ()
             {
                 e = {operation:{operator:tokens.shift(),rhs:this.incond(e,tokens)}}
             }
-            else if ((spaced && (nxt.line === last.line || (nxt.col > first.col && !(_k_.in(this.stack.slice(-1)[0],['if'])))) && !(_k_.in(nxt.text,['if','then','else','break','continue','in','of','for','while'])) && !(_k_.in(nxt.text,')}]')) && !(_k_.in(nxt.type,['nl'])) && (nxt.type !== 'op' || _k_.in(nxt.text,['+','++','--','-'])) && this.isSuitableForImplicitCall(e)))
+            else if ((spaced && (nxt.line === last.line || (nxt.col > first.col && !(_k_.in(this.stack.slice(-1)[0],['if'])))) && !(_k_.in(nxt.text,['if','then','else','break','continue','in','of','for','while'])) && !(_k_.in(nxt.text,':)}]')) && !(_k_.in(nxt.type,['nl'])) && (nxt.type !== 'op' || _k_.in(nxt.text,['+','++','--','-'])) && this.isSuitableForImplicitCall(e)))
             {
                 this.verb('lhs is lhs of implicit call! e',e,this.stack.slice(-1)[0])
                 this.verb('    is lhs of implicit call! nxt',nxt)
@@ -792,7 +792,7 @@ Parse = (function ()
 
     Parse.prototype["nameMethods"] = function (mthds)
     {
-        var m, name, _631_39_, _631_34_, _632_41_, _632_35_
+        var m, name, _631_34_, _631_39_, _632_35_, _632_41_
 
         if ((mthds != null ? mthds.length : undefined))
         {
@@ -814,7 +814,7 @@ Parse = (function ()
 
     Parse.prototype["then"] = function (id, tokens)
     {
-        var thn, block
+        var block, thn
 
         if ((tokens[0] != null ? tokens[0].text : undefined) === 'then')
         {
@@ -860,7 +860,7 @@ Parse = (function ()
 
     Parse.prototype["block"] = function (id, tokens)
     {
-        var origTokens, block, nl, exps
+        var block, exps, nl, origTokens
 
         if ((tokens[0] != null ? tokens[0].type : undefined) === 'block')
         {
@@ -897,7 +897,7 @@ Parse = (function ()
 
     Parse.prototype["subBlocks"] = function (tokens)
     {
-        var subbs, elseTokens, t
+        var elseTokens, subbs, t
 
         subbs = [[]]
         if (tokens.slice(-1)[0].type === 'block' && tokens.slice(-1)[0].tokens[0].text === 'then')

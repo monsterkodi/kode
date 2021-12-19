@@ -1,8 +1,8 @@
-// monsterkodi/kode 0.147.0
+// monsterkodi/kode 0.149.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}}
 
-var noon, slash, kstr
+var kstr, noon, slash
 
 noon = require('noon')
 slash = require('kslash')
@@ -40,7 +40,7 @@ class Lexer
 
     tokenize (text)
     {
-        var tokens, line, col, before, key, reg, match, value, lines, end, txt, after
+        var after, before, col, end, key, line, lines, match, reg, tokens, txt, value
 
         tokens = []
         line = 1
@@ -130,7 +130,7 @@ class Lexer
 
     tripdent (tokens)
     {
-        var tok, splt, minind
+        var minind, splt, tok
 
         var list = _k_.list(tokens)
         for (var _121_16_ = 0; _121_16_ < list.length; _121_16_++)
@@ -197,7 +197,7 @@ class Lexer
 
     unslash (tokens)
     {
-        var newTokens, idx, tok
+        var idx, newTokens, tok
 
         newTokens = []
         idx = 0
@@ -223,7 +223,7 @@ class Lexer
 
     mergeop (tokens)
     {
-        var newTokens, idx, tok
+        var idx, newTokens, tok
 
         newTokens = []
         idx = 0
@@ -250,7 +250,7 @@ class Lexer
 
     uncomment (tokens)
     {
-        var newTokens, idx, tok
+        var idx, newTokens, tok
 
         newTokens = []
         idx = 0
@@ -270,7 +270,7 @@ class Lexer
 
     blockify (tokens)
     {
-        var blocks, block, outdentTo, idx, tok, nxt
+        var block, blocks, idx, nxt, outdentTo, tok
 
         tokens = this.tripdent(tokens)
         tokens = this.unslash(tokens)

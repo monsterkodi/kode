@@ -1,8 +1,8 @@
-// monsterkodi/kode 0.147.0
+// monsterkodi/kode 0.149.0
 
 var _k_ = {each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined}
 
-var kstr, print, comps, succs, fails, stack, allfails, allsuccs
+var allfails, allsuccs, comps, fails, kstr, print, stack, succs
 
 kstr = require('kstr')
 print = require('./print')
@@ -193,7 +193,7 @@ class Tester
 
     short (s)
     {
-        var split, l, ss
+        var l, split, ss
 
         split = ('' + s).split('\n')
         l = 0

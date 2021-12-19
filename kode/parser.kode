@@ -843,7 +843,7 @@ function Parser extends Parse
         @push ':'
         
         colon = tokens.shift()
-        rhs = @exp tokens 
+        rhs = @exp tokens
         
         @pop  ':'
         

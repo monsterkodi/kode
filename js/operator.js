@@ -1,8 +1,8 @@
-// monsterkodi/kode 0.147.0
+// monsterkodi/kode 0.149.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
-var precedence, assign, print
+var assign, precedence, print
 
 
 precedence = function (o)
@@ -105,7 +105,7 @@ class Operator
 
     collect (tl)
     {
-        var _52_19_, e
+        var e, _52_19_
 
         if ((tl != null ? (_52_19_=tl.exps) != null ? _52_19_.length : undefined : undefined))
         {
@@ -121,7 +121,7 @@ class Operator
 
     exp (e)
     {
-        var v, key, val
+        var key, v, val
 
         if (!e)
         {
@@ -170,7 +170,7 @@ class Operator
 
     op (e)
     {
-        var chain, c, _86_19_, p, i
+        var c, chain, i, p, _86_19_
 
         chain = [e]
         c = e.operation
@@ -202,7 +202,7 @@ class Operator
 
     fixPrec (e, chain, p)
     {
-        var op, _115_59_, _115_98_, _115_88_, _115_77_, _119_48_, _119_37_, newlhs, newop, c, _143_27_
+        var c, newlhs, newop, op, _115_59_, _115_77_, _115_88_, _115_98_, _119_37_, _119_48_, _143_27_
 
         if (this.debug)
         {
@@ -255,7 +255,7 @@ class Operator
 
     logChain (chain, p)
     {
-        var s, rndr, _159_49_
+        var rndr, s, _159_49_
 
         s = ''
         rndr = (function (n)

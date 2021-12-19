@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.147.0
+// monsterkodi/kode 0.149.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined}
 
@@ -21,7 +21,7 @@ class Returner
 
     scope (body)
     {
-        var _36_21_, e
+        var e, _36_21_
 
         if ((body != null ? (_36_21_=body.exps) != null ? _36_21_.length : undefined : undefined))
         {
@@ -37,7 +37,7 @@ class Returner
 
     func (f)
     {
-        var _50_23_, _50_17_, _52_21_, lst, ins
+        var ins, lst, _50_17_, _50_23_, _52_21_
 
         if (f.args)
         {
@@ -199,7 +199,7 @@ class Returner
 
     insert (e)
     {
-        var lst, _138_36_, _138_28_
+        var lst, _138_28_, _138_36_
 
         if (e instanceof Array)
         {
@@ -233,7 +233,7 @@ class Returner
 
     exp (e)
     {
-        var v, key, val, k
+        var k, key, v, val
 
         if (!e)
         {

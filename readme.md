@@ -260,6 +260,7 @@ Stuff I rarely used and therefore didn't bother to re-implement:
 
 # Future plans
 
+▸ render comments
 - ? operator : precedence 
 - `dbg`  `assert`  `profile` keywords
 - `profile` in same scope

@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.147.0
+// monsterkodi/kode 0.149.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
 
@@ -42,7 +42,7 @@ class Scoper
 
     func (f)
     {
-        var arg, _62_25_, t, _65_42_, _65_37_, _68_74_, _68_69_, e, _70_30_
+        var arg, e, t, _62_25_, _65_37_, _65_42_, _68_69_, _68_74_, _70_30_
 
         this.maps.push({})
         this.args.push({})
@@ -81,7 +81,7 @@ class Scoper
 
     exp (e)
     {
-        var insert, v, _104_34_, keyval, val, vals, _119_51_, _119_43_, key
+        var insert, key, keyval, v, val, vals, _104_34_, _119_43_, _119_51_
 
         if (!e)
         {
@@ -89,7 +89,7 @@ class Scoper
         }
         insert = (function (v, t)
         {
-            var map, arg
+            var arg, map
 
             var list = _k_.list(this.maps)
             for (var _88_37_ = 0; _88_37_ < list.length; _88_37_++)

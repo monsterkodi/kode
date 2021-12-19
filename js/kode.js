@@ -1,8 +1,8 @@
-// monsterkodi/kode 0.147.0
+// monsterkodi/kode 0.149.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
-var slash, kstr, klor, karg, childp, print, pkg, register, ddi, passOnArgv, args, kode
+var args, childp, ddi, karg, klor, kode, kstr, passOnArgv, pkg, print, register, slash
 
 slash = require('kslash')
 kstr = require('kstr')
@@ -18,7 +18,7 @@ class Kode
 {
     constructor (args)
     {
-        var _27_14_, Lexer, Parser, Scoper, Stripol, Returner, Operator, Renderer, Tester
+        var Lexer, Operator, Parser, Renderer, Returner, Scoper, Stripol, Tester, _27_14_
 
         this.args = args
         this.onChange = this.onChange.bind(this)
@@ -84,7 +84,7 @@ class Kode
 
     ast (text)
     {
-        var tokens, block
+        var block, tokens
 
         if (this.args.verbose || this.args.debug || this.args.kode)
         {
@@ -118,7 +118,7 @@ class Kode
 
     eval (text, file, glob)
     {
-        var vm, sandbox, k, v, Module, _module, _require, r, js
+        var js, k, Module, r, sandbox, v, vm, _module, _require
 
         if (_k_.empty(text))
         {
@@ -175,7 +175,7 @@ class Kode
 
     cli ()
     {
-        var file, text, js, out
+        var file, js, out, text
 
         if (this.args.compile)
         {
@@ -245,7 +245,7 @@ class Kode
 
     onChange (file)
     {
-        var text, js, out, k, v, f
+        var f, js, k, out, text, v
 
         text = slash.readText(file)
         if (_k_.empty(text))

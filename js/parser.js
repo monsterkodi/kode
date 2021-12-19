@@ -1,8 +1,8 @@
-// monsterkodi/kode 0.147.0
+// monsterkodi/kode 0.149.0
 
 var _k_ = {extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
-var print, Parse, firstLineCol, lastLineCol, Parser
+var firstLineCol, lastLineCol, Parse, Parser, print
 
 print = require('./print')
 Parse = require('./parse')
@@ -25,7 +25,7 @@ Parser = (function ()
 
     Parser.prototype["if"] = function (tok, tokens)
     {
-        var cond, thn, e, _66_23_
+        var cond, e, thn, _66_23_
 
         if (tokens[0].type === 'block')
         {
@@ -65,7 +65,7 @@ Parser = (function ()
 
     Parser.prototype["ifBlock"] = function (tok, tokens, e)
     {
-        var subbs, cond, thn, _116_23_
+        var cond, subbs, thn, _116_23_
 
         this.push('if')
         subbs = this.subBlocks(tokens.shift().tokens)
@@ -99,7 +99,7 @@ Parser = (function ()
 
     Parser.prototype["for"] = function (tok, tokens)
     {
-        var vals, inof, list, thn
+        var inof, list, thn, vals
 
         this.push('for')
         vals = this.exps('for vals',tokens)
@@ -122,7 +122,7 @@ Parser = (function ()
 
     Parser.prototype["forTail"] = function (e, tok, tokens)
     {
-        var vals, inof, list
+        var inof, list, vals
 
         this.push('for')
         vals = this.exps('for vals',tokens)
@@ -157,7 +157,7 @@ Parser = (function ()
 
     Parser.prototype["switch"] = function (tok, tokens)
     {
-        var match, whens, e, subbs, lastWhen
+        var e, lastWhen, match, subbs, whens
 
         this.push('switch')
         match = this.exp(tokens)
@@ -211,7 +211,7 @@ Parser = (function ()
 
     Parser.prototype["when"] = function (tok, tokens)
     {
-        var vals, thn
+        var thn, vals
 
         this.push('when')
         vals = []
@@ -227,7 +227,7 @@ Parser = (function ()
 
     Parser.prototype["try"] = function (tok, tokens)
     {
-        var exps, errr, ctch, fnlly
+        var ctch, errr, exps, fnlly
 
         this.push('try')
         exps = this.block('body',tokens)
@@ -255,7 +255,7 @@ Parser = (function ()
 
     Parser.prototype["class"] = function (tok, tokens, type = 'class')
     {
-        var name, e
+        var e, name
 
         this.push('class')
         name = tokens.shift()
@@ -300,7 +300,7 @@ Parser = (function ()
 
     Parser.prototype["return"] = function (tok, tokens)
     {
-        var val, e
+        var e, val
 
         if ((tokens[0] != null ? tokens[0].type : undefined) !== 'nl')
         {
@@ -321,7 +321,7 @@ Parser = (function ()
 
     Parser.prototype["call"] = function (tok, tokens, qmrk)
     {
-        var last, open, args, close, e
+        var args, close, e, last, open
 
         this.push('call')
         if (tok.token)
@@ -392,7 +392,7 @@ Parser = (function ()
 
     Parser.prototype["operation"] = function (lhs, op, tokens)
     {
-        var rhs, e
+        var e, rhs
 
         this.push(`op${op.text}`)
         rhs = this.exp(tokens)
@@ -437,7 +437,7 @@ Parser = (function ()
 
     Parser.prototype["array"] = function (open, tokens)
     {
-        var items, close, comp
+        var close, comp, items
 
         if ((tokens[0] != null ? tokens[0].text : undefined) === ']')
         {
@@ -472,7 +472,7 @@ Parser = (function ()
 
     Parser.prototype["index"] = function (tok, tokens)
     {
-        var open, slice, close
+        var close, open, slice
 
         this.push('idx')
         open = tokens.shift()
@@ -491,7 +491,7 @@ Parser = (function ()
 
     Parser.prototype["parens"] = function (open, tokens)
     {
-        var exps, close, comp
+        var close, comp, exps
 
         if ((tokens[0] != null ? tokens[0].text : undefined) === ')')
         {
@@ -521,7 +521,7 @@ Parser = (function ()
 
     Parser.prototype["curly"] = function (open, tokens)
     {
-        var exps, close
+        var close, exps
 
         if ((tokens[0] != null ? tokens[0].text : undefined) === '}')
         {
@@ -536,7 +536,7 @@ Parser = (function ()
 
     Parser.prototype["object"] = function (key, tokens)
     {
-        var first, exps, literals, block
+        var block, exps, first, literals
 
         this.push('{')
         first = firstLineCol(key)
@@ -592,7 +592,7 @@ Parser = (function ()
 
     Parser.prototype["keyval"] = function (key, tokens)
     {
-        var colon, block, value, k, line, col, text
+        var block, col, colon, k, line, text, value
 
         colon = tokens.shift()
         this.push(':')
@@ -680,7 +680,7 @@ Parser = (function ()
 
     Parser.prototype["section"] = function (tok, tokens)
     {
-        var title, exps
+        var exps, title
 
         title = {type:'double',text:'"' + tok.text + '"',line:tok.line,col:tok.col}
         if (_k_.in('section',this.stack))

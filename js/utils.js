@@ -1,19 +1,19 @@
-// monsterkodi/kode 0.147.0
+// monsterkodi/kode 0.149.0
 
 var _k_ = {in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined}
 
-var childp, slash, register, lastLineCol, firstLineCol
+var childp, firstLineCol, lastLineCol, register, slash
 
 childp = require('child_process')
 slash = require('kslash')
 
 register = function ()
 {
-    var loadFile, Module, fork, binary
+    var binary, fork, loadFile, Module
 
     loadFile = function (module, file)
     {
-        var Kode, kode, code, result
+        var code, kode, Kode, result
 
         try
         {
@@ -69,7 +69,7 @@ register = function ()
 
 lastLineCol = function (e)
 {
-    var _73_13_, _76_30_, cols
+    var cols, _73_13_, _76_30_
 
     if (((e != null ? e.col : undefined) != null))
     {
@@ -109,7 +109,7 @@ lastLineCol = function (e)
 
 firstLineCol = function (e)
 {
-    var _96_13_, cols
+    var cols, _96_13_
 
     if (((e != null ? e.col : undefined) != null))
     {

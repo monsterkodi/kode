@@ -1,8 +1,8 @@
-// monsterkodi/kode 0.147.0
+// monsterkodi/kode 0.149.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
 
-var kstr, slash, print
+var kstr, print, slash
 
 kstr = require('kstr')
 slash = require('kslash')
@@ -45,7 +45,7 @@ class SourceMap
 
     solve (s)
     {
-        var p, slcs, jsidx, jslns, ln, ci, cs, tok, i, ji
+        var ci, cs, i, ji, jsidx, jslns, ln, p, slcs, tok
 
         if (_k_.empty(s))
         {
@@ -89,7 +89,7 @@ class SourceMap
 
     done (s)
     {
-        var ls, li, ln, lm, c
+        var c, li, lm, ln, ls
 
         ls = s.split('\n')
         console.log(b5('d'),this.jsline,ls.length,this.lines.length)
@@ -116,7 +116,7 @@ class SourceMap
 
     add (source, target, jsstr)
     {
-        var line, column, _127_21_
+        var column, line, _127_21_
 
         var _126_23_ = target ; line = _126_23_[0]        ; column = _126_23_[1]
 
@@ -126,7 +126,7 @@ class SourceMap
 
     generate (code)
     {
-        var writingline, lastColumn, lastSourceLine, lastSourceColumn, needComma, buffer, lineMap, lineNumber, mapping, file
+        var buffer, file, lastColumn, lastSourceColumn, lastSourceLine, lineMap, lineNumber, mapping, needComma, writingline
 
         writingline = 0
         lastColumn = 0
@@ -178,7 +178,7 @@ class SourceMap
 
     jscode (v3Map)
     {
-        var encoded, dataURL, sourceURL
+        var dataURL, encoded, sourceURL
 
         encoded = this.base64encode(JSON.stringify(v3Map))
         dataURL = `//# sourceMappingURL=data:application/json;base64,${encoded}`
@@ -193,7 +193,7 @@ class SourceMap
 
     encodeVlq (value)
     {
-        var VLQ_SHIFT, VLQ_CONTINUATION_BIT, VLQ_VALUE_MASK, signBit, valueToEncode, answer, nextChunk
+        var answer, nextChunk, signBit, valueToEncode, VLQ_CONTINUATION_BIT, VLQ_SHIFT, VLQ_VALUE_MASK
 
         VLQ_SHIFT = 5
         VLQ_CONTINUATION_BIT = 1 << VLQ_SHIFT
@@ -243,7 +243,7 @@ class LineMap
 
     add (column, srcloc, jsstr)
     {
-        var sourceLine, sourceColumn
+        var sourceColumn, sourceLine
 
         var _285_35_ = srcloc ; sourceLine = _285_35_[0]        ; sourceColumn = _285_35_[1]
 

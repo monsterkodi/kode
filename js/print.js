@@ -1,8 +1,8 @@
-// monsterkodi/kode 0.147.0
+// monsterkodi/kode 0.149.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
-var kstr, klor, noon, slash, childp
+var childp, klor, kstr, noon, slash
 
 kstr = require('kstr')
 klor = require('klor')
@@ -14,7 +14,7 @@ class Print
 {
     static tokens (header, tokens)
     {
-        var s, tok, idx
+        var idx, s, tok
 
         console.log(R3(y5(`\n ${header}`)))
         console.log(b6(kstr.pad('',80,' ')))
@@ -79,7 +79,7 @@ class Print
 
     static sheap (sheap, popped)
     {
-        var s, r, c
+        var c, r, s
 
         s = B2('   ')
         var list = _k_.list(sheap)
@@ -134,7 +134,7 @@ class Print
         console.log(R3(y5(`\n ${header}`)))
         printBlock = function (b)
         {
-            var s, c, _95_27_, ci, cn, _102_44_
+            var c, ci, cn, s, _102_44_, _95_27_
 
             if (legend)
             {
@@ -176,13 +176,13 @@ class Print
 
     static ast (header, ast)
     {
-        var lpad, printNode, node
+        var lpad, node, printNode
 
         console.log(G1(g6(`\n ${header}`)))
         lpad = kstr.lpad('',19)
         printNode = function (node, indent = '', visited = [])
         {
-            var s, _126_44_, _126_85_, value, name
+            var name, s, value, _126_44_, _126_85_
 
             s = ''
             if (!node)
@@ -251,11 +251,11 @@ class Print
 
     static astr (ast, scopes)
     {
-        var printNode, s, node
+        var node, printNode, s
 
         printNode = function (node, indent = '', visited = [])
         {
-            var s, value, _183_28_, _183_43_, name
+            var name, s, value, _183_28_, _183_43_
 
             s = ''
             if (!node)
