@@ -47,8 +47,8 @@ class Renderer
         s += @js "var _k_\n\n", true
         
         if valid ast.vars
-            vs = (v.text for v in ast.vars).join ', '
-            s += @js "var #{vs}\n\n" true
+            vl = @sortVars ast.vars
+            s += @js "var #{vl}\n\n" true
 
         s += @nodes ast.exps, '\n' true
         
@@ -502,7 +502,8 @@ class Renderer
 
         if valid n.body.vars
             s += '\n'
-            vs = (v.text for v in n.body.vars).join ', '
+            vs = @sortVars n.body.vars
+            # vs = (v.text for v in n.body.vars).join ', '
             s += @indent + "var #{vs}\n"
 
         for t in ths
@@ -1331,6 +1332,21 @@ class Renderer
           + @node(p.rhs)      \
           + ')'
         s
+        
+    #  0000000   0000000   00000000   000000000  000   000   0000000   00000000    0000000  
+    # 000       000   000  000   000     000     000   000  000   000  000   000  000       
+    # 0000000   000   000  0000000       000      000 000   000000000  0000000    0000000   
+    #      000  000   000  000   000     000        000     000   000  000   000       000  
+    # 0000000    0000000   000   000     000         0      000   000  000   000  0000000   
+    
+    sortVars: (vars) ->
+        
+        vl = [v.text for v in vars]
+        vl.sort (a,b) -> 
+            if  a[0] == '_' and b[0] != '_' ➜ 1
+                a[0] != '_' and b[0] == '_' ➜ -1
+                                            ➜ a.localeCompare b
+        vl.join ', '
         
     # 00000000  00000000   00000000   0000000  000   000  000   000   0000000   00000000   
     # 000       000   000  000       000       000   000  000   000  000   000  000   000  
