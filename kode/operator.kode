@@ -9,6 +9,9 @@
 # walks through an abstract syntax tree and sorts operation chains by precedence
 
 precedence = (o) ->
+    
+    return 12 if o?.qmrkcolon
+    
     t = o?.operation?.operator.text
     switch t
     
@@ -64,7 +67,7 @@ class Operator
         if  
             not e       ➜ return
             e.type      ➜ return
-            e.operation ➜ @op e; @exp e.operation.rhs
+            e.operation ➜ @op e; if e.operation?.rhs then @exp e.operation.rhs else if e.qmrkcolon then @exp e.qmrkcolon.mid; @exp e.qmrkcolon.rhs; 
             e is Array  ➜ @exp v for v in e if e.length
             e is Object
                 for key,val of e
@@ -83,9 +86,9 @@ class Operator
         chain = [e]
         
         c = e.operation
-        while c.rhs?.operation
+        while c.rhs?.operation or c.rhs?.qmrkcolon
             chain.push c.rhs
-            c = c.rhs.operation
+            c = c.rhs.operation or c.rhs?.qmrkcolon
         
         if chain.length > 1
             
@@ -110,7 +113,7 @@ class Operator
         
         if precedence(e) < precedence(e.rhs)
             
-            op = e.operation
+            op = e.operation or e.qmrkcolon
             
             return if op.operator.text == 'not' and (op.rhs?.incond or op.rhs?.operation?.operator?.text in assign)
                 
@@ -120,32 +123,50 @@ class Operator
                 
             @verb 'swap' precedence(e), precedence(op.rhs)
             print.ast 'before swap' e if @debug
-            
-            newlhs = 
-                operation:
-                    lhs:        op.lhs
-                    operator:   op.operator
-                    rhs:        op.rhs.operation.lhs
+                                
+            if op.rhs.qmrkcolon
+                
+                newlhs = 
+                    operation:
+                        lhs:        op.lhs
+                        operator:   op.operator
+                        rhs:        op.rhs.qmrkcolon.lhs
+                
+                newop = 
+                    lhs:        newlhs
+                    qmrk:       op.rhs.qmrkcolon.qmrk
+                    mid:        op.rhs.qmrkcolon.mid
+                    colon:      op.rhs.qmrkcolon.colon
+                    rhs:        op.rhs.qmrkcolon.rhs
+                  
+                delete e.operation
+                e.qmrkcolon = newop
+            else
+                newlhs = 
+                    operation:
+                        lhs:        op.lhs
+                        operator:   op.operator
+                        rhs:        op.rhs.operation.lhs
                     
-            newop = 
-                lhs: newlhs
-                operator: op.rhs.operation.operator
-                rhs:      op.rhs.operation.rhs
+                newop = 
+                    lhs: newlhs
+                    operator: op.rhs.operation.operator
+                    rhs:      op.rhs.operation.rhs
 
-            e.operation = newop
+                e.operation = newop
             
             print.ast 'after swap2' e if @debug
 
-            if @debug
-                chain = [e]
-                 
-                c = e.operation
-                while c.rhs?.operation
-                    chain.push c.rhs
-                    c = c.rhs.operation
-                 
-                p = chain.map (i) -> precedence i
-                @logChain chain, p
+            # if @debug
+                # chain = [e]
+#                  
+                # c = e.operation
+                # while c.rhs?.operation
+                    # chain.push c.rhs
+                    # c = c.rhs.operation
+#                  
+                # p = chain.map (i) -> precedence i
+                # @logChain chain, p
 
     logChain: (chain, p) ->
                 
@@ -155,8 +176,13 @@ class Operator
                 w2 @kode.renderer.node n
             catch e
                 print.noon e, n
-        s += chain.map((i) => (rndr i.operation.lhs) + ' ' + w3(i.operation.operator.text) + ' ' + b6(precedence i)).join ' '
-        s += ' ' + rndr(chain[-1].operation.rhs) ? '...'
+        s += chain.map((i) => 
+                if i.operation
+                    (rndr i.operation.lhs) + ' ' + w3(i.operation.operator.text) + ' ' + b6(precedence i)
+                else
+                    (rndr i.qmrkcolon.lhs) + ' ? ' + (rndr i.qmrkcolon.mid) + ' ' 
+            ).join ' '
+        s += ' ' + rndr(chain[-1].operation?.rhs) ? '...'
         log w4('▪'), s, g3 p
         
     verb: -> if @verbose then console.log.apply console.log, arguments 
