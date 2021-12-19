@@ -475,7 +475,7 @@ function Parse # the base class of Parser
             
             if      
                 nxt.text == '.'    ➜ e = @prop   e, tokens
-                nxt.type == 'dots' and not @stack[-1].startsWith('op') ➜ e = @slice  e, tokens
+                nxt.type == 'dots' and not @stack[-1].startsWith('op') and @stack[-1] != '(' ➜ e = @slice e, tokens
                 nxt.text == 'each' ➜ e = @each   e, tokens
                 nxt.text == '?' 
                 

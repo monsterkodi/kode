@@ -536,6 +536,10 @@ class Renderer
         ths  = []
         used = {}
 
+        if args[-1].text == '...' and args.length > 1 and args[-2].type == 'var'
+            args.pop()
+            args[-1].text = '...' + args[-1].text
+        
         for a in args
             if a.text then used[a.text] = a.text
 
