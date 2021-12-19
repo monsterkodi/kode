@@ -536,7 +536,7 @@ class Renderer
         ths  = []
         used = {}
 
-        if args[-1].text == '...' and args.length > 1 and args[-2].type == 'var'
+        if args.length > 1 and args[-1].text == '...' and args[-2].type == 'var'
             args.pop()
             args[-1].text = '...' + args[-1].text
         
