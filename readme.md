@@ -7,7 +7,7 @@ It is highly inspired by and *tries* to be compatible with [CoffeeScript](http:/
 ## ...
 
 ```kode
-a = 1..3
+a = 1...3
 for i in 0..5
 ```
 
