@@ -150,8 +150,8 @@ class C
 
 ```kode
 l = [1,2,3]
-a = [x for x in l]  ▸ [1,2,3]
-a = (x for x in l)  ▸ [1,2,3]
+a = [x for x in l]                                                  ▸ [1,2,3]
+a = (x for x in l)                                                  ▸ [1,2,3]
 ````
 
 **kode** doesn't distuinguish between round and square brackets around list comprehensions.
@@ -159,14 +159,14 @@ a = (x for x in l)  ▸ [1,2,3]
 ## ternary
 
 ```kode
-false ? 1 : 2       ▸ 2
+false ? 1 : 2                                                       ▸ 2
 ```
 
 A nifty `if` `then` `else` shortcut.
 It introduces some ambiguity in a few corner cases, which can be resolved by different spacing:
 
 ```kode
-null ? a: 'b'       ▸ {a:'b'}
+null ? a: 'b'                                                       ▸ {a:'b'}
 ```
 
 ## old school
