@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.165.0
+// monsterkodi/kode 0.166.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}}
 
@@ -40,7 +40,7 @@ class Lexer
 
     tokenize (text)
     {
-        var after, before, col, end, key, line, lines, match, reg, tokens, txt, value
+        var after, before, col, end, key, line, lines, match, ni, reg, si, tokens, txt, value
 
         tokens = []
         line = 1
@@ -110,8 +110,21 @@ class Lexer
                     }
                     else if (key.startsWith('prof'))
                     {
-                        end = Math.min(text.indexOf('\n'),text.indexOf(';'))
-                        if (end < 0)
+                        ni = text.indexOf('\n')
+                        si = text.indexOf(';')
+                        if (ni >= 0 && si >= 0)
+                        {
+                            end = Math.min(ni,si)
+                        }
+                        else if (ni >= 0)
+                        {
+                            end = ni
+                        }
+                        else if (si >= 0)
+                        {
+                            end = si
+                        }
+                        else
                         {
                             end = text.length
                         }
@@ -145,9 +158,9 @@ class Lexer
         var minind, splt, tok
 
         var list = _k_.list(tokens)
-        for (var _129_16_ = 0; _129_16_ < list.length; _129_16_++)
+        for (var _136_16_ = 0; _136_16_ < list.length; _136_16_++)
         {
-            tok = list[_129_16_]
+            tok = list[_136_16_]
             if (tok.type === 'triple')
             {
                 splt = tok.text.slice(3, -3).split('\n')

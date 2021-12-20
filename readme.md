@@ -34,7 +34,8 @@ Simple shortcuts for `log`, `warn` and `error` methods of `console`.
 ## if
 
 ```kode
-if  a ➜ X
+if  
+    a ➜ X
     b ➜ Y
       ➜ Z
 ```
@@ -276,6 +277,9 @@ fun() for i in 1..2                     ▸ funny times 12 ms
 Logs time difference between matching `●▸` `●▪` pairs.
 
 `●` is a shortcut that can be used in functions: `●▪` is inserted automatically before the function returns.
+
+`process.hrtime.bigint` is used for the timing and the measurements come with *μs* accuracy.
+Due to JavaScripts just in time compilation optimizations, the initial results might be greater than later runs.
     
 ## copy & clone
 

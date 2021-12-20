@@ -96,8 +96,15 @@ class Lexer
                                 tokens[-1].text = kstr.strip tokens[-1].text, ' \n'
                                 
                         key.startsWith 'prof'
-                            end = Math.min text.indexOf('\n'), text.indexOf(';')
-                            end = text.length if end < 0
+                            
+                            ni  = text.indexOf '\n'
+                            si  = text.indexOf ';'
+                            if  
+                                ni >= 0 and si >= 0 ➜ end = Math.min ni, si 
+                                ni >= 0             ➜ end = ni
+                                si >= 0             ➜ end = si
+                                                    ➜ end = text.length
+                                                    
                             txt = kstr.strip text[tokens[-1].text.length...end]
                             tokens[-1].id = txt
                             if end >= text.length then text = '' else text = text[end..]
