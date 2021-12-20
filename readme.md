@@ -214,6 +214,33 @@ on 'event' @myCallback
 log 'a:' a , 'd:' 3            # some commas still make sense :-)
 ```
 
+## Noon
+
+```coffeescript
+s = noon a:1 b:2
+log s                          # -> a   1
+                                    b   2
+```
+
+Operator that converts argument into string in [noon](https://github.com/monsterkodi/noon) notation.
+Handles recursion, unlike `JSON.stringify`.
+
+## Debug
+
+```coffeescript
+myObj = a:1 b:2 c: d: 3
+dbg myObj                      # -> file.kode:2:0 myObj
+                                    a   1
+                                    b   2
+                                    c
+                                        d   3
+dbg '1st' 0 '2nd' myObj.c      # -> file.kode:7:0
+                                    1st 0 2nd d   3
+```
+
+Logs file and position followed by arguments in [noon](https://github.com/monsterkodi/noon) notation.
+If first argument is an identifier, appends it's name to the file position.
+
 # Planned stuff that does not work yet:
 
 ## BigInt
@@ -223,12 +250,9 @@ a = 12345678901234567890n
 log a*a  # -> 152415787532388367501905199875019052100n
 ```
 
-### Debug and profiling support
+### Assert and profiling support
 
 ```coffeescript
-                               # log file position and object
-dbg 'my object' a:1 b:2        # -> file:1 my object { a: 1, b: 2 }
-
 assert 'message' condition     # log file position and message and exits if condition isn't truish
 assert condition               # similar, but without specifying a message
 
@@ -260,7 +284,7 @@ Stuff I rarely used and therefore didn't bother to re-implement:
 
 # Future plans
 
-- `dbg`  `assert`  `profile` keywords
+- `assert`  `profile` keywords
 - `clone`  `copy` keywords
 - `profile` in same scope
 - `include` keyword to merge source files
