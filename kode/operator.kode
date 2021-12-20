@@ -116,7 +116,7 @@ class Operator
     
     fixPrec: (e, chain, p) ->
         
-        @logChain chain, p, precedence(e), precedence(e.rhs) if @debug
+        # @logChain chain, p, precedence(e), precedence(e.rhs) if @debug
         
         if precedence(e) < precedence(e.rhs)
             
@@ -149,7 +149,7 @@ class Operator
                   
                 delete e.operation
                 e.qmrkcolon = newop
-            else
+            else 
                 newlhs = 
                     operation:
                         lhs:        op.lhs
@@ -162,6 +162,8 @@ class Operator
                     rhs:      op.rhs.operation.rhs
 
                 e.operation = newop
+                
+                @op e.operation.rhs if e.operation.rhs?.operation
             
             print.ast 'after swap2' e if @debug
 

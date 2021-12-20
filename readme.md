@@ -84,8 +84,8 @@ null is obj or new Map() is obj or [] is obj                        ▸  false
 ```
 
 `is num` does a string coersion via `parseFloat` in the test.
-`is str` checks both, type == 'string' and instanceof String.
-`is obj` evaluates to true for plain objects only.
+`is str` checks both, type == 'string' or instanceof String.
+`is obj` evaluates to true for plain Objects only.
 
 ## empty
 

@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.163.0
+// monsterkodi/kode 0.164.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -218,12 +218,8 @@ class Operator
 
     fixPrec (e, chain, p)
     {
-        var newlhs, newop, op, _126_23_, _126_41_, _126_52_, _126_62_, _130_37_, _130_48_
+        var newlhs, newop, op, _126_23_, _126_41_, _126_52_, _126_62_, _130_37_, _130_48_, _166_54_
 
-        if (this.debug)
-        {
-            this.logChain(chain,p,precedence(e),precedence(e.rhs))
-        }
         if (precedence(e) < precedence(e.rhs))
         {
             op = e.operation || e.qmrkcolon
@@ -256,6 +252,10 @@ class Operator
                 newlhs = {operation:{lhs:op.lhs,operator:op.operator,rhs:op.rhs.operation.lhs}}
                 newop = {lhs:newlhs,operator:op.rhs.operation.operator,rhs:op.rhs.operation.rhs}
                 e.operation = newop
+                if ((e.operation.rhs != null ? e.operation.rhs.operation : undefined))
+                {
+                    this.op(e.operation.rhs)
+                }
             }
             if (this.debug)
             {
@@ -266,7 +266,7 @@ class Operator
 
     logChain (chain, p)
     {
-        var rndr, s, _182_43_, _182_50_
+        var rndr, s, _184_43_, _184_50_
 
         s = ''
         rndr = (function (n)
@@ -291,7 +291,7 @@ class Operator
                 return (rndr(i.qmrkcolon.lhs)) + ' ? ' + (rndr(i.qmrkcolon.mid)) + ' '
             }
         }).bind(this)).join(' ')
-        s += ' ' + ((_182_50_=rndr((chain.slice(-1)[0].operation != null ? chain.slice(-1)[0].operation.rhs : undefined))) != null ? _182_50_ : '...')
+        s += ' ' + ((_184_50_=rndr((chain.slice(-1)[0].operation != null ? chain.slice(-1)[0].operation.rhs : undefined))) != null ? _184_50_ : '...')
         console.log(w4('▪'),s,g3(p))
     }
 

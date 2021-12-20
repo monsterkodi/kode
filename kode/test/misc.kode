@@ -376,6 +376,7 @@
             ke  'a = new String() is str'               ▸ true
             ke  'a = new String("") is str'             ▸ true
             ke  'a = new String("abc") is str'          ▸ true
+            ke  '"" is str and "a" is str and new String("abc") is str' ▸ true
             ke  'a = 1 is str'                          ▸ false
             ke  'a = [] is str'                         ▸ false
             ke  'a = {} is str'                         ▸ false
@@ -389,6 +390,8 @@
             ke  'a = new Object() is obj'               ▸ true
             ke  'a = new Object({}) is obj'             ▸ true
             ke  'a = new Object({a:1}) is obj'          ▸ true
+            ke  '{} is obj and new Object() is obj' ▸ true
+            ke  'null is obj or new Map() is obj or [] is obj' ▸ false
             ke  'a = 1 is obj'                          ▸ false
             ke  'a = [] is obj'                         ▸ false
             ke  'a = "x" is obj'                        ▸ false
@@ -418,6 +421,7 @@
             ke  'a = 3.1415 is num'                     ▸ true
             ke  'a = 8e5 is num'                        ▸ true
             ke  'a = "123e-2" is num'                   ▸ true
+            ke '"0xFF" is num and "-4.536" is num and 42 is num' ▸ true
             ke  'a = "" is num'                         ▸ false
             ke  'a = "        " is num'                 ▸ false
             ke  'a = "\t\t" is num'                     ▸ false
