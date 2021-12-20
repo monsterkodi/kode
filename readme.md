@@ -13,7 +13,7 @@ for i in 0..5
 
 Square brackets around ranges are optional.
 
-## Console shortcuts
+## console shortcuts
 
 ```kode
 log 'hello'     ▸ hello
@@ -22,7 +22,7 @@ error 'world!'  ▸ world!
 
 Simple shortcuts for `log`, `warn` and `error` methods of `console`.
 
-## Negative indexing
+## negative indexing
 
 ```kode
 "abc"[-2]       ▸ 'b'
@@ -31,7 +31,7 @@ Simple shortcuts for `log`, `warn` and `error` methods of `console`.
 
 `v[-n]` is a shortcut for `v[-n..-n][0]` for number literals `n`
 
-## If shortcut
+## if shortcut
 
 ```kode
 if  a ➜ X
@@ -46,7 +46,7 @@ else if b then Y
           else Z
 ```
 
-## Switch shortcut
+## switch shortcut
 
 ```kode
 switch x
@@ -132,7 +132,7 @@ for a in x
 The above code would throw an exception at runtime in CoffeeScript.
 **kode** generates code that doesn't fail if x is not an array.
 
-## Constructor shortcut
+## constructor shortcut
 
 ```kode
 class C
@@ -146,7 +146,7 @@ class C
     constructor: ->
 ```
 
-## List comprehension
+## list comprehension
 
 ```kode
 l = [1,2,3]
@@ -156,7 +156,7 @@ a = (x for x in l)  ▸ [1,2,3]
 
 **kode** doesn't distuinguish between round and square brackets around list comprehensions.
 
-## Ternary condition operator
+## ternary condition
 
 ```kode
 false ? 1 : 2       ▸ 2
@@ -169,7 +169,7 @@ It introduces some ambiguity in a few corner cases, which can be resolved by dif
 null ? a: 'b'       ▸ {a:'b'}
 ```
 
-## Old school classes
+## old school
 
 **kode** gives you the option to use the old school `function` style classes of CoffeeScript v1:
 
@@ -178,7 +178,7 @@ function C
     @: ->
 ```
 
-## Optional commata
+## optional commata
 
 CoffeeScript has a very nice way of initializing arrays:
 
@@ -212,7 +212,7 @@ on 'event' @myCallback
 log 'a:' a , 'd:' 3            # some commas still make sense :-)
 ```
 
-## Noon
+## noon
 
 ```kode
 s = noon a:1 b:2
@@ -223,7 +223,7 @@ log s                          ▸ a   1
 Operator that converts argument into string in [noon](https://github.com/monsterkodi/noon) notation.
 Handles recursion, unlike `JSON.stringify`.
 
-## Debug
+## dbg
 
 ```kode
 myObj = a:1 b:2 c:d:3
