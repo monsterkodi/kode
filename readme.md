@@ -4,7 +4,7 @@
 
 It is highly inspired by and *tries* to be compatible with [CoffeeScript](http://coffeescript.org), while adding some features and further its minimalistic approach:
 
-## Ranges
+## ...
 
 ```kode
 a = 1..3
