@@ -254,7 +254,8 @@ fun() for i in 1..2                     ▸ funny times 12 ms
 ```
 
 Logs time difference between matching `●▸` `●▪` pairs.
-`●` is a shortcut that can be used in functions: `●▪` is inserted automatically before each return.
+
+`●` is a shortcut that can be used in functions: `●▪` is inserted automatically before the function returns.
 
 # Planned stuff that does not work yet:
 
