@@ -248,20 +248,22 @@ a = 12345678901234567890n
 log a*a  ▸ 152415787532388367501905199875019052100n
 ```
 
-### Assert and profiling support
+### assert
 
 ```kode
-assert 'message' condition     # log file position and message and exits if condition isn't truish
-assert condition               # similar, but without specifying a message
+▴ 'message' condition       # log file position and message and exits if condition isn't truish
+▴ condition                 # similar, but without specifying a message
+```
+                            
+### profile
+                            # log execution times
+● sum                       ▸ 8_4 1ms          line_column prefix
+    ● s1()                  ▸ 9_4 2ms          if not named
+    ● s2()                  ▸ sum 3ms
 
-                               # log execution times
-profile 'sum'                  ▸ 8_4 1ms          line_column prefix
-    profile s1()               ▸ 9_4 2ms          if not named
-    profile s2()               ▸ sum 3ms
-
-profile_start 'a'              # like profile, but lets you control
-f = -> profile_end 'a'         # when to start and stop timing
-f()                            ▸ a 824μs
+●▸ a                        # like ●, but lets you control
+f = -> ●▪ a                 # when to start and stop timing
+f()                         ▸ a 824μs
 ```
 
 # Compatibility

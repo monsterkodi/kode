@@ -47,9 +47,9 @@ keyword
     log
     warn
     error
-    profile
-    profileStart
-    profileEnd
-    assert
+    ●
+    ●▸
+    ●▪
+    ▴
     await
 var         [▸a-zA-Z_$][a-zA-Z0-9_$]*
