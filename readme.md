@@ -246,7 +246,7 @@ dbg '1st' 0 '2nd' myObj.c               ▸ file.kode:7:0
 ```
 
 Logs file and position followed by arguments in [noon](https://github.com/monsterkodi/noon) notation.
-If first argument is an identifier, appends it's name to the file position.
+If first argument is an identifier, appends its name to the file position.
 
 ## assert
 
