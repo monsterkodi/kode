@@ -183,6 +183,10 @@ function C
     @: ->
 ```
 
+The generated code might be a bit more ugly, but the function based classes don't suffer from some of the limitations of the new class syntax.
+For example, keywords can be used as method names and super doesn't have to be called first in the constructor.
+New and old school styles can be used in the same module, but obviously not in the same class hierarchy.
+
 ## optional commata
 
 CoffeeScript has a very nice way of initializing arrays:
