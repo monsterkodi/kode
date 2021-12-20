@@ -598,7 +598,7 @@ class Renderer
         callee = @node p.callee
         
         if p.args
-            if callee in ['new' 'throw' 'delete']
+            if callee in ['new' 'throw']
                 "#{callee} #{@nodes p.args, ','}"
             else if callee == 'super'
                 @super p
@@ -1130,6 +1130,10 @@ class Renderer
                 @hint._k_.valid = true if op.operator.text == 'valid'
                 open = '('
                 close = ')'
+                
+            op.operator.text == 'noon'
+                @hint._k_.noon = true
+                return "_k_.noon(#{@node op.rhs})"
                             
             op.rhs?.operation?.operator.text == '='
                 open = '('
