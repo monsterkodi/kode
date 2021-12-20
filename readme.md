@@ -219,7 +219,7 @@ log 'a:' a , 'd:' 3            # some commas still make sense :-)
 ```coffeescript
 s = noon a:1 b:2
 log s                          # -> a   1
-                                    b   2
+                               #    b   2
 ```
 
 Operator that converts argument into string in [noon](https://github.com/monsterkodi/noon) notation.
@@ -227,15 +227,15 @@ Handles recursion, unlike `JSON.stringify`.
 
 ## Debug
 
-```coffeescript
+```kode
 myObj = a:1 b:2 c: d: 3
 dbg myObj                      # -> file.kode:2:0 myObj
-                                    a   1
-                                    b   2
-                                    c
-                                        d   3
+                               #    a   1
+                               #    b   2
+                               #    c
+                               #        d   3
 dbg '1st' 0 '2nd' myObj.c      # -> file.kode:7:0
-                                    1st 0 2nd d   3
+                               #    1st 0 2nd d   3
 ```
 
 Logs file and position followed by arguments in [noon](https://github.com/monsterkodi/noon) notation.
