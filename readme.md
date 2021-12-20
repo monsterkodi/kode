@@ -228,7 +228,7 @@ Handles recursion, unlike `JSON.stringify`.
 ## Debug
 
 ```kode
-myObj = a:1 b:2 c: d: 3
+myObj = a:1 b:2 c:d:3
 dbg myObj                      # -> file.kode:2:0 myObj
                                #    a   1
                                #    b   2
