@@ -16,7 +16,7 @@ profile     ●▸
 profilend   ●▪
 prof        ●
 assert      ▴
-op          (\band\b|\bor\b|\bnot\b|\+\+|--|==|!=|>=|<=|\+=|-=|\*=|\/=|\|=|\^=|\?=|\&=|%=|<<|>>|=|\*|\/|\+|-|%|\^|~|\&|\||<|>|\bis\b|\binstanceof\b|\bdelete\b|\bnoon\b|\bcopy\b|\bclone\b)
+op          (\band\b|\bor\b|\bnot\b|\+\+|--|==|!=|>=|<=|\+=|-=|\*=|\/=|\|=|\^=|\?=|\&=|%=|<<|>>|=|\*|\/|\+|-|%|\^|~|\&|\||<|>|\bnew\b|\bis\b|\binstanceof\b|\bdelete\b|\bnoon\b|\bcopy\b|\bclone\b)
 punct       [,:;!&~\|\.\?\\]
 bool        (\byes\b|\bno\b|\btrue\b|\bfalse\b)
 keyword
@@ -33,8 +33,7 @@ keyword
     when
     is
     in
-    of
-    new
+    of    
     class
     super    
     extends

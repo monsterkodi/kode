@@ -457,7 +457,7 @@ function Parser extends Parse
                 args = @exps '(' tokens, ')'
                 @pop 'args('
         else
-            if tok.type == 'keyword' and tok.text in ['typeof' 'new']
+            if tok.text in ['typeof' 'new']
                 @push '▸arg'
                 args = [@exp tokens]
                 @pop  '▸arg'

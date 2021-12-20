@@ -328,7 +328,7 @@
         
         kc  "if d is 'function' and not o?" ▸ 
             """
-            if (typeof(d) == 'function' && !(o != null))
+            if (typeof(d) === 'function' && !(o != null))
             {
             }
             """
@@ -368,6 +368,36 @@
                     2
                 }
                 """
+                
+        ▸ str
+        
+            ke  'a = "" is str'                         ▸ true
+            ke  'a = "abc" is str'                      ▸ true
+            ke  'a = new String() is str'               ▸ true
+            ke  'a = new String("") is str'             ▸ true
+            ke  'a = new String("abc") is str'          ▸ true
+            ke  'a = 1 is str'                          ▸ false
+            ke  'a = [] is str'                         ▸ false
+            ke  'a = {} is str'                         ▸ false
+            ke  'a = null is str'                       ▸ false
+            ke  'a = undefined is str'                  ▸ false
+
+        ▸ obj
+        
+            ke  'a = {} is obj'                         ▸ true
+            ke  'a = {a:1} is obj'                      ▸ true
+            ke  'a = new Object() is obj'               ▸ true
+            ke  'a = new Object({}) is obj'             ▸ true
+            ke  'a = new Object({a:1}) is obj'          ▸ true
+            ke  'a = 1 is obj'                          ▸ false
+            ke  'a = [] is obj'                         ▸ false
+            ke  'a = "x" is obj'                        ▸ false
+            ke  'a = null is obj'                       ▸ false
+            ke  'a = undefined is obj'                  ▸ false
+            ke  'a = new String() is obj'               ▸ false
+            ke  'a = new Array() is obj'                ▸ false
+            ke  'a = new Map() is obj'                  ▸ false
+            ke  'a = new Set() is obj'                  ▸ false
         
         ▸ num
             # https://stackoverflow.com/questions/18082/validate-decimal-numbers-in-javascript-isnumeric/174921#174921

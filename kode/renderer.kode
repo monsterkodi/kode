@@ -605,28 +605,33 @@ class Renderer
         callee = @node p.callee
         
         if p.args
-            if callee in ['new' 'throw']
-                "#{callee} #{@nodes p.args, ','}"
-            else if callee == 'super'
-                @super p
-            else if callee == 'dbg'
-                @hint._k_.dbg = true
-                if p.args[0].type in ['var'] or p.args[0]?.prop or p.args[0]?.call
-                    msg = '"'
-                    msg += @node p.args[0]
-                    msg += '"'
-                else msg = 'null'
-                "_k_.dbg(#{'\"' + (@source or '???') + '\"'}, #{p.callee.line}, #{p.callee.col}, #{msg}, #{@nodes p.args, ','})"
-            else if callee == '▴'
-                @hint._k_.assert = true
-                if p.args[0].type in ['single''double''triple']
-                    msg = p.args[0].text
-                    p.args.shift()
-                else msg = '"assert failed!"'
-                msg += ' + " ' + @nodes(p.args, ',') + '"'
-                "_k_.assert(#{'\"' + (@source or '???') + '\"'}, #{p.callee.line}, #{p.callee.col}, #{msg}, #{@nodes p.args, ','})"
-            else
-                "#{callee}(#{@nodes p.args, ','})"
+            if 
+                callee in ['new' 'throw']
+                    "#{callee} #{@nodes p.args, ','}"
+                    
+                callee == 'super'
+                    @super p
+                    
+                callee == 'dbg'
+                    @hint._k_.dbg = true
+                    if p.args[0].type in ['var'] or p.args[0]?.prop or p.args[0]?.call
+                        msg = '"'
+                        msg += @node p.args[0]
+                        msg += '"'
+                    else msg = 'null'
+                    "_k_.dbg(#{'\"' + (@source or '???') + '\"'}, #{p.callee.line}, #{p.callee.col}, #{msg}, #{@nodes p.args, ','})"
+                    
+                callee == '▴'
+                    @hint._k_.assert = true
+                    if p.args[0].type in ['single''double''triple']
+                        msg = p.args[0].text
+                        p.args.shift()
+                    else msg = '"assert failed!"'
+                    msg += ' + " ' + @nodes(p.args, ',') + '"'
+                    "_k_.assert(#{'\"' + (@source or '???') + '\"'}, #{p.callee.line}, #{p.callee.col}, #{msg}, #{@nodes p.args, ','})"
+                    
+                else
+                    "#{callee}(#{@nodes p.args, ','})"
         else
             "#{callee}()"
 
@@ -1178,13 +1183,26 @@ class Renderer
                 
             op.operator.text == 'is'
                 if op.rhs?.type in ['single' 'double' 'triple']
-                    return "typeof(#{@atom op.lhs}) == #{@node op.rhs}"
+                    return "typeof(#{@atom op.lhs}) === #{@node op.rhs}"
                 else
-                    if op.rhs.text == 'num'
-                        lhs = @atom op.lhs
-                        return "!isNaN(#{lhs}) && !isNaN(parseFloat(#{lhs})) && isFinite(#{lhs})"
-                    else
-                        return "#{@atom op.lhs} instanceof #{@atom op.rhs}"
+                    if 
+                        op.rhs.text == 'num'
+                            lhs = @atom op.lhs
+                            return "!isNaN(#{lhs}) && !isNaN(parseFloat(#{lhs})) && isFinite(#{lhs})"
+                            
+                        op.rhs.text == 'obj'
+                            if op.lhs.type == 'num'
+                                return 'false'
+                            else
+                                lhs = @atom op.lhs
+                                return "!(#{lhs} == null || typeof(#{lhs}) != 'object' || #{lhs}.constructor.name !== 'Object')"
+                            
+                        op.rhs.text == 'str'
+                            lhs = @atom op.lhs
+                            return "typeof #{lhs} === 'string' || #{lhs} instanceof String"
+                    
+                        else
+                            return "#{@atom op.lhs} instanceof #{@atom op.rhs}"
             
         first = firstLineCol op.lhs
         prfx = if first.col == 0 and op.rhs?.func then '\n' else ''

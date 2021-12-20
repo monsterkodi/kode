@@ -74,13 +74,18 @@ switch x
 `is` is a shortcut for `typeof` and `instanceof`. 
 The first is used, when the right hand side is a string.
 
-### is num
+### num str obj
 
 ```kode
 "0xFF" is num and "-4.536" is num and 42 is num                     ▸  true
+'' is str and "a" is str and new String("abc") is str               ▸  true
+{} is obj and new Object() is obj                                   ▸  true
+null is obj or new Map() is obj or [] is obj                        ▸  false
 ```
 
 `is num` does a string coersion via `parseFloat` in the test.
+`is str` checks both, type == 'string' and instanceof String.
+`is obj` evaluates to true for plain objects only.
 
 ## empty
 

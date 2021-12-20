@@ -15,7 +15,7 @@ precedence = (o) ->
     t = o?.operation?.operator.text
     switch t
     
-        'copy' 'clone'
+        'copy' 'clone' 'new'
         'not' 'delete' 'empty' 'valid' '~' 'noon' ➜  0
         '*' '/' '%'                               ➜  1
         '+' '-'                                   ➜  2
