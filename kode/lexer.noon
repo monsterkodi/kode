@@ -16,7 +16,7 @@ profile     ●▸
 profilend   ●▪
 prof        ●
 assert      ▴
-op          (\band\b|\bor\b|\bnot\b|\+\+|--|==|!=|>=|<=|\+=|-=|\*=|\/=|\|=|\^=|\?=|\&=|%=|<<|>>|=|\*|\/|\+|-|%|\^|~|\&|\||<|>|\bis\b|\binstanceof\b|\bdelete\b|\bnoon\b)
+op          (\band\b|\bor\b|\bnot\b|\+\+|--|==|!=|>=|<=|\+=|-=|\*=|\/=|\|=|\^=|\?=|\&=|%=|<<|>>|=|\*|\/|\+|-|%|\^|~|\&|\||<|>|\bis\b|\binstanceof\b|\bdelete\b|\bnoon\b|\bcopy\b|\bclone\b)
 punct       [,:;!&~\|\.\?\\]
 bool        (\byes\b|\bno\b|\btrue\b|\bfalse\b)
 keyword
@@ -51,5 +51,4 @@ keyword
     log
     warn
     error
-    await
 var         [▸a-zA-Z_$][a-zA-Z0-9_$]*

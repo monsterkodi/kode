@@ -391,7 +391,7 @@ function Parse # the base class of Parser
                         e.text == '('   ➜ e = @parens e, tokens
                         e.text == '{'   ➜ e = @curly  e, tokens                
                         e.text in ['not'] and (nxt.type not in ['op'] or nxt.text in ['++' '--' '+' '-' ]) ➜ e = @operation null, e, tokens
-                        e.text in ['delete''new''empty''valid''noon'] and (nxt.type not in ['op'] and nxt.text not in '.') ➜ e = @operation null, e, tokens
+                        e.text in ['delete''new''empty''valid''noon''copy''clone'] and (nxt.type not in ['op'] and nxt.text not in '.') ➜ e = @operation null, e, tokens
                         e.text in ['++''--'] and unspaced
                             @verb 'rhs increment'
                             e = @operation null, e, tokens

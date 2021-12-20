@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.161.0
+// monsterkodi/kode 0.162.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, valid: undefined}
 
@@ -509,7 +509,7 @@ Parse = (function ()
                 {
                     e = this.operation(null,e,tokens)
                 }
-                else if (_k_.in(e.text,['delete','new','empty','valid','noon']) && (!(_k_.in(nxt.type,['op'])) && !(_k_.in(nxt.text,'.'))))
+                else if (_k_.in(e.text,['delete','new','empty','valid','noon','copy','clone']) && (!(_k_.in(nxt.type,['op'])) && !(_k_.in(nxt.text,'.'))))
                 {
                     e = this.operation(null,e,tokens)
                 }

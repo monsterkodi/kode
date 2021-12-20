@@ -267,7 +267,17 @@ fun() for i in 1..2                     ▸ funny times 12 ms
 Logs time difference between matching `●▸` `●▪` pairs.
 
 `●` is a shortcut that can be used in functions: `●▪` is inserted automatically before the function returns.
-                            
+    
+## copy & clone
+
+```
+a = copy b                              # shallow copy of b
+a = clone b                             # deep copy of b
+```
+
+Operators that return a shallow or deep copy of their argument. 
+Only plain Objects, Arrays and Strings are copied. Functions, Maps, Sets, etc. are not copied.
+
 # Compatibility
 
 **kode** is *mostly* compatible with CoffeeScript. Converting to **kode** shouldn't be too painful.
@@ -283,7 +293,6 @@ Stuff I rarely used and therefore didn't bother to re-implement:
 
 # Future plans
 
-- `clone`  `copy` keywords
 - `include` keyword to merge source files
 - render comments
 - sourcemaps
