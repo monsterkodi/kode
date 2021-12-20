@@ -16,8 +16,8 @@ Square brackets around ranges are optional.
 ## Console shortcuts
 
 ```kode
-log 'hello'       # -> hello
-error 'world!'    # -> world!
+log 'hello'       ▸ hello
+error 'world!'    ▸ world!
 ```
 
 Simple shortcuts for `log`, `warn` and `error` methods of `console`.
@@ -25,8 +25,8 @@ Simple shortcuts for `log`, `warn` and `error` methods of `console`.
 ## Negative indexing
 
 ```kode
-"abc"[-2]    # -> 'b'
-[1,2,3][-2]  # -> 2
+"abc"[-2]    ▸ 'b'
+[1,2,3][-2]  ▸ 2
 ```
 
 `v[-n]` is a shortcut for `v[-n..-n][0]` for number literals `n`
@@ -67,8 +67,8 @@ switch x
 ## is
 
 ```kode
-1 is 'number' and '' is 'string' and {} is Object and [] is Array # -> true
-1 is Number or '' is String or [] is 'array'                      # -> false
+1 is 'number' and '' is 'string' and {} is Object and [] is Array ▸ true
+1 is Number or '' is String or [] is 'array'                      ▸ false
 ```
 
 `is` is a shortcut for `typeof` and `instanceof`. 
@@ -77,7 +77,7 @@ The first is used, when the right hand side is a string.
 ### is num
 
 ```kode
-"0xFF" is num and "-4.536" is num and 42 is num                   # ->  true
+"0xFF" is num and "-4.536" is num and 42 is num                   ▸  true
 ```
 
 `is num` does a string coersion via `parseFloat` in the test.
@@ -85,8 +85,8 @@ The first is used, when the right hand side is a string.
 ## empty
 
 ```kode
-empty [] and empty {} and empty '' and empty null and empty NaN  # -> true
-empty 0 or empty 'a' or empty [null] or empty Infinity           # -> false
+empty [] and empty {} and empty '' and empty null and empty NaN  ▸ true
+empty 0 or empty 'a' or empty [null] or empty Infinity           ▸ false
 ```
 
 Returns true for null, undefined, NaN and empty array, object or string.
@@ -94,8 +94,8 @@ Returns true for null, undefined, NaN and empty array, object or string.
 ## valid
 
 ```kode
-valid 0 and valid 'a' and valid [null] and valid Infinity        # -> true
-valid [] or valid {} or valid '' or valid null or valid NaN      # -> false
+valid 0 and valid 'a' and valid [null] and valid Infinity        ▸ true
+valid [] or valid {} or valid '' or valid null or valid NaN      ▸ false
 ```
 
 Just the negation of `empty`.
@@ -113,9 +113,9 @@ The function is called for each key/value, index/item, index/character pair.
 A new object, array or string is build from the results and returned:
 
 ```kode
-'hello'   each (c) -> c+c            # -> 'hheelllloo'
-[1,3]     each (i,v) -> [1-i,v*v]    # -> [9,1]
-{a:1,b:3} each (k,v) -> ['▸'+k, k+v] # -> { '▸a': 'a1', '▸b': 'b3' }
+'hello'   each (c) -> c+c            ▸ 'hheelllloo'
+[1,3]     each (i,v) -> [1-i,v*v]    ▸ [9,1]
+{a:1,b:3} each (k,v) -> ['▸'+k, k+v] ▸ { '▸a': 'a1', '▸b': 'b3' }
 ```
 
 If the function takes only one argument, 
@@ -150,8 +150,8 @@ class C
 
 ```kode
 l = [1,2,3]
-a = [x for x in l]      # -> [1,2,3]
-a = (x for x in l)      # -> [1,2,3]
+a = [x for x in l]      ▸ [1,2,3]
+a = (x for x in l)      ▸ [1,2,3]
 ````
 
 **kode** doesn't distuinguish between round and square brackets around list comprehensions.
@@ -159,14 +159,14 @@ a = (x for x in l)      # -> [1,2,3]
 ## Ternary condition operator
 
 ```kode
-false ? 1 : 2     # -> 2
+false ? 1 : 2     ▸ 2
 ```
 
 A nifty `if` `then` `else` shortcut.
 It introduces some ambiguity in a few corner cases, which can be resolved by different spacing:
 
 ```kode
-null ? a: 'b'     # -> {a:'b'}
+null ? a: 'b'     ▸ {a:'b'}
 ```
 
 ## Old school classes
@@ -216,7 +216,7 @@ log 'a:' a , 'd:' 3            # some commas still make sense :-)
 
 ```kode
 s = noon a:1 b:2
-log s                          # -> a   1
+log s                          ▸ a   1
                                #    b   2
 ```
 
@@ -227,13 +227,13 @@ Handles recursion, unlike `JSON.stringify`.
 
 ```kode
 myObj = a:1 b:2 c:d:3
-dbg myObj                      # -> file.kode:2:0 myObj
-                               #    a   1
-                               #    b   2
-                               #    c
-                               #        d   3
-dbg '1st' 0 '2nd' myObj.c      # -> file.kode:7:0
-                               #    1st 0 2nd d   3
+dbg myObj                      ▸ file.kode:2:0 myObj
+                               ▸ a   1
+                               ▸ b   2
+                               ▸ c
+                               ▸     d   3
+dbg '1st' 0 '2nd' myObj.c      ▸ file.kode:7:0
+                               ▸     1st 0 2nd d   3
 ```
 
 Logs file and position followed by arguments in [noon](https://github.com/monsterkodi/noon) notation.
@@ -245,7 +245,7 @@ If first argument is an identifier, appends it's name to the file position.
 
 ```kode
 a = 12345678901234567890n
-log a*a  # -> 152415787532388367501905199875019052100n
+log a*a  ▸ 152415787532388367501905199875019052100n
 ```
 
 ### Assert and profiling support
@@ -255,13 +255,13 @@ assert 'message' condition     # log file position and message and exits if cond
 assert condition               # similar, but without specifying a message
 
                                # log execution times
-profile 'sum'                  # -> 8_4 1ms          line_column prefix
-    profile s1()               # -> 9_4 2ms          if not named
-    profile s2()               # -> sum 3ms
+profile 'sum'                  ▸ 8_4 1ms          line_column prefix
+    profile s1()               ▸ 9_4 2ms          if not named
+    profile s2()               ▸ sum 3ms
 
 profile_start 'a'              # like profile, but lets you control
 f = -> profile_end 'a'         # when to start and stop timing
-f()                            # -> a 824μs
+f()                            ▸ a 824μs
 ```
 
 # Compatibility
