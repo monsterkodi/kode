@@ -7,10 +7,8 @@ It is highly inspired by and *tries* to be compatible with [CoffeeScript](http:/
 ## Ranges
 
 ```kode
-
 a = 1..3
 for i in 0..5
-
 ```
 
 Square brackets around ranges are optional.
@@ -73,7 +71,7 @@ switch x
 1 is Number or '' is String or [] is 'array'                      # -> false
 ```
 
-`is` a shortcut for `typeof` and `instanceof`. 
+`is` is a shortcut for `typeof` and `instanceof`. 
 The first is used, when the right hand side is a string.
 
 ### is num
@@ -82,7 +80,7 @@ The first is used, when the right hand side is a string.
 "0xFF" is num and "-4.536" is num and 42 is num                   # ->  true
 ```
 
-The special keyword `num` does a string coersion via `parseFloat` in the test.
+`is num` does a string coersion via `parseFloat` in the test.
 
 ## empty
 
