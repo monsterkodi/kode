@@ -270,7 +270,7 @@ f()                         ▸ a 824μs
 
 # Compatibility
 
-**kode** is *mostly* compatible with CoffeeScript. Converting CoffeeScript to kode shouldn't be too painful.
+**kode** is *mostly* compatible with CoffeeScript. Converting to **kode** shouldn't be too painful.
 
 Stuff I rarely used and therefore didn't bother to re-implement:
 
