@@ -270,13 +270,10 @@ f()                         ▸ a 824μs
 
 # Compatibility
 
-While my first CoffeeScript clone [**koffee**](http://github.com/monsterkodi/koffee) is backwards compatible with CoffeeScript v1,
-I don't intend to do the same with **kode**, but converting coffee to kode shouldn't be too painful.
+**kode** is *mostly* compatible with CoffeeScript. Converting CoffeeScript to kode shouldn't be too painful.
 
 Stuff I rarely used and therefore didn't bother to re-implement:
 
-- REPL
-- *cake*
 - literal coffeescript
 - `unless`  `until` `or=` `by` ...
 - `when` outside of `switch`
@@ -286,11 +283,10 @@ Stuff I rarely used and therefore didn't bother to re-implement:
 
 # Future plans
 
-- `assert`  `profile` keywords
 - `clone`  `copy` keywords
 - `profile` in same scope
 - `include` keyword to merge source files
-▸ render comments
+- render comments
 - sourcemaps
 - error messages
 
