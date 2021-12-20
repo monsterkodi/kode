@@ -16,8 +16,8 @@ Square brackets around ranges are optional.
 ## Console shortcuts
 
 ```kode
-log 'hello'       ▸ hello
-error 'world!'    ▸ world!
+log 'hello'     ▸ hello
+error 'world!'  ▸ world!
 ```
 
 Simple shortcuts for `log`, `warn` and `error` methods of `console`.
@@ -25,8 +25,8 @@ Simple shortcuts for `log`, `warn` and `error` methods of `console`.
 ## Negative indexing
 
 ```kode
-"abc"[-2]    ▸ 'b'
-[1,2,3][-2]  ▸ 2
+"abc"[-2]       ▸ 'b'
+[1,2,3][-2]     ▸ 2
 ```
 
 `v[-n]` is a shortcut for `v[-n..-n][0]` for number literals `n`
