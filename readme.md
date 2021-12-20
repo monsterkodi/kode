@@ -162,7 +162,7 @@ a = (x for x in l)      # -> [1,2,3]
 false ? 1 : 2     # -> 2
 ```
 
-A nifty `if` `then` `else` shortcut, which I have always been missing in CoffeeScript.
+A nifty `if` `then` `else` shortcut.
 It introduces some ambiguity in a few corner cases, which can be resolved by different spacing:
 
 ```kode
