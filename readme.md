@@ -67,8 +67,8 @@ switch x
 ## is
 
 ```kode
-1 is 'number' and '' is 'string' and {} is Object and [] is Array ▸ true
-1 is Number or '' is String or [] is 'array'                      ▸ false
+1 is 'number' and '' is 'string' and {} is Object and [] is Array   ▸ true
+1 is Number or '' is String or [] is 'array'                        ▸ false
 ```
 
 `is` is a shortcut for `typeof` and `instanceof`. 
@@ -77,7 +77,7 @@ The first is used, when the right hand side is a string.
 ### is num
 
 ```kode
-"0xFF" is num and "-4.536" is num and 42 is num                   ▸  true
+"0xFF" is num and "-4.536" is num and 42 is num                     ▸  true
 ```
 
 `is num` does a string coersion via `parseFloat` in the test.
@@ -85,8 +85,8 @@ The first is used, when the right hand side is a string.
 ## empty
 
 ```kode
-empty [] and empty {} and empty '' and empty null and empty NaN  ▸ true
-empty 0 or empty 'a' or empty [null] or empty Infinity           ▸ false
+empty [] and empty {} and empty '' and empty null and empty NaN     ▸ true
+empty 0 or empty 'a' or empty [null] or empty Infinity              ▸ false
 ```
 
 Returns true for null, undefined, NaN and empty array, object or string.
@@ -94,8 +94,8 @@ Returns true for null, undefined, NaN and empty array, object or string.
 ## valid
 
 ```kode
-valid 0 and valid 'a' and valid [null] and valid Infinity        ▸ true
-valid [] or valid {} or valid '' or valid null or valid NaN      ▸ false
+valid 0 and valid 'a' and valid [null] and valid Infinity           ▸ true
+valid [] or valid {} or valid '' or valid null or valid NaN         ▸ false
 ```
 
 Just the negation of `empty`.
@@ -150,8 +150,8 @@ class C
 
 ```kode
 l = [1,2,3]
-a = [x for x in l]      ▸ [1,2,3]
-a = (x for x in l)      ▸ [1,2,3]
+a = [x for x in l]  ▸ [1,2,3]
+a = (x for x in l)  ▸ [1,2,3]
 ````
 
 **kode** doesn't distuinguish between round and square brackets around list comprehensions.
@@ -159,14 +159,14 @@ a = (x for x in l)      ▸ [1,2,3]
 ## Ternary condition operator
 
 ```kode
-false ? 1 : 2     ▸ 2
+false ? 1 : 2       ▸ 2
 ```
 
 A nifty `if` `then` `else` shortcut.
 It introduces some ambiguity in a few corner cases, which can be resolved by different spacing:
 
 ```kode
-null ? a: 'b'     ▸ {a:'b'}
+null ? a: 'b'       ▸ {a:'b'}
 ```
 
 ## Old school classes
