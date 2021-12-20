@@ -217,7 +217,7 @@ log 'a:' a , 'd:' 3            # some commas still make sense :-)
 ```kode
 s = noon a:1 b:2
 log s                          ▸ a   1
-                               #    b   2
+                               ▸ b   2
 ```
 
 Operator that converts argument into string in [noon](https://github.com/monsterkodi/noon) notation.
@@ -233,7 +233,7 @@ dbg myObj                      ▸ file.kode:2:0 myObj
                                ▸ c
                                ▸     d   3
 dbg '1st' 0 '2nd' myObj.c      ▸ file.kode:7:0
-                               ▸     1st 0 2nd d   3
+                               ▸ 1st 0 2nd d   3
 ```
 
 Logs file and position followed by arguments in [noon](https://github.com/monsterkodi/noon) notation.
