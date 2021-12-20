@@ -99,25 +99,26 @@ class Scoper
             return
         else if e is Array  then @exp v for v in e if e.length
         else if e is Object
-            
-            if e.operation and e.operation.operator.text == '='
-                if e.operation.lhs?.text
-                    insert e.operation.lhs.text, e.operation.operator.text
-                else if e.operation.lhs.object
-                    for keyval in e.operation.lhs.object.keyvals
-                        if keyval.type == 'var'
-                            insert keyval.text, 'curly'
-                else if e.operation.lhs.array
-                    for val in e.operation.lhs.array.items
-                        if val.type == 'var'
-                            insert val.text, 'array'
-            if e.for
+                                        
+            if op = e.operation
+                if op.operator.text == '='
+                    if op.lhs?.text
+                        insert op.lhs.text, op.operator.text
+                    else if op.lhs.object
+                        for keyval in op.lhs.object.keyvals
+                            if keyval.type == 'var'
+                                insert keyval.text, 'curly'
+                    else if op.lhs.array
+                        for val in op.lhs.array.items
+                            if val.type == 'var'
+                                insert val.text, 'array'
+                            
+            if fv = e.for?.vals
                 
-                if e.for.vals.text
-                    insert e.for.vals.text, 'for'
+                if fv.text
+                    insert fv.text, 'for'
                 else 
-                    vals = e.for.vals.array?.items ? e.for.vals
-                    for v in vals
+                    for v in fv.array?.items ? e.for.vals
                         insert v.text, 'for' if v.text
                         
             if e.assert

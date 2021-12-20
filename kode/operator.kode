@@ -67,8 +67,14 @@ class Operator
         if  
             not e       ➜ return
             e.type      ➜ return
-            e.operation ➜ @op e; if e.operation?.rhs then @exp e.operation.rhs else if e.qmrkcolon then @exp e.qmrkcolon.mid; @exp e.qmrkcolon.rhs; 
             e is Array  ➜ @exp v for v in e if e.length
+            e.operation 
+                @op e 
+                if e.operation?.rhs 
+                    @exp e.operation.rhs 
+                else if e.qmrkcolon 
+                    @exp e.qmrkcolon.mid 
+                    @exp e.qmrkcolon.rhs
             e is Object
                 for key,val of e
                     if val
@@ -115,7 +121,8 @@ class Operator
             
             op = e.operation or e.qmrkcolon
             
-            return if op.operator.text == 'not' and (op.rhs?.incond or op.rhs?.operation?.operator?.text in assign)
+            return if op.operator.text == 'not' and 
+                (op.rhs?.incond or op.rhs?.operation?.operator?.text) in assign
                 
             return if op.operator.text in assign
                 
@@ -156,17 +163,6 @@ class Operator
                 e.operation = newop
             
             print.ast 'after swap2' e if @debug
-
-            # if @debug
-                # chain = [e]
-#                  
-                # c = e.operation
-                # while c.rhs?.operation
-                    # chain.push c.rhs
-                    # c = c.rhs.operation
-#                  
-                # p = chain.map (i) -> precedence i
-                # @logChain chain, p
 
     logChain: (chain, p) ->
                 

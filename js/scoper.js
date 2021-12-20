@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.151.0
+// monsterkodi/kode 0.154.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
 
@@ -81,7 +81,7 @@ class Scoper
 
     exp (e)
     {
-        var insert, key, keyval, v, val, vals, _104_34_, _119_43_, _119_51_
+        var fv, insert, key, keyval, op, v, val, _105_29_, _116_25_, _121_37_, _121_45_
 
         if (!e)
         {
@@ -135,50 +135,52 @@ class Scoper
         }
         else if (e instanceof Object)
         {
-            if (e.operation && e.operation.operator.text === '=')
+            if (op = e.operation)
             {
-                if ((e.operation.lhs != null ? e.operation.lhs.text : undefined))
+                if (op.operator.text === '=')
                 {
-                    insert(e.operation.lhs.text,e.operation.operator.text)
-                }
-                else if (e.operation.lhs.object)
-                {
-                    var list1 = _k_.list(e.operation.lhs.object.keyvals)
-                    for (var _107_31_ = 0; _107_31_ < list1.length; _107_31_++)
+                    if ((op.lhs != null ? op.lhs.text : undefined))
                     {
-                        keyval = list1[_107_31_]
-                        if (keyval.type === 'var')
+                        insert(op.lhs.text,op.operator.text)
+                    }
+                    else if (op.lhs.object)
+                    {
+                        var list1 = _k_.list(op.lhs.object.keyvals)
+                        for (var _108_35_ = 0; _108_35_ < list1.length; _108_35_++)
                         {
-                            insert(keyval.text,'curly')
+                            keyval = list1[_108_35_]
+                            if (keyval.type === 'var')
+                            {
+                                insert(keyval.text,'curly')
+                            }
                         }
                     }
-                }
-                else if (e.operation.lhs.array)
-                {
-                    var list2 = _k_.list(e.operation.lhs.array.items)
-                    for (var _111_28_ = 0; _111_28_ < list2.length; _111_28_++)
+                    else if (op.lhs.array)
                     {
-                        val = list2[_111_28_]
-                        if (val.type === 'var')
+                        var list2 = _k_.list(op.lhs.array.items)
+                        for (var _112_32_ = 0; _112_32_ < list2.length; _112_32_++)
                         {
-                            insert(val.text,'array')
+                            val = list2[_112_32_]
+                            if (val.type === 'var')
+                            {
+                                insert(val.text,'array')
+                            }
                         }
                     }
                 }
             }
-            if (e.for)
+            if (fv = (e.for != null ? e.for.vals : undefined))
             {
-                if (e.for.vals.text)
+                if (fv.text)
                 {
-                    insert(e.for.vals.text,'for')
+                    insert(fv.text,'for')
                 }
                 else
                 {
-                    vals = ((_119_51_=(e.for.vals.array != null ? e.for.vals.array.items : undefined)) != null ? _119_51_ : e.for.vals)
-                    var list3 = _k_.list(vals)
-                    for (var _120_26_ = 0; _120_26_ < list3.length; _120_26_++)
+                    var list3 = ((_121_45_=(fv.array != null ? fv.array.items : undefined)) != null ? _121_45_ : e.for.vals)
+                    for (var _121_26_ = 0; _121_26_ < list3.length; _121_26_++)
                     {
-                        v = list3[_120_26_]
+                        v = list3[_121_26_]
                         if (v.text)
                         {
                             insert(v.text,'for')

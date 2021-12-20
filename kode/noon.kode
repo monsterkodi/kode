@@ -1,0 +1,119 @@
+###
+000   000   0000000    0000000   000   000  
+0000  000  000   000  000   000  0000  000  
+000 0 000  000   000  000   000  000 0 000  
+000  0000  000   000  000   000  000  0000  
+000   000   0000000    0000000   000   000  
+###
+
+noon = (obj) ->
+    
+    pad = (s, l) -> s += ' ' while s.length < l; return s
+                    
+    # 00000000   0000000   0000000   0000000   00000000   00000000
+    # 000       000       000       000   000  000   000  000     
+    # 0000000   0000000   000       000000000  00000000   0000000 
+    # 000            000  000       000   000  000        000     
+    # 00000000  0000000    0000000  000   000  000        00000000
+
+    esc = (k, arry) ->
+        if 0 <= k.indexOf '\n'
+            sp = k.split '\n'
+            es = sp.map (s) -> esc(s, arry)
+            es.unshift '...'
+            es.push '...'
+            return es.join '\n'
+        if k == '' or k == '...' or k[0] in [' ' '#' '|'] or k[k.length-1] in [' ' '#' '|'] 
+            k = '|' + k + '|'
+        else if arry and /\ \ /.test k
+            k = '|' + k + '|'
+        k
+    
+    # 00000000   00000000   00000000  000000000  000000000  000   000
+    # 000   000  000   000  000          000        000      000 000 
+    # 00000000   0000000    0000000      000        000       00000  
+    # 000        000   000  000          000        000        000   
+    # 000        000   000  00000000     000        000        000   
+    
+    pretty = (o, ind, seen) ->
+        
+        mk = 4
+        if Object.keys(o).length > 1
+            for k,v of o
+                if o.hasOwnProperty k
+                    kl = parseInt(Math.ceil((k.length+2)/4)*4)
+                    mk = Math.max mk, kl
+                    if mk > 32
+                        mk = 32
+                        break
+        l = []
+        
+        keyValue = (k,v) ->
+            s = ind
+            k = esc k, true
+            if k.indexOf('  ') > 0 and k[0] != '|'
+                k = "|#{k}|"
+            else if k[0] != '|' and k[k.length-1] == '|'
+                k = '|' + k
+            else if k[0] == '|' and k[k.length-1] != '|'
+                k += '|'
+            
+            ks = pad k, Math.max mk, k.length+2
+            i  = pad ind+'    ' mk
+
+            s += ks
+            vs = toStr v, i, false, seen
+            if vs[0] == '\n'
+                while s[s.length-1] == ' '
+                    s = s.substr 0, s.length-1                
+            s += vs
+            while s[s.length-1] == ' '
+                s = s.substr 0, s.length-1
+            s
+
+        for k,v of o
+            if o.hasOwnProperty k
+                l.push keyValue k, v
+            
+        l.join '\n'
+
+    # 000000000   0000000    0000000  000000000  00000000 
+    #    000     000   000  000          000     000   000
+    #    000     000   000  0000000      000     0000000  
+    #    000     000   000       000     000     000   000
+    #    000      0000000   0000000      000     000   000
+    
+    toStr = (o, ind='', arry=false, seen=[]) ->
+        
+        if not o? 
+            if o == null
+                return "null"
+            if o == undefined
+                return "undefined"
+            return '<?>'
+            
+        switch t = typeof o
+            
+            when 'string' 
+                return esc o, arry
+                
+            when 'object'
+                if o in seen
+                    return '<v>'
+                seen.push o
+                    
+                if o.constructor?.name == 'Array'
+                    s = ind!='' and arry and '.' or ''
+                    s += '\n' if o.length and ind!=''
+                    s += (ind+toStr(v,ind+'    ',true,seen) for v in o).join '\n'
+                else if o.constructor?.name == 'RegExp'
+                    return o.source
+                else
+                    s = (arry and '.\n') or ((ind != '') and '\n' or '')
+                    s += pretty o, ind, seen
+                return s
+            else
+                return String o
+        return '<???>'
+
+    toStr obj

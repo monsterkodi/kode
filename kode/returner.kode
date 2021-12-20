@@ -129,11 +129,12 @@ class Returner
 
         if e is Array
             lst = e[-1]
-            if lst.if     ➜ return @if lst.if
-            if lst.try    ➜ return @try lst.try
-            if lst.return ➜ return
-            if lst.while  ➜ return
-            if lst.for    ➜ return
+            if 
+                lst.if     ➜ return @if lst.if
+                lst.try    ➜ return @try lst.try
+                lst.return ➜ return
+                lst.while  ➜ return
+                lst.for    ➜ return
             
             if not (lst.call?.callee?.text in ['log' 'warn' 'error' 'throw'])
                 e.push
@@ -163,10 +164,7 @@ class Returner
                         if val
                             if val.type then @exp val
                             else
-                                if val is Array
-                                    @exp v for v in val
-                                else
-                                    @exp v for k,v of val
+                                @exp v for k,v of val
         
     verb: -> if @verbose then console.log.apply console.log, arguments 
 
