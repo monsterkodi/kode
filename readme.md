@@ -239,6 +239,17 @@ dbg '1st' 0 '2nd' myObj.c               ▸ file.kode:7:0
 Logs file and position followed by arguments in [noon](https://github.com/monsterkodi/noon) notation.
 If first argument is an identifier, appends it's name to the file position.
 
+## assert
+
+```kode
+f = (a) -> ▴ a ; a                      ▸ file.kode:1:11 ▴ assert failed! a
+▴ 'good' f 1                            
+▴ 'bad'  f 0                            ▸ file.kode:3:0 ▴ bad f(0)
+```
+
+Logs file position, message and condition code if condition isn't truish. 
+If message is omitted, 'assert failed!' will be used.
+
 ## profile
 
 ```kode
@@ -265,27 +276,7 @@ Logs time difference between matching `●▸` `●▪` pairs.
 a = 12345678901234567890n
 log a*a  ▸ 152415787532388367501905199875019052100n
 ```
-
-### assert
-
-```kode
-▴ 'message' condition       # log file position and message and exits if condition isn't truish
-▴ condition                 # similar, but without specifying a message
-```
                             
-### profile
-
-```kode
-                            # log execution times
-● sum                       ▸ 8_4 1ms          line_column prefix
-    ● s1()                  ▸ 9_4 2ms          if not named
-    ● s2()                  ▸ sum 3ms
-
-●▸ a                        # like ●, but lets you control
-f = -> ●▪ a                 # when to start and stop timing
-f()                         ▸ a 824μs
-```
-
 # Compatibility
 
 **kode** is *mostly* compatible with CoffeeScript. Converting to **kode** shouldn't be too painful.
