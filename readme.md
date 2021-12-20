@@ -38,7 +38,7 @@ if  a ➜ X
     b ➜ Y
       ➜ Z
 ```
-... is a shortcut for ...
+is a shortcut for
 
 ```kode
 if      a then X
@@ -55,7 +55,7 @@ switch x
     'abc' ➜ Y
           ➜ Z      
 ```
-... is a shortcut for ...
+is a shortcut for
 
 ```kode
 switch x
@@ -89,7 +89,7 @@ empty [] and empty {} and empty '' and empty null and empty NaN  # -> true
 empty 0 or empty 'a' or empty [null] or empty Infinity           # -> false
 ```
 
-Returns `true` for null, undefined, NaN and empty array, object or string.
+Returns true for null, undefined, NaN and empty array, object or string.
 
 ## valid
 
@@ -139,7 +139,7 @@ class C
     @: ->
 ```
 
-... is a shortcut for ...
+is a shortcut for
 
 ```kode
 class C
