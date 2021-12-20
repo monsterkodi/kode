@@ -6,7 +6,7 @@ It is highly inspired by and *tries* to be compatible with [CoffeeScript](http:/
 
 ## Ranges
 
-```coffeescript
+```kode
 
 a = 1..3
 for i in 0..5
@@ -17,7 +17,7 @@ Square brackets around ranges are optional.
 
 ## Console shortcuts
 
-```coffeescript
+```kode
 log 'hello'       # -> hello
 error 'world!'    # -> world!
 ```
@@ -26,7 +26,7 @@ Simple shortcuts for `log`, `warn` and `error` methods of `console`.
 
 ## Negative indexing
 
-```coffeescript
+```kode
 "abc"[-2]    # -> 'b'
 [1,2,3][-2]  # -> 2
 ```
@@ -35,14 +35,14 @@ Simple shortcuts for `log`, `warn` and `error` methods of `console`.
 
 ## If shortcut
 
-```coffeescript
+```kode
 if  a ➜ X
     b ➜ Y
       ➜ Z
 ```
 ... is a shortcut for ...
 
-```coffeescript
+```kode
 if      a then X
 else if b then Y
           else Z
@@ -50,7 +50,7 @@ else if b then Y
 
 ## Switch shortcut
 
-```coffeescript
+```kode
 switch x
     1
     2 3   ➜ X
@@ -59,16 +59,16 @@ switch x
 ```
 ... is a shortcut for ...
 
-```coffeescript
+```kode
 switch x
     when 1,2,3 then X
     when 'abc' then Y
     else            Z
 ```
 
-## Is
+## is
 
-```coffeescript
+```kode
 1 is 'number' and '' is 'string' and {} is Object and [] is Array # -> true
 1 is Number or '' is String or [] is 'array'                      # -> false
 ```
@@ -78,33 +78,33 @@ The first is used, when the right hand side is a string.
 
 ### is num
 
-```coffeescript
+```kode
 "0xFF" is num and "-4.536" is num and 42 is num                   # ->  true
 ```
 
 The special keyword `num` does a string coersion via `parseFloat` in the test.
 
-## Empty
+## empty
 
-```coffeescript
+```kode
 empty [] and empty {} and empty '' and empty null and empty NaN  # -> true
 empty 0 or empty 'a' or empty [null] or empty Infinity           # -> false
 ```
 
 Returns `true` for null, undefined, NaN and empty array, object or string.
 
-## Valid
+## valid
 
-```coffeescript
+```kode
 valid 0 and valid 'a' and valid [null] and valid Infinity        # -> true
 valid [] or valid {} or valid '' or valid null or valid NaN      # -> false
 ```
 
 Just the negation of `empty`.
 
-## Each
+## each
 
-```coffeescript
+```kode
 obj each (k,v) -> [k,v]
 obj each (v) -> v
 ```
@@ -114,7 +114,7 @@ a function on the right hand side.
 The function is called for each key/value, index/item, index/character pair.
 A new object, array or string is build from the results and returned:
 
-```coffeescript
+```kode
 'hello'   each (c) -> c+c            # -> 'hheelllloo'
 [1,3]     each (i,v) -> [1-i,v*v]    # -> [9,1]
 {a:1,b:3} each (k,v) -> ['▸'+k, k+v] # -> { '▸a': 'a1', '▸b': 'b3' }
@@ -123,9 +123,9 @@ A new object, array or string is build from the results and returned:
 If the function takes only one argument, 
 it is the value/item/character and a single return value is expected.
 
-## For
+## for
 
-```coffeescript
+```kode
 x = null
 for a in x
     log 'hello'
@@ -136,21 +136,21 @@ The above code would throw an exception at runtime in CoffeeScript.
 
 ## Constructor shortcut
 
-```coffeescript
+```kode
 class C
     @: ->
 ```
 
 ... is a shortcut for ...
 
-```coffeescript
+```kode
 class C
     constructor: ->
 ```
 
 ## List comprehension
 
-```coffeescript
+```kode
 l = [1,2,3]
 a = [x for x in l]      # -> [1,2,3]
 a = (x for x in l)      # -> [1,2,3]
@@ -160,14 +160,14 @@ a = (x for x in l)      # -> [1,2,3]
 
 ## Ternary condition operator
 
-```coffeescript
+```kode
 false ? 1 : 2     # -> 2
 ```
 
 A nifty `if` `then` `else` shortcut, which I have always been missing in CoffeeScript.
 It introduces some ambiguity in a few corner cases, which can be resolved by different spacing:
 
-```coffeescript
+```kode
 null ? a: 'b'     # -> {a:'b'}
 ```
 
@@ -175,7 +175,7 @@ null ? a: 'b'     # -> {a:'b'}
 
 **kode** gives you the option to use the old school `function` style classes of CoffeeScript v1:
 
-```coffeescript
+```kode
 function C
     @: ->
 ```
@@ -184,7 +184,7 @@ function C
 
 CoffeeScript has a very nice way of initializing arrays:
 
-```coffeescript
+```kode
 a = [
         1
         2
@@ -199,7 +199,7 @@ The same goes for objects that span over multiple lines.
 In **kode**, you don't need to insert commata after number or string literals and POD structures.
 Those are all valid expressions:
 
-```coffeescript
+```kode
 a = [ 1 2 3 ]
 a = { b:1 c:2 d:3 }
 a =   b:1 c:2 d:3
@@ -216,7 +216,7 @@ log 'a:' a , 'd:' 3            # some commas still make sense :-)
 
 ## Noon
 
-```coffeescript
+```kode
 s = noon a:1 b:2
 log s                          # -> a   1
                                #    b   2
@@ -245,14 +245,14 @@ If first argument is an identifier, appends it's name to the file position.
 
 ## BigInt
 
-```coffeescript
+```kode
 a = 12345678901234567890n
 log a*a  # -> 152415787532388367501905199875019052100n
 ```
 
 ### Assert and profiling support
 
-```coffeescript
+```kode
 assert 'message' condition     # log file position and message and exits if condition isn't truish
 assert condition               # similar, but without specifying a message
 
