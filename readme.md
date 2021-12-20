@@ -13,7 +13,7 @@ for i in 0..5
 
 Square brackets around ranges are optional.
 
-## console shortcuts
+## console
 
 ```kode
 log 'hello'     ▸ hello
@@ -31,7 +31,7 @@ Simple shortcuts for `log`, `warn` and `error` methods of `console`.
 
 `v[-n]` is a shortcut for `v[-n..-n][0]` for number literals `n`
 
-## if shortcut
+## if
 
 ```kode
 if  a ➜ X
@@ -46,7 +46,7 @@ else if b then Y
           else Z
 ```
 
-## switch shortcut
+## switch
 
 ```kode
 switch x
@@ -132,7 +132,7 @@ for a in x
 The above code would throw an exception at runtime in CoffeeScript.
 **kode** generates code that doesn't fail if x is not an array.
 
-## constructor shortcut
+## constructor
 
 ```kode
 class C
@@ -156,7 +156,7 @@ a = (x for x in l)  ▸ [1,2,3]
 
 **kode** doesn't distuinguish between round and square brackets around list comprehensions.
 
-## ternary condition
+## ternary
 
 ```kode
 false ? 1 : 2       ▸ 2
