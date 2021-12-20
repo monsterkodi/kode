@@ -496,7 +496,7 @@ function Parse # the base class of Parser
                     e = @qmrkcolon e.qmrkop, tokens
                 
                 (   nxt.type == 'op' and 
-                    nxt.text not in ['++' '--' '+' '-' 'not' 'noon'] and 
+                    nxt.text not in ['++' '--' '+' '-' 'not' 'noon' 'new'] and 
                     e.text not in ['[' '('] and                     
                     '▸arg' not in @stack)
                     
@@ -545,8 +545,8 @@ function Parse # the base class of Parser
                     (nxt.text not in ['if'] or not @noThenAhead tokens) and
                     nxt.text not in ':)}]' and
                     nxt.type not in ['nl'] and
-                    (nxt.type != 'op' or nxt.text in ['+''++''--''-''noon']) and
-                    @isSuitableForImplicitCall(e))
+                    (nxt.type != 'op' or nxt.text in ['+''++''--''-''noon''new']) and
+                    @isSuitableForImplicitCall(e) )
                     
                     @verb 'lhs is lhs of implicit call! e' e, @stack[-1]
                     @verb '    is lhs of implicit call! nxt' nxt

@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.164.0
+// monsterkodi/kode 0.165.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
 
@@ -1418,7 +1418,7 @@ ${i}})(${this.node(n.lhs)})
                 if (op.rhs.text === 'num')
                 {
                     lhs = this.atom(op.lhs)
-                    return `!isNaN(${lhs}) && !isNaN(parseFloat(${lhs})) && isFinite(${lhs})`
+                    return `(function(o){return !isNaN(o) && !isNaN(parseFloat(o)) && isFinite(o)})(${lhs})`
                 }
                 else if (op.rhs.text === 'obj')
                 {
@@ -1429,13 +1429,13 @@ ${i}})(${this.node(n.lhs)})
                     else
                     {
                         lhs = this.atom(op.lhs)
-                        return `!(${lhs} == null || typeof(${lhs}) != 'object' || ${lhs}.constructor.name !== 'Object')`
+                        return `(function(o){return !(o == null || typeof o != 'object' || o.constructor.name !== 'Object')})(${lhs})`
                     }
                 }
                 else if (op.rhs.text === 'str')
                 {
                     lhs = this.atom(op.lhs)
-                    return `typeof ${lhs} === 'string' || ${lhs} instanceof String`
+                    return `(function(o){return typeof o === 'string' || o instanceof String})(${lhs})`
                 }
                 else
                 {

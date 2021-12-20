@@ -1188,18 +1188,18 @@ class Renderer
                     if 
                         op.rhs.text == 'num'
                             lhs = @atom op.lhs
-                            return "!isNaN(#{lhs}) && !isNaN(parseFloat(#{lhs})) && isFinite(#{lhs})"
+                            return "(function(o){return !isNaN(o) && !isNaN(parseFloat(o)) && isFinite(o)})(#{lhs})"
                             
                         op.rhs.text == 'obj'
                             if op.lhs.type == 'num'
                                 return 'false'
                             else
                                 lhs = @atom op.lhs
-                                return "!(#{lhs} == null || typeof(#{lhs}) != 'object' || #{lhs}.constructor.name !== 'Object')"
+                                return "(function(o){return !(o == null || typeof o != 'object' || o.constructor.name !== 'Object')})(#{lhs})"
                             
                         op.rhs.text == 'str'
                             lhs = @atom op.lhs
-                            return "typeof #{lhs} === 'string' || #{lhs} instanceof String"
+                            return "(function(o){return typeof o === 'string' || o instanceof String})(#{lhs})"
                     
                         else
                             return "#{@atom op.lhs} instanceof #{@atom op.rhs}"

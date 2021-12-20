@@ -326,6 +326,8 @@
         ke '"" is String'               ▸   false
         ke '1 is Number'                ▸   false
         
+        kc 'log new Object()'           ▸ 'console.log(new Object())'
+        
         kc  "if d is 'function' and not o?" ▸ 
             """
             if (typeof(d) === 'function' && !(o != null))
