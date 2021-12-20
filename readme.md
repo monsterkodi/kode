@@ -209,15 +209,15 @@ test 'something' ->
 
 on 'event' @myCallback
 
-log 'a:' a , 'd:' 3            # some commas still make sense :-)
+log 'a:' a , 'd:' 3                     # some commas still make sense :-)
 ```
 
 ## noon
 
 ```kode
 s = noon a:1 b:2
-log s                          ▸ a   1
-                               ▸ b   2
+log s                                   ▸ a   1
+                                        ▸ b   2
 ```
 
 Operator that converts argument into string in [noon](https://github.com/monsterkodi/noon) notation.
@@ -227,13 +227,13 @@ Handles recursion, unlike `JSON.stringify`.
 
 ```kode
 myObj = a:1 b:2 c:d:3
-dbg myObj                      ▸ file.kode:2:0 myObj
-                               ▸ a   1
-                               ▸ b   2
-                               ▸ c
-                               ▸     d   3
-dbg '1st' 0 '2nd' myObj.c      ▸ file.kode:7:0
-                               ▸ 1st 0 2nd d   3
+dbg myObj                               ▸ file.kode:2:0 myObj
+                                        ▸ a   1
+                                        ▸ b   2
+                                        ▸ c
+                                        ▸     d   3
+dbg '1st' 0 '2nd' myObj.c               ▸ file.kode:7:0
+                                        ▸ 1st 0 2nd d   3
 ```
 
 Logs file and position followed by arguments in [noon](https://github.com/monsterkodi/noon) notation.
@@ -248,9 +248,9 @@ fun = ->
     ● funny times                     
     Math.sqrt x for x in 0..100000    
                                       
-fun() for i in 1..2                   ▸ funny times 12 ms
-                                      ▸ funny times 11 ms
-●▪ sunny times                        ▸ sunny times 26 ms
+fun() for i in 1..2                     ▸ funny times 12 ms
+                                        ▸ funny times 11 ms
+●▪ sunny times                          ▸ sunny times 26 ms
 ```
 
 Logs time difference between matching `●▸` `●▪` pairs.
@@ -301,7 +301,6 @@ Stuff I rarely used and therefore didn't bother to re-implement:
 # Future plans
 
 - `clone`  `copy` keywords
-- `profile` in same scope
 - `include` keyword to merge source files
 - render comments
 - sourcemaps
