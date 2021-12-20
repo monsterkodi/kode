@@ -113,9 +113,9 @@ The function is called for each key/value, index/item, index/character pair.
 A new object, array or string is build from the results and returned:
 
 ```kode
-'hello'   each (c) -> c+c            ▸ 'hheelllloo'
-[1,3]     each (i,v) -> [1-i,v*v]    ▸ [9,1]
-{a:1,b:3} each (k,v) -> ['▸'+k, k+v] ▸ { '▸a': 'a1', '▸b': 'b3' }
+'hello'   each (c) -> c+c                                           ▸ 'hheelllloo'
+[1,3]     each (i,v) -> [1-i,v*v]                                   ▸ [9,1]
+{a:1,b:3} each (k,v) -> ['▸'+k, k+v]                                ▸ { '▸a': 'a1', '▸b': 'b3' }
 ```
 
 If the function takes only one argument, 
