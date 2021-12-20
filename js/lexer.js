@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.158.0
+// monsterkodi/kode 0.159.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}}
 
@@ -108,6 +108,18 @@ class Lexer
                             tokens.slice(-1)[0].text = kstr.strip(tokens.slice(-1)[0].text,' \n')
                         }
                     }
+                    else if (key.startsWith('prof'))
+                    {
+                        end = text.indexOf('\n')
+                        if (end < 0)
+                        {
+                            end = text.length
+                        }
+                        txt = kstr.strip(text.slice(tokens.slice(-1)[0].text.length, typeof end === 'number' ? end : -1))
+                        tokens.slice(-1)[0].id = txt
+                        end >= text.length ? text = '' : text = text.slice(end)
+                        break
+                    }
                     else
                     {
                         col += value.length
@@ -133,9 +145,9 @@ class Lexer
         var minind, splt, tok
 
         var list = _k_.list(tokens)
-        for (var _121_16_ = 0; _121_16_ < list.length; _121_16_++)
+        for (var _129_16_ = 0; _129_16_ < list.length; _129_16_++)
         {
-            tok = list[_121_16_]
+            tok = list[_129_16_]
             if (tok.type === 'triple')
             {
                 splt = tok.text.slice(3, -3).split('\n')

@@ -108,6 +108,7 @@ class Kode
         sandbox.__filename = file ? 'eval'
         sandbox.__dirname  = slash.dir sandbox.__filename
         sandbox.console    = console
+        sandbox.process    = process
 
         if not (sandbox.module or sandbox.require) or file
             Module = require 'module'

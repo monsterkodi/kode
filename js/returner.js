@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.158.0
+// monsterkodi/kode 0.159.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined}
 
@@ -37,7 +37,7 @@ class Returner
 
     func (f)
     {
-        var ins, lst, _50_17_, _50_23_, _52_21_
+        var e, lst, _50_17_, _50_23_, _52_21_
 
         if (f.args)
         {
@@ -48,97 +48,18 @@ class Returner
             if (!(_k_.in((f.name != null ? f.name.text : undefined),['@','constructor'])))
             {
                 lst = f.body.exps.slice(-1)[0]
-                ins = (function ()
+                var list = _k_.list(f.body.exps)
+                for (var _56_22_ = 0; _56_22_ < list.length; _56_22_++)
                 {
-                    return this.insert(f.body.exps)
-                }).bind(this)
-                if (_k_.in(lst.type,this.kode.atoms))
-                {
-                    ins()
-                }
-                else if (lst.call)
-                {
-                    if (!(_k_.in(lst.call.callee.text,['log','warn','error'])))
+                    e = list[_56_22_]
+                    if (e.text === '●')
                     {
-                        ins()
+                        this.profile = e
+                        break
                     }
                 }
-                else if (lst.operation)
-                {
-                    ins()
-                }
-                else if (lst.func)
-                {
-                    ins()
-                }
-                else if (lst.array)
-                {
-                    ins()
-                }
-                else if (lst.prop)
-                {
-                    ins()
-                }
-                else if (lst.each)
-                {
-                    ins()
-                }
-                else if (lst.index)
-                {
-                    ins()
-                }
-                else if (lst.object)
-                {
-                    ins()
-                }
-                else if (lst.assert)
-                {
-                    ins()
-                }
-                else if (lst.stripol)
-                {
-                    ins()
-                }
-                else if (lst.qmrkop)
-                {
-                    ins()
-                }
-                else if (lst.incond)
-                {
-                    ins()
-                }
-                else if (lst.compare)
-                {
-                    null
-                }
-                else if (lst.return)
-                {
-                    null
-                }
-                else if (lst.while)
-                {
-                    null
-                }
-                else if (lst.for)
-                {
-                    null
-                }
-                else if (lst.if)
-                {
-                    this.if(lst.if)
-                }
-                else if (lst.try)
-                {
-                    this.try(lst.try)
-                }
-                else if (lst.switch)
-                {
-                    this.switch(lst.switch)
-                }
-                else
-                {
-                    console.log('todo: returner',Object.keys(lst)[0])
-                }
+                this.insert(f.body.exps)
+                delete this.profile
             }
             return this.scope(f.body)
         }
@@ -151,9 +72,9 @@ class Returner
         e.returns = true
         this.insert(e.then)
         var list = _k_.list(e.elifs)
-        for (var _92_15_ = 0; _92_15_ < list.length; _92_15_++)
+        for (var _77_15_ = 0; _77_15_ < list.length; _77_15_++)
         {
-            ei = list[_92_15_]
+            ei = list[_77_15_]
             if (ei.elif.then)
             {
                 this.insert(ei.elif.then)
@@ -183,9 +104,9 @@ class Returner
         var w
 
         var list = _k_.list(e.whens)
-        for (var _117_14_ = 0; _117_14_ < list.length; _117_14_++)
+        for (var _102_14_ = 0; _102_14_ < list.length; _102_14_++)
         {
-            w = list[_117_14_]
+            w = list[_102_14_]
             if (!_k_.empty(w.when.then))
             {
                 this.insert(w.when.then)
@@ -199,12 +120,24 @@ class Returner
 
     insert (e)
     {
-        var lst, _139_28_, _139_36_
+        var lst, _125_28_, _125_36_
 
         if (e instanceof Array)
         {
             lst = e.slice(-1)[0]
-            if (lst.if)
+            if (lst.return)
+            {
+                return this.profilend(e,-1)
+            }
+            else if (lst.while)
+            {
+                return this.profilend(e)
+            }
+            else if (lst.for)
+            {
+                return this.profilend(e)
+            }
+            else if (lst.if)
             {
                 return this.if(lst.if)
             }
@@ -212,21 +145,36 @@ class Returner
             {
                 return this.try(lst.try)
             }
-            else if (lst.return)
+            else if (lst.switch)
             {
-                return
+                return this.switch(lst.switch)
             }
-            else if (lst.while)
+            if (!(_k_.in(((_125_28_=lst.call) != null ? (_125_36_=_125_28_.callee) != null ? _125_36_.text : undefined : undefined),['log','warn','error','throw'])))
             {
-                return
+                e.push({return:{ret:{type:'keyword',text:'return'},val:e.pop()}})
+                return this.profilend(e,-1)
             }
-            else if (lst.for)
+            else
             {
-                return
+                return this.profilend(e)
             }
-            if (!(_k_.in(((_139_28_=lst.call) != null ? (_139_36_=_139_28_.callee) != null ? _139_36_.text : undefined : undefined),['log','warn','error','throw'])))
+        }
+    }
+
+    profilend (e, offset = 0)
+    {
+        var c
+
+        if (this.profile)
+        {
+            c = {type:'profilend',text:'●▪',id:this.profile.id}
+            if (offset)
             {
-                return e.push({return:{ret:{type:'keyword',text:'return'},val:e.pop()}})
+                return e.splice(offset,0,c)
+            }
+            else
+            {
+                return e.push(c)
             }
         }
     }
@@ -248,9 +196,9 @@ class Returner
             if (e.length)
             {
                 var list = _k_.list(e)
-                for (var _157_42_ = 0; _157_42_ < list.length; _157_42_++)
+                for (var _159_42_ = 0; _159_42_ < list.length; _159_42_++)
                 {
-                    v = list[_157_42_]
+                    v = list[_159_42_]
                     this.exp(v)
                 }
             }

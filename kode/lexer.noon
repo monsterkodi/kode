@@ -9,11 +9,15 @@ regex       \/(?:\\[\/]|[^\n\/])*\/[gimsuy]*
 dots        (?<!\.)\.\.\.?(?!\.)
 paren       [\(\)\[\]\{\}]
 func        (->|=>)
-test        ▸[\s\n]+
 then        ➜
+this        @
+test        (?<!●)▸[\s\n]+
+profile     ●▸
+profilend   ●▪
+prof        ●
+assert      ▴
 op          (\band\b|\bor\b|\bnot\b|\+\+|--|==|!=|>=|<=|\+=|-=|\*=|\/=|\|=|\^=|\?=|\&=|%=|<<|>>|=|\*|\/|\+|-|%|\^|~|\&|\||<|>|\bis\b|\binstanceof\b|\bdelete\b|\bnoon\b)
 punct       [,:;!&~\|\.\?\\]
-this        @
 bool        (\byes\b|\bno\b|\btrue\b|\bfalse\b)
 keyword
     if
@@ -47,9 +51,5 @@ keyword
     log
     warn
     error
-    ●
-    ●▸
-    ●▪
-    ▴
     await
 var         [▸a-zA-Z_$][a-zA-Z0-9_$]*

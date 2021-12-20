@@ -239,6 +239,23 @@ dbg '1st' 0 '2nd' myObj.c      ▸ file.kode:7:0
 Logs file and position followed by arguments in [noon](https://github.com/monsterkodi/noon) notation.
 If first argument is an identifier, appends it's name to the file position.
 
+## profile
+
+```kode
+●▸ sunny times
+
+fun = ->                              
+    ● funny times                     
+    Math.sqrt x for x in 0..100000    
+                                      
+fun() for i in 1..2                   ▸ funny times 12 ms
+                                      ▸ funny times 11 ms
+●▪ sunny times                        ▸ sunny times 26 ms
+```
+
+Logs time difference between matching `●▸` `●▪` pairs.
+`●` is a shortcut that can be used in functions: `●▪` is inserted automatically before each return.
+
 # Planned stuff that does not work yet:
 
 ## BigInt

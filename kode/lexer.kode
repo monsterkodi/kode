@@ -94,6 +94,14 @@ class Lexer
                             else
                                 tokens[-1].type = 'op'
                                 tokens[-1].text = kstr.strip tokens[-1].text, ' \n'
+                                
+                        key.startsWith 'prof'
+                            end = text.indexOf '\n'
+                            end = text.length if end < 0
+                            txt = kstr.strip text[tokens[-1].text.length...end]
+                            tokens[-1].id = txt
+                            if end >= text.length then text = '' else text = text[end..]
+                            break
                         ➜  
                             col += value.length
 

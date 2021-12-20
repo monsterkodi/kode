@@ -53,30 +53,15 @@ class Returner
                 
                 lst = f.body.exps[-1]
                 
-                ins = => @insert f.body.exps
+                for e in f.body.exps
+                    if e.text == '●'
+                        @profile = e
+                        break
+
+                @insert f.body.exps
                 
-                if  lst.type in @kode.atoms ➜ ins()
-                    lst.call                ➜ if lst.call.callee.text not in ['log' 'warn' 'error'] then ins()
-                    lst.operation           ➜ ins()
-                    lst.func                ➜ ins()
-                    lst.array               ➜ ins()
-                    lst.prop                ➜ ins()
-                    lst.each                ➜ ins()
-                    lst.index               ➜ ins()
-                    lst.object              ➜ ins()
-                    lst.assert              ➜ ins()
-                    lst.stripol             ➜ ins()
-                    lst.qmrkop              ➜ ins()
-                    lst.incond              ➜ ins()
-                    lst.compare             ➜ null
-                    lst.return              ➜ null
-                    lst.while               ➜ null
-                    lst.for                 ➜ null
-                    lst.if                  ➜ @if lst.if
-                    lst.try                 ➜ @try lst.try
-                    lst.switch              ➜ @switch lst.switch
-                                            ➜ log 'todo: returner' Object.keys(lst)[0]
-            
+                delete @profile
+                
             @scope f.body 
         
     # 000  00000000  
@@ -130,18 +115,35 @@ class Returner
         if e is Array
             lst = e[-1]
             if 
+                lst.return ➜ return @profilend e, -1
+                lst.while  ➜ return @profilend e
+                lst.for    ➜ return @profilend e
                 lst.if     ➜ return @if lst.if
                 lst.try    ➜ return @try lst.try
-                lst.return ➜ return
-                lst.while  ➜ return
-                lst.for    ➜ return
+                lst.switch ➜ return @switch lst.switch
             
             if not (lst.call?.callee?.text in ['log' 'warn' 'error' 'throw'])
                 e.push
                     return:
                         ret: type:'keyword' text:'return'
                         val: e.pop()
+                @profilend e, -1
+            else
+                @profilend e
             
+    profilend: (e, offset=0) ->
+        
+        if @profile
+            
+            c = type: 'profilend' 
+                text: '●▪'
+                id:   @profile.id
+
+            if offset
+                e.splice offset, 0 c
+            else
+                e.push c
+                        
     # 00000000  000   000  00000000   
     # 000        000 000   000   000  
     # 0000000     00000    00000000   
