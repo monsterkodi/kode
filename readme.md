@@ -256,6 +256,8 @@ log a*a  ▸ 152415787532388367501905199875019052100n
 ```
                             
 ### profile
+
+```kode
                             # log execution times
 ● sum                       ▸ 8_4 1ms          line_column prefix
     ● s1()                  ▸ 9_4 2ms          if not named
