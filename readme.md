@@ -306,8 +306,12 @@ Only plain Objects, Arrays and Strings are copied. Functions, Maps, Sets, etc. a
         something else ▸ other result
 ```
 
-if the `▸` has nothing on its left hand side, it denotes a test section.
-otherwise the expressions on both sides are compared. The files in `kode/test` provide plenty of examples how to use this.
+If the `▸` has nothing on its left hand side, it denotes a test section.
+Otherwise the expressions on both sides are compared. The files in `kode/test` provide plenty of examples how to use this:
+
+<img src="./bin/tets.png" />
+
+the output of two runs:
 
 <img src="./bin/test.png" />
 

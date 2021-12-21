@@ -272,7 +272,7 @@
         ke  "a = ['3''2''1'] each (i,v) -> [i, v+'▸'+i]"    ▸   ['3▸0' '2▸1' '1▸2']
         ke  "a = 'hello' each (i,c) -> [i,c+c]"             ▸   "hheelllloo"
         ke  "a = 'hello world' each (i,c) -> [i,i%2 and c.toUpperCase() or c]"    ▸ "hElLo wOrLd"
-        # ke  "a = 'hello again' each (i,c) -> [i,((i%2) ? c.toUpperCase() : c)]"   "hElLo aGaIn"
+        ke  "a = 'hello again' each (i,c) -> [i,((i%2) ? c.toUpperCase() : c)]"   ▸ "hElLo aGaIn"
         
         ▸ single
             
