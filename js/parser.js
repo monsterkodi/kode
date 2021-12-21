@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.166.0
+// monsterkodi/kode 0.167.0
 
 var _k_ = {extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -541,7 +541,7 @@ Parser = (function ()
         this.push('{')
         first = firstLineCol(key)
         exps = [this.keyval(key,tokens)]
-        literals = this.kode.atoms.concat(['keyword'])
+        literals = this.kode.atoms.concat(['keyword','op'])
         while (tokens.length)
         {
             if ((tokens[0] != null ? tokens[0].type : undefined) === 'nl')

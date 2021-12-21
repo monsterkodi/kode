@@ -23,6 +23,30 @@
 
         kc  'o = { a:1 b:2 c: d:4 e:5 }' ▸ 'o = {a:1,b:2,c:{d:4,e:5}}'
 
+        kc  'o = noon:1'        ▸   'o = {noon:1}'
+        kc  """
+            o = 
+                a:[1 2 3]
+                noon:1
+            """ ▸ 'o = {a:[1,2,3],noon:1}'
+            
+        kc  """
+            o = 
+                try: 
+                    catch:1
+                noon: 
+                    new:2
+                switch:
+                    when:3
+                delete:
+                    typeof:4
+                instanceof:
+                    is:5
+            """ ▸
+            """
+            o = {try:{catch:1},noon:{new:2},switch:{when:3},delete:{typeof:4},instanceof:{is:5}}
+            """
+        
         kc  """
             a
                 {

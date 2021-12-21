@@ -710,7 +710,7 @@ function Parser extends Parse
         
         exps = [@keyval key, tokens]
         
-        literals = @kode.atoms.concat ['keyword']
+        literals = @kode.atoms.concat ['keyword''op']
         
         while tokens.length
             if tokens[0]?.type == 'nl'
