@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.178.0
+// monsterkodi/kode 0.179.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -209,21 +209,21 @@ class Operator
             {
                 if (p[i] > p[i - 1])
                 {
-                    this.fixPrec(e,chain,p)
+                    this.fixPrec(e)
                     break
                 }
             }
         }
     }
 
-    fixPrec (e, chain, p)
+    fixPrec (e)
     {
-        var newlhs, newop, op, _127_23_, _127_41_, _127_52_, _127_62_, _131_37_, _131_48_, _167_54_
+        var newlhs, newop, op, _125_23_, _125_41_, _125_52_, _125_62_, _129_37_, _129_48_, _165_54_, _165_84_, _170_32_, _170_53_
 
-        if (precedence(e) < precedence(e.rhs))
+        op = e.operation || e.qmrkcolon
+        if (precedence(e) < precedence(op.rhs))
         {
-            op = e.operation || e.qmrkcolon
-            if (op.operator.text === 'not' && _k_.in(((op.rhs != null ? op.rhs.incond : undefined) || ((_127_41_=op.rhs) != null ? (_127_52_=_127_41_.operation) != null ? (_127_62_=_127_52_.operator) != null ? _127_62_.text : undefined : undefined : undefined)),assign))
+            if (op.operator.text === 'not' && _k_.in(((op.rhs != null ? op.rhs.incond : undefined) || ((_125_41_=op.rhs) != null ? (_125_52_=_125_41_.operation) != null ? (_125_62_=_125_52_.operator) != null ? _125_62_.text : undefined : undefined : undefined)),assign))
             {
                 return
             }
@@ -231,7 +231,7 @@ class Operator
             {
                 return
             }
-            if (_k_.in(((_131_37_=e.operation.rhs) != null ? (_131_48_=_131_37_.operation) != null ? _131_48_.operator.text : undefined : undefined),assign))
+            if (_k_.in(((_129_37_=e.operation.rhs) != null ? (_129_48_=_129_37_.operation) != null ? _129_48_.operator.text : undefined : undefined),assign))
             {
                 return
             }
@@ -252,7 +252,7 @@ class Operator
                 newlhs = {operation:{lhs:op.lhs,operator:op.operator,rhs:op.rhs.operation.lhs}}
                 newop = {lhs:newlhs,operator:op.rhs.operation.operator,rhs:op.rhs.operation.rhs}
                 e.operation = newop
-                if ((e.operation.rhs != null ? e.operation.rhs.operation : undefined))
+                if ((e.operation.rhs != null ? e.operation.rhs.operation : undefined) || (e.operation.rhs != null ? e.operation.rhs.qmrkcolon : undefined))
                 {
                     this.op(e.operation.rhs)
                 }
@@ -262,11 +262,18 @@ class Operator
                 return print.ast('after swap2',e)
             }
         }
+        else
+        {
+            if ((op.rhs != null ? op.rhs.operation : undefined) || (op.rhs != null ? op.rhs.qmrkcolon : undefined))
+            {
+                return this.op(op.rhs)
+            }
+        }
     }
 
     logChain (chain, p)
     {
-        var rndr, s, _185_43_, _185_50_
+        var rndr, s, _186_43_, _186_50_
 
         s = ''
         rndr = (function (n)
@@ -291,7 +298,7 @@ class Operator
                 return (rndr(i.qmrkcolon.lhs)) + ' ? ' + (rndr(i.qmrkcolon.mid)) + ' '
             }
         }).bind(this)).join(' ')
-        s += ' ' + ((_185_50_=rndr((chain.slice(-1)[0].operation != null ? chain.slice(-1)[0].operation.rhs : undefined))) != null ? _185_50_ : '...')
+        s += ' ' + ((_186_50_=rndr((chain.slice(-1)[0].operation != null ? chain.slice(-1)[0].operation.rhs : undefined))) != null ? _186_50_ : '...')
         console.log(w4('▪'),s,g3(p))
     }
 
