@@ -243,6 +243,25 @@
             }).bind(this))()
             """
             
+    ▸ qmrkop
+    
+        kc  """
+            switch ext ? require('path').extname p
+                '.json' ➜ JSON.parse str
+                        ➜ require('./parse') str
+            """ ▸
+            """ 
+            switch ((ext != null ? ext : require('path').extname(p)))
+            {
+                case '.json':
+                    JSON.parse(str)
+                    break
+                default:
+                    require('./parse')(str)
+            }
+            
+            """
+            
     # 000   000  000   0000000  00000000  00000000   
     # 0000  000  000  000       000       000   000  
     # 000 0 000  000  000       0000000   0000000    

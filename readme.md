@@ -67,6 +67,8 @@ switch x
     else            Z
 ```
 
+<img src="./bin/switch.png" />
+
 ## is
 
 ```kode
@@ -292,6 +294,22 @@ a = clone b                             # deep copy of b
 
 Operators that return a shallow or deep copy of their argument. 
 Only plain Objects, Arrays and Strings are copied. Functions, Maps, Sets, etc. are not copied.
+
+## test
+
+**kode** comes with its own testing 'framework' (in quotes here, because it's too much of a word for such a minimalistic thing:)
+
+```
+▸ test
+    ▸ sub test
+        something      ▸ result
+        something else ▸ other result
+```
+
+if the `▸` has nothing on its left hand side, it denotes a test section.
+otherwise the expressions on both sides are compared. The files in `kode/test` provide plenty of examples how to use this.
+
+<img src="./bin/test.png" />
 
 # Compatibility
 

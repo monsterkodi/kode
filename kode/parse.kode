@@ -781,7 +781,7 @@ function Parse # the base class of Parser
         
     stackAllowsBlockArg: ->
         
-        s = @stack.filter (s) -> s in ['if' 'for' 'while' 'then' 'class' 'function' '{' ':']
+        s = @stack.filter (s) -> s in ['if' 'for' 'while' 'then' 'class' 'function' '{' ':' 'switch' 'when']
         return true if empty s
         return true if s[-1] == 'then'
         false

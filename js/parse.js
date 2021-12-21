@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.167.0
+// monsterkodi/kode 0.168.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, valid: undefined}
 
@@ -955,7 +955,7 @@ Parse = (function ()
 
         s = this.stack.filter(function (s)
         {
-            return _k_.in(s,['if','for','while','then','class','function','{',':'])
+            return _k_.in(s,['if','for','while','then','class','function','{',':','switch','when'])
         })
         if (_k_.empty(s))
         {
