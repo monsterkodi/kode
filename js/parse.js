@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.169.0
+// monsterkodi/kode 0.171.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, valid: undefined}
 
@@ -509,7 +509,7 @@ Parse = (function ()
                 {
                     e = this.operation(null,e,tokens)
                 }
-                else if (_k_.in(e.text,['delete','new','empty','valid','noon','copy','clone']) && (!(_k_.in(nxt.type,['op'])) && !(_k_.in(nxt.text,'.'))))
+                else if (_k_.in(e.text,['delete','new','empty','valid','noon','copy','clone']) && (!(_k_.in(nxt.type,['op'])) && !(_k_.in(nxt.text,',.}])'))))
                 {
                     e = this.operation(null,e,tokens)
                 }
@@ -667,7 +667,7 @@ Parse = (function ()
             {
                 e = this.qmrkcolon(e.qmrkop,tokens)
             }
-            else if ((nxt.type === 'op' && !(_k_.in(nxt.text,['++','--','+','-','not','noon','new'])) && !(_k_.in(e.text,['[','('])) && !(_k_.in('▸arg',this.stack))))
+            else if ((nxt.type === 'op' && !(_k_.in(nxt.text,['++','--','+','-','not','noon','new','empty','valid'])) && !(_k_.in(e.text,['[','('])) && !(_k_.in('▸arg',this.stack))))
             {
                 if ((this.stack.slice(-1)[0] != null ? this.stack.slice(-1)[0].startsWith('op' && this.stack.slice(-1)[0] !== 'op=') : undefined))
                 {

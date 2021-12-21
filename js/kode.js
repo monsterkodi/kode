@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.169.0
+// monsterkodi/kode 0.171.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -189,9 +189,9 @@ class Kode
             return
         }
         var list = _k_.list(this.args.files)
-        for (var _150_17_ = 0; _150_17_ < list.length; _150_17_++)
+        for (var _148_17_ = 0; _148_17_ < list.length; _148_17_++)
         {
-            file = list[_150_17_]
+            file = list[_148_17_]
             file = slash.resolve(file)
             if (this.args.verbose)
             {
@@ -206,8 +206,7 @@ class Kode
             if (this.args.outdir)
             {
                 js = this.compile(text,file)
-                out = slash.resolve(this.args.outdir,slash.file(file))
-                out = slash.swapExt(out,'js')
+                out = slash.swapExt(slash.resolve(this.args.outdir,slash.file(file)),'js')
                 if (!slash.writeText(out,js))
                 {
                     console.error(R2(y3(`can't write ${R3(y6(out))}`)))
@@ -277,9 +276,9 @@ class Kode
             else
             {
                 var list = _k_.list(this.args.files)
-                for (var _204_26_ = 0; _204_26_ < list.length; _204_26_++)
+                for (var _201_26_ = 0; _201_26_ < list.length; _201_26_++)
                 {
-                    f = list[_204_26_]
+                    f = list[_201_26_]
                     this.tester.test(slash.readText(f),f)
                 }
                 return this.tester.summarize()

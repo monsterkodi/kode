@@ -235,6 +235,16 @@
             
             }
             """
+            
+        kc  """
+            { empty, noon, valid } = require 'kxk'
+            """ ▸
+            """
+            empty = require('kxk').empty
+            noon = require('kxk').noon
+            valid = require('kxk').valid
+            
+            """
 
     # 00000000  00     00  00000000   000000000  000   000  
     # 000       000   000  000   000     000      000 000   
@@ -305,7 +315,7 @@
     # 000  0000000   
     
     ▸ is
-    
+        
         ke '1 is "number"'              ▸   true
         ke 'a = {} is Object'           ▸   true
         ke 'a = {} is "object"'         ▸   true
@@ -472,6 +482,10 @@
 
         kc  'a instanceof b'            ▸   'a instanceof b'
         kc  'a instanceof b == true'    ▸   'a instanceof b === true'
+        
+    ▸ noon
+    
+        kc  'opt = noon.parse "1"'      ▸   'opt = noon.parse("1")'
 
     # 000  000   000         0000000   0000000   000   000  0000000    000  000000000  000   0000000   000   000
     # 000  0000  000        000       000   000  0000  000  000   000  000     000     000  000   000  0000  000
