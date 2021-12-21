@@ -153,7 +153,9 @@
             })
             """
         
-        ke  "e=1;e?[1]?.g"          ▸ undefined
+        ke  "e=1;e?[1]?.g"              ▸ undefined
+        
+        kc  "line.turd?[..1] == 'xxx'"  ▸ ";(line.turd != null ? line.turd.slice(0, 2) : undefined) === 'xxx'"
         
     #  0000000   0000000   00     00  0000000    000  000   000  00000000  0000000    
     # 000       000   000  000   000  000   000  000  0000  000  000       000   000  

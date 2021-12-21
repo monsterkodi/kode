@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.174.0
+// monsterkodi/kode 0.175.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
 
@@ -1545,7 +1545,7 @@ ${i}})(${this.node(n.lhs)})
                     upper = `, typeof ${upto} === 'number' ? ${upto} : -1`
                 }
             }
-            return `${this.atom(p.idxee)}.slice(${from}${(upper != null ? upper : '')})`
+            return `${this.node(p.idxee)}.slice(${from}${(upper != null ? upper : '')})`
         }
         else
         {
