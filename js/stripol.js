@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.173.0
+// monsterkodi/kode 0.174.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined}
 
@@ -74,25 +74,10 @@ class Stripol
                     }
                     else
                     {
-                        if (val instanceof Array)
+                        for (k in val)
                         {
-                            if (val.length)
-                            {
-                                var list1 = _k_.list(val)
-                                for (k = 0; k < list1.length; k++)
-                                {
-                                    v = list1[k]
-                                    this.exp(val,k,v)
-                                }
-                            }
-                        }
-                        else
-                        {
-                            for (k in val)
-                            {
-                                v = val[k]
-                                this.exp(val,k,v)
-                            }
+                            v = val[k]
+                            this.exp(val,k,v)
                         }
                     }
                 }
@@ -208,7 +193,7 @@ class Stripol
             if (chunks[i].type === 'close' && chunks[i - 1].type === 'open')
             {
                 chunks.splice(i - 1,2)
-                i -= 1
+                i--
             }
         }
         return chunks
