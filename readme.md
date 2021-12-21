@@ -330,7 +330,7 @@ Stuff I rarely used and therefore didn't bother to re-implement:
 
 # Future plans
 
-▸ ansi color functions
+- ansi color functions
 - `include` keyword to merge source files
 - render comments
 - sourcemaps
