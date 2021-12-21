@@ -65,7 +65,7 @@ class Scoper
             else if t = arg.operation?.lhs?.text
                 @args[-1][t] = t
             else
-                log 'todo: scoper handle complex arg' arg if arg.prop?.obj?.text != '@'
+                dbg 'todo: scoper handle complex arg' arg if arg.prop?.obj?.text != '@'
 
         @exp e for e in f.body?.exps
         @maps.pop()

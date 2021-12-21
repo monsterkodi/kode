@@ -47,6 +47,8 @@ else if b then Y
           else Z
 ```
 
+<img src="./bin/cli.png" />
+
 ## switch
 
 ```kode
