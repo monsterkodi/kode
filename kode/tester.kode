@@ -98,8 +98,12 @@ class Tester
         try
             tests = @kode.eval text, file, g
         catch err
-            error text
-            error 'TESTER ERROR' err
+            # error 'TESTER ERROR'
+            fails.push
+                stack: stack
+                lhs:   file + stack
+                rhs:   err
+            allfails.push fails[-1]
             return
 
         return if tests?._test_ != true

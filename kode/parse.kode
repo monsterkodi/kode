@@ -373,7 +373,7 @@ function Parse # the base class of Parser
                     
                     if @stack[-1] != '{'
                         @verb 'rhs is first key of implicit object' e
-                        print.tokens 'rhs is first key of implicit object' tokens if @verbose
+                        print.tokens 'rhs is first key of implicit object ...' tokens[..20] if @verbose
                         e = @object e, tokens
                     else
                         @verb 'rhs is key of (implicit) object' e

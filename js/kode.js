@@ -169,7 +169,7 @@ class Kode
         }
         catch (err)
         {
-            console.error(err,text)
+            console.error(err)
             throw err
         }
     }

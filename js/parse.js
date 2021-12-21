@@ -476,7 +476,7 @@ Parse = (function ()
                     this.verb('rhs is first key of implicit object',e)
                     if (this.verbose)
                     {
-                        print.tokens('rhs is first key of implicit object',tokens)
+                        print.tokens('rhs is first key of implicit object ...',tokens.slice(0, 21))
                     }
                     e = this.object(e,tokens)
                 }

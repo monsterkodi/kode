@@ -203,6 +203,7 @@ class Print
     #  0000000   0000000   0000000    00000000
 
     @code: (msg, code, ext='js') ->
+        
         log W1 w5 kstr.lpad msg+' ' 80
         tmp = slash.tmpfile()
         tmp = slash.swapExt tmp, ext
@@ -211,6 +212,7 @@ class Print
         slash.remove tmp, ->
 
     @noon: (msg, arg) ->
+        
         if not arg
             arg = msg
             msg = null

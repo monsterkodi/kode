@@ -59,12 +59,14 @@ class Stripol
             
             for key,val of e
                 if val
-                    if val.type then @exp e, key, val
+                    if val.type 
+                        @exp e, key, val
                     else
-                        if val is Array
-                            @exp val, k, v for v,k in val if val.length
-                        else
-                            @exp val, k, v for k,v of val
+                        @exp val,k,v for k,v of val
+                        # if val is Array
+                            # @exp val, k, v for v,k in val if val.length
+                        # else
+                            # @exp val, k, v for k,v of val
         
     #  0000000  000000000  00000000   000  000   000   0000000   
     # 000          000     000   000  000  0000  000  000        
@@ -73,13 +75,18 @@ class Stripol
     # 0000000      000     000   000  000  000   000   0000000   
     
     string: (e) ->
+        
         s = if e.type == 'triple' then e.text[3...-3] else e.text[1...-1]
+        
         chunks = @dissect s, e.line, e.col
+        
         if chunks.length > 1
             if chunks[-1].type != 'close'
                 chunks.push type:'close' text:'' line:e.line, col:e.col+s.length
                 
             return stripol:chunks
+        else
+            e.text = e.text.replace '#{}' ''
         e
         
     # 0000000    000   0000000   0000000  00000000   0000000  000000000  
@@ -94,10 +101,9 @@ class Stripol
             
         push = (type,text) => 
             if type == 'code'
-                ast = @kode.ast text
-                # log 'stripol.dissect' text, ast
-                exps = ast.exps
-                chunks.push code: exps: exps
+                if valid text
+                    ast = @kode.ast text
+                    chunks.push code: exps:ast.exps
             else
                 chunks.push type:type, text:text, line:line, col:col+c
         
@@ -149,7 +155,12 @@ class Stripol
                         c += index+length
                         true
                 break if b
-            
+
+        for i in 1...chunks.length
+            if chunks[i].type == 'close' and chunks[i-1].type == 'open'
+                chunks.splice i-1 2
+                i--
+                
         chunks
                                 
     verb: -> if @verbose then console.log.apply console.log, arguments 

@@ -126,7 +126,7 @@ class Kode
             js = @compile text, file
             vm.runInContext js, sandbox
         catch err
-            error err, text
+            error err
             throw err
 
     #  0000000  000      000

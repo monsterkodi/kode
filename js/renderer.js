@@ -1612,9 +1612,9 @@ ${i}})(${this.node(n.lhs)})
 
         s = '`'
         var list = _k_.list(chunks)
-        for (var _1351_17_ = 0; _1351_17_ < list.length; _1351_17_++)
+        for (var _1351_18_ = 0; _1351_18_ < list.length; _1351_18_++)
         {
-            chunk = list[_1351_17_]
+            chunk = list[_1351_18_]
             t = chunk.text
             switch (chunk.type)
             {

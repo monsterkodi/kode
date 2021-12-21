@@ -1,6 +1,6 @@
 // monsterkodi/kode 0.173.0
 
-var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}}
+var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined}
 
 var print
 
@@ -114,24 +114,30 @@ class Stripol
             }
             return {stripol:chunks}
         }
+        else
+        {
+            e.text = e.text.replace('#{}','')
+        }
         return e
     }
 
     dissect (s, line, col)
     {
-        var b, c, chunks, ic, index, k, length, m, matches, push, r, rgs, t
+        var b, c, chunks, i, ic, index, k, length, m, matches, push, r, rgs, t
 
         c = 0
         chunks = []
         push = (function (type, text)
         {
-            var ast, exps
+            var ast
 
             if (type === 'code')
             {
-                ast = this.kode.ast(text)
-                exps = ast.exps
-                return chunks.push({code:{exps:exps}})
+                if (!_k_.empty(text))
+                {
+                    ast = this.kode.ast(text)
+                    return chunks.push({code:{exps:ast.exps}})
+                }
             }
             else
             {
@@ -195,6 +201,14 @@ class Stripol
                 {
                     break
                 }
+            }
+        }
+        for (i = 1; i < chunks.length; i++)
+        {
+            if (chunks[i].type === 'close' && chunks[i - 1].type === 'open')
+            {
+                chunks.splice(i - 1,2)
+                i -= 1
             }
         }
         return chunks

@@ -107,8 +107,8 @@ class Tester
         }
         catch (err)
         {
-            console.error(text)
-            console.error('TESTER ERROR',err)
+            fails.push({stack:stack,lhs:file + stack,rhs:err})
+            allfails.push(fails.slice(-1)[0])
             return
         }
         if ((tests != null ? tests._test_ : undefined) !== true)
@@ -158,9 +158,9 @@ class Tester
         var fail, summary
 
         var list = _k_.list(allfails)
-        for (var _132_17_ = 0; _132_17_ < list.length; _132_17_++)
+        for (var _136_17_ = 0; _136_17_ < list.length; _136_17_++)
         {
-            fail = list[_132_17_]
+            fail = list[_136_17_]
             console.log(R2(y5(' ' + fail.stack[0] + ' ')) + R1(y5(' ' + fail.stack.slice(1).join(r3(' ▸ ')) + ' ')))
             console.log(r5(this.showSpace(fail.lhs)))
             console.log(R1(r3(' ▸ ')))
