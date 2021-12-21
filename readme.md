@@ -295,7 +295,7 @@ a = clone b                             # deep copy of b
 Operators that return a shallow or deep copy of their argument. 
 Only plain Objects, Arrays and Strings are copied. Functions, Maps, Sets, etc. are not copied.
 
-## test
+## tests 
 
 **kode** comes with its own testing 'framework' (in quotes here, because it's too much of a word for such a minimalistic thing:)
 

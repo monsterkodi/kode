@@ -145,8 +145,6 @@ class Kode
             log @eval @args.eval, 'eval', global
             return
 
-        return if not @args.files.length
-
         for file in @args.files
 
             file = slash.resolve file
@@ -156,11 +154,10 @@ class Kode
 
             if empty text then error Y4 r2 "can't read #{R3 y5 file}"; continue
 
-            if 
+            if
                 @args.outdir
                                 js  = @compile text, file
-                                out = slash.resolve @args.outdir, slash.file file
-                                out = slash.swapExt out, 'js'
+                                out = slash.swapExt slash.resolve(@args.outdir, slash.file file), 'js'
                                 if not slash.writeText out, js then error R2 y3 "can't write #{R3 y6 out}"
                 @args.js    ➜   @compile text, file
                 @args.test  ➜   @tester.test text, file

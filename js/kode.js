@@ -188,10 +188,6 @@ class Kode
             console.log(this.eval(this.args.eval,'eval',global))
             return
         }
-        if (!this.args.files.length)
-        {
-            return
-        }
         var list = _k_.list(this.args.files)
         for (var _150_17_ = 0; _150_17_ < list.length; _150_17_++)
         {
