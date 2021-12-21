@@ -92,13 +92,13 @@ function Parse # the base class of Parser
                     
             if tok.type == 'block'
     
-                if stop in ['nl']
+                if stop in ['nl'';']
                     @verb "exps block start with stop #{stop} break!"
                     break
                 
                 block = tokens.shift()
     
-                @verb "exps block start stop:#{stop} block:" block
+                @verb "exps block start stop #{stop} block:" block
 
                 blocked = true
                 blockExps = @exps 'block' block.tokens
