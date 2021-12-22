@@ -195,6 +195,10 @@ class Tester
     {
         var l, split, ss
 
+        if (_k_.empty(s))
+        {
+            return s
+        }
         split = ('' + s).split('\n')
         l = 0
         split = (function (o) {
@@ -205,9 +209,12 @@ class Tester
             {
                 var a
 
-                a = Math.min(v.length,30 - l)
-                l += a
-                return v.slice(0, typeof a === 'number' ? a : -1)
+                if ((v != null))
+                {
+                    a = Math.min(v.length,30 - l)
+                    l += a
+                    return v.slice(0, typeof a === 'number' ? a : -1)
+                }
             })(o[k])
                 if (m != null)
                 {

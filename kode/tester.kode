@@ -160,14 +160,15 @@ class Tester
     # 0000000   000   000   0000000   000   000     000     
     
     short: (s) ->
-        
+        return s if empty s
         split = (''+s).split '\n'
         
         l = 0
         split = split each (v) ->
-            a = Math.min v.length, 30 - l
-            l += a
-            v[...a]
+            if v?
+                a = Math.min v.length, 30 - l
+                l += a
+                v[...a]
          
         split = split.filter (s) -> s.length
             
