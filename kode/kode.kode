@@ -109,6 +109,7 @@ class Kode
         sandbox.__dirname  = slash.dir sandbox.__filename
         sandbox.console    = console
         sandbox.process    = process
+        sandbox.global     = global
 
         if not (sandbox.module or sandbox.require) or file
             Module = require 'module'

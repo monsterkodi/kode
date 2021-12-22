@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.180.0
+// monsterkodi/kode 0.181.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -138,6 +138,7 @@ class Kode
         sandbox.__dirname = slash.dir(sandbox.__filename)
         sandbox.console = console
         sandbox.process = process
+        sandbox.global = global
         if (!(sandbox.module || sandbox.require) || file)
         {
             Module = require('module')
@@ -148,9 +149,9 @@ class Kode
             }
             _module.filename = sandbox.__filename
             var list = _k_.list(Object.getOwnPropertyNames(require))
-            for (var _118_18_ = 0; _118_18_ < list.length; _118_18_++)
+            for (var _119_18_ = 0; _119_18_ < list.length; _119_18_++)
             {
-                r = list[_118_18_]
+                r = list[_119_18_]
                 if (!(_k_.in(r,['paths','arguments','caller','length','name'])))
                 {
                     _require[r] = require[r]
@@ -189,9 +190,9 @@ class Kode
             return
         }
         var list = _k_.list(this.args.files)
-        for (var _148_17_ = 0; _148_17_ < list.length; _148_17_++)
+        for (var _149_17_ = 0; _149_17_ < list.length; _149_17_++)
         {
-            file = list[_148_17_]
+            file = list[_149_17_]
             file = slash.resolve(file)
             if (this.args.verbose)
             {
@@ -276,9 +277,9 @@ class Kode
             else
             {
                 var list = _k_.list(this.args.files)
-                for (var _201_26_ = 0; _201_26_ < list.length; _201_26_++)
+                for (var _202_26_ = 0; _202_26_ < list.length; _202_26_++)
                 {
-                    f = list[_201_26_]
+                    f = list[_202_26_]
                     this.tester.test(slash.readText(f),f)
                 }
                 return this.tester.summarize()
