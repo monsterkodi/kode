@@ -800,10 +800,14 @@ function Parser extends Parse
 
     prop: (obj, tokens) ->
 
+        dot  = tokens.shift()
+        prop = tokens.shift()
+        prop.type = 'var'
+        
         prop:
             obj:  obj
-            dot:  tokens.shift()
-            prop: tokens.shift()
+            dot:  dot
+            prop: prop
             
     #  0000000    0000000   0000000  00000000  00000000   000000000  
     # 000   000  000       000       000       000   000     000     
