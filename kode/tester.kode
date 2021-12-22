@@ -47,22 +47,34 @@ class Tester
         
         keystack ?= []
         
-        if Object.is(a,b) then return true
-        if typeof a != typeof b 
+        return true if Object.is a,b # simple types
+        
+        if typeof a != typeof b # types differ
             log "#{keystack.join '.'}: #{typeof(a)} !! #{typeof(b)}"
             return false
-        if not Array.isArray(a) and typeof a != 'object' 
+        if not a is Array and not a is'object' # not an array or object
             log "#{keystack.join '.'}: #{a} != #{b}"
             return false
-        if Object.keys(a).length != Object.keys(b).length 
-            log "#{keystack.join '.'}: #{Object.keys(a).length} <> #{Object.keys(b).length}"
-            return false
-        for k,v of a
-            keystack.push k
-            if not @sameObjects v, b[k], keystack
-                keystack.pop()
+        if a is Array
+            if a.length != b.length 
+                log "#{keystack.join '.'}: #{a.length} ][ #{b.length}"
                 return false
-            keystack.pop()
+            for v,i in a
+                keystack.push i
+                if not @sameObjects v, b[i], keystack
+                    keystack.pop()
+                    return false
+                keystack.pop()
+        else
+            if Object.keys(a).length != Object.keys(b).length 
+                log "#{keystack.join '.'}: #{Object.keys(a).length} <> #{Object.keys(b).length}"
+                return false
+            for k,v of a
+                keystack.push k
+                if not @sameObjects v, b[k], keystack
+                    keystack.pop()
+                    return false
+                keystack.pop()
         true
     
     compare: (a, b) =>
