@@ -545,7 +545,7 @@ function Parse # the base class of Parser
                     (nxt.text not in ['if'] or not @noThenAhead tokens) and
                     nxt.text not in ':)}]' and
                     nxt.type not in ['nl'] and
-                    (nxt.type != 'op' or nxt.text in ['+''++''--''-''noon''new']) and
+                    (nxt.type != 'op' or nxt.text in ['++''--''noon''new'] or nxt.text in ['+''-'] and tokens[1].col == nxt.col+1) and
                     @isSuitableForImplicitCall(e) )
                     
                     @verb 'lhs is lhs of implicit call! e' e, @stack[-1]
