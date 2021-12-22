@@ -564,13 +564,17 @@ function Parse # the base class of Parser
                 ➜                
                     print.tokens "lhs no nxt match? break! stack:#{@stack} nxt:" [nxt] if @verbose
                     print.ast "lhs no nxt match? break! stack:#{@stack}" e if @verbose
-                    if  nxt.type == 'block' and
-                        @isSuitableForImplicitCall(e) and 
-                        @stackAllowsBlockArg() and
-                        nxt.tokens[0]?.text not in ['then' 'when'] and
-                        @stack[-1] not in ['if' 'then' 'for' 'while' 'switch' 'when' 'catch' 'in?' '▸args' 'class' 'function' 'op+' 'op-' 'opis' 'opor' 'opand' 'op==' 'opnot' 'op<' 'op>']
-                            @verb 'blocked call arg' @stack, e, nxt
-                            e = @call e, tokens
+                    if nxt.type == 'block' 
+                        if  @isSuitableForImplicitCall(e) and 
+                            @stackAllowsBlockArg() and
+                            nxt.tokens[0]?.text not in ['then' 'when'] and
+                            @stack[-1] not in ['if' 'then' 'for' 'while' 'switch' 'when' 'catch' 'in?' '▸args' 'class' 'function' 'op+' 'op-' 'opis' 'opor' 'opand' 'op==' 'opnot' 'op<' 'op>']
+                                @verb 'blocked call arg' @stack, e, nxt
+                                e = @call e, tokens
+                        # else
+                            # log 'suitable?' @isSuitableForImplicitCall(e)
+                            # log 'allowblock?' @stackAllowsBlockArg()
+                            # log 'stack[-1]?' @stack[-1] not in ['if' 'then' 'for' 'while' 'switch' 'when' 'catch' 'in?' '▸args' 'class' 'function' 'op+' 'op-' 'opis' 'opor' 'opand' 'op==' 'opnot' 'op<' 'op>']
                     break                    
             
             if numTokens == tokens.length
@@ -779,13 +783,28 @@ function Parse # the base class of Parser
         not e.incond and
         not e.qmrkop
         
+    #  0000000   000      000       0000000   000   000   0000000  0000000    000       0000000    0000000  000   000  
+    # 000   000  000      000      000   000  000 0 000  000       000   000  000      000   000  000       000  000   
+    # 000000000  000      000      000   000  000000000  0000000   0000000    000      000   000  000       0000000    
+    # 000   000  000      000      000   000  000   000       000  000   000  000      000   000  000       000  000   
+    # 000   000  0000000  0000000   0000000   00     00  0000000   0000000    0000000   0000000    0000000  000   000  
+    
     stackAllowsBlockArg: ->
         
-        s = @stack.filter (s) -> s in ['if' 'for' 'while' 'then' 'class' 'function' '{' ':' 'switch' 'when']
+        s = @stack.filter (s) -> s in ['if' 'for' 'while' 'then' 'class' 'function' '{' ':' 'switch' 'when' '▸body' 'try' 'catch']
         return true if empty s
-        return true if s[-1] == 'then'
+        # return true if s[-1] in ['then' ':']
+        return true if s[-1] in ['then']
+        if s[-1] == '▸body' then dbg s
+        return true if s[-1] in ['▸body']
         false
         
+    # 000   000   0000000   000000000  000   000  00000000  000   000   0000000   000   000  00000000   0000000   0000000    
+    # 0000  000  000   000     000     000   000  000       0000  000  000   000  000   000  000       000   000  000   000  
+    # 000 0 000  000   000     000     000000000  0000000   000 0 000  000000000  000000000  0000000   000000000  000   000  
+    # 000  0000  000   000     000     000   000  000       000  0000  000   000  000   000  000       000   000  000   000  
+    # 000   000   0000000      000     000   000  00000000  000   000  000   000  000   000  00000000  000   000  0000000    
+    
     noThenAhead: (tokens) ->
         
         ti = 0

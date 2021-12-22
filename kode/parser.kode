@@ -491,6 +491,10 @@ function Parser extends Parse
     operation: (lhs, op, tokens) ->
 
         @push "op#{op.text}"
+        
+        if op.text == '=' and tokens[0].type == 'block'
+            tokens = tokens.shift().tokens
+        
         rhs = @exp tokens
         @pop "op#{op.text}"
         

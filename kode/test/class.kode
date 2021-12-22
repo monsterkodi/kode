@@ -139,6 +139,25 @@
 
             """
             
+        kc  """
+            class C
+                m: ->
+                    w = new W
+                        p: true
+            """ ▸
+            """
+            class C
+            {
+                m ()
+                {
+                    var w
+            
+                    return w = new W({p:true})
+                }
+            }
+            
+            """
+            
         ▸ var
         
             kc  """

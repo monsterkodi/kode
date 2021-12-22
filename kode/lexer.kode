@@ -192,7 +192,7 @@ class Lexer
         idx = 0
         while idx < tokens.length
             tok = tokens[idx]
-            if tok.type == 'op' and tok.text not in ['--''++']
+            if tok.type == 'op' and tok.text not in ['--''++''=']
                 newTokens.push tok
                 idx += 1
                 while tokens[idx].type in ['nl' 'ws']
