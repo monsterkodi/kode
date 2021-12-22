@@ -434,8 +434,7 @@ class Renderer
     funcs: (n, className) ->
 
         s = ''
-        if n.keyval
-            f = n.keyval.val.func
+        if f = n.keyval?.val?.func
             if f.name.text == 'constructor'
                 @fncsName = 'constructor'
                 s = @indent + @func f, 'function ' + className
