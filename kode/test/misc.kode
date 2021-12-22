@@ -24,6 +24,13 @@
         kc  '@a.b()'        ▸   'this.a.b()'
         kc  't = @'         ▸   't = this'
         kc  'f(1,@)'        ▸   'f(1,this)'
+        kc  'return @ if a' ▸   
+            """
+            if (a)
+            {
+                return this
+            }
+            """
         
         kc  "a.on 'b' @c"   ▸   "a.on('b',this.c)" 
         kc  "a.on 'b' @c"   ▸   "a.on('b',this.c)" 
