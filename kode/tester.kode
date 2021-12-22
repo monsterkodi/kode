@@ -85,7 +85,7 @@ class Tester
     
     test: (text, file) ->
         
-        return if not /\n\s*▸ \w+/gm.test text
+        return if not /\n\s*▸\s\w+/gm.test text
         
         comps = 0
         succs = 0
