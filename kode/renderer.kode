@@ -1070,7 +1070,7 @@ class Renderer
         s += gi+'}'
         if n.catch
             s += '\n'
-            s += gi+"catch (#{@node n.catch.errr})\n" 
+            s += gi+"catch (#{@node(n.catch.errr) or 'err'})\n" 
             s += gi+'{\n'
             s += @indent+@nodes n.catch.exps, '\n'+@indent
             s += '\n'

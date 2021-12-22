@@ -74,7 +74,7 @@
             {
                 somethg
             }
-            catch ()
+            catch (err)
             {
                 blark
             }
