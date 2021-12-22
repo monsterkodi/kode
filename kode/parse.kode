@@ -793,10 +793,7 @@ function Parse # the base class of Parser
         
         s = @stack.filter (s) -> s in ['if' 'for' 'while' 'then' 'class' 'function' '{' ':' 'switch' 'when' '▸body' 'try' 'catch']
         return true if empty s
-        # return true if s[-1] in ['then' ':']
-        return true if s[-1] in ['then']
-        if s[-1] == '▸body' then dbg s
-        return true if s[-1] in ['▸body']
+        return true if s[-1] in ['then' '▸body']
         false
         
     # 000   000   0000000   000000000  000   000  00000000  000   000   0000000   000   000  00000000   0000000   0000000    

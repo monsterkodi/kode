@@ -867,6 +867,8 @@ function Parser extends Parse
     
     this: (obj, tokens) ->
 
+        return obj if tokens[0].type not in ['var''keyword''op']
+        
         prop:
             obj:  obj
             dot:  type:'punct' text:'.' line:obj.line, col:obj.col
