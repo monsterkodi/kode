@@ -157,6 +157,7 @@ class Stripol
                 break if b
 
         for i in 1...chunks.length
+            break if empty chunks
             if chunks[i].type == 'close' and chunks[i-1].type == 'open'
                 chunks.splice i-1 2
                 i--

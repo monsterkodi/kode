@@ -895,15 +895,34 @@ class Renderer
         end   = parseInt iterEnd
         
         iterCmp = if slice.dots.text == '...' then '<' else '<='
+        invCmp  = if slice.dots.text == '...' then '>' else '>='
         iterDir = '++'
         
         if Number.isFinite(start) and Number.isFinite(end)
+            
             if start > end
                 iterCmp = if slice.dots.text == '...' then '>' else '>='
                 iterDir = '--'
+                
+            loopStart = "#{iterVar} = #{iterStart}"
+            loopCheck = "#{iterVar} #{iterCmp} #{iterEnd}"
+            loopUpdate = "#{iterVar}#{iterDir}"
             
+        else
+            
+            llc = firstLineCol slice.from
+            rlc = firstLineCol slice.upto
+            
+            lv = "_#{llc.line}_#{llc.col}_"
+            rv = "_#{rlc.line}_#{rlc.col}_"
+            
+            loopStart  = "var #{lv} = #{iterVar} = #{iterStart}, #{rv} = #{iterEnd}"
+            loopCheck  = "(#{lv} <= #{rv} ? #{iterVar} #{iterCmp} #{iterEnd} : #{iterVar} #{invCmp} #{iterEnd})"
+            loopUpdate = "(#{lv} <= #{rv} ? ++#{iterVar} : --#{iterVar})"
+                
         s = ''
-        s += "for (#{iterVar} = #{iterStart}; #{iterVar} #{iterCmp} #{iterEnd}; #{iterVar}#{iterDir})" + nl
+        s += "for (#{loopStart}; #{loopCheck}; #{loopUpdate})" + nl
+
         s += gi+"{"+nl
         for e in n.then
             prefix = if lastPrefix and e == n.then[-1] then lastPrefix else ''

@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.179.0
+// monsterkodi/kode 0.180.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -205,7 +205,7 @@ class Operator
             {
                 this.logChain(chain,p)
             }
-            for (i = 1; i < p.length; i++)
+            for (var _107_21_ = i = 1, _107_25_ = p.length; (_107_21_ <= _107_25_ ? i < p.length : i > p.length); (_107_21_ <= _107_25_ ? ++i : --i))
             {
                 if (p[i] > p[i - 1])
                 {

@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.179.0
+// monsterkodi/kode 0.180.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}}
 
@@ -312,7 +312,7 @@ class Lexer
                 block = blocks.slice(-1)[0]
             }
         }
-        for (idx = 0; idx < tokens.length; idx++)
+        for (var _268_19_ = idx = 0, _268_23_ = tokens.length; (_268_19_ <= _268_23_ ? idx < tokens.length : idx > tokens.length); (_268_19_ <= _268_23_ ? ++idx : --idx))
         {
             tok = tokens[idx]
             if (tok.type === 'nl')

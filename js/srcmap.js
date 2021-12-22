@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.179.0
+// monsterkodi/kode 0.180.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
 
@@ -57,7 +57,7 @@ class SourceMap
         jslns = s.split('\n')
         ln = jslns[jsidx]
         console.log(y5('solve'),this.jsline)
-        for (ci = 0; ci < this.cache.length; ci++)
+        for (var _72_18_ = ci = 0, _72_22_ = this.cache.length; (_72_18_ <= _72_22_ ? ci < this.cache.length : ci > this.cache.length); (_72_18_ <= _72_22_ ? ++ci : --ci))
         {
             var _74_22_ = this.cache[ci] ; cs = _74_22_[0]            ; tok = _74_22_[1]
 
@@ -94,7 +94,7 @@ class SourceMap
         ls = s.split('\n')
         console.log(b5('d'),this.jsline,ls.length,this.lines.length)
         console.log(ls)
-        for (li = 0; li < ls.length; li++)
+        for (var _107_18_ = li = 0, _107_22_ = ls.length; (_107_18_ <= _107_22_ ? li < ls.length : li > ls.length); (_107_18_ <= _107_22_ ? ++li : --li))
         {
             ln = ls[li]
             console.log(`${b3(kstr.lstrip(li,4))} ${ln}${r2('◂')}`)
