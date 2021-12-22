@@ -49,13 +49,13 @@ class Tester
         
         if Object.is(a,b) then return true
         if typeof a != typeof b 
-            log "#{keystack.join '.'}: #{typeof(a)} != #{typeof(b)}"
+            log "#{keystack.join '.'}: #{typeof(a)} !! #{typeof(b)}"
             return false
         if not Array.isArray(a) and typeof a != 'object' 
             log "#{keystack.join '.'}: #{a} != #{b}"
             return false
         if Object.keys(a).length != Object.keys(b).length 
-            log "#{keystack.join '.'}: #{Object.keys(a).length} != #{Object.keys(b).length}"
+            log "#{keystack.join '.'}: #{Object.keys(a).length} <> #{Object.keys(b).length}"
             return false
         for k,v of a
             keystack.push k
@@ -72,15 +72,15 @@ class Tester
         
         comps++
                         
-        if @sameObjects a, b
-            succs++
-            return
-            
         if typeof b == 'function'
             if b(a)
                 succs++
                 return
         
+        if @sameObjects a, b
+            succs++
+            return
+            
         log R1(black(ind + comps + ' ')) + ' ' + r5(@short a) + ' ' + R1(r4 ' ▸ ') + ' ' + g1(@short b)
         
         fails.push
