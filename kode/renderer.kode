@@ -1219,7 +1219,7 @@ class Renderer
                             
                         op.rhs.text == 'str'
                             lhs = @atom op.lhs
-                            return "(function(o){return typeof o === 'string' || o instanceof String})(#{lhs})"
+                            return "(function(o){return (typeof o === 'string' || o instanceof String)})(#{lhs})"
                     
                         else
                             return "#{@atom op.lhs} instanceof #{@atom op.rhs}"

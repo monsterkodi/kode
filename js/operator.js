@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.192.0
+// monsterkodi/kode 0.193.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -16,39 +16,41 @@ precedence = function (o)
     t = (o != null ? (_15_20_=o.operation) != null ? _15_20_.operator.text : undefined : undefined)
     switch (t)
     {
+        case 'new':
+            return -1
+
+        case 'is':
+        case 'equals':
+        case 'noon':
+            return 0
+
         case 'copy':
         case 'clone':
-        case 'new':
         case 'not':
         case 'delete':
         case 'empty':
         case 'valid':
         case '~':
-        case 'noon':
-            return 0
+            return 1
 
         case '*':
         case '/':
         case '%':
-            return 1
+            return 2
 
         case '+':
         case '-':
-            return 2
+            return 3
 
         case '<<':
         case '>>':
         case '>>>':
-            return 3
+            return 4
 
         case '<':
         case '<=':
         case '>':
         case '>=':
-            return 4
-
-        case 'is':
-        case 'equals':
             return 5
 
         case '==':
@@ -113,14 +115,14 @@ class Operator
 
     collect (tl)
     {
-        var e, _57_19_
+        var e, _58_19_
 
-        if ((tl != null ? (_57_19_=tl.exps) != null ? _57_19_.length : undefined : undefined))
+        if ((tl != null ? (_58_19_=tl.exps) != null ? _58_19_.length : undefined : undefined))
         {
             var list = _k_.list(tl.exps)
-            for (var _58_25_ = 0; _58_25_ < list.length; _58_25_++)
+            for (var _59_25_ = 0; _59_25_ < list.length; _59_25_++)
             {
-                e = list[_58_25_]
+                e = list[_59_25_]
                 this.exp(e)
             }
         }
@@ -129,7 +131,7 @@ class Operator
 
     exp (e)
     {
-        var key, v, val, _75_30_
+        var key, v, val, _76_30_
 
         if (!e)
         {
@@ -144,9 +146,9 @@ class Operator
             if (e.length)
             {
                 var list = _k_.list(e)
-                for (var _72_42_ = 0; _72_42_ < list.length; _72_42_++)
+                for (var _73_42_ = 0; _73_42_ < list.length; _73_42_++)
                 {
-                    v = list[_72_42_]
+                    v = list[_73_42_]
                     this.exp(v)
                 }
             }
@@ -186,7 +188,7 @@ class Operator
 
     op (e)
     {
-        var c, chain, i, p, _97_19_, _97_39_, _99_40_
+        var c, chain, i, p, _100_40_, _98_19_, _98_39_
 
         chain = [e]
         c = e.operation
@@ -205,7 +207,7 @@ class Operator
             {
                 this.logChain(chain,p)
             }
-            for (var _107_21_ = i = 1, _107_25_ = p.length; (_107_21_ <= _107_25_ ? i < p.length : i > p.length); (_107_21_ <= _107_25_ ? ++i : --i))
+            for (var _108_21_ = i = 1, _108_25_ = p.length; (_108_21_ <= _108_25_ ? i < p.length : i > p.length); (_108_21_ <= _108_25_ ? ++i : --i))
             {
                 if (p[i] > p[i - 1])
                 {
@@ -218,12 +220,12 @@ class Operator
 
     fixPrec (e)
     {
-        var newlhs, newop, op, _125_23_, _125_41_, _125_52_, _125_62_, _129_37_, _129_48_, _165_54_, _165_84_, _170_32_, _170_53_
+        var newlhs, newop, op, _126_23_, _126_41_, _126_52_, _126_62_, _130_37_, _130_48_, _166_54_, _166_84_, _171_32_, _171_53_
 
         op = e.operation || e.qmrkcolon
         if (precedence(e) < precedence(op.rhs))
         {
-            if (op.operator.text === 'not' && _k_.in(((op.rhs != null ? op.rhs.incond : undefined) || ((_125_41_=op.rhs) != null ? (_125_52_=_125_41_.operation) != null ? (_125_62_=_125_52_.operator) != null ? _125_62_.text : undefined : undefined : undefined)),assign))
+            if (op.operator.text === 'not' && _k_.in(((op.rhs != null ? op.rhs.incond : undefined) || ((_126_41_=op.rhs) != null ? (_126_52_=_126_41_.operation) != null ? (_126_62_=_126_52_.operator) != null ? _126_62_.text : undefined : undefined : undefined)),assign))
             {
                 return
             }
@@ -231,7 +233,7 @@ class Operator
             {
                 return
             }
-            if (_k_.in(((_129_37_=e.operation.rhs) != null ? (_129_48_=_129_37_.operation) != null ? _129_48_.operator.text : undefined : undefined),assign))
+            if (_k_.in(((_130_37_=e.operation.rhs) != null ? (_130_48_=_130_37_.operation) != null ? _130_48_.operator.text : undefined : undefined),assign))
             {
                 return
             }
@@ -273,7 +275,7 @@ class Operator
 
     logChain (chain, p)
     {
-        var rndr, s, _186_43_, _186_50_
+        var rndr, s, _187_43_, _187_50_
 
         s = ''
         rndr = (function (n)
@@ -298,7 +300,7 @@ class Operator
                 return (rndr(i.qmrkcolon.lhs)) + ' ? ' + (rndr(i.qmrkcolon.mid)) + ' '
             }
         }).bind(this)).join(' ')
-        s += ' ' + ((_186_50_=rndr((chain.slice(-1)[0].operation != null ? chain.slice(-1)[0].operation.rhs : undefined))) != null ? _186_50_ : '...')
+        s += ' ' + ((_187_50_=rndr((chain.slice(-1)[0].operation != null ? chain.slice(-1)[0].operation.rhs : undefined))) != null ? _187_50_ : '...')
         console.log(w4('▪'),s,g3(p))
     }
 

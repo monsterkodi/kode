@@ -43,14 +43,26 @@ class Tester
     # 000       000   000  000 0 000  000        000   000  000   000  000       
     #  0000000   0000000   000   000  000        000   000  000   000  00000000  
     
-    sameObjects: (a, b) ->
+    sameObjects: (a, b, keystack) ->
+        
+        keystack ?= []
         
         if Object.is(a,b) then return true
-        if typeof a != typeof b then return false
-        if not Array.isArray(a) and typeof a != 'object' then return false
-        if Object.keys(a).length != Object.keys(b).length then return false
+        if typeof a != typeof b 
+            log "#{keystack.join '.'}: #{typeof(a)} != #{typeof(b)}"
+            return false
+        if not Array.isArray(a) and typeof a != 'object' 
+            log "#{keystack.join '.'}: #{a} != #{b}"
+            return false
+        if Object.keys(a).length != Object.keys(b).length 
+            log "#{keystack.join '.'}: #{Object.keys(a).length} != #{Object.keys(b).length}"
+            return false
         for k,v of a
-            if not @sameObjects v, b[k] then return false
+            keystack.push k
+            if not @sameObjects v, b[k], keystack
+                keystack.pop()
+                return false
+            keystack.pop()
         true
     
     compare: (a, b) =>
@@ -128,7 +140,8 @@ class Tester
     # 0000000    0000000   000   000  000   000  000   000  000   000  000  0000000  00000000  
     
     showSpace: (s) ->
-        return s if typeof s != 'string'
+        if not s is str
+            return noon s
         s.split('\n').map((l) -> l+w2('◂')).join '\n'
     
     summarize: ->
