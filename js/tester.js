@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.190.0
+// monsterkodi/kode 0.191.0
 
 var _k_ = {each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined}
 
@@ -209,8 +209,9 @@ class Tester
             {
                 var a
 
-                if ((v != null))
+                if (!_k_.empty(v))
                 {
+                    v = '' + v
                     a = Math.min(v.length,30 - l)
                     l += a
                     return v.slice(0, typeof a === 'number' ? a : -1)
