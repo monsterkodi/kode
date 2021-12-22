@@ -196,6 +196,19 @@
             h = {j:{p:1,w:2},t:{q:3,r:4}}
             """
             
+        kc  """
+            d =
+                delete:delete
+                empty:empty
+                valid:valid
+                noon:noon
+                new:new
+                is:is
+            """ ▸
+            """
+            d = {delete:delete,empty:empty,valid:valid,noon:noon,new:new,is:is}
+            """
+            
     #  0000000  000000000  00000000   000  000   000   0000000   000  00000000  000   000  
     # 000          000     000   000  000  0000  000  000        000  000        000 000   
     # 0000000      000     0000000    000  000 0 000  000  0000  000  000000      00000    
