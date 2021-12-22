@@ -348,7 +348,7 @@ class Renderer
         if @mthdName # new style class
             "#{p.callee.text}.#{@mthdName}(#{@nodes p.args, ','})"
         else if @fncnName and @fncsName # old style function
-            "#{@fncnName}.__super__.#{@fncsName}.call(this, #{@nodes p.args, ','})"
+            "#{@fncnName}.__super__.#{@fncsName}.call(this#{valid p.args ? (',' + @nodes p.args, ',') : ''})"
         
     # 00     00  000000000  000   000  0000000
     # 000   000     000     000   000  000   000
