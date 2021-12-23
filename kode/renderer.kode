@@ -519,12 +519,14 @@ class Renderer
         if valid n.body.vars
             s += '\n'
             vs = @sortVars n.body.vars
-            # vs = (v.text for v in n.body.vars).join ', '
             s += @indent + "var #{vs}\n"
 
-        for t in ths
-            s += '\n' + @indent + ths
-
+        if valid ths
+            s += '\n'
+            for t in ths
+                s += @indent + t + '\n'
+            s += gi
+            
         if valid n.body.exps
 
             s += '\n'
@@ -560,26 +562,61 @@ class Renderer
         for a in args
             if a.text then used[a.text] = a.text
 
-        args = args.map (a) ->
-            if a.prop and a.prop.obj.type == 'this'
-                txt = a.prop.prop.text
+        # args = args.map (a) ->
+            # if a.prop and a.prop.obj.type == 'this'
+                # txt = a.prop.prop.text
+                # if used[txt]
+                    # for i in [1..100]
+                        # if not used[txt+i]
+                            # ths.push "this.#{txt} = #{txt+i}"
+                            # txt += i
+                            # used[txt] = txt
+                            # break
+                # else
+                    # ths.push "this.#{txt} = #{txt}"
+
+                # return
+                    # type:'@arg'
+                    # text:txt
+            # else if a.operation?.lhs?.prop?.obj.type == 'this'
+                # txt = a.operation.lhs.prop.prop.text
+#                 
+                # if used[txt]
+                    # for i in [1..100]
+                        # if not used[txt+i]
+                            # ths.push "this.#{txt} = #{txt+i}"
+                            # txt += i
+                            # used[txt] = txt
+                            # break
+                # else
+                    # ths.push "this.#{txt} = #{txt}"
+
+                # return
+                    # type:'@arg'
+                    # text:txt
+            # else
+                # a
+
+        args = args.map (a) =>
+            t = @node a
+            if t.startsWith 'this.'
+                l = kstr.strip t.split('=')[0]
+                
+                txt = l[5..]
                 if used[txt]
                     for i in [1..100]
                         if not used[txt+i]
                             ths.push "this.#{txt} = #{txt+i}"
                             txt += i
                             used[txt] = txt
-                            break
+                            return "#{txt}" + (t.split('=')[1] ? '')
                 else
-                    ths.push "this.#{txt} = #{txt}"
-
-                return
-                    type:'@arg'
-                    text:txt
-            else
-                a
-
-        str = args.map((a) => @node a).join ', '
+                    ths.push "#{l} = #{txt}"
+                return t[5..]
+            t
+                
+        # str = args.map((a) => @node a).join ', '
+        str = args.join ', '
 
         [str,ths]
 

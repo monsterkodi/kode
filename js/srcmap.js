@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.197.0
+// monsterkodi/kode 0.198.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
 
@@ -12,6 +12,7 @@ class SourceMap
     constructor (source)
     {
         this.source = source
+    
         this.jsline = 0
         this.lines = []
         this.cache = []
@@ -238,6 +239,7 @@ class LineMap
     constructor (line)
     {
         this.line = line
+    
         this.columns = []
     }
 

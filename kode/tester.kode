@@ -47,12 +47,12 @@ class Tester
         
         keystack ?= []
         
-        return true if Object.is a,b # simple types
+        return true if Object.is a, b # simple types
         
         if typeof a != typeof b # types differ
             log "#{keystack.join '.'}: #{typeof(a)} !! #{typeof(b)}"
             return false
-        if not a is Array and not a is'object' # not an array or object
+        if not a is Array and not a is 'object' # not an array or object
             log "#{keystack.join '.'}: #{a} != #{b}"
             return false
         if a is Array
@@ -62,9 +62,13 @@ class Tester
             for v,i in a
                 keystack.push i
                 if not @sameObjects v, b[i], keystack
-                    keystack.pop()
                     return false
                 keystack.pop()
+        else if a is str
+            if a != b
+                log r5 @showSpace a
+                log g3 @showSpace b
+                return false 
         else
             if Object.keys(a).length != Object.keys(b).length 
                 log "#{keystack.join '.'}: #{Object.keys(a).length} <> #{Object.keys(b).length}"
@@ -72,7 +76,6 @@ class Tester
             for k,v of a
                 keystack.push k
                 if not @sameObjects v, b[k], keystack
-                    keystack.pop()
                     return false
                 keystack.pop()
         true
@@ -89,6 +92,9 @@ class Tester
                 succs++
                 return
         
+        # log typeof(a), typeof b
+        # log red   a
+        # log green b
         if @sameObjects a, b
             succs++
             return
