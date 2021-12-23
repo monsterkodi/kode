@@ -355,7 +355,10 @@ class Renderer
     super: (p) ->
         
         if @mthdName # new style class
-            "#{p.callee.text}.#{@mthdName}(#{@nodes p.args, ','})"
+            if @mthdName == 'constructor'
+                "#{p.callee.text}(#{@nodes p.args, ','})"
+            else
+                "#{p.callee.text}.#{@mthdName}(#{@nodes p.args, ','})"
         else if @fncnName and @fncsName # old style function
             "#{@fncnName}.__super__.#{@fncsName}.call(this#{valid p.args ? (',' + @nodes p.args, ',') : ''})"
         

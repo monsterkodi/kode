@@ -265,7 +265,7 @@
             {
                 constructor (e)
                 {
-                    super.constructor()
+                    super()
                 
                     this.e = e
                 
