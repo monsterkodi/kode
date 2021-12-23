@@ -24,45 +24,55 @@
             
             """
 
+        kc  """
+            function B
+                @a: []
+                @b: {}
+            """ ▸
+            """
+
+            B = (function ()
+            {
+                function B ()
+                {}
+            
+                B["a"] = []
+                B["b"] = {}
+                return B
+            })()
+
+            """
+
+        kc  """
+            function C
+                @a: ->
+                b: ->
+            """ ▸
+            """
+
+            C = (function ()
+            {
+                function C ()
+                {}
+
+                C["a"] = function ()
+                {}
+            
+                C.prototype["b"] = function ()
+                {}
+            
+                return C
+            })()
+
+            """
+
         # kc  """
-            # class B
-                # @: ->
-            # """ ▸
-            # """
-
-            # class B
-            # {
-                # constructor ()
-                # {}
-            # }
-
-            # """
-
-        # kc  """
-            # class C
-                # @a: ->
-                # b: ->
-            # """ ▸
-            # """
-
-            # class C
-            # {
-                # static a ()
-                # {}
-
-                # b ()
-                # {}
-            # }
-
-            # """
-
-        # kc  """
-            # class D
+            # function D
                 # a: =>
             # """ ▸
             # """
 
-            # class D
+            # function D
             # {
                 # constructor ()
                 # {
@@ -76,13 +86,13 @@
             # """
 
         # kc  """
-            # class E
+            # function E
                 # @f: ->
                 # @g: ->
             # """ ▸
             # """
 
-            # class E
+            # function E
             # {
                 # static f ()
                 # {}
@@ -94,14 +104,14 @@
             # """
 
         # kc  """
-            # class F
+            # function F
                 # @f: ->
                 # @g: ->
                 # @h: ->
             # """ ▸
             # """
 
-            # class F
+            # function F
             # {
                 # static f ()
                 # {}
@@ -116,7 +126,7 @@
             # """
 
         # kc  """
-            # class X
+            # function X
                 # @: ->
                     # '@'
 
@@ -124,7 +134,7 @@
             # """ ▸
             # """
 
-            # class X
+            # function X
             # {
                 # constructor ()
                 # {
@@ -140,7 +150,7 @@
             # """
 
         # kc  """
-            # class Y
+            # function Y
                 # @: -> '@'
 
                 # m: ->
@@ -148,7 +158,7 @@
             # """ ▸
             # """
 
-            # class Y
+            # function Y
             # {
                 # constructor ()
                 # {
@@ -172,7 +182,7 @@
     # ▸ bind
 
         # kc  """
-            # class A
+            # function A
                 # @: -> @f()
                 # b: => log 'hello'
                 # f: ->
@@ -181,7 +191,7 @@
             # """ ▸
             # """
 
-            # class A
+            # function A
             # {
                 # constructor ()
                 # {
