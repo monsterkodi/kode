@@ -66,6 +66,8 @@
         kc  '/(a|b)/'               ▸ '/(a|b)/'
         kc  '/(a|b)/g'              ▸ '/(a|b)/g'
         kc  '/\\//gimsuy'           ▸ '/\\//gimsuy'
+        kc  'ESCAPEREGEXP = /[-\\^$*+?.()|[\\]{}\\/]/g' ▸ 'ESCAPEREGEXP = /[-\\^$*+?.()|[\\]{}\\/]/g'
+        kc  'ESCAPEREGEXP = /[\-\\\^\$\*\+\?\.\(\)\|\[\]\{\}\/]/g' ▸ 'ESCAPEREGEXP = /[\-\\\^\$\*\+\?\.\(\)\|\[\]\{\}\/]/g'
 
         # todo: fix the lexers' regex detection
         
