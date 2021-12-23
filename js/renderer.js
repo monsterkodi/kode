@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.208.0
+// monsterkodi/kode 0.210.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
 
@@ -877,7 +877,7 @@ class Renderer
 
     if (n)
     {
-        var e, elif, first, gi, last, s
+        var elif, first, gi, last, s
 
         first = firstLineCol(n)
         last = lastLineCol(n)
@@ -889,25 +889,21 @@ class Renderer
         s = ''
         s += `if (${this.atom(n.cond)})\n`
         s += gi + "{\n"
-        var list = _k_.list(n.then)
-        for (var _737_14_ = 0; _737_14_ < list.length; _737_14_++)
+        if (!_k_.empty(n.then))
         {
-            e = list[_737_14_]
-            s += this.indent + this.node(e) + '\n'
+            s += this.indent + this.nodes(n.then,'\n' + this.indent) + '\n'
         }
         s += gi + "}"
-        var list1 = _k_.list(n.elifs)
-        for (var _741_17_ = 0; _741_17_ < list1.length; _741_17_++)
+        var list = _k_.list(n.elifs)
+        for (var _741_17_ = 0; _741_17_ < list.length; _741_17_++)
         {
-            elif = list1[_741_17_]
+            elif = list[_741_17_]
             s += '\n'
             s += gi + `else if (${this.atom(elif.elif.cond)})\n`
             s += gi + "{\n"
-            var list2 = _k_.list(elif.elif.then)
-            for (var _745_18_ = 0; _745_18_ < list2.length; _745_18_++)
+            if (!_k_.empty(elif.elif.then))
             {
-                e = list2[_745_18_]
-                s += this.indent + this.node(e) + '\n'
+                s += this.indent + this.nodes(elif.elif.then,'\n' + this.indent) + '\n'
             }
             s += gi + "}"
         }
@@ -916,11 +912,9 @@ class Renderer
             s += '\n'
             s += gi + 'else\n'
             s += gi + "{\n"
-            var list3 = _k_.list(n.else)
-            for (var _753_18_ = 0; _753_18_ < list3.length; _753_18_++)
+            if (!_k_.empty(n.else))
             {
-                e = list3[_753_18_]
-                s += this.indent + this.node(e) + '\n'
+                s += this.indent + this.nodes(n.else,'\n' + this.indent) + '\n'
             }
             s += gi + "}"
         }

@@ -734,24 +734,24 @@ class Renderer
         s = ''
         s += "if (#{@atom(n.cond)})\n"
         s += gi+"{\n"
-        for e in n.then
-            s += @indent + @node(e) + '\n'
+        if valid n.then
+            s += @indent + @nodes(n.then, '\n'+@indent) + '\n'
         s += gi+"}"
 
         for elif in n.elifs
             s += '\n'
             s += gi + "else if (#{@atom(elif.elif.cond)})\n"
             s += gi+"{\n"
-            for e in elif.elif.then
-                s += @indent + @node(e) + '\n'
+            if valid elif.elif.then
+                s += @indent + @nodes(elif.elif.then, '\n'+@indent) + '\n'
             s += gi+"}"
 
         if n.else
             s += '\n'
             s += gi + 'else\n'
             s += gi+"{\n"
-            for e in n.else
-                 s += @indent + @node(e) + '\n'
+            if valid n.else
+                s += @indent + @nodes(n.else, '\n'+@indent) + '\n'
             s += gi+"}"
 
         @ded()

@@ -130,7 +130,6 @@
     ▸ assert
         
         kc  "e?.d"                  ▸   ";(e != null ? e.d : undefined)"
-        kc  "e?()"                  ▸   ';(typeof e === "function" ? e() : undefined)'
         kc  "e?[1]"                 ▸   ";(e != null ? e[1] : undefined)"
         kc  "e?[1].f"               ▸   ";(e != null ? e[1].f : undefined)"
         kc  "e?[1]?.g"              ▸   ";(e != null ? e[1] != null ? e[1].g : undefined : undefined)"
@@ -156,6 +155,20 @@
         ke  "e=1;e?[1]?.g"              ▸ undefined
         
         kc  "line.turd?[..1] == 'xxx'"  ▸ ";(line.turd != null ? line.turd.slice(0, 2) : undefined) === 'xxx'"
+        
+        ▸ call
+        
+            kc  "e?()"                  ▸   ';(typeof e === "function" ? e() : undefined)'
+            kc  """
+                if 1
+                    a?()
+                """ ▸
+                """
+                if (1)
+                {
+                    ;(typeof a === "function" ? a() : undefined)
+                }
+                """
         
     #  0000000   0000000   00     00  0000000    000  000   000  00000000  0000000    
     # 000       000   000  000   000  000   000  000  0000  000  000       000   000  
