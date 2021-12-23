@@ -631,7 +631,7 @@ Parse = (function ()
             }
             if (e.text === '@')
             {
-                if ((nxt.type === 'block' && this.stack.slice(-1)[0] === 'if' || (spaced && _k_.in(nxt.text,['then','if','then'])) || nxt.type === 'nl' || nxt.text === ','))
+                if ((nxt.type === 'block' && this.stack.slice(-1)[0] === 'if' || (spaced && _k_.in(nxt.text,['then','if','then'])) || nxt.type === 'nl' || _k_.in(nxt.text,[',','=='])))
                 {
                     break
                 }

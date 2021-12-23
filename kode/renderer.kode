@@ -321,12 +321,19 @@ class Renderer
             [con, bind] = @prepareMethods mthds
             
             if bind.length
+                
+                if con.keyval.val.func.body.exps?[0]?.call?.callee.text == 'super'
+                    superCall = con.keyval.val.func.body.exps.shift()
+                
                 for b in bind
                     bn = b.keyval.val.func.name.text
                     con.keyval.val.func.body.exps ?= []
                     con.keyval.val.func.body.exps.unshift
                         type: 'code'
                         text: "this.#{bn} = this.#{bn}.bind(this)"
+                        
+                if superCall
+                    con.keyval.val.func.body.exps.unshift superCall
             
             @indent = '    '
             for mi in 0...mthds.length

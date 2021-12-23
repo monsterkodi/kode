@@ -471,7 +471,7 @@ function Parse # the base class of Parser
                 if (nxt.type == 'block' and @stack[-1] == 'if' or 
                     (spaced and nxt.text in ['then''if''then']) or 
                     nxt.type == 'nl' or
-                    nxt.text == ',')
+                    nxt.text in [',' '=='])
                         break
                 else
                     e = @this e, tokens
