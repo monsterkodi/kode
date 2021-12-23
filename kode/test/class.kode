@@ -249,4 +249,32 @@
             }
             
             """
+           
+        kc  """
+            class E extends e
             
+                @: (@e) ->
+            
+                    super()
+                    @v = -1
+                    
+                start: =>
+            """ ▸
+            """
+            class E extends e
+            {
+                constructor (e)
+                {
+                    super.constructor()
+                
+                    this.e = e
+                
+                    this.start = this.start.bind(this)
+                    this.v = -1
+                }
+            
+                start ()
+                {}
+            }
+            
+            """

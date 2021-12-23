@@ -324,7 +324,7 @@ class Renderer
                 
                 for e in con.keyval.val.func.body.exps
                     if e.call?.callee.text == 'super'
-                        superCall = con.keyval.val.func.body.exps.splice con.keyval.val.func.body.exps.indexOf(e), 1
+                        superCall = con.keyval.val.func.body.exps.splice(con.keyval.val.func.body.exps.indexOf(e), 1)[0]
                         break
                 
                 for b in bind
@@ -530,12 +530,13 @@ class Renderer
 
         @varstack.push n.body.vars
 
+        if n.body.exps?[0]?.call?.callee.text == 'super'
+            s += '\n'
+            s += @indent + @node n.body.exps.shift()
+            s += '\n' + gi
+        
         if valid n.body.vars
-            
-            if n.body.exps[0].call?.callee.text == 'super'
-                s += '\n'
-                s += @indent + @node n.body.exps.shift()
-            
+                        
             s += '\n'
             vs = @sortVars n.body.vars
             s += @indent + "var #{vs}\n"
