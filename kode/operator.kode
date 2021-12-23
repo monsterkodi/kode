@@ -72,7 +72,7 @@ class Operator
             e.type      ➜ return
             e is Array  ➜ @exp v for v in e if e.length
             e.operation 
-                @op e 
+                @op e
                 if e.operation?.rhs 
                     @exp e.operation.rhs 
                 else if e.qmrkcolon 
@@ -109,6 +109,9 @@ class Operator
                 if p[i] > p[i-1]
                     @fixPrec e
                     break
+                    
+        else
+            @exp e.operation.rhs
                     
     # 00000000  000  000   000          00000000   00000000   00000000   0000000
     # 000       000   000 000           000   000  000   000  000       000     

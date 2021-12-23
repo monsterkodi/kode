@@ -165,6 +165,15 @@
                 a = (b !== c && c !== d)
                 """
                 
+            kc  """
+                if 1 and (opt.text is str or 2)
+                """ ▸
+                """
+                if (1 && ((function(o){return (typeof o === 'string' || o instanceof String)})(opt.text) || 2))
+                {
+                }
+                """
+                
         ▸ binary
         
             kc "f a|b, x | y, c|d | e| f" ▸ 'f(a | b,x | y,c | d | e | f)'

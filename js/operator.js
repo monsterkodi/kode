@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.198.0
+// monsterkodi/kode 0.199.0
 
 var _k_ = {list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -217,16 +217,20 @@ class Operator
                 }
             }
         }
+        else
+        {
+            return this.exp(e.operation.rhs)
+        }
     }
 
     fixPrec (e)
     {
-        var newlhs, newop, op, _126_23_, _126_41_, _126_52_, _126_62_, _130_37_, _130_48_, _166_54_, _166_84_, _171_32_, _171_53_
+        var newlhs, newop, op, _129_23_, _129_41_, _129_52_, _129_62_, _133_37_, _133_48_, _169_54_, _169_84_, _174_32_, _174_53_
 
         op = e.operation || e.qmrkcolon
         if (precedence(e) < precedence(op.rhs))
         {
-            if (op.operator.text === 'not' && _k_.in(((op.rhs != null ? op.rhs.incond : undefined) || ((_126_41_=op.rhs) != null ? (_126_52_=_126_41_.operation) != null ? (_126_62_=_126_52_.operator) != null ? _126_62_.text : undefined : undefined : undefined)),assign))
+            if (op.operator.text === 'not' && _k_.in(((op.rhs != null ? op.rhs.incond : undefined) || ((_129_41_=op.rhs) != null ? (_129_52_=_129_41_.operation) != null ? (_129_62_=_129_52_.operator) != null ? _129_62_.text : undefined : undefined : undefined)),assign))
             {
                 return
             }
@@ -234,7 +238,7 @@ class Operator
             {
                 return
             }
-            if (_k_.in(((_130_37_=e.operation.rhs) != null ? (_130_48_=_130_37_.operation) != null ? _130_48_.operator.text : undefined : undefined),assign))
+            if (_k_.in(((_133_37_=e.operation.rhs) != null ? (_133_48_=_133_37_.operation) != null ? _133_48_.operator.text : undefined : undefined),assign))
             {
                 return
             }
@@ -276,7 +280,7 @@ class Operator
 
     logChain (chain, p)
     {
-        var rndr, s, _187_43_, _187_50_
+        var rndr, s, _190_43_, _190_50_
 
         s = ''
         rndr = (function (n)
@@ -301,7 +305,7 @@ class Operator
                 return (rndr(i.qmrkcolon.lhs)) + ' ? ' + (rndr(i.qmrkcolon.mid)) + ' '
             }
         }).bind(this)).join(' ')
-        s += ' ' + ((_187_50_=rndr((chain.slice(-1)[0].operation != null ? chain.slice(-1)[0].operation.rhs : undefined))) != null ? _187_50_ : '...')
+        s += ' ' + ((_190_50_=rndr((chain.slice(-1)[0].operation != null ? chain.slice(-1)[0].operation.rhs : undefined))) != null ? _190_50_ : '...')
         console.log(w4('▪'),s,g3(p))
     }
 
