@@ -390,7 +390,7 @@ class Renderer
         if n.extends
             for e in n.extends
                 @hint._k_.extend = true
-                s += "    _k_.extend(#{n.name.text}, #{e.text});"
+                s += "    _k_.extend(#{n.name.text}, #{e.text})"
             s += '\n'
 
         mthds = n.body
@@ -409,9 +409,14 @@ class Renderer
                         
             if n.extends
                 con.keyval.val.func.body.exps ?= []
-                con.keyval.val.func.body.exps.push
-                    type: 'code'
-                    text: "return #{@fncnName}.__super__.constructor.apply(this, arguments)"
+                for e in con.keyval.val.func.body.exps
+                    if e.call and e.call.callee.text == 'super'
+                        callsSuper = true
+                        break
+                if not callsSuper
+                    con.keyval.val.func.body.exps.push
+                        type: 'code'
+                        text: "return #{@fncnName}.__super__.constructor.apply(this, arguments)"
                         
             @indent = '    '
             for mi in 0...mthds.length

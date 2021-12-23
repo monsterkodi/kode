@@ -10,7 +10,7 @@
 
 ▸ function
 
-    ▸ function
+    ▸ basics
 
         kc  """
             function A
@@ -85,140 +85,50 @@
             
             """
 
-        # kc  """
-            # function E
-                # @f: ->
-                # @g: ->
-            # """ ▸
-            # """
-
-            # function E
-            # {
-                # static f ()
-                # {}
-
-                # static g ()
-                # {}
-            # }
-
-            # """
-
-        # kc  """
-            # function F
-                # @f: ->
-                # @g: ->
-                # @h: ->
-            # """ ▸
-            # """
-
-            # function F
-            # {
-                # static f ()
-                # {}
-
-                # static g ()
-                # {}
-
-                # static h ()
-                # {}
-            # }
-
-            # """
-
-        # kc  """
-            # function X
-                # @: ->
-                    # '@'
-
-                # m: -> 'm'
-            # """ ▸
-            # """
-
-            # function X
-            # {
-                # constructor ()
-                # {
-                    # '@'
-                # }
-
-                # m ()
-                # {
-                    # return 'm'
-                # }
-            # }
-
-            # """
-
-        # kc  """
-            # function Y
-                # @: -> '@'
-
-                # m: ->
-                    # 'm'
-            # """ ▸
-            # """
-
-            # function Y
-            # {
-                # constructor ()
-                # {
-                    # '@'
-                # }
-
-                # m ()
-                # {
-                    # return 'm'
-                # }
-            # }
-
-            # """
-
-    # 0000000    000  000   000  0000000    
-    # 000   000  000  0000  000  000   000  
-    # 0000000    000  000 0 000  000   000  
-    # 000   000  000  000  0000  000   000  
-    # 0000000    000  000   000  0000000    
+    ▸ super
     
-    # ▸ bind
+        kc  """
+            function S
+                @: -> super()
+            """ ▸
+            """
 
-        # kc  """
-            # function A
-                # @: -> @f()
-                # b: => log 'hello'
-                # f: ->
-                    # g = => @b()
-                    # g()
-            # """ ▸
-            # """
+            S = (function ()
+            {
+                function S ()
+                {
+                    S.__super__.constructor.call(this)
+                }
 
-            # function A
-            # {
-                # constructor ()
-                # {
-                    # this.f()
-                    # this.b = this.b.bind(this)
-                # }
+                return S
+            })()
+            
+            """
 
-                # b ()
-                # {
-                    # console.log('hello')
-                # }
+        kc  """
+            function S extends Q
+                @: (a) -> 
+                    a = 1
+                    super a
+                    a = 2
+            """ ▸
+            """
 
-                # f ()
-                # {
-                    # var g
+            S = (function ()
+            {
+                _k_.extend(S, Q)
+                function S (a)
+                {
+                    a = 1
+                    S.__super__.constructor.call(this,a)
+                    a = 2
+                }
 
-                    # g = (function ()
-                    # {
-                        # return this.b()
-                    # }).bind(this)
-                    # return g()
-                # }
-            # }
-
-            # """
-
-
+                return S
+            })()
+            
+            """
+            
     #  0000000   000      0000000           0000000   0000000  000   000   0000000    0000000   000      
     # 000   000  000      000   000        000       000       000   000  000   000  000   000  000      
     # 000   000  000      000   000        0000000   000       000000000  000   000  000   000  000      
