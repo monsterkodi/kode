@@ -467,15 +467,9 @@ function Parse # the base class of Parser
                 
             break if b
             
-            if e.text == '@' 
-                if (nxt.type == 'block' and @stack[-1] == 'if' or 
-                    (spaced and nxt.text in ['then''if''then']) or 
-                    nxt.type == 'nl' or
-                    nxt.text in [',' '=='])
-                        break
-                else
-                    e = @this e, tokens
-                    break
+            if e.text == '@' and unspaced and tokens[0].type in ['var''keyword''op']
+                e = @this e, tokens
+                break
             
             if      
                 nxt.text == '.'    ➜ e = @prop   e, tokens

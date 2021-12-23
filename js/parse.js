@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.200.0
+// monsterkodi/kode 0.203.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}, valid: undefined}
 
@@ -629,17 +629,10 @@ Parse = (function ()
             {
                 break
             }
-            if (e.text === '@')
+            if (e.text === '@' && unspaced && _k_.in(tokens[0].type,['var','keyword','op']))
             {
-                if ((nxt.type === 'block' && this.stack.slice(-1)[0] === 'if' || (spaced && _k_.in(nxt.text,['then','if','then'])) || nxt.type === 'nl' || _k_.in(nxt.text,[',','=='])))
-                {
-                    break
-                }
-                else
-                {
-                    e = this.this(e,tokens)
-                    break
-                }
+                e = this.this(e,tokens)
+                break
             }
             if (nxt.text === '.')
             {
@@ -800,15 +793,15 @@ Parse = (function ()
 
     Parse.prototype["nameMethods"] = function (mthds)
     {
-        var m, name, _640_34_, _640_39_, _641_35_, _641_41_
+        var m, name, _634_34_, _634_39_, _635_35_, _635_41_
 
         if ((mthds != null ? mthds.length : undefined))
         {
             var list = _k_.list(mthds)
-            for (var _639_18_ = 0; _639_18_ < list.length; _639_18_++)
+            for (var _633_18_ = 0; _633_18_ < list.length; _633_18_++)
             {
-                m = list[_639_18_]
-                if (name = ((_640_34_=m.keyval) != null ? (_640_39_=_640_34_.key) != null ? _640_39_.text : undefined : undefined))
+                m = list[_633_18_]
+                if (name = ((_634_34_=m.keyval) != null ? (_634_39_=_634_34_.key) != null ? _634_39_.text : undefined : undefined))
                 {
                     if (((m.keyval.val != null ? m.keyval.val.func : undefined) != null))
                     {

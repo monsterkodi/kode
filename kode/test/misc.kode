@@ -24,6 +24,11 @@
         kc  '@a.b()'        ▸   'this.a.b()'
         kc  't = @'         ▸   't = this'
         kc  'f(1,@)'        ▸   'f(1,this)'
+        kc  '@[1]'          ▸   'this[1]'
+        kc  '@[2]()'        ▸   'this[2]()'
+        kc  '@[3](4)'       ▸   'this[3](4)'
+        kc  '@[5] 6'        ▸   'this[5](6)'
+        
         kc  'return @ if a' ▸   
             """
             if (a)

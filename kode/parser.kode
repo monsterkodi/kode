@@ -791,6 +791,19 @@ function Parser extends Parse
             key:   k
             colon: colon
             val:   value
+            
+    # 000000000  000   000  000   0000000  
+    #    000     000   000  000  000       
+    #    000     000000000  000  0000000   
+    #    000     000   000  000       000  
+    #    000     000   000  000  0000000   
+    
+    this: (obj, tokens) ->
+
+        prop:
+            obj:  obj
+            dot:  type:'punct' text:'.' line:obj.line, col:obj.col
+            prop: tokens.shift()
 
     # 00000000   00000000    0000000   00000000
     # 000   000  000   000  000   000  000   000
@@ -862,22 +875,7 @@ function Parser extends Parse
             mid:    qmrkop.rhs
             colon:  colon
             rhs:    rhs
-            
-    # 000000000  000   000  000   0000000  
-    #    000     000   000  000  000       
-    #    000     000000000  000  0000000   
-    #    000     000   000  000       000  
-    #    000     000   000  000  0000000   
-    
-    this: (obj, tokens) ->
-
-        return obj if tokens[0].type not in ['var''keyword''op']
-        
-        prop:
-            obj:  obj
-            dot:  type:'punct' text:'.' line:obj.line, col:obj.col
-            prop: tokens.shift()
-            
+                        
             
     #  0000000  00000000   0000000  000000000  000   0000000   000   000  
     # 000       000       000          000     000  000   000  0000  000  

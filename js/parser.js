@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.200.0
+// monsterkodi/kode 0.203.0
 
 var _k_ = {extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -648,6 +648,11 @@ Parser = (function ()
         return {keyval:{key:k,colon:colon,val:value}}
     }
 
+    Parser.prototype["this"] = function (obj, tokens)
+    {
+        return {prop:{obj:obj,dot:{type:'punct',text:'.',line:obj.line,col:obj.col},prop:tokens.shift()}}
+    }
+
     Parser.prototype["prop"] = function (obj, tokens)
     {
         var dot, prop
@@ -683,15 +688,6 @@ Parser = (function ()
         rhs = this.exp(tokens)
         this.pop(':')
         return {qmrkcolon:{lhs:qmrkop.lhs,qmrk:qmrkop.qmrk,mid:qmrkop.rhs,colon:colon,rhs:rhs}}
-    }
-
-    Parser.prototype["this"] = function (obj, tokens)
-    {
-        if (!(_k_.in(tokens[0].type,['var','keyword','op'])))
-        {
-            return obj
-        }
-        return {prop:{obj:obj,dot:{type:'punct',text:'.',line:obj.line,col:obj.col},prop:tokens.shift()}}
     }
 
     Parser.prototype["section"] = function (tok, tokens)
