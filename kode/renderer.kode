@@ -1473,8 +1473,10 @@ class Renderer
         
     pruneAssert: (e) ->
   
-        # dbg e
-        if e.prop ➜ return @pruneAssert e.prop.obj
+        return e if not e
+        if e.prop  ➜ return @pruneAssert e.prop.obj
+        if e.index ➜ return @pruneAssert e.index.idxee
+        if e.call  ➜ return @pruneAssert e.call.callee
         e
         
     clearAsserts: (e) ->
@@ -1482,9 +1484,7 @@ class Renderer
         return e if not e
         if e.assert ➜ return @clearAsserts e.assert.obj
         if e.prop
-            # dbg e
             c = clone e
-            # dbg c
             c.prop.obj = @clearAsserts e.prop.obj
             return c
         if e.index
