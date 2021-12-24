@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.214.0
+// monsterkodi/kode 0.215.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
 
@@ -433,7 +433,7 @@ class Renderer
         mthds = n.body
         if ((mthds != null ? mthds.length : undefined))
         {
-            var _321_24_ = this.prepareMethods(mthds) ; con = _321_24_[0]            ; bind = _321_24_[1]
+            var _321_24_ = this.prepareMethods(mthds); con = _321_24_[0]; bind = _321_24_[1]
 
             if (bind.length)
             {
@@ -545,7 +545,7 @@ class Renderer
         mthds = n.body
         if ((mthds != null ? mthds.length : undefined))
         {
-            var _412_24_ = this.prepareMethods(mthds) ; con = _412_24_[0]            ; bind = _412_24_[1]
+            var _412_24_ = this.prepareMethods(mthds); con = _412_24_[0]; bind = _412_24_[1]
 
             if (bind.length)
             {
@@ -691,7 +691,7 @@ class Renderer
         args = ((_526_21_=n.args) != null ? (_526_29_=_526_21_.parens) != null ? _526_29_.exps : undefined : undefined)
         if (args)
         {
-            var _528_23_ = this.args(args) ; str = _528_23_[0]            ; ths = _528_23_[1]
+            var _528_23_ = this.args(args); str = _528_23_[0]; ths = _528_23_[1]
 
             s += str
         }
@@ -1422,13 +1422,13 @@ ${i}})(${this.node(n.lhs)})
             if (op.lhs.array)
             {
                 v = `_${op.operator.line}_${op.operator.col}_`
-                s = `var ${v} = ${this.atom(op.rhs)} `
+                s = `var ${v} = ${this.atom(op.rhs)}`
                 var list1 = _k_.list(op.lhs.array.items)
                 for (var _1203_28_ = 0; _1203_28_ < list1.length; _1203_28_++)
                 {
                     val = list1[_1203_28_]
                     i = op.lhs.array.items.indexOf(val)
-                    s += (i && this.indent || '') + `; ${val.text} = ${v}[${i}]`
+                    s += `; ${val.text} = ${v}[${i}]`
                 }
                 return s + '\n'
             }

@@ -1199,10 +1199,10 @@ class Renderer
                     
                 if op.lhs.array # lhs is aray, eg. [x,y] = require ''
                     v = "_#{op.operator.line}_#{op.operator.col}_"
-                    s = "var #{v} = #{@atom(op.rhs)} "
+                    s = "var #{v} = #{@atom(op.rhs)}"
                     for val in op.lhs.array.items
                         i = op.lhs.array.items.indexOf val
-                        s += (i and @indent or '') + "; #{val.text} = #{v}[#{i}]"
+                        s += "; #{val.text} = #{v}[#{i}]"
                     return s + '\n'
                 
             o == '!'
