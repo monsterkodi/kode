@@ -1036,13 +1036,14 @@ class Renderer
     # 0000000   0000000   0000000   000   000  000        
     
     lcomp: (n) ->
-        
+
+        v = "_#{n.for.inof.line}__#{n.for.inof.col}_"
         comp = (f) =>
             switch f.inof.text
-                when 'in' then @for_in f, 'var ' 'result.push(' ')' ' '
-                when 'of' then @for_of f, 'var ' 'result.push(' ')' ' '
-
-        "(function () { var result = []; #{comp n.for} return result }).bind(this)()"
+                when 'in' then @for_in f, 'var ' "#{v}.push(" ')' ' '
+                when 'of' then @for_of f, 'var ' "#{v}.push(" ')' ' '
+                
+        "(function () { var #{v} = []; #{comp n.for} return #{v} }).bind(this)()"
 
     # 000   000  000   000  000  000      00000000
     # 000 0 000  000   000  000  000      000

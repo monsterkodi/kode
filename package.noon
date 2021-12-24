@@ -1,23 +1,23 @@
-name          kode
-version       0.211.0
-description   programming language
-main          js/kode.js
+name            kode
+version         0.212.0
+description     programming language
+main            js/kode.js
 bin
-              kode  bin/kode
+                kode  bin/kode
 scripts
-              test      kode -t  kode/test/*.kode
-              watch     kode -wt kode/test/*.kode kode/*.kode
-              stage     pnpm run build0 && pnpm run build1 && pnpm run testage
-              build0    kode kode/*.kode -Ho stage0
-              build1    k0de kode/*.kode -Ho stage1 && cp -r kode/test stage1
-              testage   k1de -t stage1/test/*.kode
-              unstage   cp stage1/*.js js
-author        monsterkodi
-license       Unlicense
+                test        kode -t  kode/test/*.kode
+                watch       kode -wt kode/test/*.kode kode/*.kode
+                stage       pnpm run build0 && pnpm run build1 && pnpm run testage
+                build0      kode kode/*.kode -Ho stage0
+                build1      k0de kode/*.kode -Ho stage1 && cp -r kode/test stage1
+                testage     k1de -t stage1/test/*.kode
+                unstage     cp stage1/*.js js
+author          monsterkodi
+license         Unlicense
 dependencies
-              colorcat  monsterkodi/colorcat
-              karg      monsterkodi/karg
-              klor      monsterkodi/klor
-              kslash    monsterkodi/kslash
-              kstr      monsterkodi/kstr
-              noon      monsterkodi/noon
+                colorcat    monsterkodi/colorcat
+                karg        monsterkodi/karg
+                klor        monsterkodi/klor
+                kslash      monsterkodi/kslash
+                kstr        monsterkodi/kstr
+                noon        monsterkodi/noon

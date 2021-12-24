@@ -217,7 +217,7 @@
             kc  """
                 matches = ([k, r.exec t] for k,r of rgs)
                 """ ▸ """
-                matches = (function () { var result = []; for (var k in rgs)  { var r = rgs[k];result.push([k,r.exec(t)])  } return result }).bind(this)()
+                matches = (function () { var _1__33_ = []; for (var k in rgs)  { var r = rgs[k];_1__33_.push([k,r.exec(t)])  } return _1__33_ }).bind(this)()
                 """
             
         # 00000000   0000000   00000000         000000000   0000000   000  000      
@@ -249,12 +249,12 @@
         
         kc  "m = ([k, r.exec t] for k,r of rgs)" ▸
             """
-            m = (function () { var result = []; for (var k in rgs)  { var r = rgs[k];result.push([k,r.exec(t)])  } return result }).bind(this)()
+            m = (function () { var _1__27_ = []; for (var k in rgs)  { var r = rgs[k];_1__27_.push([k,r.exec(t)])  } return _1__27_ }).bind(this)()
             """
 
         kc  "m = ([i, k] for k,i in rgs)" ▸
             """
-            m = (function () { var result = []; var list = _k_.list(rgs); for (i = 0; i < list.length; i++)  { var k = list[i];result.push([i,k])  } return result }).bind(this)()
+            m = (function () { var _1__20_ = []; var list = _k_.list(rgs); for (i = 0; i < list.length; i++)  { var k = list[i];_1__20_.push([i,k])  } return _1__20_ }).bind(this)()
             """
             
         ke  "1"                                 ▸ 1
