@@ -1242,9 +1242,11 @@ class Renderer
                 
             o == '!'
 
-                if op.rhs?.incond or op.rhs?.operation?.operator?.text == '='
-                        open = '('
-                        close = ')'
+                if op.rhs?.incond or op.rhs?.operation?.operator?.text in ['=' 'is'] # this would not be neccessary if the operator would work
+                    open = '('
+                    close = ')'
+                # else
+                    # log '!' op.rhs
                         
             op.operator.text in ['empty' 'valid']
                 @hint._k_.empty = true

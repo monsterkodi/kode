@@ -171,7 +171,10 @@ class Operator
             print.ast 'after swap2' e if @debug
             
         else
+            # some dangerous game we are playing here...
             @op op.rhs if op.rhs?.operation or op.rhs?.qmrkcolon
+            if precedence(e) < precedence(op.rhs)
+                @fixPrec e
 
     logChain: (chain, p) ->
                 

@@ -365,6 +365,13 @@
             }
             """
             
+        kc  "if not a is Array and not a is 'object'" ▸ 
+            """
+            if (!(a instanceof Array) && !(typeof(a) === 'object'))
+            {
+            }
+            """
+            
         ▸ if block
         
             kc  """

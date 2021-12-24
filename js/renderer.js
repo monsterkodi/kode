@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.210.0
+// monsterkodi/kode 0.211.0
 
 var _k_ = {empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, valid: undefined, each_r: function (o) {return o instanceof Array ? [] : typeof o == 'string' ? o.split('') : {}}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, list: function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}}
 
@@ -1380,7 +1380,7 @@ ${i}})(${this.node(n.lhs)})
 
     operation (op)
     {
-        var close, first, i, ind, keyval, lhs, o, open, opmap, prfx, ro, s, sep, v, val, _1219_29_, _1219_40_, _1245_25_, _1245_43_, _1245_54_, _1245_64_, _1263_18_, _1263_29_, _1268_25_, _1291_43_
+        var close, first, i, ind, keyval, lhs, o, open, opmap, prfx, ro, s, sep, v, val, _1219_29_, _1219_40_, _1245_25_, _1245_43_, _1245_54_, _1245_64_, _1265_18_, _1265_29_, _1270_25_, _1293_43_
 
         opmap = function (o)
         {
@@ -1434,7 +1434,7 @@ ${i}})(${this.node(n.lhs)})
         }
         else if (o === '!')
         {
-            if ((op.rhs != null ? op.rhs.incond : undefined) || ((_1245_43_=op.rhs) != null ? (_1245_54_=_1245_43_.operation) != null ? (_1245_64_=_1245_54_.operator) != null ? _1245_64_.text : undefined : undefined : undefined) === '=')
+            if ((op.rhs != null ? op.rhs.incond : undefined) || _k_.in(((_1245_43_=op.rhs) != null ? (_1245_54_=_1245_43_.operation) != null ? (_1245_64_=_1245_54_.operator) != null ? _1245_64_.text : undefined : undefined : undefined),['=','is']))
             {
                 open = '('
                 close = ')'
@@ -1460,7 +1460,7 @@ ${i}})(${this.node(n.lhs)})
             this.hint._k_.noon = true
             return `_k_.noon(${this.node(op.rhs)})`
         }
-        else if (((_1263_18_=op.rhs) != null ? (_1263_29_=_1263_18_.operation) != null ? _1263_29_.operator.text : undefined : undefined) === '=')
+        else if (((_1265_18_=op.rhs) != null ? (_1265_29_=_1265_18_.operation) != null ? _1265_29_.operator.text : undefined : undefined) === '=')
         {
             open = '('
             close = ')'
@@ -1559,7 +1559,7 @@ ${i}})(${this.node(n.lhs)})
 
     index (p)
     {
-        var addOne, from, ni, slice, u, upper, upto, _1360_32_, _1364_32_, _1366_25_, _1366_54_, _1382_27_
+        var addOne, from, ni, slice, u, upper, upto, _1362_32_, _1366_32_, _1368_25_, _1368_54_, _1384_27_
 
         if (slice = p.slidx.slice)
         {
@@ -1637,7 +1637,7 @@ ${i}})(${this.node(n.lhs)})
 
     slice (p)
     {
-        var from, o, upto, x, _1412_41_
+        var from, o, upto, x, _1414_41_
 
         if ((p.from.type === 'num' && 'num' === (p.upto != null ? p.upto.type : undefined)))
         {
@@ -1649,7 +1649,7 @@ ${i}})(${this.node(n.lhs)})
                 {
                     upto--
                 }
-                return '[' + ((function () { var result = []; for (var _1417_34_ = x = from, _1417_40_ = upto; (_1417_34_ <= _1417_40_ ? x <= upto : x >= upto); (_1417_34_ <= _1417_40_ ? ++x : --x))  { result.push(x)  } return result }).bind(this)().join(',')) + ']'
+                return '[' + ((function () { var result = []; for (var _1419_34_ = x = from, _1419_40_ = upto; (_1419_34_ <= _1419_40_ ? x <= upto : x >= upto); (_1419_34_ <= _1419_40_ ? ++x : --x))  { result.push(x)  } return result }).bind(this)().join(',')) + ']'
             }
             else
             {
@@ -1670,9 +1670,9 @@ ${i}})(${this.node(n.lhs)})
 
         s = '`'
         var list = _k_.list(chunks)
-        for (var _1434_18_ = 0; _1434_18_ < list.length; _1434_18_++)
+        for (var _1436_18_ = 0; _1436_18_ < list.length; _1436_18_++)
         {
-            chunk = list[_1434_18_]
+            chunk = list[_1436_18_]
             t = chunk.text
             switch (chunk.type)
             {
@@ -1748,7 +1748,7 @@ ${i}})(${this.node(n.lhs)})
     {
         var v, vl
 
-        vl = (function () { var result = []; var list = _k_.list(vars); for (var _1499_27_ = 0; _1499_27_ < list.length; _1499_27_++)  { v = list[_1499_27_];result.push(v.text)  } return result }).bind(this)()
+        vl = (function () { var result = []; var list = _k_.list(vars); for (var _1501_27_ = 0; _1501_27_ < list.length; _1501_27_++)  { v = list[_1501_27_];result.push(v.text)  } return result }).bind(this)()
         vl.sort(function (a, b)
         {
             if (a[0] === '_' && b[0] !== '_')
@@ -1772,13 +1772,13 @@ ${i}})(${this.node(n.lhs)})
         var v, vars
 
         var list = _k_.list(this.varstack)
-        for (var _1514_17_ = 0; _1514_17_ < list.length; _1514_17_++)
+        for (var _1516_17_ = 0; _1516_17_ < list.length; _1516_17_++)
         {
-            vars = list[_1514_17_]
+            vars = list[_1516_17_]
             var list1 = _k_.list(vars)
-            for (var _1515_18_ = 0; _1515_18_ < list1.length; _1515_18_++)
+            for (var _1517_18_ = 0; _1517_18_ < list1.length; _1517_18_++)
             {
-                v = list1[_1515_18_]
+                v = list1[_1517_18_]
                 if (v.text === name + (suffix || ''))
                 {
                     return this.freshVar(name,suffix + 1)
