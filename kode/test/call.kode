@@ -20,6 +20,8 @@
         kc  "a('1' 2 3.4 true false null undefined NaN Infinity)" ▸
             "a('1',2,3.4,true,false,null,undefined,NaN,Infinity)"
 
+        kc  "cb not err"        ▸ "cb(!err)"
+            
         kc  """
             a b:c[1], d:2
             """ ▸
