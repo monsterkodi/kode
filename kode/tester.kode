@@ -55,6 +55,7 @@ class Tester
         if not a is Array and not a is 'object' # not an array or object
             log "#{keystack.join '.'}: #{a} != #{b}"
             return false
+            
         if a is Array
             if a.length != b.length 
                 log "#{keystack.join '.'}: #{a.length} ][ #{b.length}"
@@ -62,7 +63,9 @@ class Tester
             for v,i in a
                 keystack.push i
                 if not @sameObjects v, b[i], keystack
+                    keystack.splice 0 keystack.length
                     return false
+                return false if empty keystack
                 keystack.pop()
         else if a is str
             if a != b
@@ -70,13 +73,14 @@ class Tester
                 log g3 @showSpace b
                 return false 
         else
-            if Object.keys(a).length != Object.keys(b).length 
-                log "#{keystack.join '.'}: #{Object.keys(a).length} <> #{Object.keys(b).length}"
+            if not @sameObjects Object.keys(a), Object.keys(b)
                 return false
             for k,v of a
                 keystack.push k
                 if not @sameObjects v, b[k], keystack
+                    keystack.splice 0 keystack.length
                     return false
+                return false if empty keystack
                 keystack.pop()
         true
     
@@ -92,9 +96,9 @@ class Tester
                 succs++
                 return
         
-        # log typeof(a), typeof b
-        # log red   a
-        # log green b
+        # if typeof(a) == typeof(b) == 'object'
+            # log red   noon a
+            # log green noon b
         if @sameObjects a, b
             succs++
             return
