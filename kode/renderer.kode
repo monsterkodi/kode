@@ -1242,7 +1242,7 @@ class Renderer
                 
             o == '!'
 
-                if op.rhs?.incond or op.rhs?.operation?.operator?.text in ['=' 'is'] # this would not be neccessary if the operator would work
+                if op.rhs?.incond or op.rhs?.operation?.operator?.text in ['=' 'is'] 
                     open = '('
                     close = ')'
                 # else
