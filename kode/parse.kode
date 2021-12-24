@@ -798,6 +798,7 @@ function Parse # the base class of Parser
     
     noThenAhead: (tokens) ->
         
+        return false if tokens[1]?.type == 'block'
         ti = 0
         while ++ti < tokens.length
             if tokens[ti].text == 'then'
@@ -805,7 +806,7 @@ function Parse # the base class of Parser
                     return false 
             return true  if tokens[ti].type in ['nl' 'block']
         true
-                                    
+        
     #  0000000  000   000  00000000   0000000   00000000     
     # 000       000   000  000       000   000  000   000    
     # 0000000   000000000  0000000   000000000  00000000     

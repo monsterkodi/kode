@@ -462,7 +462,7 @@ function Parser extends Parse
                 args = [@exp tokens]
                 @pop  '▸arg'
             else
-                args = @block 'args', tokens
+                args = @block 'args' tokens
 
         if open 
             if tokens[0]?.text == ')'
@@ -474,6 +474,8 @@ function Parser extends Parse
         if open and not close then @error hdr:'call' msg:'explicit call without closing )' tokens
 
         @pop 'call'
+        
+        if args[0]?.if then args[0].if.inline = true
         
         e = call: callee: tok
         e.call.open  = open  if open
