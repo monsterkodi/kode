@@ -474,23 +474,25 @@ function Parser extends Parse
         if open and not close then @error hdr:'call' msg:'explicit call without closing )' tokens
 
         @pop 'call'
+        
+        args[0] = @prepareCallAssign args[0] if valid args
                 
-        if args[0]?.if
-            if @ifSuitableForInline args[0]
-                args[0].if.inline = true    
-            else
-                args[0] =
-                    call:
-                        callee:
-                            parens:
-                                exps:   [
-                                            func:
-                                                arrow:
-                                                    text: '=>'
-                                                body:
-                                                    vars: []
-                                                    exps: [args[0]]
-                                        ]
+        # if args[0]?.if
+            # if @ifSuitableForInline args[0]
+                # args[0].if.inline = true    
+            # else
+                # args[0] =
+                    # call:
+                        # callee:
+                            # parens:
+                                # exps:   [
+                                            # func:
+                                                # arrow:
+                                                    # text: '=>'
+                                                # body:
+                                                    # vars: []
+                                                    # exps: [args[0]]
+                                        # ]
         
         e = call: callee: tok
         e.call.open  = open  if open
@@ -515,38 +517,8 @@ function Parser extends Parse
         rhs = @exp tokens
         @pop "op#{op.text}"
         
-        if rhs?.switch
-            @verb 'rhs is switch'
-            rhs =
-                call:
-                    callee:
-                        parens:
-                            exps:   [
-                                        func:
-                                            arrow:
-                                                text: '=>'
-                                            body:
-                                                vars: []
-                                                exps: [rhs]
-                                    ]
-
-        if rhs?.if
-            if @ifSuitableForInline rhs
-                rhs.if.inline = true    
-            else
-                rhs =
-                    call:
-                        callee:
-                            parens:
-                                exps:   [
-                                            func:
-                                                arrow:
-                                                    text: '=>'
-                                                body:
-                                                    vars: []
-                                                    exps: [rhs]
-                                        ]
-                                    
+        rhs = @prepareCallAssign rhs
+                                            
         if op.text == '?='
             
             op.text = '='

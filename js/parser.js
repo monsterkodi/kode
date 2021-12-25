@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.221.0
+// monsterkodi/kode 0.222.0
 
-var _k_ = {extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
+var _k_ = {extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, valid: undefined}
 
 var firstLineCol, lastLineCol, Parse, Parser, print
 
@@ -373,16 +373,9 @@ Parser = (function ()
             this.error({hdr:'call',msg:'explicit call without closing )',tokens:tokens})
         }
         this.pop('call')
-        if ((args[0] != null ? args[0].if : undefined))
+        if (!_k_.empty(args))
         {
-            if (this.ifSuitableForInline(args[0]))
-            {
-                args[0].if.inline = true
-            }
-            else
-            {
-                args[0] = {call:{callee:{parens:{exps:[{func:{arrow:{text:'=>'},body:{vars:[],exps:[args[0]]}}}]}}}}
-            }
+            args[0] = this.prepareCallAssign(args[0])
         }
         e = {call:{callee:tok}}
         if (open)
@@ -412,22 +405,7 @@ Parser = (function ()
         }
         rhs = this.exp(tokens)
         this.pop(`op${op.text}`)
-        if ((rhs != null ? rhs.switch : undefined))
-        {
-            this.verb('rhs is switch')
-            rhs = {call:{callee:{parens:{exps:[{func:{arrow:{text:'=>'},body:{vars:[],exps:[rhs]}}}]}}}}
-        }
-        if ((rhs != null ? rhs.if : undefined))
-        {
-            if (this.ifSuitableForInline(rhs))
-            {
-                rhs.if.inline = true
-            }
-            else
-            {
-                rhs = {call:{callee:{parens:{exps:[{func:{arrow:{text:'=>'},body:{vars:[],exps:[rhs]}}}]}}}}
-            }
-        }
+        rhs = this.prepareCallAssign(rhs)
         if (op.text === '?=')
         {
             op.text = '='
