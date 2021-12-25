@@ -474,8 +474,23 @@ function Parser extends Parse
         if open and not close then @error hdr:'call' msg:'explicit call without closing )' tokens
 
         @pop 'call'
-        
-        if args[0]?.if then args[0].if.inline = true
+                
+        if args[0]?.if
+            if @ifSuitableForInline args[0]
+                args[0].if.inline = true    
+            else
+                args[0] =
+                    call:
+                        callee:
+                            parens:
+                                exps:   [
+                                            func:
+                                                arrow:
+                                                    text: '=>'
+                                                body:
+                                                    vars: []
+                                                    exps: [args[0]]
+                                        ]
         
         e = call: callee: tok
         e.call.open  = open  if open
@@ -514,9 +529,24 @@ function Parser extends Parse
                                                 vars: []
                                                 exps: [rhs]
                                     ]
+
+        if rhs?.if
+            if @ifSuitableForInline rhs
+                rhs.if.inline = true    
+            else
+                rhs =
+                    call:
+                        callee:
+                            parens:
+                                exps:   [
+                                            func:
+                                                arrow:
+                                                    text: '=>'
+                                                body:
+                                                    vars: []
+                                                    exps: [rhs]
+                                        ]
                                     
-        if rhs?.if then rhs.if.inline = true
-        
         if op.text == '?='
             
             op.text = '='

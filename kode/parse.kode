@@ -777,6 +777,23 @@ function Parse # the base class of Parser
         not e.incond and
         not e.qmrkop
         
+    ifSuitableForInline: (e) ->
+        # dbg e
+        if e.if
+            if e.then?.length > 1 ➜ return false
+            if e.then?[0].if      ➜ return false if not @ifSuitableForInline e.then[0]
+            if e.else?.length > 1 ➜ return false
+            if e.else?[0].if      ➜ return false if not @ifSuitableForInline e.else[0]
+            for ei in e.elifs
+                return false if not @ifSuitableForInline ei
+            return true
+        if e.elif
+            if e.then?.length > 1 ➜ return false
+            if e.then?[0].if      ➜ return false if not @ifSuitableForInline e.then[0]
+            return true
+        dbg 'not!'
+        false
+        
     #  0000000   000      000       0000000   000   000   0000000  0000000    000       0000000    0000000  000   000  
     # 000   000  000      000      000   000  000 0 000  000       000   000  000      000   000  000       000  000   
     # 000000000  000      000      000   000  000000000  0000000   0000000    000      000   000  000       0000000    

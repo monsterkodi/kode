@@ -1,4 +1,4 @@
-// monsterkodi/kode 0.219.0
+// monsterkodi/kode 0.220.0
 
 var _k_ = {extend: function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}}
 
@@ -375,7 +375,14 @@ Parser = (function ()
         this.pop('call')
         if ((args[0] != null ? args[0].if : undefined))
         {
-            args[0].if.inline = true
+            if (this.ifSuitableForInline(args[0]))
+            {
+                args[0].if.inline = true
+            }
+            else
+            {
+                args[0] = {call:{callee:{parens:{exps:[{func:{arrow:{text:'=>'},body:{vars:[],exps:[args[0]]}}}]}}}}
+            }
         }
         e = {call:{callee:tok}}
         if (open)
@@ -412,7 +419,14 @@ Parser = (function ()
         }
         if ((rhs != null ? rhs.if : undefined))
         {
-            rhs.if.inline = true
+            if (this.ifSuitableForInline(rhs))
+            {
+                rhs.if.inline = true
+            }
+            else
+            {
+                rhs = {call:{callee:{parens:{exps:[{func:{arrow:{text:'=>'},body:{vars:[],exps:[rhs]}}}]}}}}
+            }
         }
         if (op.text === '?=')
         {
