@@ -348,6 +348,31 @@
             t.push(5 ? 6 : 7 ? 8 : 9)
             """
             
+        kc  """
+            t.push if
+                1 and 2
+                    item = clone undefined
+                    item
+                else
+                    null
+            """ ▸
+            """
+            t.push(((function ()
+            {
+                var item
+            
+                if (1 && 2)
+                {
+                    item = _k_.clone(undefined)
+                    return item
+                }
+                else
+                {
+                    return null
+                }
+            }).bind(this))())
+            """
+            
     # 000  000   000  000      000  000   000  00000000  
     # 000  0000  000  000      000  0000  000  000       
     # 000  000 0 000  000      000  000 0 000  0000000   
