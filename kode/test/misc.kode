@@ -34,6 +34,16 @@
             c
                 d   3
             """
+        ke  "clone 0" ▸ 0
+        ke  "clone 1" ▸ 1
+        ke  "clone 'a'" ▸ 'a'
+        ke  "clone null" ▸ null
+        ke  "clone undefined" ▸ undefined
+        ke  "clone Infinity" ▸ Infinity
+        ke  "clone []" ▸ []
+        ke  "clone [1]" ▸ [1]
+        ke  "clone [null]" ▸ [null]
+        ke  "clone a:null" ▸ a:null
 
     # 000000000  000   000  000   0000000  
     #    000     000   000  000  000       
@@ -282,12 +292,12 @@
             """
             
         kc  """
-            { empty, noon, valid } = require 'kxk'
+            { empty, noon, valid } = kxk
             """ ▸
             """
-            empty = require('kxk').empty
-            noon = require('kxk').noon
-            valid = require('kxk').valid
+            empty = kxk.empty
+            noon = kxk.noon
+            valid = kxk.valid
             
             """
 
