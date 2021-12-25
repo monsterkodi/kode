@@ -475,7 +475,40 @@
             ke  'a = new Array() is obj'                ▸ false
             ke  'a = new Map() is obj'                  ▸ false
             ke  'a = new Set() is obj'                  ▸ false
+
+        ▸ arr
         
+            ke  'a = [] is arr'                         ▸ true
+            ke  'a = [[]] is arr'                       ▸ true
+            ke  'a = new Array() is arr'                ▸ true
+            ke  'a = new Array([]) is arr'              ▸ true
+            ke  'a = new Array([1]) is arr'             ▸ true
+            ke  '[] is arr and new Array() is arr'      ▸ true
+            ke  'null is arr or new Set() is arr or {} is arr' ▸ false
+            ke  'a = 1 is arr'                          ▸ false
+            ke  'a = {} is arr'                         ▸ false
+            ke  'a = "x" is arr'                        ▸ false
+            ke  'a = null is arr'                       ▸ false
+            ke  'a = undefined is arr'                  ▸ false
+            ke  'a = new String() is arr'               ▸ false
+            ke  'a = new Object() is arr'               ▸ false
+            ke  'a = new Map() is arr'                  ▸ false
+            ke  'a = new Set() is arr'                  ▸ false
+
+        ▸ func
+        
+            ke  'a = ->\na is func'                     ▸ true
+            ke  'a = ()->\na is func'                   ▸ true
+            ke  'a = 1 is func'                          ▸ false
+            ke  'a = {} is func'                         ▸ false
+            ke  'a = "x" is func'                        ▸ false
+            ke  'a = null is func'                       ▸ false
+            ke  'a = undefined is func'                  ▸ false
+            ke  'a = new String() is func'               ▸ false
+            ke  'a = new Object() is func'               ▸ false
+            ke  'a = new Array() is func'                ▸ false
+            ke  'a = new Set() is func'                  ▸ false
+            
         ▸ num
             # https://stackoverflow.com/questions/18082/validate-decimal-numbers-in-javascript-isnumeric/174921#174921
                 

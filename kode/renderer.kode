@@ -84,7 +84,13 @@ class Renderer
             return s
 
         kf = 
-            list:       "function (l) {return (l != null ? typeof l.length === 'number' ? l : [] : [])}"
+            isNum:      "function (o) {return !isNaN(o) && !isNaN(parseFloat(o)) && isFinite(o)}"
+            isObj:      "function (o) {return !(o == null || typeof o != 'object' || o.constructor.name !== 'Object')}"
+            isArr:      "function (o) {return o instanceof Array}"
+            isStr:      "function (o) {return typeof o === 'string' || o instanceof String}"
+            isFunc:     "function (o) {return typeof o === 'function'}"
+            isElem:     "function (o) {return o != null && typeof o === 'object' && o.nodeType === 1}"
+            list:       "function (l) {return l != null ? typeof l.length === 'number' ? l : [] : []}"
             empty:      "function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}"
             in:         "function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}"
             extend:     "function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}"
@@ -1245,19 +1251,40 @@ class Renderer
                     if 
                         op.rhs.text == 'num'
                             lhs = @atom op.lhs
-                            return "(function(o){return !isNaN(o) && !isNaN(parseFloat(o)) && isFinite(o)})(#{lhs})"
+                            @hint._k_.isNum = true
+                            return "_k_.isNum(#{lhs})"
                             
                         op.rhs.text == 'obj'
                             if op.lhs.type == 'num'
                                 return 'false'
                             else
                                 lhs = @atom op.lhs
-                                return "(function(o){return !(o == null || typeof o != 'object' || o.constructor.name !== 'Object')})(#{lhs})"
-                            
+                                @hint._k_.isObj = true
+                                return "_k_.isObj(#{lhs})"                                
+
+                        op.rhs.text == 'arr'
+                            if op.lhs.type == 'num'
+                                return 'false'
+                            else
+                                lhs = @atom op.lhs
+                                @hint._k_.isArr = true
+                                return "_k_.isArr(#{lhs})"
+                                
                         op.rhs.text == 'str'
                             lhs = @atom op.lhs
-                            return "(function(o){return (typeof o === 'string' || o instanceof String)})(#{lhs})"
-                    
+                            @hint._k_.isStr = true                            
+                            return "_k_.isStr(#{lhs})"
+
+                        op.rhs.text == 'func'
+                            lhs = @atom op.lhs
+                            @hint._k_.isFunc = true
+                            return "_k_.isFunc(#{lhs})"
+
+                        op.rhs.text == 'elem'
+                            lhs = @atom op.lhs
+                            @hint._k_.isElem = true
+                            return "_k_.isElem(#{lhs})"
+                            
                         else
                             return "#{@atom op.lhs} instanceof #{@atom op.rhs}"
             

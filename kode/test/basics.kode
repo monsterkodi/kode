@@ -171,7 +171,7 @@
                 if 1 and (opt.text is str or 2)
                 """ ▸
                 """
-                if (1 && ((function(o){return (typeof o === 'string' || o instanceof String)})(opt.text) || 2))
+                if (1 && (_k_.isStr(opt.text) || 2))
                 {
                 }
                 """
