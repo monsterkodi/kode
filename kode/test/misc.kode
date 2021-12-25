@@ -10,6 +10,82 @@
 
 ▸ misc
 
+    #  0000000  000       0000000   00     00  00000000   
+    # 000       000      000   000  000   000  000   000  
+    # 000       000      000000000  000000000  00000000   
+    # 000       000      000   000  000 0 000  000        
+    #  0000000  0000000  000   000  000   000  000        
+    
+    ▸ clamp
+    
+        ke  "clamp 1 10 12"         ▸ 10
+        ke  "clamp 1 10 -1"         ▸ 1
+        ke  "clamp 1 10"            ▸ 1
+        ke  "clamp 1 10 null"       ▸ 1
+        ke  "clamp 1 10 {}"         ▸ 1
+        ke  "clamp 1 10 Infinity"   ▸ 10
+        ke  "clamp 1 10 -Infinity"  ▸ 1
+        ke  "clamp 1 10 NaN"        ▸ 1
+
+        ke  "clamp -1 10 12"        ▸ 10
+        ke  "clamp -1 10 -2"        ▸ -1
+        ke  "clamp -1 10"           ▸ -1
+        ke  "clamp -1 10 null"      ▸ -1
+        ke  "clamp -1 10 {}"        ▸ -1
+        ke  "clamp -1 10 Infinity"  ▸ 10
+        ke  "clamp -1 10 -Infinity" ▸ -1
+        ke  "clamp -1 10 NaN"       ▸ -1
+
+        ke  "clamp 10.1 2.2 12"         ▸ 10.1
+        ke  "clamp 10.1 2.2 -2"         ▸ 2.2
+        ke  "clamp 10.1 2.2"            ▸ 2.2
+        ke  "clamp 10.1 2.2 null"       ▸ 2.2
+        ke  "clamp 10.1 2.2 {}"         ▸ 2.2
+        ke  "clamp 10.1 2.2 Infinity"   ▸ 10.1
+        ke  "clamp 10.1 2.2 -Infinity"  ▸ 2.2
+        ke  "clamp 10.1 2.2 NaN"        ▸ 2.2
+
+        ke  "clamp 5 5 12"          ▸ 5
+        ke  "clamp 5 5 -2"          ▸ 5
+        ke  "clamp 5 5"             ▸ 5
+        ke  "clamp 5 5 null"        ▸ 5
+        ke  "clamp 5 5 {}"          ▸ 5
+        ke  "clamp 5 5 Infinity"    ▸ 5
+        ke  "clamp 5 5 -Infinity"   ▸ 5
+        ke  "clamp 5 5 NaN"         ▸ 5
+        
+        ke  "clamp '1' '2' '3'"          ▸ 2
+        ke  "clamp '1.12' '2.23' '3.34'" ▸ 2.23
+        
+        ke  "clamp null NaN 5"          ▸ 5
+        ke  "clamp null 4 -3"           ▸ 0
+        ke  "clamp null 4 2"            ▸ 2
+        ke  "clamp null 4 5"            ▸ 4
+        ke  "clamp NaN 4 -3"            ▸ -3
+        ke  "clamp NaN 4 5"             ▸ 5
+        ke  "clamp NaN 4 7"             ▸ 7
+        ke  "clamp 4 NaN 5"             ▸ 5
+        ke  "clamp 4 NaN 3"             ▸ 3
+        ke  "clamp 4 NaN -2"            ▸ -2
+        ke  "clamp 4 null -3"           ▸ 0
+        ke  "clamp 4 null 2"            ▸ 2
+        ke  "clamp 4 null 5"            ▸ 4
+        ke  "clamp null null null"      ▸ 0
+        ke  "clamp null null"           ▸ 0
+        ke  "clamp null"                ▸ NaN
+        ke  "clamp()"                   ▸ NaN
+        ke  "clamp NaN NaN NaN"         ▸ NaN
+        
+    ▸ int
+    
+        ke  "int 1.234"  ▸ 1 
+        ke  "int '2.34'" ▸ 2 
+
+    ▸ float
+    
+        ke  "float 1.234"  ▸ 1.234 
+        ke  "float '2.34'" ▸ 2.34
+        
     #  0000000  000       0000000   000   000  00000000  
     # 000       000      000   000  0000  000  000       
     # 000       000      000   000  000 0 000  0000000   
@@ -528,6 +604,10 @@
             ke  'a = 3.1415 is num'                     ▸ true
             ke  'a = 8e5 is num'                        ▸ true
             ke  'a = "123e-2" is num'                   ▸ true
+            ke  'a = Infinity is num'                   ▸ true
+            ke  'a = -Infinity is num'                  ▸ true
+            ke  'a = Number.POSITIVE_INFINITY is num'   ▸ true
+            ke  'a = Number.NEGATIVE_INFINITY is num'   ▸ true
             ke '"0xFF" is num and "-4.536" is num and 42 is num' ▸ true
             ke  'a = "" is num'                         ▸ false
             ke  'a = "        " is num'                 ▸ false
@@ -541,9 +621,6 @@
             ke  'a = undefined is num'                  ▸ false
             ke  'a = null is num'                       ▸ false
             ke  'a = NaN is num'                        ▸ false
-            ke  'a = Infinity is num'                   ▸ false
-            ke  'a = Number.POSITIVE_INFINITY is num'   ▸ false
-            ke  'a = Number.NEGATIVE_INFINITY is num'   ▸ false
             ke  'a = (new Date(2009, 1, 1)) is num'     ▸ false
             ke  'a = (new Object()) is num'             ▸ false
             ke  'a = (->) is num'                       ▸ false
