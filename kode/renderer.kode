@@ -91,6 +91,10 @@ class Renderer
             isFunc:     "function (o) {return typeof o === 'function'}"
             isElem:     "function (o) {return o != null && typeof o === 'object' && o.nodeType === 1}"
             list:       "function (l) {return l != null ? typeof l.length === 'number' ? l : [] : []}"
+            first:      "function (o) {return o != null ? o.length ? o[0] : undefined : o}"
+            last:       "function (o) {return o != null ? o.length ? o[o.length-1] : undefined : o}"
+            min:        "function () { m = Infinity; for (a of arguments) { if (a instanceof Array) {m = _k_.min.apply(_k_.min,[m].concat(a))} else {n = parseFloat(a); if(!isNaN(n)){m = n < m ? n : m}}}; return m }"
+            max:        "function () { m = -Infinity; for (a of arguments) { if (a instanceof Array) {m = _k_.max.apply(_k_.max,[m].concat(a))} else {n = parseFloat(a); if(!isNaN(n)){m = n > m ? n : m}}}; return m }"
             empty:      "function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}"
             in:         "function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}"
             extend:     "function (c,p) {for (var k in p) { if (Object.hasOwn(p, k)) c[k] = p[k] } function ctor() { this.constructor = c; } ctor.prototype = p.prototype; c.prototype = new ctor(); c.__super__ = p.prototype; return c;}"
@@ -659,9 +663,9 @@ class Renderer
                     else msg = 'null'
                     "_k_.dbg(#{'\"' + (@source or '???') + '\"'}, #{p.callee.line}, #{p.callee.col}, #{msg}, #{@nodes p.args, ','})"
                     
-                'clamp'
-                    @hint._k_.clamp = true
-                    "_k_.clamp(#{@nodes p.args, ','})"
+                'clamp' 'first' 'last' 'min' 'max'
+                    @hint._k_[callee] = true
+                    "_k_.#{callee}(#{@nodes p.args, ','})"
                     
                 '▴'
                     @hint._k_.assert = true
