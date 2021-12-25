@@ -6,6 +6,7 @@
 000        000   000  000   000  0000000   00000000
 ###
 
+print = require './print'
 ParseUtils = require './parseutils'
 
 { firstLineCol, lastLineCol } = require './utils'

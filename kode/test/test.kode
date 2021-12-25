@@ -129,4 +129,55 @@
         module.exports
         
         """
-    
+        
+        
+    kc  """
+        ▸ t
+            r 'a' ▸
+                    b:   1
+                    e:   2
+        """ ▸
+        """
+        module.exports["t"] = function ()
+        {
+            compare(r('a'),{b:1,e:2})
+        }
+        module.exports["t"]._section_ = true
+        module.exports._test_ = true
+        module.exports
+        
+        """
+        
+    kc  """
+        ▸ t
+            r 'a' ▸
+                b:   1
+                e:   2
+        """ ▸
+        """
+        module.exports["t"] = function ()
+        {
+            compare(r('a'),{b:1,e:2})
+        }
+        module.exports["t"]._section_ = true
+        module.exports._test_ = true
+        module.exports
+        
+        """
+
+    kc  """
+        ▸ t
+            r 'a' ▸ b:   1
+                    e:   2
+        """ ▸
+        """
+        module.exports["t"] = function ()
+        {
+            compare(r('a'),{b:1,e:2})
+        }
+        module.exports["t"]._section_ = true
+        module.exports._test_ = true
+        module.exports
+        
+        """
+        

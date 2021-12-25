@@ -721,6 +721,7 @@ function Parser extends Parse
         literals = @kode.atoms.concat ['keyword''op']
         
         while tokens.length
+
             if tokens[0]?.type == 'nl'
                 break if tokens[1]?.type not in literals
                 break if tokens[2]?.text not in ': ' # ◂ the space checks for newline!
@@ -731,7 +732,7 @@ function Parser extends Parse
                     continue
                 break
             else if tokens[0]?.type == 'block'
-                if tokens[0].col >= first.col
+                if tokens[0].col >= first.col or @stack[-1] == '{' and 'section' in @stack
                     block = tokens.shift()
                     tokens = block.tokens
                     exps = exps.concat @exps 'object' block.tokens
