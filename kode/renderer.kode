@@ -86,7 +86,7 @@ class Renderer
         kf = 
             isNum:      "function (o) {return !isNaN(o) && !isNaN(parseFloat(o)) && (isFinite(o) || o === Infinity || o === -Infinity)}"
             isObj:      "function (o) {return !(o == null || typeof o != 'object' || o.constructor.name !== 'Object')}"
-            isArr:      "function (o) {return o instanceof Array}"
+            isArr:      "function (o) {return Array.isArray(o)}"
             isStr:      "function (o) {return typeof o === 'string' || o instanceof String}"
             isFunc:     "function (o) {return typeof o === 'function'}"
             isElem:     "function (o) {return o != null && typeof o === 'object' && o.nodeType === 1}"

@@ -623,7 +623,7 @@
         ▸ arr
         
             ke  'a = [] is arr'                         ▸ true
-            ke  'a = [[]] is arr'                       ▸ true
+            ke  'a = [1 2] is arr'                      ▸ true
             ke  'a = new Array() is arr'                ▸ true
             ke  'a = new Array([]) is arr'              ▸ true
             ke  'a = new Array([1]) is arr'             ▸ true

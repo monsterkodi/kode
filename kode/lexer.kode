@@ -100,7 +100,7 @@ class Lexer
                             ni  = text.indexOf '\n'
                             si  = text.indexOf ';'
                             if  
-                                ni >= 0 and si >= 0 ➜ end = Math.min ni, si 
+                                ni >= 0 and si >= 0 ➜ end = min ni, si 
                                 ni >= 0             ➜ end = ni
                                 si >= 0             ➜ end = si
                                                     ➜ end = text.length

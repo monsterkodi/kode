@@ -202,7 +202,7 @@ class Tester
         split = split each (v) ->
             if valid v
                 v = ''+v
-                a = Math.min v.length, 30 - l
+                a = min v.length, 30 - l
                 l += a
                 v[...a]
          
