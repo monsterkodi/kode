@@ -315,6 +315,15 @@ the output of two runs:
 
 <img src="./bin/test.png" />
 
+## ansi colors
+
+```
+log Y5 r2 'warning!'   ▸ output in dark red on bright yellow
+```
+
+**kode** injects ansi color code wrappers if it discovers function calls with names like `R1` or `g8`.
+Color functions: 'r' 'g' 'b' 'c' 'm' 'y' 'w' for foreground (uppercase for background) and a value between 1 and 8.
+
 # Compatibility
 
 **kode** is *mostly* compatible with CoffeeScript. Converting to **kode** shouldn't be too painful.
@@ -330,7 +339,6 @@ Stuff I rarely used and therefore didn't bother to re-implement:
 
 # Future plans
 
-- ansi color functions
 - `include` keyword to merge source files
 - render comments
 - sourcemaps
