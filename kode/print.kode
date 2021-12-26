@@ -7,12 +7,9 @@
 ###
 
 kstr   = require 'kstr'
-klor   = require 'klor'
 noon   = require 'noon'
 slash  = require 'kslash'
 childp = require 'child_process'
-
-klor.kolor.globalize()
 
 class Print
 

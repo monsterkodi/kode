@@ -1,5 +1,5 @@
 name            kode
-version         0.231.0
+version         0.232.0
 description     programming language
 main            js/kode.js
 bin
@@ -17,7 +17,6 @@ license         Unlicense
 dependencies
                 colorcat    monsterkodi/colorcat
                 karg        monsterkodi/karg
-                klor        monsterkodi/klor
                 kslash      monsterkodi/kslash
                 kstr        monsterkodi/kstr
                 noon        monsterkodi/noon

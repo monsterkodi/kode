@@ -1,6 +1,6 @@
 {
   "name": "kode",
-  "version": "0.231.0",
+  "version": "0.232.0",
   "description": "programming language",
   "main": "js/kode.js",
   "bin": {
@@ -18,11 +18,11 @@
   "author": "monsterkodi",
   "license": "Unlicense",
   "dependencies": {
-    "colorcat": "monsterkodi/colorcat",
-    "karg": "monsterkodi/karg",
-    "klor": "monsterkodi/klor",
-    "kslash": "monsterkodi/kslash",
-    "kstr": "monsterkodi/kstr",
-    "noon": "monsterkodi/noon"
+    "colorcat": "github:monsterkodi/colorcat",
+    "karg": "github:monsterkodi/karg",
+    "klor": "github:monsterkodi/klor",
+    "kslash": "github:monsterkodi/kslash",
+    "kstr": "github:monsterkodi/kstr",
+    "noon": "github:monsterkodi/noon"
   }
 }

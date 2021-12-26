@@ -8,15 +8,12 @@
 
 slash  = require 'kslash'
 kstr   = require 'kstr'
-klor   = require 'klor'
 karg   = require 'karg'
 childp = require 'child_process'
 print  = require './print'
 pkg    = require "#{__dirname}/../package"
 
 { register } = require './utils'
-
-klor.kolor.globalize()
 
 class Kode
 
