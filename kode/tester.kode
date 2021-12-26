@@ -33,7 +33,7 @@ class Tester
         stack.push t
         comps = 0
         depth = stack.length
-        log W1 kstr.lpad('' depth*3-1) + ' ' + global["g#{Math.max 1, 8-2*depth}"] kstr.pad(t,26-depth*3) + ' '
+        log W1 kstr.lpad('' depth*3-1) + ' ' + global["g#{Math.max 1, 8-2*depth}"] kstr.pad(t,34-depth*3) + ' '
         f()
         stack.pop()
         
@@ -96,9 +96,6 @@ class Tester
                 succs++
                 return
         
-        # if typeof(a) == typeof(b) == 'object'
-            # log red   noon a
-            # log green noon b
         if @sameObjects a, b
             succs++
             return
@@ -132,7 +129,6 @@ class Tester
         try
             tests = @kode.eval text, file, g
         catch err
-            # error 'TESTER ERROR'
             fails.push
                 stack: stack
                 lhs:   file + stack
@@ -146,7 +142,7 @@ class Tester
 
             if v._section_
                 stack.push k
-                log G1 y8 ' ' + kstr.pad(k, 25) + ' '
+                log G1 y8 ' ' + kstr.pad(k, 33) + ' '
                 v()
                 stack.pop()
                                         

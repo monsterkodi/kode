@@ -169,11 +169,12 @@ function Parser extends Parse
     # 00000000  000   000   0000000  000   000  
     
     each: (e, tokens) ->
-        
-        tokens.shift()
+                
+        ech = tokens.shift()
         
         each:
             lhs:    e
+            each:   ech
             fnc:    @exp tokens 
             
     # 00000000   0000000   00000000   000000000   0000000   000  000      
