@@ -22,7 +22,7 @@ class Print
     @tokens: (header, tokens) ->
         
         log R3 y5 "\n #{header}"
-        log b6(kstr.pad '' 80 ' ')
+        log b6 rpad 80
         s = ''
         for tok,idx in tokens
             s += @token tok, idx
@@ -30,7 +30,7 @@ class Print
 
     @token: (tok, idx='') ->
         
-        indent = kstr.lpad '' tok.col
+        indent = lpad tok.col
         return red '◂\n' if tok.type == 'nl'
         return '' if tok.type in ['ws''nl']
         toktext = (tok) => 
@@ -43,7 +43,7 @@ class Print
                 '\n' + s
             else
                 '???'
-        b6(kstr.lpad tok.line, 4) + ' ' + blue(kstr.lpad tok.col, 3) + ' ' + w2(kstr.lpad idx, 4) + ' ' + gray(kstr.pad tok.type, 10) + ' ' + bold yellow(indent + toktext tok) + '\n'
+        b6(lpad 4 tok.line) + ' ' + blue(lpad 3 tok.col) + ' ' + w2(lpad 4 idx) + ' ' + gray(rpad 10 tok.type) + ' ' + bold yellow(indent + toktext tok) + '\n'
             
     #  0000000  000000000   0000000    0000000  000   000
     # 000          000     000   000  000       000  000
@@ -84,7 +84,7 @@ class Print
         log R3 y5 "\n #{header}"
         printBlock = (b) ->
             if legend
-                s = b.indent + b6(kstr.rpad b.line, 3) + w2(kstr.rpad b.col, 3) + yellow(b.tokens.length)
+                s = b.indent + b6(rpad 3 b.line) + w2(rpad 3 b.col) + yellow(b.tokens.length)
                 s += '\n' + b.indent
             s = b.indent
             if b.type in ['{}''()''[]'] then s += b.type[0] + ' '
@@ -111,7 +111,7 @@ class Print
 
         log G1 g6 "\n #{header}"
         
-        lpad = kstr.lpad '' 19
+        lp = lpad 19
 
         printNode = (node, indent='', visited=[]) ->
 
@@ -120,26 +120,26 @@ class Print
             return s if not node
             
             if node.type
-                s += b6(kstr.lpad node.line ? '', 4) + ' ' + blue(kstr.lpad node.col ? '', 3) + ' ' + gray(kstr.pad node.type, 10) + ' ' + bold yellow(indent + node.text) + '\n'
+                s += b6(lpad 4 node.line ? '') + ' ' + blue(lpad 3 node.col ? '') + ' ' + gray(rpad 10 node.type) + ' ' + bold yellow(indent + node.text) + '\n'
             else if node is Array
                 
                 return s if node in visited
                 visited.push node
 
                 if node.length
-                    s += lpad + ' ' + indent + bold w3('[')
+                    s += lp + ' ' + indent + bold w3('[')
                     for value in node
                         s += '\n' 
                         s += printNode value, indent, visited
-                    s += lpad + ' ' + bold w3(indent + ']\n')
+                    s += lp + ' ' + bold w3(indent + ']\n')
                 else
-                    s += lpad + ' ' + indent + bold w3('[]\n')
+                    s += lp + ' ' + indent + bold w3('[]\n')
             else
                 return s if node in visited
                 visited.push node
                 
                 for name,value of node
-                    s += lpad + ' ' + bold b8(indent + name)
+                    s += lp + ' ' + bold b8(indent + name)
                     s += '\n'  
                     s += printNode value, indent+'  ', visited
             s
@@ -191,7 +191,7 @@ class Print
         else
             s = printNode ast
             
-        kstr.strip s, ' \n'
+        trim s, ' \n'
             
     #  0000000   0000000   0000000    00000000
     # 000       000   000  000   000  000
@@ -201,7 +201,7 @@ class Print
 
     @code: (msg, code, ext='js') ->
         
-        log W1 w5 kstr.lpad msg+' ' 80
+        log W1 w5 lpad 80 msg+' ' 80
         tmp = slash.tmpfile()
         tmp = slash.swapExt tmp, ext
         slash.writeText tmp, code

@@ -309,7 +309,7 @@ function ParseUtils
     sheapPop: (m, t) ->
         
         popped = @sheap.pop()
-        if popped.text != t and popped.text != kstr.strip(t, "'") then error 'wrong pop?' popped.text, t
+        if popped.text != t and popped.text != trim(t, "'") then error 'wrong pop?' popped.text, t
         print.sheap @sheap, popped if @debug
         
     #  0000000  000000000   0000000    0000000  000   000  

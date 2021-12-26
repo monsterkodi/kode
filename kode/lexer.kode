@@ -86,14 +86,14 @@ class Lexer
                             if not tokens[-2]? or tokens[-2].type == 'nl' or tokens[-2].type == 'ws' and tokens[-3]?.type == 'nl'
                                 end = text.indexOf '\n'
                                 end = text.length if end < 0
-                                txt = kstr.strip text[1...end]
+                                txt = trim text[1...end]
                                 tokens[-1].type = 'section'
                                 tokens[-1].text = txt
                                 if end >= text.length then text = '' else text = text[end..]
                                 break
                             else
                                 tokens[-1].type = 'op'
-                                tokens[-1].text = kstr.strip tokens[-1].text, ' \n'
+                                tokens[-1].text = trim tokens[-1].text, ' \n'
                                 
                         key.startsWith 'prof'
                             
@@ -105,7 +105,7 @@ class Lexer
                                 si >= 0             ➜ end = si
                                                     ➜ end = text.length
                                                     
-                            txt = kstr.strip text[tokens[-1].text.length...end]
+                            txt = trim text[tokens[-1].text.length...end]
                             tokens[-1].id = txt
                             if end >= text.length then text = '' else text = text[end..]
                             break
@@ -138,16 +138,16 @@ class Lexer
                 splt = tok.text[3...-3].split '\n'
                 if splt.length > 1
                     if splt.length == 2
-                        if kstr.strip(splt[1]) == ''
+                        if empty trim splt[1]
                             tok.text = '"""' + splt[0] + '"""'
                         else
                             tok.text = '"""' + splt[0] + '\n' + kstr.lstrip(splt[1]) + '"""'
                     else
-                        splt.shift() if kstr.strip(splt[0]) == '' and splt.length > 2
-                        splt.pop()   if kstr.strip(splt[-1]) == ''
+                        splt.shift() if trim(splt[0]) == '' and splt.length > 2
+                        splt.pop()   if trim(splt[-1]) == ''
                         if splt.length == 1 then tok.text = '"""' + kstr.lstrip(splt[0]) + '"""'
                         else
-                            minind = Math.min.apply 0 splt.map (s) -> if empty(kstr.strip(s)) then Infinity else kstr.lcnt s, ' '
+                            minind = Math.min.apply 0 splt.map (s) -> if empty(trim(s)) then Infinity else kstr.lcnt s, ' '
                             if Infinity > minind > 0 then splt = splt.map (s) -> s[minind..]
                             tok.text = '"""' + splt.join('\n') + '"""'
         tokens

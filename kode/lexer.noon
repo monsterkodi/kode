@@ -55,6 +55,11 @@ keyword
     float
     first
     last
+    lpad
+    rpad
+    trim
+    ltrim
+    rtrim
     min
     max
 var         [▸a-zA-Z_$][a-zA-Z0-9_$]*

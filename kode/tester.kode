@@ -33,7 +33,7 @@ class Tester
         stack.push t
         comps = 0
         depth = stack.length
-        log W1 kstr.lpad('' depth*3-1) + ' ' + global["g#{Math.max 1, 8-2*depth}"] kstr.pad(t,34-depth*3) + ' '
+        log W1 lpad(depth*3-1) + ' ' + global["g#{Math.max 1, 8-2*depth}"] rpad(34-depth*3 t) + ' '
         f()
         stack.pop()
         
@@ -87,7 +87,7 @@ class Tester
     compare: (a, b) =>
 
         depth = stack.length
-        ind = kstr.lpad('' (depth+1)*3)
+        ind = lpad (depth+1)*3
         
         comps++
                         
@@ -142,7 +142,7 @@ class Tester
 
             if v._section_
                 stack.push k
-                log G1 y8 ' ' + kstr.pad(k, 33) + ' '
+                log G1 y8 ' ' + rpad(33 k) + ' '
                 v()
                 stack.pop()
                                         

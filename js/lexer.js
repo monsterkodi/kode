@@ -1,6 +1,6 @@
-// monsterkodi/kode 0.233.0
+// monsterkodi/kode 0.237.0
 
-var _k_ = {list: function (l) {return l != null ? typeof l.length === 'number' ? l : [] : []}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, min: function () { m = Infinity; for (a of arguments) { if (a instanceof Array) {m = _k_.min.apply(_k_.min,[m].concat(a))} else {n = parseFloat(a); if(!isNaN(n)){m = n < m ? n : m}}}; return m }, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}}
+var _k_ = {list: function (l) {return l != null ? typeof l.length === 'number' ? l : [] : []}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, trim: function (s,c=' ') {return _k_.ltrim(_k_.rtrim(s,c),c)}, min: function () { m = Infinity; for (a of arguments) { if (a instanceof Array) {m = _k_.min.apply(_k_.min,[m].concat(a))} else {n = parseFloat(a); if(!isNaN(n)){m = n < m ? n : m}}}; return m }, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, ltrim: function (s,c=' ') { while (_k_.in(s[0],c)) { s = s.slice(1) } return s}, rtrim: function (s,c=' ') {while (_k_.in(s.slice(-1)[0],c)) { s = s.slice(0, s.length - 1) } return s}}
 
 var kstr, noon, slash
 
@@ -97,7 +97,7 @@ class Lexer
                             {
                                 end = text.length
                             }
-                            txt = kstr.strip(text.slice(1, typeof end === 'number' ? end : -1))
+                            txt = _k_.trim(text.slice(1, typeof end === 'number' ? end : -1))
                             tokens.slice(-1)[0].type = 'section'
                             tokens.slice(-1)[0].text = txt
                             end >= text.length ? text = '' : text = text.slice(end)
@@ -106,7 +106,7 @@ class Lexer
                         else
                         {
                             tokens.slice(-1)[0].type = 'op'
-                            tokens.slice(-1)[0].text = kstr.strip(tokens.slice(-1)[0].text,' \n')
+                            tokens.slice(-1)[0].text = _k_.trim(tokens.slice(-1)[0].text,' \n')
                         }
                     }
                     else if (key.startsWith('prof'))
@@ -129,7 +129,7 @@ class Lexer
                         {
                             end = text.length
                         }
-                        txt = kstr.strip(text.slice(tokens.slice(-1)[0].text.length, typeof end === 'number' ? end : -1))
+                        txt = _k_.trim(text.slice(tokens.slice(-1)[0].text.length, typeof end === 'number' ? end : -1))
                         tokens.slice(-1)[0].id = txt
                         end >= text.length ? text = '' : text = text.slice(end)
                         break
@@ -169,7 +169,7 @@ class Lexer
                 {
                     if (splt.length === 2)
                     {
-                        if (kstr.strip(splt[1]) === '')
+                        if (_k_.empty(_k_.trim(splt[1])))
                         {
                             tok.text = '"""' + splt[0] + '"""'
                         }
@@ -180,11 +180,11 @@ class Lexer
                     }
                     else
                     {
-                        if (kstr.strip(splt[0]) === '' && splt.length > 2)
+                        if (_k_.trim(splt[0]) === '' && splt.length > 2)
                         {
                             splt.shift()
                         }
-                        if (kstr.strip(splt.slice(-1)[0]) === '')
+                        if (_k_.trim(splt.slice(-1)[0]) === '')
                         {
                             splt.pop()
                         }
@@ -196,7 +196,7 @@ class Lexer
                         {
                             minind = Math.min.apply(0,splt.map(function (s)
                             {
-                                if (_k_.empty((kstr.strip(s))))
+                                if (_k_.empty((_k_.trim(s))))
                                 {
                                     return Infinity
                                 }

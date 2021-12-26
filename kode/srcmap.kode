@@ -34,7 +34,7 @@ class SourceMap
                 s = s[1..]
                 @jsline++
                             
-            log b7('c'), g4(kstr.lpad(@jsline, 4)), s
+            log b7('c'), g4(lpad(4 @jsline)), s
             
             @jsline += @solve s
             
@@ -42,12 +42,12 @@ class SourceMap
             
         else if tl?.type
             
-            log b4('t'), r2(kstr.lpad(tl.line ? '?', 4)), s
+            log b4('t'), r2(lpad(4 tl.line ? '?')), s
             @cache.push [s, tl]
             
         else
             
-            log b4('.'), b2(kstr.lpad(@jsline, 4)), w2(s)
+            log b4('.'), b2(lpad(4 @jsline)), w2(s)
             
     #  0000000   0000000   000      000   000  00000000  
     # 000       000   000  000      000   000  000       
