@@ -201,7 +201,7 @@ class Print
 
     @code: (msg, code, ext='js') ->
         
-        log W1 w5 lpad 80 msg+' ' 80
+        log W1 w5 lpad 80 msg+' '
         tmp = slash.tmpfile()
         tmp = slash.swapExt tmp, ext
         slash.writeText tmp, code

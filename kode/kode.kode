@@ -118,7 +118,7 @@ class Kode
 
             _require.paths = _module.paths = Module._nodeModulePaths process.cwd()
             _require.resolve = (request) -> Module._resolveFilename request, _module
-
+            
         try
             js = @compile text, file
             vm.runInContext js, sandbox

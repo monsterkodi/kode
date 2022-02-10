@@ -45,19 +45,16 @@ class Tester
         }
         if (typeof(a) !== typeof(b))
         {
-            console.log(`${keystack.join('.')}: ${typeof(a)} !! ${typeof(b)}`)
             return false
         }
         if (!(a instanceof Array) && !(typeof(a) === 'object'))
         {
-            console.log(`${keystack.join('.')}: ${a} != ${b}`)
             return false
         }
         if (a instanceof Array)
         {
             if (a.length !== b.length)
             {
-                console.log(`${keystack.join('.')}: ${a.length} ][ ${b.length}`)
                 return false
             }
             var list = _k_.list(a)

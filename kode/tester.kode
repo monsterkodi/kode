@@ -50,15 +50,15 @@ class Tester
         return true if Object.is a, b # simple types
         
         if typeof a != typeof b # types differ
-            log "#{keystack.join '.'}: #{typeof(a)} !! #{typeof(b)}"
+            # log "#{keystack.join '.'}: #{typeof(a)} !! #{typeof(b)}"
             return false
         if not a is Array and not a is 'object' # not an array or object
-            log "#{keystack.join '.'}: #{a} != #{b}"
+            # log "#{keystack.join '.'}: #{a} != #{b}"
             return false
             
         if a is Array
             if a.length != b.length 
-                log "#{keystack.join '.'}: #{a.length} ][ #{b.length}"
+                # log "#{keystack.join '.'}: #{a.length} ][ #{b.length}"
                 return false
             for v,i in a
                 keystack.push i

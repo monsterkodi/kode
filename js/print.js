@@ -320,7 +320,7 @@ class Print
     {
         var tmp
 
-        console.log(_k_.W1(_k_.w5(_k_.lpad(80,msg + ' ',80))))
+        console.log(_k_.W1(_k_.w5(_k_.lpad(80,msg + ' '))))
         tmp = slash.tmpfile()
         tmp = slash.swapExt(tmp,ext)
         slash.writeText(tmp,code)

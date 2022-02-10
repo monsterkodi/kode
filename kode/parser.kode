@@ -697,6 +697,9 @@ function Parser extends Parse
         exps = @exps '{' tokens, '}'
 
         close = @shiftClose 'curly' '}' tokens
+        if not close 
+            dbg exps
+            dbg tokens
 
         @pop '{'
 
@@ -821,6 +824,11 @@ function Parser extends Parse
 
         dot  = tokens.shift()
         prop = tokens.shift()
+        
+        if not prop
+            error tokens
+            print.sheap @sheap, 'no prop'
+            
         prop.type = 'var'
         
         prop:

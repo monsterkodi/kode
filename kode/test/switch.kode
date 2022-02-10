@@ -171,6 +171,49 @@
             }\n
             """
             
+        kc  """
+            function App
+                
+                onMenuAction: (event, action) =>
+                    
+                    klog 'kxk.app.onMenuAction' action, event.sender.id
+                    
+                    if w = @winForEvent event
+            
+                        switch action.toLowerCase()
+                            'about'       ➜ @showAbout()
+                            'quit'        ➜ @quitApp()
+                            'screenshot'  ➜ @screenshot w
+                            'fullscreen'  ➜ w.setFullScreen not w.isFullScreen()
+                            'devtools'    ➜ @toggleDevTools w.webContents
+                            'reload'      ➜ w.webContents.reloadIgnoringCache()
+                            'close'       ➜ w.close()
+                            'hide'        ➜ w.hide()
+                            'minimize'    ➜ w.minimize()
+                            'maximize' 
+                                wa = @screenSize()
+                                wb = w.getBounds()
+                                maximized = w.isMaximized() or (wb.width == wa.width and wb.height == wa.height)
+                                if maximized then w.unmaximize() else w.maximize()  
+                    else
+                        klog "kxk.app.onMenuAction NO WIN!"
+            """ ▸
+            """
+            function () 
+            {
+                if (true)
+                {
+                    switch (a)
+                    {
+                        case 'fullscreen':
+                            return w.setFullScreen(!w.isFullScreen())
+                    
+                    }
+                
+                }
+            }
+            """
+            
     # 00     00   0000000   000000000   0000000  000   000  
     # 000   000  000   000     000     000       000   000  
     # 000000000  000000000     000     000       000000000  
