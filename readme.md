@@ -285,16 +285,24 @@ Logs time difference between matching `●▸` `●▪` pairs.
 `process.hrtime.bigint` is used for the timing and the measurements come with *μs* accuracy.
 Due to JavaScripts just in time compilation optimizations, the initial results might be greater than later runs.
     
-## copy & clone & eql
+## copy & clone
 
 ```
 a = copy b                              # shallow copy of b
 a = clone b                             # deep copy of b
-a eql b                                 # deep comparison
 ```
 
 Operators that return a shallow or deep copy of their argument. 
 Only plain Objects, Arrays and Strings are copied. Functions, Maps, Sets, etc. are not copied.
+
+## eql
+
+```
+a eql b                                 # deep comparison
+```
+
+Does a deep comparison of its operands. 
+Only plain Objects, Arrays and Strings are compared.
 
 ## tests 
 
