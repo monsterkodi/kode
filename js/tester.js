@@ -110,10 +110,8 @@ class Tester
 
     compare (a, b)
     {
-        var depth, ind
+        var ind
 
-        depth = stack.length
-        ind = _k_.lpad((depth + 1) * 3)
         comps++
         if (typeof(b) === 'function')
         {
@@ -128,6 +126,7 @@ class Tester
             succs++
             return
         }
+        ind = _k_.lpad((stack.length + 1) * 3)
         console.log(_k_.R1(black(ind + comps + ' ')) + ' ' + _k_.r5(this.short(a)) + ' ' + _k_.R1(_k_.r4(' ▸ ')) + ' ' + _k_.g1(this.short(b)))
         return fails.push({stack:stack.concat([comps]),comps:comps,lhs:a,rhs:b})
     }
@@ -202,9 +201,9 @@ class Tester
         var fail, summary
 
         var list = _k_.list(allfails)
-        for (var _167_17_ = 0; _167_17_ < list.length; _167_17_++)
+        for (var _166_17_ = 0; _166_17_ < list.length; _166_17_++)
         {
-            fail = list[_167_17_]
+            fail = list[_166_17_]
             console.log(_k_.R2(_k_.y5(' ' + fail.stack[0] + ' ')) + _k_.R1(_k_.y5(' ' + fail.stack.slice(1).join(_k_.r3(' ▸ ')) + ' ')))
             console.log(_k_.r5(this.showSpace(fail.lhs)))
             console.log(_k_.R1(_k_.r3(' ▸ ')))
@@ -246,7 +245,7 @@ class Tester
         split = ('' + s).split('\n')
         l = 0
         split = (function (o) {
-            var r_198_22_ = _k_.each_r(o)
+            var r_197_22_ = _k_.each_r(o)
             for (var k in o)
             {   
                 var m = (function (v)
@@ -263,10 +262,10 @@ class Tester
             })(o[k])
                 if (m != null)
                 {
-                    r_198_22_[k] = m
+                    r_197_22_[k] = m
                 }
             }
-            return typeof o == 'string' ? r_198_22_.join('') : r_198_22_
+            return typeof o == 'string' ? r_197_22_.join('') : r_197_22_
         })(split)
         split = split.filter(function (s)
         {

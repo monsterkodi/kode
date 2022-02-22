@@ -55,6 +55,7 @@ precedence = function (o)
 
         case '==':
         case '!=':
+        case 'eql':
             return 6
 
         case '&':
