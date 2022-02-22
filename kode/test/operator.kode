@@ -244,7 +244,7 @@
             a = [1 2 3]
             b = [1 2].concat [3]
             p = hello:a, world:b
-            q = hello:b, worlt:a
+            q = hello:b, world:a
             p eql q
             """ ▸ true
     
