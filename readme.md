@@ -352,4 +352,19 @@ Stuff I rarely used and therefore didn't bother to re-implement:
 - render comments
 - sourcemaps
 - error messages
+▸ bug fixes
+    - class A extends B.C
+    - trailing if after obj args: `@func obj:1 if truish`
+    - indentation issue in else branches:
+        ```
+        if 1 then 
+        else # this works
+            @s = Immutable 
+                    lines:lines
+        
+        if 1 then
+        else # this doesn't :(
+            @s = Immutable 
+                lines:lines
+        ```
 

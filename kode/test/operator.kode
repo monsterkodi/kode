@@ -224,6 +224,7 @@
         ke  "clone [1]" ▸ [1]
         ke  "clone [null]" ▸ [null]
         ke  "clone a:null" ▸ a:null
+        kc  "f e+1, copy d" ▸ 'f(e + 1,_k_.copy(d))'
 
     # 00000000   0000000   000      
     # 000       000   000  000      
