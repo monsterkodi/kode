@@ -349,7 +349,7 @@ class Renderer
         s += "class #{n.name.text}"
 
         if n.extends
-            s += " extends " + n.extends.map((e) -> e.text).join ', '
+            s += " extends " + n.extends.map((e) => @node e).join ', '
 
         s += '\n{'
 
@@ -440,7 +440,7 @@ class Renderer
         if n.extends
             for e in n.extends
                 @hint._k_.extend = true
-                s += "    _k_.extend(#{n.name.text}, #{e.text})"
+                s += "    _k_.extend(#{n.name.text}, #{@node e})"
             s += '\n'
 
         mthds = n.body
