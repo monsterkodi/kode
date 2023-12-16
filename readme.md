@@ -351,7 +351,7 @@ Stuff I rarely used and therefore didn't bother to re-implement:
 - render comments
 - sourcemaps
 - error messages
-▸ bug fixes
+- bug fixes
     - trailing if after obj args: `@func obj:1 if truish`
     - indentation issue in else branches:
         ```
