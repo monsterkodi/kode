@@ -202,6 +202,7 @@ class Renderer
                 when 'function'  then @function v
                 when 'switch'    then @switch v
                 when 'when'      then @when v
+                when 'import'    then @import v
                 when 'assert'    then @assert v
                 when 'qmrkop'    then @qmrkop v
                 when 'stripol'   then @stripol v
@@ -337,6 +338,21 @@ class Renderer
         # log 'fixedAsserts' s
         s
 
+    # 000  00     00  00000000    0000000   00000000   000000000  
+    # 000  000   000  000   000  000   000  000   000     000     
+    # 000  000000000  00000000   000   000  0000000       000     
+    # 000  000 0 000  000        000   000  000   000     000     
+    # 000  000   000  000         0000000   000   000     000     
+    
+    import: (n) ->
+
+        s = ''
+        s += 'import '
+        s += @nodes n.args, ' '
+        s += ' from '
+        s += @node n.from
+        s
+        
     #  0000000  000       0000000    0000000   0000000
     # 000       000      000   000  000       000
     # 000       000      000000000  0000000   0000000

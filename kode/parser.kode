@@ -365,6 +365,25 @@ function Parser extends Parse
             catch:   ctch
             finally: fnlly
             
+    # 000  00     00  00000000    0000000   00000000   000000000  
+    # 000  000   000  000   000  000   000  000   000     000     
+    # 000  000000000  00000000   000   000  0000000       000     
+    # 000  000 0 000  000        000   000  000   000     000     
+    # 000  000   000  000         0000000   000   000     000     
+    
+    import: (obj, tokens) ->
+
+        toImport = []
+        while token = tokens.shift()
+            if token.text == 'from'
+                from = tokens.shift()
+                break
+            toImport.push token
+                
+        import:
+            args: toImport
+            from: from
+            
     #  0000000  000       0000000    0000000   0000000
     # 000       000      000   000  000       000
     # 000       000      000000000  0000000   0000000

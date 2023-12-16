@@ -43,6 +43,8 @@ keyword
     finally
     function
     require
+    import
+    from
     typeof
     empty
     valid

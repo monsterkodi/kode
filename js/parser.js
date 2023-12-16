@@ -255,6 +255,23 @@ Parser = (function ()
         return {try:{exps:exps,catch:ctch,finally:fnlly}}
     }
 
+    Parser.prototype["import"] = function (obj, tokens)
+    {
+        var from, toImport, token
+
+        toImport = []
+        while (token = tokens.shift())
+        {
+            if (token.text === 'from')
+            {
+                from = tokens.shift()
+                break
+            }
+            toImport.push(token)
+        }
+        return {import:{args:toImport,from:from}}
+    }
+
     Parser.prototype["class"] = function (tok, tokens, type = 'class')
     {
         var e, name
@@ -534,8 +551,8 @@ Parser = (function ()
         close = this.shiftClose('curly','}',tokens)
         if (!close)
         {
-            _k_.dbg(".", 701, 12, "exps", exps)
-            _k_.dbg(".", 702, 12, "tokens", tokens)
+            _k_.dbg(".", 720, 12, "exps", exps)
+            _k_.dbg(".", 721, 12, "tokens", tokens)
         }
         this.pop('{')
         return {object:{open:open,keyvals:exps,close:close}}

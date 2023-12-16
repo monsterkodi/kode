@@ -347,13 +347,11 @@ Stuff I rarely used and therefore didn't bother to re-implement:
 - implicitly returning arrays if last expression is a loop
 
 # Future plans
-
 - `include` keyword to merge source files
 - render comments
 - sourcemaps
 - error messages
 ▸ bug fixes
-    - class A extends B.C
     - trailing if after obj args: `@func obj:1 if truish`
     - indentation issue in else branches:
         ```

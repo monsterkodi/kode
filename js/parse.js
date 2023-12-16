@@ -641,6 +641,11 @@ Parse = (function ()
                 e = this.this(e,tokens)
                 break
             }
+            if (e.text === 'import')
+            {
+                e = this.import(e,tokens)
+                break
+            }
             if (nxt.text === '.')
             {
                 e = this.prop(e,tokens)
