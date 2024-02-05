@@ -37,6 +37,8 @@
         """
         export default {k:1,$:2};
         """
+        
+    kc 'export single' ▸ 'export default single;'
     
     kc 'd = { export:1 }' ▸ 'd = {export:1}'
     

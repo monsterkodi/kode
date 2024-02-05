@@ -365,11 +365,14 @@ class Renderer
 
         s = ''
         s += 'export '
-        a = @nodes n.args, ' '
-        if a[0] == "{" 
-            s += 'default ' + a
+        if n.args is arr
+            a = @nodes n.args, ' '
+            if a[0] == "{" 
+                s += 'default ' + a
+            else 
+                s += '{ ' + a + ' }'
         else 
-            s += '{ ' + a + ' }'
+            s += 'default ' + @node n.args
         s += ';'
         s
         

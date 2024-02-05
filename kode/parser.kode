@@ -403,6 +403,9 @@ function Parser extends Parse
                 toExport.push token
         else if start.type == 'block'
             toExport = @block 'export' start.tokens
+        else
+            tokens.unshift start
+            toExport = @exp tokens
 
         export:
             args: toExport
@@ -487,7 +490,6 @@ function Parser extends Parse
     await: (tok, tokens) ->
         
         e = await: exp: @exp tokens
-        log e
         e
         
     #  0000000   0000000   000      000
