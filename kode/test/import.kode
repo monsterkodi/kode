@@ -22,3 +22,20 @@
     kc 'import defaultExport, { export1 } from "module"'       ▸ 'import defaultExport , { export1 } from "module"'    
     kc 'import defaultExport, * as name from "module"'         ▸ 'import defaultExport , * as name from "module"'      
     
+    kc 'd = { import:1 }' ▸ 'd = {import:1}'
+
+▸ export
+
+    kc 'export { export1, export2 }'   ▸ 'export { export1 , export2 };'
+    kc 'export { export1, export2 as blark }'   ▸ 'export { export1 , export2 as blark };'
+    
+    kc 'd = { export:1 }' ▸ 'd = {export:1}'
+    
+▸ await
+
+    kc 'await someFunctionCall()'   ▸ 'await someFunctionCall()'
+    kc 'await call(); await again()'   ▸ 'await call()\nawait again()'
+    kc 'await call 1; await again 2'   ▸ 'await call(1)\nawait again(2)'
+    
+    kc 'd = { await:1 }' ▸ 'd = {await:1}'
+    

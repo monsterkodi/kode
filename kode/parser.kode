@@ -383,6 +383,25 @@ function Parser extends Parse
         import:
             args: toImport
             from: from
+
+    # 00000000  000   000  00000000    0000000   00000000   000000000  
+    # 000        000 000   000   000  000   000  000   000     000     
+    # 0000000     00000    00000000   000   000  0000000       000     
+    # 000        000 000   000        000   000  000   000     000     
+    # 00000000  000   000  000         0000000   000   000     000     
+    
+    export: (obj, tokens) ->
+        
+        toExport = []
+        start = tokens.shift()
+        while token = tokens.shift()
+            if token.text == '}'
+                tokens.shift()
+                break
+            toExport.push token
+
+        export:
+            args: toExport
             
     #  0000000  000       0000000    0000000   0000000
     # 000       000      000   000  000       000
@@ -454,7 +473,19 @@ function Parser extends Parse
         e = return: ret: tok
         e.return.val = val if val
         e
-            
+
+    #  0000000   000   000   0000000   000  000000000  
+    # 000   000  000 0 000  000   000  000     000     
+    # 000000000  000000000  000000000  000     000     
+    # 000   000  000   000  000   000  000     000     
+    # 000   000  00     00  000   000  000     000     
+    
+    await: (tok, tokens) ->
+        
+        e = await: exp: @exp tokens
+        log e
+        e
+        
     #  0000000   0000000   000      000
     # 000       000   000  000      000
     # 000       000000000  000      000

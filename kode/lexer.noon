@@ -26,6 +26,7 @@ keyword
     for
     each
     break
+    await
     return
     continue
     switch
@@ -44,6 +45,7 @@ keyword
     function
     require
     import
+    export
     from
     typeof
     empty

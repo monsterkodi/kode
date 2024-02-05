@@ -252,6 +252,7 @@ function Parse extends ParseUtils # the base class of Parser
                                     'switch'   ➜ return @switch   tok, tokens
                                     'class'    ➜ return @class    tok, tokens
                                     'function' ➜ return @function tok, tokens                        
+                                    'await'    ➜ return @await    tok, tokens
                                     'while'    ➜ return @while    tok, tokens
                                     'when'     ➜ return @when     tok, tokens
                                     'try'      ➜ return @try      tok, tokens
@@ -478,7 +479,11 @@ function Parse extends ParseUtils # the base class of Parser
             if e.text == 'import'
                 e = @import e, tokens
                 break
-            
+
+            if e.text == 'export'
+                e = @export e, tokens
+                break
+                
             if      
                 nxt.text == '.'    ➜ e = @prop   e, tokens
                 nxt.type == 'dots' and not @stack[-1].startsWith('op') and @stack[-1] != '(' ➜ e = @slice e, tokens
