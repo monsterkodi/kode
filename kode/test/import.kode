@@ -26,8 +26,17 @@
 
 ▸ export
 
-    kc 'export { export1, export2 }'   ▸ 'export { export1 , export2 };'
+    kc 'export { export1, export2 }'            ▸ 'export { export1 , export2 };'
     kc 'export { export1, export2 as blark }'   ▸ 'export { export1 , export2 as blark };'
+    
+    kc  """
+        export
+            k: 1
+            $: 2
+        """ ▸ 
+        """
+        export default {k:1,$:2};
+        """
     
     kc 'd = { export:1 }' ▸ 'd = {export:1}'
     

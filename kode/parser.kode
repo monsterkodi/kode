@@ -394,11 +394,15 @@ function Parser extends Parse
         
         toExport = []
         start = tokens.shift()
-        while token = tokens.shift()
-            if token.text == '}'
-                tokens.shift()
-                break
-            toExport.push token
+        
+        if start.text == '{'
+            while token = tokens.shift()
+                if token.text == '}'
+                    tokens.shift()
+                    break
+                toExport.push token
+        else if start.type == 'block'
+            toExport = @block 'export' start.tokens
 
         export:
             args: toExport

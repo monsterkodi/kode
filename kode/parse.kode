@@ -253,6 +253,8 @@ function Parse extends ParseUtils # the base class of Parser
                                     'class'    ➜ return @class    tok, tokens
                                     'function' ➜ return @function tok, tokens                        
                                     'await'    ➜ return @await    tok, tokens
+                                    'import'   ➜ return @import   tok, tokens
+                                    'export'   ➜ return @export   tok, tokens
                                     'while'    ➜ return @while    tok, tokens
                                     'when'     ➜ return @when     tok, tokens
                                     'try'      ➜ return @try      tok, tokens
@@ -476,13 +478,13 @@ function Parse extends ParseUtils # the base class of Parser
                 e = @this e, tokens
                 break
                 
-            if e.text == 'import'
-                e = @import e, tokens
-                break
+            # if e.text == 'import'
+                # e = @import e, tokens
+                # break
 
-            if e.text == 'export'
-                e = @export e, tokens
-                break
+            # if e.text == 'export'
+                # e = @export e, tokens
+                # break
                 
             if      
                 nxt.text == '.'    ➜ e = @prop   e, tokens

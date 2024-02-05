@@ -364,9 +364,13 @@ class Renderer
     export: (n) ->
 
         s = ''
-        s += 'export { '
-        s += @nodes n.args, ' '
-        s += ' };'
+        s += 'export '
+        a = @nodes n.args, ' '
+        if a[0] == "{" 
+            s += 'default ' + a
+        else 
+            s += '{ ' + a + ' }'
+        s += ';'
         s
         
     #  0000000  000       0000000    0000000   0000000
