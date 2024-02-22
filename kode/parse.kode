@@ -247,6 +247,11 @@ function Parse extends ParseUtils # the base class of Parser
             'section'   ➜   return @section tok, tokens                
             'keyword'       # dispatch to block rules identified by keyword
                             if tokens[0]?.text not in ':' # allow keywords as keys
+                                
+                                if tok.text == 'import' and tokens[0].text == '(' 
+                                    tok.type = 'call'
+                                    return @call tok, tokens
+                                
                                 switch tok.text 
                                     'return'   ➜ return @return   tok, tokens
                                     'switch'   ➜ return @switch   tok, tokens

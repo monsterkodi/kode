@@ -21,6 +21,7 @@
     kc 'import { "string name" as alias } from "module"'       ▸ 'import { "string name" as alias } from "module"'    
     kc 'import defaultExport, { export1 } from "module"'       ▸ 'import defaultExport , { export1 } from "module"'    
     kc 'import defaultExport, * as name from "module"'         ▸ 'import defaultExport , * as name from "module"'      
+    kc 'import("f").then((a) -> a())'         ▸ 'import ("f").then(function (a) {a()})'      
     
     kc 'd = { import:1 }' ▸ 'd = {import:1}'
 
