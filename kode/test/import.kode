@@ -32,6 +32,14 @@
         
     kc 'import.meta.url' ▸ 'import.meta.url'
     kc 'import patterns from "./lexer.json" assert {type:"json"}' ▸ 'import patterns from "./lexer.json" assert { type : "json" }'
+    kc  """
+        import a from 'a'
+        import b from './b'
+        """ ▸
+        """
+        import a from 'a'
+        import b from './b'
+        """
     
     kc 'd = { import:1 }' ▸ 'd = {import:1}'
     

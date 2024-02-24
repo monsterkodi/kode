@@ -262,7 +262,7 @@ Parser = (function ()
         toImport = []
         while (token = tokens.shift())
         {
-            if (tokens.type === 'nl')
+            if (token.type === 'nl')
             {
                 break
             }

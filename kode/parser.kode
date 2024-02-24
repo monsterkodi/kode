@@ -382,7 +382,7 @@ function Parser extends Parse
             
         while token = tokens.shift()
 
-            if tokens.type == 'nl'
+            if token.type == 'nl'
                 break
             toImport.push token
                 
