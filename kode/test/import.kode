@@ -29,6 +29,9 @@
             return a()
         })
         """
+        
+    kc 'import.meta.url' ▸ 'import.meta.url'
+    kc 'import patterns from "./lexer.json" assert {type:"json"}' ▸ 'import patterns from "./lexer.json" assert { type : "json" }'
     
     kc 'd = { import:1 }' ▸ 'd = {import:1}'
     

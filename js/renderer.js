@@ -481,8 +481,6 @@ class Renderer
         s = ''
         s += 'import '
         s += this.nodes(n.args,' ')
-        s += ' from '
-        s += this.node(n.from)
         return s
     }
 

@@ -270,7 +270,7 @@ Parse = (function ()
 
     Parse.prototype["exp"] = function (tokens)
     {
-        var block, e, numTokens, tok, _276_34_, _338_33_
+        var block, e, numTokens, tok, _279_34_, _341_33_
 
         if (_k_.empty(tokens))
         {
@@ -301,10 +301,17 @@ Parse = (function ()
             case 'keyword':
                 if (!(_k_.in((tokens[0] != null ? tokens[0].text : undefined),':')))
                 {
-                    if (tok.text === 'import' && tokens[0].text === '(')
+                    if (tok.text === 'import')
                     {
-                        tok.type = 'call'
-                        return this.call(tok,tokens)
+                        if (tokens[0].text === '(')
+                        {
+                            tok.type = 'call'
+                            return this.call(tok,tokens)
+                        }
+                        else if (_k_.in(tokens[0].text,'.'))
+                        {
+                            break
+                        }
                     }
                     switch (tok.text)
                     {
@@ -371,7 +378,7 @@ Parse = (function ()
 
         }
 
-        this.sheapPush('exp',((_276_34_=tok.text) != null ? _276_34_ : tok.type))
+        this.sheapPush('exp',((_279_34_=tok.text) != null ? _279_34_ : tok.type))
         e = tok
         while (tokens.length)
         {
@@ -452,13 +459,13 @@ Parse = (function ()
             this.verb(`exp cleanup ${this.stack.slice(-1)[0]}`)
             this.pop(this.stack.slice(-1)[0])
         }
-        this.sheapPop('exp',((_338_33_=tok.text) != null ? _338_33_ : tok.type))
+        this.sheapPop('exp',((_341_33_=tok.text) != null ? _341_33_ : tok.type))
         return e
     }
 
     Parse.prototype["rhs"] = function (e, tokens)
     {
-        var llc, numTokens, nxt, spaced, unspaced, _399_22_
+        var llc, numTokens, nxt, spaced, unspaced, _402_22_
 
         this.sheapPush('rhs','rhs')
         while (nxt = tokens[0])

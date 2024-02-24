@@ -248,9 +248,12 @@ function Parse extends ParseUtils # the base class of Parser
             'keyword'       # dispatch to block rules identified by keyword
                             if tokens[0]?.text not in ':' # allow keywords as keys
                                 
-                                if tok.text == 'import' and tokens[0].text == '(' # this is really ugly! fix import statement parsing by implementing use!
-                                    tok.type = 'call'
-                                    return @call tok, tokens
+                                if tok.text == 'import' 
+                                    if tokens[0].text == '(' # this is really ugly! fix import statement parsing by implementing use!
+                                        tok.type = 'call'
+                                        return @call tok, tokens
+                                    else if tokens[0].text in '.'
+                                        break
                                 
                                 switch tok.text 
                                     'return'   ➜ return @return   tok, tokens

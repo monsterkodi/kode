@@ -257,19 +257,18 @@ Parser = (function ()
 
     Parser.prototype["import"] = function (obj, tokens)
     {
-        var from, toImport, token
+        var toImport, token
 
         toImport = []
         while (token = tokens.shift())
         {
-            if (token.text === 'from')
+            if (tokens.type === 'nl')
             {
-                from = tokens.shift()
                 break
             }
             toImport.push(token)
         }
-        return {import:{args:toImport,from:from}}
+        return {import:{args:toImport}}
     }
 
     Parser.prototype["export"] = function (obj, tokens)
@@ -589,8 +588,8 @@ Parser = (function ()
         close = this.shiftClose('curly','}',tokens)
         if (!close)
         {
-            _k_.dbg(".", 757, 12, "exps", exps)
-            _k_.dbg(".", 758, 12, "tokens", tokens)
+            _k_.dbg(".", 763, 12, "exps", exps)
+            _k_.dbg(".", 764, 12, "tokens", tokens)
         }
         this.pop('{')
         return {object:{open:open,keyvals:exps,close:close}}

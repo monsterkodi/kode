@@ -374,15 +374,21 @@ function Parser extends Parse
     import: (obj, tokens) ->
 
         toImport = []
+        #while token = tokens.shift()
+        #    if token.text == 'from'
+        #        from = tokens.shift()
+        #        break
+        #    toImport.push token
+            
         while token = tokens.shift()
-            if token.text == 'from'
-                from = tokens.shift()
+
+            if tokens.type == 'nl'
                 break
             toImport.push token
                 
         import:
             args: toImport
-            from: from
+            # from: from
 
     # 00000000  000   000  00000000    0000000   00000000   000000000  
     # 000        000 000   000   000  000   000  000   000     000     
