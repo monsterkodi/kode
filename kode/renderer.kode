@@ -597,7 +597,13 @@ class Renderer
         
         name ?= n.name?.text ? 'function'
         
-        if n.arrow.text[0] == '○' ➜ name = 'async ' + name
+        if n.arrow.text[0] == '○'
+            if name.indexOf('function') >= 0
+                name = name.replace 'function' 'async function'
+            else if name.indexOf('static') >= 0
+                name = name.replace 'static' 'static async'
+            else
+                name = 'async ' + name
 
         s = name
         s += ' ('
