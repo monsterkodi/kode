@@ -69,7 +69,7 @@ Parse = (function ()
                         return tok.text === ']'
 
                     case '{':
-                        return _k_.in(tok.text,['}','->','=>','(','▸',':',']'])
+                        return _k_.in(tok.text,['}','->','=>','○->','○=>','(','▸',':',']'])
 
                     case '(':
                         return tok.text === ')'
@@ -360,6 +360,8 @@ Parse = (function ()
             {
                 case '->':
                 case '=>':
+                case '○->':
+                case '○=>':
                     if (!(_k_.in(this.stack.slice(-1)[0],['{'])))
                     {
                         return this.func(null,tok,tokens)

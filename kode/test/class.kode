@@ -54,8 +54,27 @@
     #      000     000     000   000     000     000  000       
     # 0000000      000     000   000     000     000   0000000  
     
-    ▸ static
+    ▸ async
         
+        kc  """
+            class C
+                @a: ○->
+                b: ○->
+            """ ▸ 
+            """
+            class C
+            {
+                static async a ()
+                {}
+
+                async b ()
+                {}
+            }
+
+            """
+            
+    ▸ static
+    
         kc  """
             class C
                 @a: ->

@@ -596,6 +596,8 @@ class Renderer
         gi = @ind()
         
         name ?= n.name?.text ? 'function'
+        
+        if n.arrow.text[0] == '○' ➜ name = 'async ' + name
 
         s = name
         s += ' ('
