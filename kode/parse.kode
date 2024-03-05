@@ -273,7 +273,7 @@ function Parse extends ParseUtils # the base class of Parser
                                             @verb 'if' @stack if @stack.length
                                             return @if tok, tokens
                         ➜   switch tok.text
-                                when '->' '=>' '○->' '○=>'   
+                                when '->' '=>' '○->' '○=>'
                                     if @stack[-1] not in ['{']
                                         return @func null, tok, tokens
 
@@ -497,7 +497,7 @@ function Parse extends ParseUtils # the base class of Parser
                 
             if      
                 nxt.text == '.'    ➜ e = @prop   e, tokens
-                nxt.type == 'dots' and not @stack[-1].startsWith('op') and @stack[-1] != '(' ➜ e = @slice e, tokens
+                nxt.type == 'dots' and not @stack[-1]?.startsWith('op') and @stack[-1] != '(' ➜ e = @slice e, tokens
                 nxt.text == 'each' ➜ e = @each   e, tokens
                 nxt.text == '?' 
                 

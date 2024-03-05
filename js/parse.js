@@ -671,7 +671,7 @@ Parse = (function ()
             {
                 e = this.prop(e,tokens)
             }
-            else if (nxt.type === 'dots' && !this.stack.slice(-1)[0].startsWith('op') && this.stack.slice(-1)[0] !== '(')
+            else if (nxt.type === 'dots' && !(this.stack.slice(-1)[0] != null ? this.stack.slice(-1)[0].startsWith('op') : undefined) && this.stack.slice(-1)[0] !== '(')
             {
                 e = this.slice(e,tokens)
             }

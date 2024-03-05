@@ -272,7 +272,7 @@ class Tester
             return s.length
         })
         ss = split.join(_k_.w2('➜ '))
-        if (l >= 30)
+        if (l >= 50)
         {
             ss += _k_.w2('...')
         }

@@ -204,7 +204,7 @@ class Tester
         split = split.filter (s) -> s.length
             
         ss = split.join w2 '➜ '
-        if l >= 30 then ss += w2 '...'
+        if l >= 50 then ss += w2 '...'
         ss
         
 module.exports = Tester

@@ -68,7 +68,6 @@ class Renderer
             s += @srcmap.jscode sm
             
         s = @header s
-            
         s
         
     js: (s, tl) => 
@@ -83,8 +82,8 @@ class Renderer
     # 000   000  00000000  000   000  0000000    00000000  000   000  
     
     header: (s) ->
-        if empty Object.keys @hint._k_
-            return s
+        
+        return s if empty Object.keys @hint._k_
 
         kf = 
             isNum:      "function (o) {return !isNaN(o) && !isNaN(parseFloat(o)) && (isFinite(o) || o === Infinity || o === -Infinity)}"
