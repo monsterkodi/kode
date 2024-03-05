@@ -270,7 +270,7 @@ Parse = (function ()
 
     Parse.prototype["exp"] = function (tokens)
     {
-        var block, e, numTokens, tok, _279_34_, _341_33_
+        var block, e, numTokens, tok, _280_34_, _342_33_
 
         if (_k_.empty(tokens))
         {
@@ -342,6 +342,9 @@ Parse = (function ()
                         case 'when':
                             return this.when(tok,tokens)
 
+                        case 'use':
+                            return this.use(tok,tokens)
+
                         case 'try':
                             return this.try(tok,tokens)
 
@@ -378,7 +381,7 @@ Parse = (function ()
 
         }
 
-        this.sheapPush('exp',((_279_34_=tok.text) != null ? _279_34_ : tok.type))
+        this.sheapPush('exp',((_280_34_=tok.text) != null ? _280_34_ : tok.type))
         e = tok
         while (tokens.length)
         {
@@ -459,13 +462,13 @@ Parse = (function ()
             this.verb(`exp cleanup ${this.stack.slice(-1)[0]}`)
             this.pop(this.stack.slice(-1)[0])
         }
-        this.sheapPop('exp',((_341_33_=tok.text) != null ? _341_33_ : tok.type))
+        this.sheapPop('exp',((_342_33_=tok.text) != null ? _342_33_ : tok.type))
         return e
     }
 
     Parse.prototype["rhs"] = function (e, tokens)
     {
-        var llc, numTokens, nxt, spaced, unspaced, _402_22_
+        var llc, numTokens, nxt, spaced, unspaced, _403_22_
 
         this.sheapPush('rhs','rhs')
         while (nxt = tokens[0])

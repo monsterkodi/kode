@@ -12,14 +12,16 @@ kode = -> new Kode()
 module.exports = 
             
     ast:(c,p) -> kode().astr c, no
+    
     ke: (c)   -> 
         try
             kode().eval(c)
         catch err
             log c
             log err
-    kc: (c,p) -> 
-        k = kode().compile c
+            
+    kc: (c,f) -> 
+        k = kode().compile c, f
         if k.startsWith '// monsterkodi/kode'   then k = k[k.indexOf('\n')+2..]
         if k.startsWith 'var _k_'               then k = k[k.indexOf('\n')+2..]
         if k.startsWith 'var '                  then k = k[k.indexOf('\n')+2..]

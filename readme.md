@@ -346,23 +346,26 @@ Stuff I rarely used and therefore didn't bother to re-implement:
 - string interpolation in object keys
 - implicitly returning arrays if last expression is a loop
 
-# Future plans
+# features to add
+- `use` keyword for import
 - `include` keyword to merge source files
 - render comments
 - sourcemaps
 - error messages
-- bug fixes
-    - trailing if after obj args: `@func obj:1 if truish`
-    - indentation issue in else branches:
-        ```
-        if 1 then 
-        else # this works
-            @s = Immutable 
-                    lines:lines
-        
-        if 1 then
-        else # this doesn't :(
-            @s = Immutable 
+
+# bugs
+▸ `return` issues
+- trailing if after obj args: `@func obj:1 if truish`
+- indentation issue in else branches:
+    ```
+    if 1 then 
+    else # this works
+        @s = Immutable 
                 lines:lines
-        ```
+    
+    if 1 then
+    else # this doesn't :(
+        @s = Immutable 
+            lines:lines
+    ```
 

@@ -265,6 +265,7 @@ function Parse extends ParseUtils # the base class of Parser
                                     'export'   ➜ return @export   tok, tokens
                                     'while'    ➜ return @while    tok, tokens
                                     'when'     ➜ return @when     tok, tokens
+                                    'use'      ➜ return @use      tok, tokens
                                     'try'      ➜ return @try      tok, tokens
                                     'for'      ➜ return @for      tok, tokens
                                     'if' 

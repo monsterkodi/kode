@@ -8,6 +8,16 @@
 
 { kc, ke } = require './utils'
 
+▸ use
+
+    kc 'use blark'                              ▸ 'import blark from "blark"\n'
+    kc 'use mod1 mod2'                          ▸ """
+        import mod1 from "mod1"
+        import mod2 from "mod2"\n
+        """
+    kc 'use loops' __filename                   ▸ 'import loops from "./loops.js"\n'
+    kc 'use ../returner' __filename             ▸ 'import returner from "../returner.js"\n'
+
 ▸ import
     
     kc 'import noon from "noon"'                               ▸ 'import noon from "noon"'
