@@ -197,14 +197,14 @@ class Tester
         split = split each (v) ->
             if valid v
                 v = ''+v
-                a = min v.length, 30 - l
-                l += a
-                v[...a]
+                # a = min v.length, 30 - l
+                # l += a
+                # v[...a]
          
         split = split.filter (s) -> s.length
             
         ss = split.join w2 '➜ '
-        if l >= 50 then ss += w2 '...'
+        # if l >= 50 then ss += w2 '...'
         ss
         
 module.exports = Tester
