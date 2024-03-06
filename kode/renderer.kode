@@ -352,7 +352,7 @@ class Renderer
         s = ''
         
         for m in n
-            log 'm:' m
+
             name = slash.base m.text
             s += 'import ' + name
             
