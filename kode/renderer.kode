@@ -352,32 +352,34 @@ class Renderer
         s = ''
         
         for m in n
-            
+            log 'm:' m
             name = slash.base m.text
             s += 'import ' + name
+            
+            mod = m.text ? m
 
             if @file
 
-                if m.text[0] == '.'
-                    kodeFile = slash.normalize slash.join slash.dirname(@file), m.text + '.kode'
-                    jsFile = slash.normalize slash.join slash.dirname(@file), m.text + '.js'
+                if mod[0] == '.'
+                    kodeFile = slash.normalize slash.join slash.dirname(@file), mod + '.kode'
+                    jsFile = slash.normalize slash.join slash.dirname(@file), mod + '.js'
                 else
                     kodeFile = slash.join slash.dirname(@file), name + '.kode'
                     jsFile = slash.join slash.dirname(@file), name + '.js'
                                             
-                if m.text[0] == '.'
+                if mod[0] == '.'
                     relFile = slash.relative jsFile, slash.dirname(@file)
                     if relFile[0] != '.'
                         relFile = './' + relFile
                     s += " from \"#{relFile}\"\n"
                 else
-                    s += " from \"#{m.text}\"\n"
+                    s += " from \"#{mod}\"\n"
                 
             else
-                if m.text[0] == '.'
-                    s += " from \"#{slash.swapExt m.text, 'js'}\"\n"
+                if mod[0] == '.'
+                    s += " from \"#{slash.swapExt mod, 'js'}\"\n"
                 else
-                    s += " from \"#{m.text}\"\n"
+                    s += " from \"#{mod}\"\n"
         s
         
     # 000  00     00  00000000    0000000   00000000   000000000  
