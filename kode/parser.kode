@@ -396,20 +396,22 @@ function Parser extends Parse
         
         token = tokens.shift()
                         
-        while token and token.type != 'nl'
+        while token
             
             module = token.text
             
-            while tokens.length and tokens[0].col == token.col + token.text.length
+            while tokens.length and tokens[0].type != 'nl' and tokens[0].col == token.col + token.text.length
                 token = tokens.shift()
                 module += token.text
             
             toUse.push
                 type: 'var'
                 text:  module
+                
+            break if tokens.length and tokens[0].type == 'nl'
             
             token = tokens.shift()
-                            
+            
         use: toUse
         
 

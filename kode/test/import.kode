@@ -30,6 +30,17 @@
         import mod3 from "mod3"
         import mod4 from "mod4"\n
         """
+        
+    kc  """
+        use mod5
+        use ./mod6
+        use mod7
+        """ ▸
+        """
+        import mod5 from "mod5"\n
+        import mod6 from "./mod6.js"\n
+        import mod7 from "mod7"\n
+        """
     
 ▸ import
     
