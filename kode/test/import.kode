@@ -20,6 +20,8 @@
     kc 'use ../returner'                        ▸ 'import returner from "../returner.js"\n'
     kc 'use ./kode/kode'                        ▸ 'import kode from "./kode/kode.js"\n'
     
+    kc 'use ./kxk ▪ slash noon'                 ▸ 'import { slash, noon } from "./kxk.js"\n'
+    
     kc 'use ./noon'                             ▸ 'import noon from "./noon.js"\n'
 
     kc 'use mod1 mod2'                          ▸ """

@@ -351,35 +351,51 @@ class Renderer
 
         s = ''
         
-        for m in n
-
-            name = slash.base m.text
-            s += 'import ' + name
+        if valid n.items
             
+            if n.toUse.length > 1
+                error 'items for multiple models?!'
+                
+            s += 'import { ' + n.items.join(', ') + ' }' 
+            
+            m   = n.toUse[0]
             mod = m.text ? m
 
-            if @file
-
-                if mod[0] == '.'
-                    kodeFile = slash.normalize slash.join slash.dirname(@file), mod + '.kode'
-                    jsFile = slash.normalize slash.join slash.dirname(@file), mod + '.js'
-                else
-                    kodeFile = slash.join slash.dirname(@file), name + '.kode'
-                    jsFile = slash.join slash.dirname(@file), name + '.js'
-                                            
-                if mod[0] == '.'
-                    relFile = slash.relative jsFile, slash.dirname(@file)
-                    if relFile[0] != '.'
-                        relFile = './' + relFile
-                    s += " from \"#{relFile}\"\n"
-                else
-                    s += " from \"#{mod}\"\n"
-                
+            if mod[0] == '.'
+                s += " from \"#{slash.swapExt mod, 'js'}\"\n"
             else
-                if mod[0] == '.'
-                    s += " from \"#{slash.swapExt mod, 'js'}\"\n"
+                s += " from \"#{mod}\"\n"
+        else
+        
+            for m in n.toUse
+    
+                name = slash.base m.text
+                s += 'import ' + name
+                
+                mod = m.text ? m
+    
+                if @file # is this actually doing something meaningful?
+    
+                    if mod[0] == '.'
+                        kodeFile = slash.normalize slash.join slash.dirname(@file), mod + '.kode'
+                        jsFile = slash.normalize slash.join slash.dirname(@file), mod + '.js'
+                    else
+                        kodeFile = slash.join slash.dirname(@file), name + '.kode'
+                        jsFile = slash.join slash.dirname(@file), name + '.js'
+                                                
+                    if mod[0] == '.'
+                        relFile = slash.relative jsFile, slash.dirname(@file)
+                        if relFile[0] != '.'
+                            relFile = './' + relFile
+                        s += " from \"#{relFile}\"\n"
+                    else
+                        s += " from \"#{mod}\"\n"
+                    
                 else
-                    s += " from \"#{mod}\"\n"
+                    if mod[0] == '.'
+                        s += " from \"#{slash.swapExt mod, 'js'}\"\n"
+                    else
+                        s += " from \"#{mod}\"\n"
         s
         
     # 000  00     00  00000000    0000000   00000000   000000000  
