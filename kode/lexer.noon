@@ -16,6 +16,7 @@ profile     ●▸
 profilend   ●▪
 prof        ●
 assert      ▴
+use         ▪
 op          (\band\b|\bor\b|\bnot\b|\+\+|--|==|!=|>=|<=|\+=|-=|\*=|\/=|\|=|\^=|\?=|\&=|%=|<<|>>|=|\*|\/|\+|-|%|\^|~|\&|\||<|>|\beql\b|\bnew\b|\bis\b|\binstanceof\b|\bdelete\b|\bnoon\b|\bcopy\b|\bclone\b)
 punct       [,:;!&~\|\.\?\\]
 bool        (\byes\b|\bno\b|\btrue\b|\bfalse\b)
