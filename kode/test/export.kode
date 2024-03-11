@@ -25,6 +25,22 @@
         export _k_export["$"] as $
         
         """
+
+    kc """
+        export
+            elem: elem
+            $: (a) -> log a
+    """ ▸ 
+    """
+        let _k_export = {elem:elem,$:function (a)
+        {
+            console.log(a)
+        }}
+        export default _k_export
+        export _k_export["elem"] as elem
+        export _k_export["$"] as $
+        
+    """
         
     kc 'export single' ▸ 'export default single;'
     
