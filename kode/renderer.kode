@@ -424,12 +424,16 @@ class Renderer
         if n.args is arr
             a = @nodes n.args, ' '
             if a[0] == "{" 
-                s += 'default ' + a
+                s  = 'let _k_export = ' + a + '\n'
+                s += 'export default _k_export\n'
+                for keyval in n.args[0].object.keyvals
+                    key = keyval.keyval.key.text
+                    s += """export _k_export["#{key}"] as #{key}\n"""
             else 
-                s += '{ ' + a + ' }'
+                s += '{ ' + a + ' };'
         else 
             s += 'default ' + @node n.args
-        s += ';'
+            s += ';'
         s
         
     #  0000000  000       0000000    0000000   0000000

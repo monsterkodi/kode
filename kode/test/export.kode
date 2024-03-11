@@ -1,0 +1,31 @@
+###
+00000000  000   000  00000000    0000000   00000000   000000000  
+000        000 000   000   000  000   000  000   000     000     
+0000000     00000    00000000   000   000  0000000       000     
+000        000 000   000        000   000  000   000     000     
+00000000  000   000  000         0000000   000   000     000     
+###
+
+{ kc, ke } = require './utils'
+
+▸ export
+
+    kc 'export { export1, export2 }'            ▸ 'export { export1 , export2 };'
+    kc 'export { export1, export2 as blark }'   ▸ 'export { export1 , export2 as blark };'
+    
+    kc  """
+        export
+            k: 1
+            $: 2
+        """ ▸ 
+        """
+        let _k_export = {k:1,$:2}
+        export default _k_export
+        export _k_export["k"] as k
+        export _k_export["$"] as $
+        
+        """
+        
+    kc 'export single' ▸ 'export default single;'
+    
+    kc 'd = { export:1 }' ▸ 'd = {export:1}'
