@@ -379,8 +379,7 @@ class Renderer
             mod = m.text ? m
             
             name = slash.base mod
-            s += 'import ' + name
-            s += ' as ' + n.name
+            s += 'import ' + n.name
 
             if mod[0] == '.'
                 s += " from \"#{slash.swapExt mod, 'js'}\"\n"

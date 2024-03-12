@@ -61,7 +61,7 @@
     ▸ named
     
         kc 'use ./file ● File'             ▸ """
-            import file as File from "./file.js"
+            import File from "./file.js"
             
             """
         
