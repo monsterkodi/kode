@@ -108,8 +108,6 @@ class Lexer
                                 
                         key.startsWith('prof') and empty pull linetokens, (t) -> t.text != 'use'
                         
-                            log tokens
-                            
                             ni  = text.indexOf '\n'
                             si  = text.indexOf ';'
                             if  

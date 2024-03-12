@@ -1,5 +1,3 @@
-// monsterkodi/kode 0.270.0
-
 var _k_ = {list: function (l) {return l != null ? typeof l.length === 'number' ? l : [] : []}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, trim: function (s,c=' ') {return _k_.ltrim(_k_.rtrim(s,c),c)}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, min: function () { var m = Infinity; for (var a of arguments) { if (Array.isArray(a)) {m = _k_.min.apply(_k_.min,[m].concat(a))} else {var n = parseFloat(a); if(!isNaN(n)){m = n < m ? n : m}}}; return m }, ltrim: function (s,c=' ') { while (_k_.in(s[0],c)) { s = s.slice(1) } return s}, rtrim: function (s,c=' ') {while (_k_.in(s.slice(-1)[0],c)) { s = s.slice(0, s.length - 1) } return s}}
 
 var kstr, noon, pull, slash
@@ -132,7 +130,6 @@ class Lexer
                             return t.text !== 'use'
                         })))
                     {
-                        console.log(tokens)
                         ni = text.indexOf('\n')
                         si = text.indexOf(';')
                         if (ni >= 0 && si >= 0)
@@ -181,9 +178,9 @@ class Lexer
         var minind, splt, tok
 
         var list = _k_.list(tokens)
-        for (var _149_16_ = 0; _149_16_ < list.length; _149_16_++)
+        for (var _147_16_ = 0; _147_16_ < list.length; _147_16_++)
         {
-            tok = list[_149_16_]
+            tok = list[_147_16_]
             if (tok.type === 'triple')
             {
                 splt = tok.text.slice(3, -3).split('\n')
@@ -335,7 +332,7 @@ class Lexer
                 block = blocks.slice(-1)[0]
             }
         }
-        for (var _281_19_ = idx = 0, _281_23_ = tokens.length; (_281_19_ <= _281_23_ ? idx < tokens.length : idx > tokens.length); (_281_19_ <= _281_23_ ? ++idx : --idx))
+        for (var _279_19_ = idx = 0, _279_23_ = tokens.length; (_279_19_ <= _279_23_ ? idx < tokens.length : idx > tokens.length); (_279_19_ <= _279_23_ ? ++idx : --idx))
         {
             tok = tokens[idx]
             if (tok.type === 'nl')
