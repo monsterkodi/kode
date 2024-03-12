@@ -19,10 +19,7 @@
     kc 'use ./loops'                            ▸ 'import loops from "./loops.js"\n'
     kc 'use ../returner'                        ▸ 'import returner from "../returner.js"\n'
     kc 'use ./kode/kode'                        ▸ 'import kode from "./kode/kode.js"\n'
-    
-    kc 'use ./kxk ▪ slash noon'                 ▸ 'import { slash, noon } from "./kxk.js"\n'
-    kc 'use ./lib_ko ▪ moment immutable fuzzy pbytes ' ▸ 'import { moment, immutable, fuzzy, pbytes } from "./lib_ko.js"\n'
-    
+        
     kc 'use ./noon'                             ▸ 'import noon from "./noon.js"\n'
 
     kc 'use mod1 mod2'                          ▸ """
@@ -44,4 +41,21 @@
         import mod6 from "./mod6.js"\n
         import mod7 from "mod7"\n
         """
-    
+        
+    ▸ items
+        
+        kc 'use ./kxk ▪ slash noon'             ▸ """
+            import kxk from "./kxk.js"
+            slash = kxk.slash
+            noon = kxk.noon
+            
+            """
+        kc 'use ./lib_ko ▪ moment immutable fuzzy pbytes ' ▸ """
+            import lib_ko from "./lib_ko.js"
+            moment = lib_ko.moment
+            immutable = lib_ko.immutable
+            fuzzy = lib_ko.fuzzy
+            pbytes = lib_ko.pbytes
+            
+            """
+        

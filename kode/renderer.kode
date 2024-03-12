@@ -355,16 +355,20 @@ class Renderer
             
             if n.toUse.length > 1
                 error 'items for multiple models?!'
-                
-            s += 'import { ' + n.items.join(', ') + ' }' 
-            
+                            
             m   = n.toUse[0]
             mod = m.text ? m
+            
+            name = slash.base m.text
+            s += 'import ' + name
 
             if mod[0] == '.'
                 s += " from \"#{slash.swapExt mod, 'js'}\"\n"
             else
                 s += " from \"#{mod}\"\n"
+                
+            for item in n.items
+                s += "#{item} = #{name}.#{item}\n"
         else
         
             for m in n.toUse
