@@ -1,6 +1,6 @@
 {
   "name": "kode",
-  "version": "0.269.0",
+  "version": "0.270.0",
   "description": "programming language",
   "main": "js/kode.js",
   "bin": {

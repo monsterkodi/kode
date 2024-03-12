@@ -368,7 +368,7 @@ class Renderer
                 s += " from \"#{mod}\"\n"
                 
             for item in n.items
-                s += "#{item} = #{name}.#{item}\n"
+                s += "let #{item} = #{name}.#{item}\n"
         else
         
             for m in n.toUse

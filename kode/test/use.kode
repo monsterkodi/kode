@@ -46,16 +46,16 @@
         
         kc 'use ./kxk ▪ slash noon'             ▸ """
             import kxk from "./kxk.js"
-            slash = kxk.slash
-            noon = kxk.noon
+            let slash = kxk.slash
+            let noon = kxk.noon
             
             """
         kc 'use ./lib_ko ▪ moment immutable fuzzy pbytes ' ▸ """
             import lib_ko from "./lib_ko.js"
-            moment = lib_ko.moment
-            immutable = lib_ko.immutable
-            fuzzy = lib_ko.fuzzy
-            pbytes = lib_ko.pbytes
+            let moment = lib_ko.moment
+            let immutable = lib_ko.immutable
+            let fuzzy = lib_ko.fuzzy
+            let pbytes = lib_ko.pbytes
             
             """
         
