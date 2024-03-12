@@ -1,12 +1,26 @@
-// monsterkodi/kode 0.256.0
+// monsterkodi/kode 0.270.0
 
-var _k_ = {list: function (l) {return l != null ? typeof l.length === 'number' ? l : [] : []}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, trim: function (s,c=' ') {return _k_.ltrim(_k_.rtrim(s,c),c)}, min: function () { var m = Infinity; for (var a of arguments) { if (Array.isArray(a)) {m = _k_.min.apply(_k_.min,[m].concat(a))} else {var n = parseFloat(a); if(!isNaN(n)){m = n < m ? n : m}}}; return m }, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, ltrim: function (s,c=' ') { while (_k_.in(s[0],c)) { s = s.slice(1) } return s}, rtrim: function (s,c=' ') {while (_k_.in(s.slice(-1)[0],c)) { s = s.slice(0, s.length - 1) } return s}}
+var _k_ = {list: function (l) {return l != null ? typeof l.length === 'number' ? l : [] : []}, in: function (a,l) {return (typeof l === 'string' && typeof a === 'string' && a.length ? '' : []).indexOf.call(l,a) >= 0}, trim: function (s,c=' ') {return _k_.ltrim(_k_.rtrim(s,c),c)}, empty: function (l) {return l==='' || l===null || l===undefined || l!==l || typeof(l) === 'object' && Object.keys(l).length === 0}, min: function () { var m = Infinity; for (var a of arguments) { if (Array.isArray(a)) {m = _k_.min.apply(_k_.min,[m].concat(a))} else {var n = parseFloat(a); if(!isNaN(n)){m = n < m ? n : m}}}; return m }, ltrim: function (s,c=' ') { while (_k_.in(s[0],c)) { s = s.slice(1) } return s}, rtrim: function (s,c=' ') {while (_k_.in(s.slice(-1)[0],c)) { s = s.slice(0, s.length - 1) } return s}}
 
-var kstr, noon, slash
+var kstr, noon, pull, slash
 
-noon = require('noon')
 slash = require('kslash')
 kstr = require('kstr')
+noon = require('noon')
+
+pull = function (arr, pred)
+{
+    var index
+
+    for (var _15_17_ = index = arr.length - 1, _15_31_ = 0; (_15_17_ <= _15_31_ ? index <= 0 : index >= 0); (_15_17_ <= _15_31_ ? ++index : --index))
+    {
+        if (pred(arr[index]))
+        {
+            arr.splice(index,1)
+        }
+    }
+    return arr
+}
 class Lexer
 {
     constructor (kode)
@@ -41,8 +55,9 @@ class Lexer
 
     tokenize (text)
     {
-        var after, before, col, end, key, line, lines, match, ni, reg, si, tokens, txt, value
+        var after, before, col, end, key, line, lines, linetokens, match, ni, reg, si, token, tokens, txt, value
 
+        linetokens = []
         tokens = []
         line = 1
         col = 0
@@ -50,10 +65,10 @@ class Lexer
         {
             before = text.length
             var list = _k_.list(this.regs)
-            for (var _60_26_ = 0; _60_26_ < list.length; _60_26_++)
+            for (var _68_26_ = 0; _68_26_ < list.length; _68_26_++)
             {
-                key = list[_60_26_][0]
-                reg = list[_60_26_][1]
+                key = list[_68_26_][0]
+                reg = list[_68_26_][1]
                 match = text.match(reg)
                 if ((match != null ? match.index : undefined) === 0)
                 {
@@ -68,11 +83,14 @@ class Lexer
                     }
                     else
                     {
-                        tokens.push({type:key,text:value,line:line,col:col})
+                        token = {type:key,text:value,line:line,col:col}
+                        tokens.push(token)
+                        linetokens.push(token)
                     }
                     if (key === 'nl')
                     {
                         col = 0
+                        linetokens = []
                         line++
                     }
                     else if (_k_.in(key,['comment','triple']))
@@ -109,8 +127,12 @@ class Lexer
                             tokens.slice(-1)[0].text = _k_.trim(tokens.slice(-1)[0].text,' \n')
                         }
                     }
-                    else if (key.startsWith('prof'))
+                    else if (key.startsWith('prof') && _k_.empty(pull(linetokens,function (t)
+                        {
+                            return t.text !== 'use'
+                        })))
                     {
+                        console.log(tokens)
                         ni = text.indexOf('\n')
                         si = text.indexOf(';')
                         if (ni >= 0 && si >= 0)
@@ -159,9 +181,9 @@ class Lexer
         var minind, splt, tok
 
         var list = _k_.list(tokens)
-        for (var _136_16_ = 0; _136_16_ < list.length; _136_16_++)
+        for (var _149_16_ = 0; _149_16_ < list.length; _149_16_++)
         {
-            tok = list[_136_16_]
+            tok = list[_149_16_]
             if (tok.type === 'triple')
             {
                 splt = tok.text.slice(3, -3).split('\n')
@@ -313,7 +335,7 @@ class Lexer
                 block = blocks.slice(-1)[0]
             }
         }
-        for (var _268_19_ = idx = 0, _268_23_ = tokens.length; (_268_19_ <= _268_23_ ? idx < tokens.length : idx > tokens.length); (_268_19_ <= _268_23_ ? ++idx : --idx))
+        for (var _281_19_ = idx = 0, _281_23_ = tokens.length; (_281_19_ <= _281_23_ ? idx < tokens.length : idx > tokens.length); (_281_19_ <= _281_23_ ? ++idx : --idx))
         {
             tok = tokens[idx]
             if (tok.type === 'nl')

@@ -408,7 +408,7 @@ function Parser extends Parse
                 type: 'var'
                 text:  module
                 
-            break if tokens.length and (tokens[0].type == 'nl' or tokens[0].text == '▪')
+            break if tokens.length and (tokens[0].type == 'nl' or tokens[0].text in '▪●')
             
             token = tokens.shift()
             
@@ -432,10 +432,25 @@ function Parser extends Parse
                 break if tokens.length and tokens[0].type == 'nl'
                 
                 token = tokens.shift()
+
+        if tokens.length and tokens[0].text == '●'
             
+            tokens.shift()
+            token = tokens.shift()
+
+            name = token?.text
+            
+            while tokens.length and tokens[0].type != 'nl' and tokens[0].col == token.col + token.text.length
+                token = tokens.shift()
+                name += token.text
+                
+        if tokens.length and tokens[0].type != 'nl'
+            warn 'dangling use token?' tokens[0]
+                
         use:   
             toUse:toUse
             items:items
+            name: name
 
     # 00000000  000   000  00000000    0000000   00000000   000000000  
     # 000        000 000   000   000  000   000  000   000     000     

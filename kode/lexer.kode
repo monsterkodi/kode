@@ -6,9 +6,16 @@
 0000000  00000000  000   000  00000000  000   000
 ###
 
-noon  = require 'noon'
 slash = require 'kslash'
 kstr  = require 'kstr'
+noon  = require 'noon'
+
+pull = (arr, pred) ->
+    
+    for index in arr.length-1..0
+        if pred arr[index]
+            arr.splice index, 1
+    arr
 
 class Lexer
 
@@ -52,6 +59,7 @@ class Lexer
 
     tokenize: (text) ->
 
+        linetokens = []
         tokens = []
         line = 1
         col = 0
@@ -67,12 +75,15 @@ class Lexer
                     if value == 'then' and tokens[-2]?.text == 'else' 
                         # skip then after else
                     else
-                        tokens.push type:key, text:value, line:line, col:col
+                        token = type:key, text:value, line:line, col:col
+                        tokens.push token
+                        linetokens.push token
 
                     if  
                         key == 'nl'
                             
                             col = 0
+                            linetokens = []
                             line++
                             
                         key in ['comment''triple']
@@ -95,7 +106,9 @@ class Lexer
                                 tokens[-1].type = 'op'
                                 tokens[-1].text = trim tokens[-1].text, ' \n'
                                 
-                        key.startsWith 'prof'
+                        key.startsWith('prof') and empty pull linetokens, (t) -> t.text != 'use'
+                        
+                            log tokens
                             
                             ni  = text.indexOf '\n'
                             si  = text.indexOf ';'

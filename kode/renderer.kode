@@ -354,12 +354,12 @@ class Renderer
         if valid n.items
             
             if n.toUse.length > 1
-                error 'items for multiple models?!'
+                error 'items for multiple modules?!'
                             
             m   = n.toUse[0]
             mod = m.text ? m
             
-            name = slash.base m.text
+            name = slash.base mod
             s += 'import ' + name
 
             if mod[0] == '.'
@@ -369,6 +369,27 @@ class Renderer
                 
             for item in n.items
                 s += "let #{item} = #{name}.#{item}\n"
+                
+        else if valid n.name
+
+            if n.toUse.length > 1
+                error 'named import for multiple modules?!'
+            
+            m   = n.toUse[0]
+            mod = m.text ? m
+            
+            name = slash.base mod
+            s += 'import ' + name
+            s += ' as ' + n.name
+
+            if mod[0] == '.'
+                s += " from \"#{slash.swapExt mod, 'js'}\"\n"
+            else
+                s += " from \"#{mod}\"\n"
+                
+            for item in n.items
+                s += "let #{item} = #{name}.#{item}\n"
+            
         else
         
             for m in n.toUse
