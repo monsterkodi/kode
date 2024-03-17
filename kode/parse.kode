@@ -273,7 +273,8 @@ function Parse extends ParseUtils # the base class of Parser
                                             @verb 'if' @stack if @stack.length
                                             return @if tok, tokens
                         ➜   switch tok.text
-                                when '->' '=>' '○->' '○=>'
+                                '○' ➜ return @await tok, tokens
+                                '->' '=>' '○->' '○=>'
                                     if @stack[-1] not in ['{']
                                         return @func null, tok, tokens
 

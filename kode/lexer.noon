@@ -15,6 +15,7 @@ test        (?<!●)▸[\s\n]+
 profile     ●▸
 profilend   ●▪
 prof        ●
+await       ○
 assert      ▴
 use         ▪
 op          (\band\b|\bor\b|\bnot\b|\+\+|--|==|!=|>=|<=|\+=|-=|\*=|\/=|\|=|\^=|\?=|\&=|%=|<<|>>|=|\*|\/|\+|-|%|\^|~|\&|\||<|>|\beql\b|\bnew\b|\bis\b|\binstanceof\b|\bdelete\b|\bnoon\b|\bcopy\b|\bclone\b)
